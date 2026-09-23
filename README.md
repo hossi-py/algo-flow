@@ -12,14 +12,15 @@ pnpm install
 pnpm dev          # http://localhost:3000
 ```
 
-| 명령 | 설명 |
-| --- | --- |
-| `pnpm dev` | 개발 서버 |
-| `pnpm build` / `pnpm start` | 프로덕션 빌드 / 실행 |
-| `pnpm typecheck` | 라우트 타입 생성 + `tsc` |
-| `pnpm lint` | ESLint |
-| `pnpm test` | Vitest (진도 규칙, 콘텐츠 무결성, 정답 코드 실행 검증, 마스코트 렌더) |
-| `pnpm format` | Prettier |
+| 명령                        | 설명                                                                         |
+| --------------------------- | ---------------------------------------------------------------------------- |
+| `pnpm dev`                  | 개발 서버                                                                    |
+| `pnpm build` / `pnpm start` | 프로덕션 빌드 / 실행                                                         |
+| `pnpm typecheck`            | 라우트 타입 생성 + `tsc`                                                     |
+| `pnpm lint`                 | ESLint                                                                       |
+| `pnpm test`                 | Vitest (진도 규칙, 채점기, JS·Python 하네스, 콘텐츠 무결성, 마스코트 렌더)   |
+| `pnpm validate:content`     | 모든 문제의 Python·JS 정답 코드를 실제 하네스로 실행해 기대값 검증 (Pyodide) |
+| `pnpm format`               | Prettier                                                                     |
 
 개발 서버에서는 화면 오른쪽 아래 🔧 버튼(개발용 도구)으로 예시 진도 불러오기 · XP 추가 · 축하 연출 · 진도 초기화를 할 수 있습니다. 프로덕션 빌드에는 나타나지 않습니다.
 

@@ -3,8 +3,15 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { addDays } from "@/lib/date";
+import { TOPICS } from "@/content/topics";
 import { addActivityDay, applyActivity } from "@/lib/progress/streak";
-import type { IsoDateTime, LevelClear, LocalDate, TopicSlug, UserProgress } from "@/types";
+import {
+  applyHintOpen,
+  applySubmission,
+  type SubmissionInput,
+  type SubmissionOutcome,
+} from "@/lib/progress/submission";
+import type { HintStep, IsoDateTime, LevelClear, LocalDate, Problem, TopicSlug, UserProgress } from "@/types";
 
 export function createEmptyProgress(): UserProgress {
   return {
@@ -79,13 +86,17 @@ interface ProgressState {
   setHydrated: () => void;
   /** XP 획득 → 통계·스트릭·일별 활동을 한 번에 갱신 */
   awardXp: (amount: number, today: LocalDate, solvedDelta?: number) => void;
+  /** 힌트 열기 (순서대로만) */
+  openHint: (problem: Problem, step: HintStep, now: IsoDateTime) => void;
+  /** 제출 결과 반영. 첫 정답·레벨 클리어 여부를 돌려준다 */
+  recordSubmission: (input: SubmissionInput) => SubmissionOutcome;
   loadDemo: (today: LocalDate, now: IsoDateTime) => void;
   reset: () => void;
 }
 
 export const useProgressStore = create<ProgressState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       progress: createEmptyProgress(),
       hydrated: false,
       setHydrated: () => set({ hydrated: true }),
@@ -97,6 +108,13 @@ export const useProgressStore = create<ProgressState>()(
             activity: addActivityDay(state.progress.activity, today, amount, solvedDelta),
           },
         })),
+      openHint: (problem, step, now) =>
+        set((state) => ({ progress: applyHintOpen(state.progress, problem, step, now) })),
+      recordSubmission: (input) => {
+        const { progress, outcome } = applySubmission(get().progress, input, TOPICS);
+        set({ progress });
+        return outcome;
+      },
       loadDemo: (today, now) => set({ progress: createDemoProgress(today, now) }),
       reset: () => set({ progress: createEmptyProgress() }),
     }),

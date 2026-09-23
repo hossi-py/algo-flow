@@ -54,7 +54,7 @@ function topicLockedReason(topic: Topic, topicsBySlug: Map<TopicSlug, Topic>): s
   if (topic.unlock.type === "always") return null;
   const prerequisite = topicsBySlug.get(topic.unlock.topic);
   const name = prerequisite?.title ?? topic.unlock.topic;
-  return `${name} Lv${topic.unlock.level}을 클리어하면 열려요`;
+  return `${name} Lv${topic.unlock.level} 클리어 후 열려요`;
 }
 
 export function computeLevelView(facts: ProgressFacts, topic: Topic, level: Level, topicUnlocked: boolean): LevelView {
@@ -76,7 +76,7 @@ export function computeLevelView(facts: ProgressFacts, topic: Topic, level: Leve
   if (level.level > 1) {
     const previous = (level.level - 1) as LevelNumber;
     if (!isLevelCleared(facts, topic.slug, previous)) {
-      return { ...base, status: "locked", lockedReason: `Lv${previous}을 클리어하면 열려요` };
+      return { ...base, status: "locked", lockedReason: `Lv${previous} 클리어 후 열려요` };
     }
   }
   const started = attemptedCount(facts, level) > 0;

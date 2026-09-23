@@ -26,8 +26,8 @@ describe("토픽 잠금", () => {
     expect(view(f, "stack").status).toBe("available");
     const queue = view(f, "queue-deque");
     expect(queue.status).toBe("locked");
-    expect(queue.lockedReason).toBe("스택 Lv3을 클리어하면 열려요");
-    expect(view(f, "backtracking").lockedReason).toBe("BFS Lv3을 클리어하면 열려요");
+    expect(queue.lockedReason).toBe("스택 Lv3 클리어 후 열려요");
+    expect(view(f, "backtracking").lockedReason).toBe("BFS Lv3 클리어 후 열려요");
   });
 
   it("스택 Lv3을 클리어하면 큐/덱이 열린다 (Lv2까지만으로는 안 열림)", () => {
@@ -47,7 +47,7 @@ describe("레벨 잠금", () => {
     const levels = view(facts([]), "stack").levels;
     expect(levels[0]?.status).toBe("available");
     expect(levels[1]?.status).toBe("locked");
-    expect(levels[1]?.lockedReason).toBe("Lv1을 클리어하면 열려요");
+    expect(levels[1]?.lockedReason).toBe("Lv1 클리어 후 열려요");
   });
 
   it("잠긴 토픽의 레벨은 모두 잠겨 있다", () => {

@@ -543,11 +543,14 @@ export interface JudgeResult {
   totalTimeMs: number;
   /** syntax-error일 때 */
   compileError?: CodeError;
+  /** internal-error일 때: 실행 엔진 로딩 실패·워커 충돌 등 */
+  engineError?: string;
 }
 
-/** 메인 스레드 → 워커 (Python: pyodide.worker.ts, JS: js.worker.ts — 같은 프로토콜) */
+/** 메인 스레드 → 워커 (Python: public/workers/pyodide.worker.mjs, JS: src/workers/js.worker.ts — 같은 프로토콜) */
 export type WorkerRequest =
-  | { type: "init"; indexURL?: string }
+  /** Python 워커는 Pyodide 위치와 채점 하네스 코드를 함께 받는다 */
+  | { type: "init"; indexURL?: string; harness?: string }
   | {
       type: "run-case";
       runId: string;
@@ -563,7 +566,16 @@ export type WorkerResponse =
   | { type: "ready"; runtime: string }
   | { type: "init-error"; message: string }
   | { type: "case-result"; runId: string; ok: true; value: JsonValue; stdout: string; timeMs: number }
-  | { type: "case-result"; runId: string; ok: false; error: CodeError; stdout: string; timeMs: number };
+  | {
+      type: "case-result";
+      runId: string;
+      ok: false;
+      /** compile: 문법 오류(모든 케이스 공통) · runtime: 실행 중 예외 */
+      phase: "compile" | "runtime";
+      error: CodeError;
+      stdout: string;
+      timeMs: number;
+    };
 ```
 
 ### 1.5 진도 · 제출 · 통계

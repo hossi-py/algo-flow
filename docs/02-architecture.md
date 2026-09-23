@@ -61,7 +61,8 @@
 
 - **예제 실행(run)**: `visibility: "example"` 케이스만, 실제/기대 출력과 `print` 출력 모두 표시.
 - **제출(submit)**: 전체 케이스. 숨은 케이스는 통과 여부만 표시하되, **처음 틀린 케이스 1개는 입력·기대값·실제값을 공개**(학습 목적. 문제별로 `revealFirstFailure: false` 설정 가능).
-- 첫 케이스가 TLE면 나머지는 같은 원인일 확률이 높으므로 "나머지 N개 미실행"으로 표시하고 멈춘다(대기 시간 절약).
+- 시간 초과가 한 번 나면 나머지 케이스는 같은 원인일 확률이 높으므로 "미실행"으로 표시하고 멈춘다(케이스마다 제한 시간 + 워커 재시작을 기다리지 않도록).
+- 문법 오류는 첫 케이스에서 바로 드러나므로 전체를 syntax-error로 끝낸다.
 
 ### 2.2 언어별 하네스
 
@@ -73,7 +74,8 @@
 - 동기 함수만 허용(`Promise` 반환 시 오류 안내). 스택 깊이는 엔진 기본값(V8 약 1만 프레임)으로, 재귀 깊이 1,000 이하 문제는 문제없음.
 - Pyodide 로딩이 없어 워커 준비가 즉시 끝난다.
 
-**Python** (`pyodide.worker.ts`, 서버 Node Pyodide와 공통)
+**Python** (`public/workers/pyodide.worker.mjs`, 서버 Node Pyodide와 하네스 공통)
+- Turbopack은 워커를 classic 워커로 띄우고, Pyodide 314+는 module 워커에서만 동작한다. 그래서 Python 워커는 번들하지 않는 정적 module 워커로 두고, 하네스 코드(`src/lib/runner/harness-python.ts`)를 init 메시지로 넘긴다.
 - 사용자 코드를 새 네임스페이스 `dict`에서 `exec` → `solution` 함수 존재 확인.
 - `sys.stdout`을 `io.StringIO`로 교체해 `print` 캡처(케이스당 최대 64KB, 초과분 잘라냄).
 - 인자는 JSON → Python 객체로 변환 후 **deepcopy**해서 전달(사용자가 인자를 변경해도 다음 케이스에 영향 없음).
@@ -120,6 +122,7 @@ worker → main : ready | init-error | case-result
 algo-flow/
 ├─ docs/                                  # 설계 문서 (본 문서들)
 ├─ public/
+│  ├─ workers/pyodide.worker.mjs          # Python 실행 module 워커 (번들 제외)
 │  ├─ favicon.svg                         # 노디 얼굴
 │  └─ og.png
 ├─ scripts/
@@ -210,8 +213,7 @@ algo-flow/
 │  │  ├─ motion.ts                        # spring/duration 프리셋
 │  │  └─ utils.ts                         # cn() 등
 │  ├─ workers/
-│  │  ├─ pyodide.worker.ts
-│  │  └─ js.worker.ts
+│  │  └─ js.worker.ts                  # (Python 워커는 public/workers/pyodide.worker.mjs)
 │  ├─ stores/
 │  │  ├─ progress-store.ts                # 게스트 진도 (persist)
 │  │  ├─ workspace-store.ts               # 문제별 코드 초안, 열린 힌트, 실행 결과

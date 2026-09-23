@@ -18,7 +18,7 @@ M1 설계 ─▶ M2 디자인 시스템·대시보드 ─▶ M3 워크스페이�
 | 산출물 | `docs/01`–`06` (디자인 시스템, 아키텍처·디렉토리, 화면·컴포넌트, 데이터 모델·SQL, 예시 문제, 마일스톤) |
 | 완료 기준 | ☑ README의 결정 D1–D12 전부 확정 ☑ 컬러/마스코트 방향 승인 ☑ 데이터 모델 승인 |
 
-## M2. 디자인 시스템 & 대시보드/로드맵 UI (Step 2) — 검토 대기
+## M2. 디자인 시스템 & 대시보드/로드맵 UI (Step 2) — 완료
 
 | 구분 | 내용 |
 | --- | --- |
@@ -26,13 +26,13 @@ M1 설계 ─▶ M2 디자인 시스템·대시보드 ─▶ M3 워크스페이�
 | 산출물 | 프로젝트 스캐폴딩(Next.js·TS·Tailwind v4·shadcn·motion·vitest·pnpm) · `globals.css` 토큰(라이트/다크) · 폰트 · `types/` · 공통 컴포넌트(PopButton, SoftCard, ProgressRing, XpPill, StreakFlame, TopicChip, LevelBadge, EmptyState, ThemeToggle, Celebration) · `Nodi` 8개 mood · AppShell(사이드바/하단탭) · 대시보드 · 로드맵 · 주제 홈 · `lib/progress`(xp, streak, unlock) · 7개 토픽 메타데이터 + 스택·DFS 샘플 콘텐츠 |
 | 완료 기준 | ☑ `pnpm dev`, `pnpm build`, `pnpm lint`, `pnpm typecheck`, `pnpm test` 모두 통과 ☑ 375 / 1000 / 1280px 폭에서 가로 스크롤 없음 (768px는 사용자 확인 필요) ☑ 라이트·다크 전환 (토큰 대비는 계산값 AA 이상) ☑ `prefers-reduced-motion`에서 튀는 모션 비활성 ☑ unlock/xp/streak 단위 테스트(경계: 자정, 스트릭 리셋, 이전 토픽 Lv3) 통과 ☑ 게스트 진도가 새로고침 후 유지 |
 
-## M3. 문제 풀이 워크스페이스 + 코드 실행/채점 (Step 3)
+## M3. 문제 풀이 워크스페이스 + 코드 실행/채점 (Step 3) — 검토 대기
 
 | 구분 | 내용 |
 | --- | --- |
 | 목표 | 문제를 읽고, 코드를 쓰고, 실행·채점 받고, 힌트를 여는 핵심 루프 완성 |
-| 산출물 | 3분할 리사이저블 레이아웃 + 모바일 탭 · Monaco(파스텔 테마 라이트/다크, JetBrains Mono) · 언어 선택(Python/JavaScript, 초안은 언어별 저장) · `pyodide.worker.ts` · `js.worker.ts` · RunnerClient(대기 워커, 타임아웃, 재생성) · Python 하네스 · judge/compare · TestResultList · ConsoleOutput · VerdictBanner · HintStack · 코드 초안 자동 저장 · `scripts/validate-content.ts`(Node Pyodide) |
-| 완료 기준 | ☐ 예시 문제(꽃밭 구역) 정답 코드 제출 → Python·JS 모두 12/12 AC ☐ `while True: pass` / `while (true) {}` 제출 → 2초 후 TLE, 이어서 바로 재실행 가능 ☐ 문법 오류 → syntax-error + 정확한 줄 번호 ☐ 대각선 연결 오답 → WA + 처음 틀린 케이스 입력/기대/실제 + failureNote 표시 ☐ `print` 출력이 콘솔에 표시 ☐ 30×30 스트레스 케이스(재귀 깊이 900) 통과 ☐ 엔진 준비 후 예제 실행 응답 < 500ms ☐ 힌트는 순서대로만 열리고 XP 감소 안내 표시 ☐ `validate-content`가 모든 큐레이션 문제의 Python·JS 정답 모두 expected 일치 확인 |
+| 산출물 | 3분할 리사이저블 레이아웃 + 모바일 탭 · Monaco(파스텔 테마 라이트/다크, JetBrains Mono) · 언어 선택(Python/JavaScript, 초안은 언어별 저장) · `public/workers/pyodide.worker.mjs`(module 워커, 번들 제외) · `js.worker.ts` · RunnerClient(대기 워커, 타임아웃, 재생성) · Python 하네스 · judge/compare · TestResultList · ConsoleOutput · VerdictBanner · HintStack · 코드 초안 자동 저장 · `scripts/validate-content.ts`(Node Pyodide) |
+| 완료 기준 | ☑ 예시 문제(꽃밭 구역) 정답 코드 제출 → Python·JS 모두 12/12 AC (브라우저 확인) ☑ `while True: pass` / `while (true) {}` → 약 2.5초 후 TLE, 이어서 바로 재실행 가능 (JS 0.2초, Python 새 엔진 약 2.5초) ☑ 문법 오류 → syntax-error + 정확한 줄 번호 ☑ 대각선 연결 오답 → WA + 처음 틀린 케이스 입력/기대/실제 + failureNote 표시 (테스트) ☑ `print`/`console.log` 출력이 콘솔에 표시 ☑ 30×30 스트레스 케이스(재귀 깊이 900) 통과 ☑ 엔진 준비 후 예제 실행 응답 < 500ms ☑ 힌트는 순서대로만 열리고 XP 변화 안내 표시 ☑ `pnpm validate:content`가 Python·JS 정답 모두 expected 일치 확인 |
 
 ## M4. 시각화 엔진 (Step 4)
 
