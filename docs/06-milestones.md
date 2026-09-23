@@ -34,13 +34,14 @@ M1 설계 ─▶ M2 디자인 시스템·대시보드 ─▶ M3 워크스페이�
 | 산출물 | 3분할 리사이저블 레이아웃 + 모바일 탭 · Monaco(파스텔 테마 라이트/다크, JetBrains Mono) · 언어 선택(Python/JavaScript, 초안은 언어별 저장) · `public/workers/pyodide.worker.mjs`(module 워커, 번들 제외) · `js.worker.ts` · RunnerClient(대기 워커, 타임아웃, 재생성) · Python 하네스 · judge/compare · TestResultList · ConsoleOutput · VerdictBanner · HintStack · 코드 초안 자동 저장 · `scripts/validate-content.ts`(Node Pyodide) |
 | 완료 기준 | ☑ 예시 문제(꽃밭 구역) 정답 코드 제출 → Python·JS 모두 12/12 AC (브라우저 확인) ☑ `while True: pass` / `while (true) {}` → 약 2.5초 후 TLE, 이어서 바로 재실행 가능 (JS 0.2초, Python 새 엔진 약 2.5초) ☑ 문법 오류 → syntax-error + 정확한 줄 번호 ☑ 대각선 연결 오답 → WA + 처음 틀린 케이스 입력/기대/실제 + failureNote 표시 (테스트) ☑ `print`/`console.log` 출력이 콘솔에 표시 ☑ 30×30 스트레스 케이스(재귀 깊이 900) 통과 ☑ 엔진 준비 후 예제 실행 응답 < 500ms ☑ 힌트는 순서대로만 열리고 XP 변화 안내 표시 ☑ `pnpm validate:content`가 Python·JS 정답 모두 expected 일치 확인 |
 
-## M4. 시각화 엔진 (Step 4)
+## M4. 시각화 엔진 (Step 4) — 검토 대기
 
 | 구분 | 내용 |
 | --- | --- |
 | 목표 | 알고리즘 동작을 한 단계씩 "보면서" 이해시키기 |
-| 산출물 | `player.ts`(재생 상태 머신) · Player/PlayerControls/StepMessage/PseudocodeView · StackView · QueueView · DequeView · GraphView · GridView · CallStackView · VariablesView · generators(stack-basic, stack-bracket, queue-basic, deque-basic, recursion-factorial, recursion-fibonacci, graph-adjacency, graph-dfs, graph-bfs, grid-dfs, grid-bfs, backtracking-permutation, backtracking-subset) · 개념 학습 화면의 VisualizationExplorer |
-| 완료 기준 | ☐ `grid-dfs` 출력이 05 문서의 33개 스텝 fixture와 정확히 일치 ☐ 모든 generator에 스냅샷 테스트 ☐ 재생/일시정지/이전/다음/처음/끝/속도(0.5·1·2x)/스크럽 동작 ☐ 키보드(Space, ←, →) 조작 ☐ 스텝 이동 시 의사코드 줄 하이라이트 동기화 ☐ 색 외에 모양/라벨로도 상태 구분 ☐ 모바일 폭에서 SVG가 패널에 맞게 축소 |
+| 산출물 | `player.ts`(재생 상태 머신) · Player/PlayerControls/StepMessage/PseudocodeView · StackView · QueueView · DequeView · SequenceView · GraphView · GridView · CallStackView · VariablesView · generators(stack-basic, stack-bracket, queue-basic, deque-basic, recursion-factorial, recursion-fibonacci, graph-adjacency, graph-dfs, graph-bfs, grid-dfs, grid-bfs, backtracking-permutation, backtracking-subset) · 토픽별 시각화 예시(`content/visualizations.ts`, 입력 직접 바꾸기) · 워크스페이스 시각화 패널 · **개념 학습 화면** `/topics/[topic]/learn`(ConceptCardDeck + ConceptIllustration 11종 · VisualizationExplorer · PatternSignalTrainer/RecognitionQuiz 형광펜 피드백) · `lib/progress/concept.ts`(카드 완독·퀴즈 통과 XP, Lv1 조건) · 스택·DFS 개념 카드와 퀴즈(트랙 C 선행분) |
+| 완료 기준 | ☑ `grid-dfs` 출력이 05 문서의 33개 스텝 fixture와 정확히 일치 ☑ 모든 generator에 스냅샷 테스트 (프리셋 16개의 스텝 흐름 요약 스냅샷 + 번호·줄 번호·결정성 불변식 + 잘못된 입력 30종) ☑ 재생/일시정지/이전/다음/처음/끝/속도(0.5·1·2x)/스크럽 동작 ☑ 키보드(Space, ←, →) 조작 ☑ 스텝 이동 시 의사코드 줄 하이라이트 동기화 ☑ 색 외에 모양/라벨로도 상태 구분 (아이콘 + 스크린 리더 라벨, 그래프는 점선) ☑ 모바일 폭에서 SVG가 패널에 맞게 축소 (375px에서 가로 스크롤 없음) |
+| 참고 | 개념 학습의 세 단계는 순서대로 안내하되 잠그지 않는다 — 주제 홈에서 `#visualize`·`#signals`로 바로 들어오고, 카드가 아직 없는 토픽도 시각화는 볼 수 있어야 해서. 카드는 화면에 0.6초 이상 머물러야 읽음으로 기록 |
 
 ## M5. AI 코치 & AI 문제 생성기 (Step 5)
 

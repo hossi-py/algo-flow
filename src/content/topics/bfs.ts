@@ -1,5 +1,5 @@
 import type { Topic } from "@/types";
-import { defineLevels, emptyConcept } from "./define";
+import { defineConcept, defineLevels } from "./define";
 
 export const bfsTopic: Topic = {
   slug: "bfs",
@@ -9,7 +9,7 @@ export const bfsTopic: Topic = {
   color: "lemon",
   icon: "ripple",
   unlock: { type: "level-cleared", topic: "dfs", level: 3 },
-  concept: emptyConcept("bfs"),
+  concept: defineConcept("bfs"),
   levels: defineLevels("bfs", [
     {
       title: "너비 우선 탐색이란?",

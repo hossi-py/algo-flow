@@ -19,6 +19,9 @@ interface CelebrationState {
   dismiss: () => void;
 }
 
+/** 첫 연출(정답·XP)이 끝난 뒤 레벨 클리어 연출을 이어서 띄우기까지의 간격 */
+export const LEVEL_CLEAR_DELAY_MS = 2600;
+
 let nextId = 1;
 
 export const useCelebrationStore = create<CelebrationState>()((set) => ({

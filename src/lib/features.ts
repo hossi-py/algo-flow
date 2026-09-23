@@ -6,7 +6,7 @@ export const FEATURES = {
   /** Step 3: 문제 풀이 워크스페이스 (/problems/[slug]) */
   workspace: true,
   /** Step 4: 개념 카드 · 시각화 탐색 · 유형 인식 훈련 (/topics/[topic]/learn) */
-  learn: false,
+  learn: true,
   /** Step 5: AI 맞춤 문제 (/ai-lab) */
   aiLab: false,
   /** Step 6: 로그인 · 마이페이지 (/me) */

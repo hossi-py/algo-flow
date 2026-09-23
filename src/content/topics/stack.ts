@@ -1,5 +1,6 @@
+import { STACK_CARDS, STACK_QUIZ } from "@/content/concepts/stack";
 import type { Topic } from "@/types";
-import { defineLevels, emptyConcept } from "./define";
+import { defineConcept, defineLevels } from "./define";
 
 export const stackTopic: Topic = {
   slug: "stack",
@@ -9,7 +10,7 @@ export const stackTopic: Topic = {
   color: "peach",
   icon: "plates",
   unlock: { type: "always" },
-  concept: emptyConcept("stack"),
+  concept: defineConcept("stack", { cards: STACK_CARDS, recognitionQuiz: STACK_QUIZ }),
   levels: defineLevels("stack", [
     {
       title: "스택이 뭘까?",

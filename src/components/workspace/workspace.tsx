@@ -12,7 +12,7 @@ import { useProgress, useTopicViews } from "@/hooks/use-progress";
 import { useEngine, useJudge } from "@/hooks/use-runner";
 import { toLocalDate } from "@/lib/date";
 import { cn } from "@/lib/utils";
-import { useCelebrationStore } from "@/stores/celebration-store";
+import { LEVEL_CLEAR_DELAY_MS, useCelebrationStore } from "@/stores/celebration-store";
 import { useProgressStore } from "@/stores/progress-store";
 import { useSettingsStore } from "@/stores/settings-store";
 import { draftKey, useWorkspaceStore } from "@/stores/workspace-store";
@@ -26,7 +26,6 @@ import { CoachPlaceholder, VisualPanel } from "./side-placeholders";
 import { WorkspaceHeader } from "./workspace-header";
 
 const DRAFT_SAVE_DELAY_MS = 400;
-const LEVEL_CLEAR_DELAY_MS = 2600;
 
 function fileName(problem: Problem, language: Language) {
   return `${problem.slug}.${language === "python" ? "py" : "js"}`;

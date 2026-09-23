@@ -1,36 +1,25 @@
+"use client";
+
 import { Eye, MessageCircleHeart } from "lucide-react";
 import { Nodi } from "@/components/mascot/nodi";
+import { VisualizationExplorer } from "@/components/visualizer/visualization-explorer";
 import type { Problem } from "@/types";
 
-/** Step 4 시각화 엔진 전까지: 의사코드와 준비 중 안내 */
+/** 문제에 딸린 시각화 프리셋을 한 단계씩 재생한다 */
 export function VisualPanel({ problem }: { problem: Problem }) {
-  const preset = problem.visualization?.presets[0];
+  const presets = problem.visualization?.presets ?? [];
   return (
-    <div className="flex h-full flex-col gap-4 overflow-y-auto p-5">
+    <div className="flex h-full flex-col gap-4 overflow-y-auto p-4">
       <div className="flex items-center gap-2">
         <Eye className="size-5 text-primary-strong" aria-hidden />
         <h2 className="text-h3 text-foreground">시각화</h2>
       </div>
-      <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed bg-card/50 px-4 py-6 text-center">
-        <Nodi mood="sleepy" size={72} decorative />
-        <p className="text-small font-bold text-foreground">한 단계씩 보기는 곧 열려요</p>
-        <p className="text-caption text-muted-foreground">
-          {preset
-            ? `「${preset.title}」에서 알고리즘이 칸을 방문하는 순서를 재생할 거예요.`
-            : "알고리즘 동작을 한 단계씩 재생할 거예요."}
-        </p>
-      </div>
-      {preset && (
-        <div className="flex flex-col gap-2">
-          <p className="text-small font-bold text-muted-foreground">흐름 미리 보기 (의사코드)</p>
-          <ol className="overflow-x-auto rounded-md border bg-muted py-2 font-mono text-code-sm text-foreground shadow-inset">
-            {preset.pseudocode.map((line, i) => (
-              <li key={i} className="flex gap-3 px-3 whitespace-pre">
-                <span className="w-5 shrink-0 text-right text-muted-foreground select-none">{i + 1}</span>
-                <span>{line}</span>
-              </li>
-            ))}
-          </ol>
+      {presets.length > 0 ? (
+        <VisualizationExplorer presets={presets} />
+      ) : (
+        <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed bg-card/50 px-4 py-6 text-center">
+          <Nodi mood="sleepy" size={72} decorative />
+          <p className="text-small font-bold text-foreground">이 문제는 시각화를 준비하고 있어요</p>
         </div>
       )}
     </div>

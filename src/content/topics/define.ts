@@ -1,4 +1,13 @@
-import { LEVEL_STAGES, type ConceptLesson, type Level, type LevelNumber, type TopicSlug } from "@/types";
+import { TOPIC_VISUALIZATIONS } from "@/content/visualizations";
+import {
+  LEVEL_STAGES,
+  type ConceptCard,
+  type ConceptLesson,
+  type Level,
+  type LevelNumber,
+  type RecognitionQuestion,
+  type TopicSlug,
+} from "@/types";
 
 export interface LevelDefinition {
   title: string;
@@ -29,7 +38,19 @@ export function defineLevels(topic: TopicSlug, definitions: FiveLevels): readonl
   return [build(0), build(1), build(2), build(3), build(4)];
 }
 
-/** 개념 학습 콘텐츠는 트랙 C에서 채운다. 비어 있으면 화면에서 "준비 중"으로 표시 */
-export function emptyConcept(topic: TopicSlug): ConceptLesson {
-  return { topic, cards: [], visualizations: [], recognitionQuiz: [], passScore: 0.8 };
+/**
+ * 개념 학습 콘텐츠. 시각화 예시는 모든 토픽에 있고, 개념 카드·퀴즈는 트랙 C에서 채운다
+ * (비어 있으면 화면에서 "준비 중"으로 표시).
+ */
+export function defineConcept(
+  topic: TopicSlug,
+  content: { cards?: ConceptCard[]; recognitionQuiz?: RecognitionQuestion[] } = {},
+): ConceptLesson {
+  return {
+    topic,
+    cards: content.cards ?? [],
+    visualizations: TOPIC_VISUALIZATIONS[topic],
+    recognitionQuiz: content.recognitionQuiz ?? [],
+    passScore: 0.8,
+  };
 }

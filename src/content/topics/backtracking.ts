@@ -1,5 +1,5 @@
 import type { Topic } from "@/types";
-import { defineLevels, emptyConcept } from "./define";
+import { defineConcept, defineLevels } from "./define";
 
 export const backtrackingTopic: Topic = {
   slug: "backtracking",
@@ -9,7 +9,7 @@ export const backtrackingTopic: Topic = {
   color: "sage",
   icon: "maze",
   unlock: { type: "level-cleared", topic: "bfs", level: 3 },
-  concept: emptyConcept("backtracking"),
+  concept: defineConcept("backtracking"),
   levels: defineLevels("backtracking", [
     {
       title: "선택하고 되돌리기",

@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { addDays } from "@/lib/date";
 import { TOPICS } from "@/content/topics";
+import { applyCardRead, applyQuizResult, type ConceptOutcome } from "@/lib/progress/concept";
 import { addActivityDay, applyActivity } from "@/lib/progress/streak";
 import {
   applyHintOpen,
@@ -11,7 +12,7 @@ import {
   type SubmissionInput,
   type SubmissionOutcome,
 } from "@/lib/progress/submission";
-import type { HintStep, IsoDateTime, LevelClear, LocalDate, Problem, TopicSlug, UserProgress } from "@/types";
+import type { HintStep, IsoDateTime, LevelClear, LocalDate, Problem, Topic, TopicSlug, UserProgress } from "@/types";
 
 export function createEmptyProgress(): UserProgress {
   return {
@@ -90,6 +91,10 @@ interface ProgressState {
   openHint: (problem: Problem, step: HintStep, now: IsoDateTime) => void;
   /** 제출 결과 반영. 첫 정답·레벨 클리어 여부를 돌려준다 */
   recordSubmission: (input: SubmissionInput) => SubmissionOutcome;
+  /** 개념 카드 한 장을 읽음. 모든 카드를 처음 다 읽으면 XP */
+  readConceptCard: (topic: Topic, cardId: string, today: LocalDate, now: IsoDateTime) => ConceptOutcome;
+  /** 유형 인식 퀴즈 한 번을 끝까지 풂 (score: 0~1). 처음 통과하면 XP */
+  recordQuiz: (topic: Topic, score: number, today: LocalDate, now: IsoDateTime) => ConceptOutcome;
   loadDemo: (today: LocalDate, now: IsoDateTime) => void;
   reset: () => void;
 }
@@ -112,6 +117,16 @@ export const useProgressStore = create<ProgressState>()(
         set((state) => ({ progress: applyHintOpen(state.progress, problem, step, now) })),
       recordSubmission: (input) => {
         const { progress, outcome } = applySubmission(get().progress, input, TOPICS);
+        set({ progress });
+        return outcome;
+      },
+      readConceptCard: (topic, cardId, today, now) => {
+        const { progress, outcome } = applyCardRead(get().progress, topic, cardId, TOPICS, today, now);
+        if (progress !== get().progress) set({ progress });
+        return outcome;
+      },
+      recordQuiz: (topic, score, today, now) => {
+        const { progress, outcome } = applyQuizResult(get().progress, topic, score, TOPICS, today, now);
         set({ progress });
         return outcome;
       },
