@@ -1,0 +1,244 @@
+# 02. 시스템 아키텍처 & 디렉토리 구조
+
+## 1. 전체 구조
+
+```
+┌──────────────────────────────── Browser ────────────────────────────────┐
+│                                                                          │
+│  Next.js App Router (RSC + Client Components)                            │
+│   ├─ 콘텐츠 페이지 (RSC): 토픽/문제/개념 카드 ← src/content (정적, 타입 검증) │
+│   ├─ Workspace (Client): Monaco · 힌트 · 시각화 · AI 코치                 │
+│   │     │                                                                │
+│   │     ├─ RunnerClient ──postMessage──▶ pyodide.worker.ts / js.worker.ts │
+│   │     │     ▲  타임아웃 시 worker.terminate() → 새 워커 재생성           │
+│   │     │     └──────────── 결과(JSON) ◀──────────────┘                   │
+│   │     └─ Visualizer: VisualizationStep[] 재생 (React + SVG)             │
+│   └─ Progress Store (zustand, 게스트는 localStorage 영속)                  │
+│                                                                          │
+└───────────────┬──────────────────────────────────────┬───────────────────┘
+                │ fetch / stream                       │ supabase-js
+                ▼                                      ▼
+┌──────── Next.js Route Handlers (Node) ────────┐   ┌──────── Supabase ────────┐
+│ /api/coach        AI 코치 (스트리밍)            │   │ Auth (이메일 매직링크/OAuth)│
+│ /api/generate     AI 문제 생성 + 검증 파이프라인 │──▶│ Postgres + RLS            │
+│   └─ NodeRunner: Pyodide(Node) in worker_thread │   │  progress, submissions,   │
+│       정답 코드 실행 → expected 생성            │   │  generated_problems ...   │
+│ Vercel AI SDK ──▶ LLM Provider                  │   │ RPC: record_submission    │
+└─────────────────────────────────────────────────┘   └───────────────────────────┘
+```
+
+### 핵심 설계 결정
+
+| # | 결정 | 이유 |
+| --- | --- | --- |
+| A1 | **큐레이션 콘텐츠는 저장소 안의 TS 파일**, DB에는 사용자 데이터와 AI 생성 문제만 저장 | 타입 검사·코드 리뷰·버전 관리가 가능하고, 콘텐츠 페이지를 정적으로 빌드할 수 있다. 문제는 `problemKey`(`c:<slug>` / `g:<uuid>`)로 DB와 연결. |
+| A2 | **함수형 채점** (`solution(...)`의 반환값 비교, Python·JavaScript 공통) | 프로그래머스와 동일한 경험. 입력 파싱 부담이 없어 입문자 친화적이고, 인자/반환값이 JSON이라 시각화·AI 생성과 연결이 쉽다. |
+| A3 | **유저 코드는 브라우저 워커**(Python = Pyodide, JavaScript = 전용 워커에서 직접 실행), **AI 생성 문제의 정답 코드는 서버 Pyodide(Node)** 에서 실행 | 정답 코드를 클라이언트에 절대 보내지 않고, 검증 결과를 사용자가 조작할 수 없다. 두 환경이 **같은 Python 하네스 코드**를 공유해 출력이 일치한다. |
+| A4 | **타임아웃 = 워커 강제 종료 후 재생성** | Pyodide 실행 중엔 메인 스레드에서 중단할 방법이 제한적이다. `SharedArrayBuffer` 인터럽트는 COOP/COEP 헤더가 필요해 Monaco/CDN과 충돌 위험이 있으므로 MVP는 terminate 방식. 재생성 비용을 줄이려고 "대기 워커 1개"를 미리 띄워둔다. |
+| A5 | **게스트 우선(Local-first)** | 로그인 없이 바로 학습 시작. 진도는 localStorage에 저장하고 로그인 시 서버로 병합. Step 2–5를 Supabase 없이 개발·검증할 수 있다. |
+| A6 | **잠금/해제 상태는 저장하지 않고 계산** | DB에는 사실(푼 문제, 개념 완료, 레벨 클리어 시각)만 저장하고 `locked/available`은 규칙 함수로 계산. 콘텐츠 규칙을 바꿔도 데이터 마이그레이션이 필요 없다. |
+| A7 | **시각화는 스냅샷 방식** (각 Step이 전체 상태를 가짐) | 이전/다음/스크럽이 인덱스 이동만으로 끝난다. 데이터가 작아(수십~수백 스텝) 메모리 부담 없음. |
+
+> ⚠️ 알려진 한계: 채점이 클라이언트에서 이뤄지므로 숨은 테스트케이스는 기술적으로 열람 가능하고, 제출 결과를 조작할 수도 있다. 학습 앱 특성상 MVP에서는 수용한다. (랭킹/대회 기능을 넣는 시점에 서버 재채점 도입)
+
+---
+
+## 2. 코드 실행 엔진 설계 (Step 3 구현)
+
+### 2.1 채점 흐름
+
+```
+[제출 클릭]
+  → RunnerClient.judge(code, problem.testCases, judgeConfig)
+      for each testCase:
+        워커에 { type: "run-case", code, args, recursionLimit } 전송
+        timeLimitMs 타이머 시작
+          ├─ 응답 도착 → compare(actual, expected, mode) → AC / WA
+          ├─ Python 예외 → RE (SyntaxError면 즉시 전체 중단: CE)
+          └─ 타이머 만료 → worker.terminate(), 대기 워커로 교체 → TLE
+  → JudgeResult { verdict, passed, total, results[] }
+```
+
+- **예제 실행(run)**: `visibility: "example"` 케이스만, 실제/기대 출력과 `print` 출력 모두 표시.
+- **제출(submit)**: 전체 케이스. 숨은 케이스는 통과 여부만 표시하되, **처음 틀린 케이스 1개는 입력·기대값·실제값을 공개**(학습 목적. 문제별로 `revealFirstFailure: false` 설정 가능).
+- 첫 케이스가 TLE면 나머지는 같은 원인일 확률이 높으므로 "나머지 N개 미실행"으로 표시하고 멈춘다(대기 시간 절약).
+
+### 2.2 언어별 하네스
+
+**JavaScript** (`js.worker.ts`)
+- 사용자 코드를 `new Function`으로 감싸 워커 전역과 분리된 스코프에서 평가하고, `solution` 함수 존재 확인.
+- `console.log/info/warn/error`를 가로채 stdout으로 캡처(케이스당 최대 64KB).
+- 인자는 `structuredClone`으로 복사해 전달.
+- 반환값 정규화: `Set` → 정렬된 배열, `Map` → 객체, `undefined` → `null`, `NaN`/`Infinity`/`BigInt`/함수는 오류 처리.
+- 동기 함수만 허용(`Promise` 반환 시 오류 안내). 스택 깊이는 엔진 기본값(V8 약 1만 프레임)으로, 재귀 깊이 1,000 이하 문제는 문제없음.
+- Pyodide 로딩이 없어 워커 준비가 즉시 끝난다.
+
+**Python** (`pyodide.worker.ts`, 서버 Node Pyodide와 공통)
+- 사용자 코드를 새 네임스페이스 `dict`에서 `exec` → `solution` 함수 존재 확인.
+- `sys.stdout`을 `io.StringIO`로 교체해 `print` 캡처(케이스당 최대 64KB, 초과분 잘라냄).
+- 인자는 JSON → Python 객체로 변환 후 **deepcopy**해서 전달(사용자가 인자를 변경해도 다음 케이스에 영향 없음).
+- 반환값을 JSON 직렬화 가능한 형태로 정규화: `tuple → list`, `set → 정렬된 list`, `bool` 유지, `float('inf')`는 오류 처리.
+- `sys.setrecursionlimit(judge.recursionLimit)` (기본 3000). 재귀 DFS 문제는 제약을 깊이 1,000 이하로 설계.
+- 에러는 `{ type, message, line }`로 반환하고, 줄 번호는 사용자 코드 기준으로 보정.
+
+### 2.3 워커 메시지 프로토콜 (요약, 타입은 04 문서)
+```
+main → worker : init | run-case
+worker → main : ready | init-error | case-result
+```
+
+---
+
+## 3. AI 파이프라인 (Step 5 구현)
+
+### 3.1 AI 코치 `/api/coach`
+- 입력: 문제 요약, 사용자 현재 코드, 열어본 힌트 단계(0–4), 최근 채점 결과, 대화 이력(최근 10턴).
+- 시스템 프롬프트 규칙: 소크라테스식 질문 우선, **힌트 단계를 넘어서는 정보 금지**(예: 힌트2까지 연 사용자에게 의사코드 제시 금지), 정답 전체 코드 금지, 한 번에 코드 최대 3줄.
+- 출력: 스트리밍 텍스트 + 구조화 메타(`mood`, `suggestHintStep`)를 함께 반환해 노디 표정을 바꾼다.
+- 가드: 응답에 `def solution` 전체가 포함되면 서버에서 차단 후 재생성.
+
+### 3.2 AI 문제 생성 `/api/generate`
+```
+요청(토픽, 레벨, 약점 패턴)
+  → [1] LLM 구조화 출력 (zod: ProblemDraft)
+  → [2] 스키마 검증 + 정적 검사 (solution 정의, 금지 import: os/sys/subprocess/open/input 등)
+  → [3] NodeRunner로 정답 코드 × 테스트 입력 전부 실행 (케이스당 2s, 전체 15s)
+        · 실패/타임아웃/직렬화 불가 → 폐기
+        · 2회 실행해 결과가 다르면(비결정적) → 폐기
+  → [4] 품질 검사: 예제 ≥ 2, 숨은 케이스 ≥ 4, 모든 출력이 동일하면 폐기(퇴화 케이스)
+  → [5] 실패 사유를 프롬프트에 붙여 재생성 (최대 3회) → 모두 실패 시 status = rejected
+  → [6] 통과 시 generated_problems(공개부) + generated_problem_solutions(비공개) 저장, status = verified
+```
+- 사용자에게는 `verified` 상태만 노출. 진행 상태는 노디 `loading` 애니메이션과 단계 표시(생성 중 → 검증 중 → 완료)로 보여준다.
+- 모델 ID·제공자는 환경 변수로 주입(`AI_COACH_MODEL`, `AI_GENERATOR_MODEL`). 구체적인 모델 선택은 Step 5에서 확정.
+
+---
+
+## 4. 디렉토리 구조
+
+```
+algo-flow/
+├─ docs/                                  # 설계 문서 (본 문서들)
+├─ public/
+│  ├─ favicon.svg                         # 노디 얼굴
+│  └─ og.png
+├─ scripts/
+│  ├─ validate-content.ts                 # 큐레이션 문제 정답 코드를 NodeRunner로 실행해 expected 일치 검증 (CI)
+│  └─ generate-viz-fixtures.ts            # 시각화 generator 스냅샷 생성 (테스트용)
+├─ supabase/
+│  ├─ config.toml
+│  ├─ migrations/
+│  │  └─ 20260923000000_init.sql          # 04 문서의 스키마
+│  └─ seed.sql                            # 배지 등 정적 데이터
+├─ content-solutions/                     # 큐레이션 문제 정답 코드(.py + .js). 클라이언트 번들에서 import 금지
+│  └─ dfs/flower-zones.py, dfs/flower-zones.js
+├─ src/
+│  ├─ app/
+│  │  ├─ layout.tsx                       # 폰트, ThemeProvider, MotionConfig, Toaster
+│  │  ├─ globals.css                      # 디자인 토큰 (@theme inline)
+│  │  ├─ (app)/                           # 사이드바/하단탭 셸을 쓰는 화면
+│  │  │  ├─ layout.tsx                    # AppShell
+│  │  │  ├─ page.tsx                      # 대시보드  /
+│  │  │  ├─ roadmap/page.tsx              # 로드맵    /roadmap
+│  │  │  ├─ topics/[topic]/page.tsx       # 주제 홈   /topics/dfs
+│  │  │  ├─ topics/[topic]/learn/page.tsx # 개념 학습 /topics/dfs/learn
+│  │  │  ├─ ai-lab/page.tsx               # AI 문제 생성 /ai-lab
+│  │  │  └─ me/page.tsx                   # 마이페이지 /me
+│  │  ├─ (workspace)/                     # 풀스크린 풀이 화면
+│  │  │  ├─ layout.tsx                    # WorkspaceShell (얇은 상단바)
+│  │  │  ├─ problems/[slug]/page.tsx      # 큐레이션 문제 /problems/dfs-flower-zones
+│  │  │  └─ ai-lab/problems/[id]/page.tsx # AI 생성 문제 /ai-lab/problems/<uuid>
+│  │  ├─ auth/
+│  │  │  ├─ login/page.tsx
+│  │  │  └─ callback/route.ts
+│  │  └─ api/
+│  │     ├─ coach/route.ts
+│  │     ├─ generate/route.ts             # POST: 생성 요청
+│  │     └─ generate/[id]/route.ts        # GET: 생성 상태 조회
+│  ├─ components/
+│  │  ├─ ui/                              # shadcn/ui 원본 (테마만 커스텀)
+│  │  ├─ common/                          # PopButton, SoftCard, ProgressRing, XpPill, StreakFlame,
+│  │  │                                   # TopicChip, LevelBadge, EmptyState, ThemeToggle, Celebration, Markdown
+│  │  ├─ mascot/                          # Nodi.tsx, parts/, moods.ts, MascotBubble.tsx
+│  │  ├─ layout/                          # AppShell, SideNav, BottomTabBar, TopBar, WorkspaceShell
+│  │  ├─ dashboard/                       # GreetingHero, ContinueCard, DailyGoalCard, StatStrip, WeekActivity, RecommendCard
+│  │  ├─ roadmap/                         # RoadmapPath, TopicNode, LevelSteps, LockTooltip
+│  │  ├─ topic/                           # TopicHeader, LearningFlowStepper, LevelSection, ProblemListItem
+│  │  ├─ learn/                           # ConceptCardDeck, ConceptIllustration, VisualizationExplorer,
+│  │  │                                   # SignalCard, RecognitionQuiz
+│  │  ├─ workspace/                       # Workspace, ResizableLayout, MobileTabs, ProblemPanel, HintStack,
+│  │  │                                   # EditorPanel, CodeEditor, RunBar, ConsoleOutput, TestResultList, VerdictBanner
+│  │  ├─ visualizer/                      # Player, PlayerControls, StepMessage, PseudocodeView,
+│  │  │                                   # StackView, QueueView, DequeView, GraphView, GridView, CallStackView, VariablesView
+│  │  ├─ coach/                           # CoachPanel, CoachMessage, CoachInput, SuggestedQuestions
+│  │  ├─ ai-lab/                          # WeaknessSummary, GenerateForm, GenerationProgress, GeneratedProblemList
+│  │  └─ me/                              # ProfileCard, StatsOverview, WeaknessChart, BadgeShelf, SubmissionHistory, SettingsForm
+│  ├─ content/
+│  │  ├─ topics/                          # index.ts + stack.ts, queue-deque.ts, recursion.ts, graph-representation.ts,
+│  │  │                                   # dfs.ts, bfs.ts, backtracking.ts (Topic + ConceptLesson + Level)
+│  │  ├─ problems/                        # index.ts + <topic>/<slug>.ts (Problem)
+│  │  ├─ signals.ts                       # PatternSignal 전체 목록
+│  │  └─ badges.ts
+│  ├─ lib/
+│  │  ├─ runner/
+│  │  │  ├─ harness-python.ts             # Python 하네스 소스(문자열) — 브라우저/Node 공통
+│  │  │  ├─ harness-js.ts                 # JS 실행·정규화 로직
+│  │  │  ├─ protocol.ts                   # 워커 메시지 타입
+│  │  │  ├─ client.ts                     # RunnerClient (워커 풀, 타임아웃, 재생성)
+│  │  │  ├─ judge.ts                      # 케이스 순회, verdict 결정
+│  │  │  └─ compare.ts                    # exact / unordered / float 비교
+│  │  ├─ runner-node/                     # 서버 전용 ("server-only")
+│  │  │  ├─ node-runner.ts
+│  │  │  └─ node-worker.mjs               # worker_threads + Pyodide(Node)
+│  │  ├─ visualization/
+│  │  │  ├─ player.ts                     # 재생 상태 머신 (순수 함수)
+│  │  │  └─ generators/                   # stack.ts, queue.ts, deque.ts, recursion.ts, graph-dfs.ts,
+│  │  │                                   # graph-bfs.ts, grid-dfs.ts, grid-bfs.ts, backtracking.ts
+│  │  ├─ ai/
+│  │  │  ├─ schemas.ts                    # zod: ProblemDraft, CoachMeta
+│  │  │  ├─ prompts/coach.ts
+│  │  │  ├─ prompts/generator.ts
+│  │  │  ├─ static-check.ts               # 정답 코드 정적 검사
+│  │  │  └─ pipeline.ts                   # 생성 → 검증 → 재시도 → 저장
+│  │  ├─ progress/
+│  │  │  ├─ xp.ts                         # XP 계산, 사용자 레벨
+│  │  │  ├─ streak.ts                     # KST 기준 스트릭
+│  │  │  ├─ unlock.ts                     # 토픽/레벨 잠금 계산
+│  │  │  ├─ badges.ts                     # 배지 판정
+│  │  │  └─ weakness.ts                   # 패턴별 약점 점수
+│  │  ├─ supabase/                        # client.ts, server.ts, middleware.ts, database.types.ts
+│  │  ├─ motion.ts                        # spring/duration 프리셋
+│  │  └─ utils.ts                         # cn() 등
+│  ├─ workers/
+│  │  ├─ pyodide.worker.ts
+│  │  └─ js.worker.ts
+│  ├─ stores/
+│  │  ├─ progress-store.ts                # 게스트 진도 (persist)
+│  │  ├─ workspace-store.ts               # 문제별 코드 초안, 열린 힌트, 실행 결과
+│  │  └─ settings-store.ts                # 에디터 글꼴 크기, 패널 비율
+│  ├─ hooks/                              # use-runner.ts, use-player.ts, use-breakpoint.ts, use-celebration.ts
+│  ├─ types/                              # common.ts, content.ts, judge.ts, visualization.ts, progress.ts, ai.ts
+│  └─ middleware.ts                       # Supabase 세션 갱신
+├─ tests/                                 # vitest: compare, judge, unlock, streak, xp, generators
+├─ .env.example
+├─ components.json                        # shadcn 설정
+├─ next.config.ts
+├─ package.json                           # pnpm
+└─ tsconfig.json
+```
+
+### 주요 의존성 (Step 2 착수 시 버전 고정)
+| 영역 | 패키지 |
+| --- | --- |
+| 프레임워크 | `next`, `react`, `react-dom`, `typescript` |
+| 스타일 | `tailwindcss` v4, `shadcn` (CLI), `class-variance-authority`, `tailwind-merge`, `lucide-react`, `next-themes` |
+| 모션 | `motion` (Framer Motion) |
+| 폰트 | `pretendard` (로컬), `next/font/google`(JetBrains Mono) |
+| 레이아웃 | `react-resizable-panels` (shadcn `Resizable`) |
+| 에디터 | `@monaco-editor/react` |
+| 실행 | `pyodide` (브라우저는 CDN 로드, Node는 npm 패키지). JavaScript는 추가 의존성 없음 |
+| 상태 | `zustand` |
+| AI | `ai`, `@ai-sdk/anthropic`(제공자는 Step 5에서 확정), `zod` |
+| DB | `@supabase/supabase-js`, `@supabase/ssr` |
+| 마크다운 | `react-markdown`, `remark-gfm` |
+| 테스트 | `vitest`, `@testing-library/react` |
