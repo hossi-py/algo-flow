@@ -1,0 +1,307 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * algo-flow 디자인 토큰 — docs/01-design-system.md
+ * 파스텔은 면(배경)에, 글자는 같은 계열의 짙은 톤(*-foreground)에 쓴다.
+ */
+
+@theme inline {
+  --font-sans:
+    var(--font-pretendard), "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui,
+    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-heading: var(--font-sans);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-edge: var(--primary-edge);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-soft-foreground: var(--primary-soft-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-edge: var(--secondary-edge);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--danger-text);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-text: var(--success-text);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-danger-text: var(--danger-text);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-text: var(--warning-text);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-text: var(--info-text);
+
+  --color-topic-peach: var(--topic-peach);
+  --color-topic-peach-foreground: var(--topic-peach-foreground);
+  --color-topic-mint: var(--topic-mint);
+  --color-topic-mint-foreground: var(--topic-mint-foreground);
+  --color-topic-lilac: var(--topic-lilac);
+  --color-topic-lilac-foreground: var(--topic-lilac-foreground);
+  --color-topic-sky: var(--topic-sky);
+  --color-topic-sky-foreground: var(--topic-sky-foreground);
+  --color-topic-blossom: var(--topic-blossom);
+  --color-topic-blossom-foreground: var(--topic-blossom-foreground);
+  --color-topic-lemon: var(--topic-lemon);
+  --color-topic-lemon-foreground: var(--topic-lemon-foreground);
+  --color-topic-sage: var(--topic-sage);
+  --color-topic-sage-foreground: var(--topic-sage-foreground);
+
+  --color-nodi-body: var(--nodi-body);
+  --color-nodi-line: var(--nodi-line);
+  --color-nodi-ink: var(--nodi-ink);
+  --color-nodi-blush: var(--nodi-blush);
+  --color-nodi-leaf: var(--nodi-leaf);
+  --color-nodi-leaf-2: var(--nodi-leaf-2);
+  --color-nodi-stem: var(--nodi-stem);
+
+  /* shadcn 사이드바 토큰 (컴포넌트 호환용) */
+  --color-sidebar: var(--card);
+  --color-sidebar-foreground: var(--foreground);
+  --color-sidebar-primary: var(--primary);
+  --color-sidebar-primary-foreground: var(--primary-foreground);
+  --color-sidebar-accent: var(--primary-soft);
+  --color-sidebar-accent-foreground: var(--primary-soft-foreground);
+  --color-sidebar-border: var(--border);
+  --color-sidebar-ring: var(--ring);
+
+  /* radius: 기본 20px. sm 12 · md 16 · lg 20 · xl 28 · 2xl 36 */
+  --radius-xs: 0.5rem;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --shadow-soft: var(--elev-soft);
+  --shadow-float: var(--elev-float);
+  --shadow-pop: var(--elev-pop);
+  --shadow-pop-secondary: var(--elev-pop-secondary);
+  --shadow-inset: var(--elev-inset);
+
+  --text-display: 2rem;
+  --text-display--line-height: 2.5rem;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 800;
+  --text-h1: 1.625rem;
+  --text-h1--line-height: 2.125rem;
+  --text-h1--letter-spacing: -0.015em;
+  --text-h1--font-weight: 700;
+  --text-h2: 1.3125rem;
+  --text-h2--line-height: 1.875rem;
+  --text-h2--letter-spacing: -0.01em;
+  --text-h2--font-weight: 700;
+  --text-h3: 1.125rem;
+  --text-h3--line-height: 1.625rem;
+  --text-h3--letter-spacing: -0.01em;
+  --text-h3--font-weight: 600;
+  --text-body: 1rem;
+  --text-body--line-height: 1.625rem;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.375rem;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.125rem;
+  --text-caption--letter-spacing: 0.01em;
+
+  --ease-bouncy: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+:root {
+  --radius: 1.25rem;
+
+  --background: #fffbf5;
+  --foreground: #3a3145;
+  --card: #ffffff;
+  --card-foreground: #3a3145;
+  --popover: #ffffff;
+  --popover-foreground: #3a3145;
+  --muted: #fbf4ea;
+  --muted-foreground: #6f6579;
+  --border: #efe4d6;
+  --input: #e8dccb;
+  --ring: #9c84f5;
+
+  --primary: #c9b8ff;
+  --primary-foreground: #2b1d5c;
+  --primary-edge: #a792f0;
+  --primary-strong: #6a4fd1;
+  --primary-soft: #f1ecff;
+  --primary-soft-foreground: #4a36a8;
+  --secondary: #ffd3bf;
+  --secondary-foreground: #5a2a14;
+  --secondary-edge: #f2b196;
+  --accent: #bdebd9;
+  --accent-foreground: #154a38;
+
+  --success: #a8e6c6;
+  --success-foreground: #0f5132;
+  --success-text: #1f7a55;
+  --danger: #ffc2c2;
+  --danger-foreground: #6b1414;
+  --danger-text: #c03a3a;
+  --warning: #ffe5a3;
+  --warning-foreground: #5c4200;
+  --warning-text: #8a6200;
+  --info: #bfe3ff;
+  --info-foreground: #0f3f66;
+  --info-text: #1f5f99;
+
+  --topic-peach: #ffd3bf;
+  --topic-peach-foreground: #5a2a14;
+  --topic-mint: #bdebd9;
+  --topic-mint-foreground: #154a38;
+  --topic-lilac: #e3d4ff;
+  --topic-lilac-foreground: #3d2670;
+  --topic-sky: #bfe3ff;
+  --topic-sky-foreground: #0f3f66;
+  --topic-blossom: #ffc9de;
+  --topic-blossom-foreground: #6a1b3f;
+  --topic-lemon: #ffeba8;
+  --topic-lemon-foreground: #5c4200;
+  --topic-sage: #d6e8b8;
+  --topic-sage-foreground: #36501a;
+
+  --nodi-body: #d9ccff;
+  --nodi-line: #4a36a8;
+  --nodi-ink: #2b1d5c;
+  --nodi-blush: #ffc9de;
+  --nodi-leaf: #bdebd9;
+  --nodi-leaf-2: #a8e6c6;
+  --nodi-stem: #4f8a3a;
+
+  --elev-soft: 0 1px 2px rgb(58 49 69 / 0.04), 0 4px 16px -4px rgb(58 49 69 / 0.08);
+  --elev-float: 0 4px 8px -4px rgb(58 49 69 / 0.06), 0 16px 36px -10px rgb(106 79 209 / 0.18);
+  --elev-pop: 0 3px 0 0 var(--primary-edge);
+  --elev-pop-secondary: 0 3px 0 0 var(--secondary-edge);
+  --elev-inset: inset 0 1px 2px rgb(58 49 69 / 0.06);
+
+  /* shadcn 호환 */
+  --destructive: var(--danger-text);
+  --chart-1: var(--primary-strong);
+  --chart-2: var(--accent-foreground);
+  --chart-3: var(--secondary-foreground);
+  --chart-4: var(--info-text);
+  --chart-5: var(--warning-text);
+}
+
+.dark {
+  --background: #1d1a2b;
+  --foreground: #eeeaf7;
+  --card: #26223a;
+  --card-foreground: #eeeaf7;
+  --popover: #2b2742;
+  --popover-foreground: #eeeaf7;
+  --muted: #211e33;
+  --muted-foreground: #b3abc6;
+  --border: #3a3452;
+  --input: #433c5e;
+  --ring: #bba8ff;
+
+  --primary: #bba8ff;
+  --primary-foreground: #221747;
+  --primary-edge: #8f78e6;
+  --primary-strong: #cbbbff;
+  --primary-soft: #352c5c;
+  --primary-soft-foreground: #d9ccff;
+  --secondary: #44302a;
+  --secondary-foreground: #ffd3bf;
+  --secondary-edge: #2e201c;
+  --accent: #233d37;
+  --accent-foreground: #bdebd9;
+
+  --success: #1f3d31;
+  --success-foreground: #8ee0b8;
+  --success-text: #8ee0b8;
+  --danger: #4a2528;
+  --danger-foreground: #ff9e9e;
+  --danger-text: #ff9e9e;
+  --warning: #423a22;
+  --warning-foreground: #ffe5a3;
+  --warning-text: #ffe5a3;
+  --info: #22384f;
+  --info-foreground: #bfe3ff;
+  --info-text: #bfe3ff;
+
+  --topic-peach: #44302a;
+  --topic-peach-foreground: #ffd3bf;
+  --topic-mint: #233d37;
+  --topic-mint-foreground: #bdebd9;
+  --topic-lilac: #372d55;
+  --topic-lilac-foreground: #e3d4ff;
+  --topic-sky: #22384f;
+  --topic-sky-foreground: #bfe3ff;
+  --topic-blossom: #462a3c;
+  --topic-blossom-foreground: #ffc9de;
+  --topic-lemon: #423a22;
+  --topic-lemon-foreground: #ffeba8;
+  --topic-sage: #2f3a25;
+  --topic-sage-foreground: #d6e8b8;
+
+  --nodi-body: #c9b8ff;
+  --nodi-line: #2b1d5c;
+  --nodi-ink: #221747;
+  --nodi-blush: #ffb3cf;
+  --nodi-leaf: #bdebd9;
+  --nodi-leaf-2: #a8e6c6;
+  --nodi-stem: #6fb356;
+
+  --elev-soft: 0 1px 0 0 rgb(255 255 255 / 0.04) inset, 0 6px 20px -6px rgb(0 0 0 / 0.45);
+  --elev-float: 0 1px 0 0 rgb(255 255 255 / 0.06) inset, 0 18px 40px -12px rgb(0 0 0 / 0.55);
+  --elev-pop: 0 3px 0 0 var(--primary-edge);
+  --elev-pop-secondary: 0 3px 0 0 var(--secondary-edge);
+  --elev-inset: inset 0 1px 3px rgb(0 0 0 / 0.35);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-body text-foreground antialiased;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+  code,
+  kbd,
+  pre,
+  samp {
+    @apply font-mono;
+    font-variant-ligatures: none;
+  }
+  ::selection {
+    background: var(--primary-soft);
+    color: var(--primary-soft-foreground);
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
