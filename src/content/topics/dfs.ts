@@ -1,5 +1,6 @@
+import { DFS_CARDS, DFS_QUIZ } from "@/content/concepts/dfs";
 import type { Topic } from "@/types";
-import { defineLevels, emptyConcept } from "./define";
+import { defineConcept, defineLevels } from "./define";
 
 export const dfsTopic: Topic = {
   slug: "dfs",
@@ -9,7 +10,7 @@ export const dfsTopic: Topic = {
   color: "blossom",
   icon: "dive",
   unlock: { type: "level-cleared", topic: "graph-representation", level: 3 },
-  concept: emptyConcept("dfs"),
+  concept: defineConcept("dfs", { cards: DFS_CARDS, recognitionQuiz: DFS_QUIZ }),
   levels: defineLevels("dfs", [
     {
       title: "깊이 우선 탐색이란?",

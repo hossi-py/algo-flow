@@ -69,6 +69,8 @@ export interface VizItem {
 }
 
 export interface LinearSnapshot {
+  /** 패널 제목. 기본값은 레이어 이름(스택·큐·덱). 예: 백트래킹의 "path" */
+  title?: string;
   items: VizItem[];
   highlights: { itemId: string; tone: HighlightTone }[];
   /** 예: "top", "front / rear" 라벨 표시용 */
@@ -89,6 +91,8 @@ export interface GraphNodeViz {
   order: number | null;
   /** BFS 거리 */
   distance: number | null;
+  /** 노드 아래에 붙는 설명. 예: 재귀 트리의 "fib(3)=2" */
+  caption?: string | null;
 }
 
 export interface GraphEdgeViz {
@@ -120,6 +124,17 @@ export interface GridSnapshot {
   distance?: (number | null)[][];
 }
 
+/** 문자열·배열을 칸으로 보여 준다 (괄호 문자열, 현재 순열 등) */
+export interface SequenceSnapshot {
+  label: string;
+  items: VizItem[];
+  /** 지금 보고 있는 칸 (없으면 null) */
+  cursor: number | null;
+  /** 앞에서부터 처리를 끝낸 칸 수 */
+  done: number;
+  highlights: { itemId: string; tone: HighlightTone }[];
+}
+
 export interface CallFrame {
   id: string;
   /** 예: "dfs(0, 1)" */
@@ -132,6 +147,7 @@ export interface VizState {
   stack?: LinearSnapshot;
   queue?: LinearSnapshot;
   deque?: LinearSnapshot;
+  sequence?: SequenceSnapshot;
   graph?: GraphSnapshot;
   grid?: GridSnapshot;
   callStack?: CallFrame[];

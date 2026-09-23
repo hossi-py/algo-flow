@@ -1,5 +1,5 @@
 import type { Topic } from "@/types";
-import { defineLevels, emptyConcept } from "./define";
+import { defineConcept, defineLevels } from "./define";
 
 export const queueDequeTopic: Topic = {
   slug: "queue-deque",
@@ -9,7 +9,7 @@ export const queueDequeTopic: Topic = {
   color: "mint",
   icon: "line",
   unlock: { type: "level-cleared", topic: "stack", level: 3 },
-  concept: emptyConcept("queue-deque"),
+  concept: defineConcept("queue-deque"),
   levels: defineLevels("queue-deque", [
     {
       title: "큐와 덱이 뭘까?",

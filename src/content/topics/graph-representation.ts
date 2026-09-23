@@ -1,5 +1,5 @@
 import type { Topic } from "@/types";
-import { defineLevels, emptyConcept } from "./define";
+import { defineConcept, defineLevels } from "./define";
 
 export const graphRepresentationTopic: Topic = {
   slug: "graph-representation",
@@ -9,7 +9,7 @@ export const graphRepresentationTopic: Topic = {
   color: "sky",
   icon: "map",
   unlock: { type: "level-cleared", topic: "recursion", level: 3 },
-  concept: emptyConcept("graph-representation"),
+  concept: defineConcept("graph-representation"),
   levels: defineLevels("graph-representation", [
     { title: "노드와 간선", goal: "방향·무방향 그래프와 트리의 차이를 그림으로 설명할 수 있어요.", problemSlugs: [] },
     {

@@ -1,0 +1,39 @@
+import { Check, CircleDot, Eye, Sparkles, X, type LucideIcon } from "lucide-react";
+import type { HighlightTone, VizAction } from "@/types";
+
+/** 강조 색 + 색 없이도 알아볼 수 있는 아이콘 (색각 이상 대응) */
+export const TONE_STYLE: Record<HighlightTone, { className: string; icon: LucideIcon; label: string }> = {
+  current: { className: "border-primary-strong bg-primary text-primary-foreground", icon: CircleDot, label: "지금" },
+  frontier: { className: "border-dashed border-info-text bg-info text-info-foreground", icon: Eye, label: "대기" },
+  visited: { className: "border-success-text bg-success text-success-foreground", icon: Check, label: "완료" },
+  blocked: { className: "border-danger-text bg-danger text-danger-foreground", icon: X, label: "막힘" },
+  result: { className: "border-warning-text bg-warning text-warning-foreground", icon: Sparkles, label: "결과" },
+};
+
+export const ACTION_LABEL: Record<VizAction, string> = {
+  push: "넣기",
+  pop: "꺼내기",
+  peek: "맨 위 보기",
+  enqueue: "넣기",
+  dequeue: "꺼내기",
+  "push-front": "앞에 넣기",
+  "push-back": "뒤에 넣기",
+  "pop-front": "앞에서 꺼내기",
+  "pop-back": "뒤에서 꺼내기",
+  call: "호출",
+  return: "반환",
+  "return-to": "돌아옴",
+  scan: "훑어보기",
+  "zone-start": "새 구역",
+  visit: "방문",
+  check: "이웃 확인",
+  discover: "발견",
+  "zone-complete": "구역 완성",
+  choose: "고르기",
+  unchoose: "되돌리기",
+  prune: "가지치기",
+  record: "기록",
+  compare: "비교",
+  init: "시작",
+  done: "끝",
+};

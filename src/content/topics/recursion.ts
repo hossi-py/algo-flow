@@ -1,5 +1,5 @@
 import type { Topic } from "@/types";
-import { defineLevels, emptyConcept } from "./define";
+import { defineConcept, defineLevels } from "./define";
 
 export const recursionTopic: Topic = {
   slug: "recursion",
@@ -9,7 +9,7 @@ export const recursionTopic: Topic = {
   color: "lilac",
   icon: "mirror",
   unlock: { type: "level-cleared", topic: "queue-deque", level: 3 },
-  concept: emptyConcept("recursion"),
+  concept: defineConcept("recursion"),
   levels: defineLevels("recursion", [
     {
       title: "재귀란?",
