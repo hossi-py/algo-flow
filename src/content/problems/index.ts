@@ -1,4 +1,14 @@
 import type { LevelNumber, PatternTag, Problem, TopicSlug } from "@/types";
+import { bfsExactHops } from "./bfs/exact-hops";
+import { bfsFriendDistance } from "./bfs/friend-distance";
+import { bfsFrogLeaps } from "./bfs/frog-leaps";
+import { bfsMazeShortest } from "./bfs/maze-shortest";
+import { bfsNearestShelter } from "./bfs/nearest-shelter";
+import { bfsNewsOrder } from "./bfs/news-order";
+import { bfsPigeonPost } from "./bfs/pigeon-post";
+import { bfsRumorDays } from "./bfs/rumor-days";
+import { bfsSafeDial } from "./bfs/safe-dial";
+import { bfsTwoBuckets } from "./bfs/two-buckets";
 import { dfsCaveOrder } from "./dfs/cave-order";
 import { dfsClubCount } from "./dfs/club-count";
 import { dfsDownhillRoutes } from "./dfs/downhill-routes";
@@ -52,6 +62,16 @@ import { stackWarmerWait } from "./stack/warmer-wait";
 
 /** 큐레이션 문제 전체. 새 문제는 여기에 추가하고 토픽의 레벨 problemSlugs에도 등록한다 */
 export const PROBLEMS: readonly Problem[] = [
+  bfsExactHops,
+  bfsFriendDistance,
+  bfsFrogLeaps,
+  bfsMazeShortest,
+  bfsNearestShelter,
+  bfsNewsOrder,
+  bfsPigeonPost,
+  bfsRumorDays,
+  bfsSafeDial,
+  bfsTwoBuckets,
   dfsCaveOrder,
   dfsClubCount,
   dfsDownhillRoutes,
