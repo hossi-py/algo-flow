@@ -22,12 +22,32 @@ export const stackPlateTower: Problem = {
   constraints: ["1 ≤ commands의 길이 ≤ 1,000", "1 ≤ x ≤ 1,000"],
   signature: {
     name: "solution",
-    params: [{ name: "commands", type: { python: "list[str]", javascript: "string[]" }, description: "작업 기록" }],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "아래에서 위 순서의 접시 번호" },
+    params: [
+      {
+        name: "commands",
+        type: { python: "list[str]", javascript: "string[]", java: "String[]" },
+        description: "작업 기록",
+      },
+    ],
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "List<Integer>" },
+      description: "아래에서 위 순서의 접시 번호",
+    },
   },
   starterCode: {
     python: ["def solution(commands):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(commands) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<Integer> solution(String[] commands) {",
+      "        List<Integer> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -160,7 +180,18 @@ export const stackPlateTower: Problem = {
             "  }",
             "}",
           ].join("\n"),
+          java: [
+            "for (String command : commands) {",
+            '    String[] parts = command.split(" ");',
+            '    if (parts[0].equals("push")) {',
+            "        stack.push(Integer.parseInt(parts[1]));",
+            "    } else if (______) {   // 비어 있지 않을 때만",
+            "        stack.pop();",
+            "    }",
+            "}",
+          ].join("\n"),
         },
+        caption: "Java는 Deque<Integer> stack = new ArrayDeque<>()를 스택으로 써요 (push · pop · peek).",
       },
       xpPenaltyRate: 0.5,
     },

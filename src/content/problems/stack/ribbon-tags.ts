@@ -20,12 +20,27 @@ export const stackRibbonTags: Problem = {
   constraints: ["1 ≤ tags의 길이 ≤ 50,000", "1 ≤ 이름의 길이 ≤ 10"],
   signature: {
     name: "solution",
-    params: [{ name: "tags", type: { python: "list[str]", javascript: "string[]" }, description: "태그 기록" }],
-    returns: { type: { python: "bool", javascript: "boolean" }, description: "올바른지 여부" },
+    params: [
+      {
+        name: "tags",
+        type: { python: "list[str]", javascript: "string[]", java: "String[]" },
+        description: "태그 기록",
+      },
+    ],
+    returns: { type: { python: "bool", javascript: "boolean", java: "boolean" }, description: "올바른지 여부" },
   },
   starterCode: {
     python: ["def solution(tags):", "    answer = False", "    return answer", ""].join("\n"),
     javascript: ["function solution(tags) {", "  let answer = false;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public boolean solution(String[] tags) {",
+      "        boolean answer = false;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -173,7 +188,19 @@ export const stackRibbonTags: Problem = {
             "  }",
             "}",
           ].join("\n"),
+          java: [
+            "for (String tag : tags) {",
+            "    boolean closing = tag.charAt(1) == '/';",
+            "    String name = closing ? tag.substring(2, tag.length() - 1) : tag.substring(1, tag.length() - 1);",
+            "    if (closing) {",
+            "        if (______) return false;",
+            "    } else {",
+            "        stack.push(name);",
+            "    }",
+            "}",
+          ].join("\n"),
         },
+        caption: "문자열 비교는 ==가 아니라 equals로 해요.",
       },
       xpPenaltyRate: 0.5,
     },

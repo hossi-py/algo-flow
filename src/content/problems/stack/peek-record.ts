@@ -23,12 +23,29 @@ export const stackPeekRecord: Problem = {
   constraints: ["1 ≤ commands의 길이 ≤ 1,000", "1 ≤ x ≤ 10,000"],
   signature: {
     name: "solution",
-    params: [{ name: "commands", type: { python: "list[str]", javascript: "string[]" }, description: "명령 목록" }],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "peek 기록" },
+    params: [
+      {
+        name: "commands",
+        type: { python: "list[str]", javascript: "string[]", java: "String[]" },
+        description: "명령 목록",
+      },
+    ],
+    returns: { type: { python: "list[int]", javascript: "number[]", java: "List<Integer>" }, description: "peek 기록" },
   },
   starterCode: {
     python: ["def solution(commands):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(commands) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<Integer> solution(String[] commands) {",
+      "        List<Integer> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -142,6 +159,9 @@ export const stackPeekRecord: Problem = {
         code: {
           python: ['elif parts[0] == "peek":', "    answer.append(______ if stack else -1)"].join("\n"),
           javascript: ['} else if (name === "peek") {', "  answer.push(stack.length > 0 ? ______ : -1);", "}"].join(
+            "\n",
+          ),
+          java: ['} else if (parts[0].equals("peek")) {', "    answer.add(stack.isEmpty() ? -1 : ______);", "}"].join(
             "\n",
           ),
         },

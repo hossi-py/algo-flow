@@ -19,13 +19,29 @@ export const dfsRadioNetwork: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "link", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "직접 연결 표" },
+      {
+        name: "link",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "직접 연결 표",
+      },
     ],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "[무리 수, 가장 큰 무리 크기]" },
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+      description: "[무리 수, 가장 큰 무리 크기]",
+    },
   },
   starterCode: {
     python: ["def solution(link):", "    answer = [0, 0]", "    return answer", ""].join("\n"),
     javascript: ["function solution(link) {", "  let answer = [0, 0];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int[] solution(int[][] link) {",
+      "        int[] answer = new int[2];",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -194,7 +210,18 @@ export const dfsRadioNetwork: Problem = {
             "  return size;",
             "}",
           ].join("\n"),
+          java: [
+            "int dfs(int v) {",
+            "    visited[v] = true;",
+            "    int size = 1;",
+            "    for (int w = 0; w < n; w++) {",
+            "        if (______ && !visited[w]) size += dfs(w);",
+            "    }",
+            "    return size;",
+            "}",
+          ].join("\n"),
         },
+        caption: "Java에서는 graph · visited처럼 dfs가 함께 쓰는 값을 Solution의 필드로 두면 편해요.",
       },
       xpPenaltyRate: 0.5,
     },

@@ -13,19 +13,28 @@ export const recursionDigitSum: Problem = {
     "",
     "0 이상의 정수 `n`의 각 자릿수 합을 반환해 주세요.",
     "",
-    "> 마지막 자릿수는 `n % 10`, 마지막 자릿수를 뗀 나머지는 `n // 10`(JavaScript는 `Math.floor(n / 10)`)이에요.",
+    "> 마지막 자릿수는 `n % 10`, 마지막 자릿수를 뗀 나머지는 `n // 10`(JavaScript는 `Math.floor(n / 10)`, Java는 정수끼리 나누면 되니 `n / 10`)이에요.",
   ].join("\n"),
   inputFormat: "`n`: 0 이상의 정수예요.",
   outputFormat: "자릿수의 합 (정수)",
   constraints: ["0 ≤ n ≤ 10^15"],
   signature: {
     name: "solution",
-    params: [{ name: "n", type: { python: "int", javascript: "number" }, description: "정수" }],
-    returns: { type: { python: "int", javascript: "number" }, description: "자릿수의 합" },
+    params: [{ name: "n", type: { python: "int", javascript: "number", java: "long" }, description: "정수" }],
+    returns: { type: { python: "int", javascript: "number", java: "long" }, description: "자릿수의 합" },
   },
   starterCode: {
     python: ["def solution(n):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(n) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public long solution(long n) {",
+      "        long answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -137,7 +146,14 @@ export const recursionDigitSum: Problem = {
           javascript: ["function solution(n) {", "  if (n < 10) return n;", "  return (n % 10) + ______;", "}"].join(
             "\n",
           ),
+          java: [
+            "public long solution(long n) {",
+            "    if (n < 10) return n;",
+            "    return (n % 10) + ______;",
+            "}",
+          ].join("\n"),
         },
+        caption: "n이 10^15까지라 int(약 21억)로는 담을 수 없어요. long을 써요.",
       },
       xpPenaltyRate: 0.5,
     },

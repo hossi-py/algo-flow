@@ -22,12 +22,21 @@ export const recursionRabbitFamily: Problem = {
   constraints: ["1 ≤ n ≤ 70"],
   signature: {
     name: "solution",
-    params: [{ name: "n", type: { python: "int", javascript: "number" }, description: "달" }],
-    returns: { type: { python: "int", javascript: "number" }, description: "토끼 쌍의 수" },
+    params: [{ name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "달" }],
+    returns: { type: { python: "int", javascript: "number", java: "long" }, description: "토끼 쌍의 수" },
   },
   starterCode: {
     python: ["def solution(n):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(n) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public long solution(int n) {",
+      "        long answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -159,7 +168,18 @@ export const recursionRabbitFamily: Problem = {
             "  return value;",
             "}",
           ].join("\n"),
+          java: [
+            "long rabbits(int n) {",
+            "    if (n <= 2) return 1;",
+            "    if (memo.containsKey(n)) return ______;",
+            "    long value = rabbits(n - 1) + rabbits(n - 2);",
+            "    memo.put(n, value);",
+            "    return value;",
+            "}",
+          ].join("\n"),
         },
+        caption:
+          "memo는 Map<Integer, Long> memo = new HashMap<>()를 Solution의 필드로 두면 돼요. 답이 int 범위(약 21억)를 넘을 수 있어서 long을 써요.",
       },
       xpPenaltyRate: 0.5,
     },

@@ -20,12 +20,26 @@ export const dequeEndCards: Problem = {
   constraints: ["1 ≤ cards의 길이 ≤ 100,000", "1 ≤ 각 숫자 ≤ 1,000"],
   signature: {
     name: "solution",
-    params: [{ name: "cards", type: { python: "list[int]", javascript: "number[]" }, description: "카드 숫자" }],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "[노디 점수, 모모 점수]" },
+    params: [
+      { name: "cards", type: { python: "list[int]", javascript: "number[]", java: "int[]" }, description: "카드 숫자" },
+    ],
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+      description: "[노디 점수, 모모 점수]",
+    },
   },
   starterCode: {
     python: ["def solution(cards):", "    answer = [0, 0]", "    return answer", ""].join("\n"),
     javascript: ["function solution(cards) {", "  let answer = [0, 0];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int[] solution(int[] cards) {",
+      "        int[] answer = new int[2];",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -149,6 +163,14 @@ export const dequeEndCards: Problem = {
             "  const card = cards[left] >= cards[right] ? cards[left++] : ______;",
             "  score[turn % 2] += card;",
             "  turn += 1;",
+            "}",
+          ].join("\n"),
+          java: [
+            "int left = 0, right = cards.length - 1, turn = 0;",
+            "while (left <= right) {",
+            "    int card = cards[left] >= cards[right] ? cards[left++] : ______;",
+            "    score[turn % 2] += card;",
+            "    turn++;",
             "}",
           ].join("\n"),
         },

@@ -21,12 +21,21 @@ export const recursionHailstoneTrip: Problem = {
   constraints: ["1 ≤ n ≤ 1,000,000", "주어지는 n은 모두 1,000걸음 안에 도착해요."],
   signature: {
     name: "solution",
-    params: [{ name: "n", type: { python: "int", javascript: "number" }, description: "출발하는 수" }],
-    returns: { type: { python: "int", javascript: "number" }, description: "걸음 수" },
+    params: [{ name: "n", type: { python: "int", javascript: "number", java: "long" }, description: "출발하는 수" }],
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "걸음 수" },
   },
   starterCode: {
     python: ["def solution(n):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(n) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(long n) {",
+      "        int answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -149,7 +158,15 @@ export const recursionHailstoneTrip: Problem = {
             "  return 1 + solution(next);",
             "}",
           ].join("\n"),
+          java: [
+            "public int solution(long n) {",
+            "    if (n == 1) return 0;",
+            "    long next = n % 2 == 0 ? n / 2 : ______;",
+            "    return 1 + solution(next);",
+            "}",
+          ].join("\n"),
         },
+        caption: "3n + 1을 하다 보면 int 범위를 넘을 수 있어서 n을 long으로 받아요.",
       },
       xpPenaltyRate: 0.5,
     },

@@ -20,12 +20,23 @@ export const backtrackingGuardRobots: Problem = {
   constraints: ["1 ≤ n ≤ 10"],
   signature: {
     name: "solution",
-    params: [{ name: "n", type: { python: "int", javascript: "number" }, description: "전시장 크기 = 로봇 수" }],
-    returns: { type: { python: "int", javascript: "number" }, description: "방법의 수" },
+    params: [
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "전시장 크기 = 로봇 수" },
+    ],
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "방법의 수" },
   },
   starterCode: {
     python: ["def solution(n):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(n) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(int n) {",
+      "        int answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -168,7 +179,17 @@ export const backtrackingGuardRobots: Problem = {
             "  cols.delete(c); diag1.delete(row - c); diag2.delete(row + c);",
             "}",
           ].join("\n"),
+          java: [
+            "for (int c = 0; c < n; c++) {",
+            "    if (cols[c] || diag1[row - c + n] || ______) continue;",
+            "    cols[c] = diag1[row - c + n] = diag2[row + c] = true;",
+            "    count += place(row + 1);",
+            "    cols[c] = diag1[row - c + n] = diag2[row + c] = false;",
+            "}",
+          ].join("\n"),
         },
+        caption:
+          "Java에서는 집합 대신 boolean 배열을 써도 돼요. row - c는 음수가 될 수 있어서 n을 더해 칸 번호로 써요.",
       },
       xpPenaltyRate: 0.5,
     },

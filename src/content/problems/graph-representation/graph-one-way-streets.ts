@@ -19,17 +19,30 @@ export const graphOneWayStreets: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "교차로 수" },
-      { name: "roads", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "일방통행 길 목록" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "교차로 수" },
+      {
+        name: "roads",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "일방통행 길 목록",
+      },
     ],
     returns: {
-      type: { python: "list[list[int]]", javascript: "number[][]" },
+      type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
       description: "[나가는 수, 들어오는 수] 목록",
     },
   },
   starterCode: {
     python: ["def solution(n, roads):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, roads) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int[][] solution(int n, int[][] roads) {",
+      "        int[][] answer = new int[n][2];",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -214,6 +227,14 @@ export const graphOneWayStreets: Problem = {
             "  ______;",
             "}",
             "return out.map((o, i) => [o, inn[i]]);",
+          ].join("\n"),
+          java: [
+            "for (int[] road : roads) {",
+            "    out[road[0]]++;",
+            "    ______;",
+            "}",
+            "int[][] answer = new int[n][2];",
+            "for (int i = 0; i < n; i++) answer[i] = new int[] {out[i], inn[i]};",
           ].join("\n"),
         },
       },

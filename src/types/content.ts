@@ -1,4 +1,4 @@
-import type { JsonValue, Language, ProblemKey } from "./common";
+import type { JsonValue, Language, LanguageMap, ProblemKey } from "./common";
 import type { VisualizationPreset } from "./visualization";
 
 export const TOPIC_SLUGS = [
@@ -127,7 +127,7 @@ export type IllustrationKey =
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {
-  code: Record<Language, string>;
+  code: LanguageMap<string>;
   caption?: string;
 }
 
@@ -201,7 +201,7 @@ export interface Hint<S extends HintStep = HintStep, K extends HintKind = HintKi
 export type HintSet = readonly [Hint<1, "pattern">, Hint<2, "approach">, Hint<3, "pseudocode">, Hint<4, "key-code">];
 
 /** 타입 표기는 언어별로 보여준다. 예: { python: "list[str]", javascript: "string[]" } */
-export type TypeNotation = Record<Language, string>;
+export type TypeNotation = LanguageMap<string>;
 
 export interface ParamSpec {
   name: string;
@@ -264,7 +264,7 @@ export interface Problem {
   outputFormat: string;
   constraints: string[];
   signature: FunctionSignature;
-  starterCode: Record<Language, string>;
+  starterCode: LanguageMap<string>;
   testCases: TestCase[];
   judge: JudgeConfig;
   hints: HintSet;

@@ -21,14 +21,27 @@ export const dfsRecipeLoop: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "단계 수" },
-      { name: "rules", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "순서 규칙" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "단계 수" },
+      {
+        name: "rules",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "순서 규칙",
+      },
     ],
-    returns: { type: { python: "bool", javascript: "boolean" }, description: "끝낼 수 있는지" },
+    returns: { type: { python: "bool", javascript: "boolean", java: "boolean" }, description: "끝낼 수 있는지" },
   },
   starterCode: {
     python: ["def solution(n, rules):", "    answer = True", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, rules) {", "  let answer = true;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public boolean solution(int n, int[][] rules) {",
+      "        boolean answer = true;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -138,10 +151,10 @@ export const dfsRecipeLoop: Problem = {
       purpose: "stress",
       args: [
         2000,
-        Array.from({ length: 3997 }, (_, k) => {
+        Array.from({ length: 3996 }, (_, k) => {
           const i = Math.floor(k / 2);
-          return [i, i + 1 + (k % 2)];
-        }),
+          return [i, i + 2 - (k % 2)];
+        }).concat([[1998, 1999]]),
       ],
       expected: true,
       failureNote: "2,000단계에 규칙 약 4,000개, 순환은 없어요. 단계마다 처음부터 다시 탐색하면 느려요.",
@@ -153,10 +166,11 @@ export const dfsRecipeLoop: Problem = {
       args: [
         2000,
         [
-          ...Array.from({ length: 3997 }, (_, k) => {
+          ...Array.from({ length: 3996 }, (_, k) => {
             const i = Math.floor(k / 2);
-            return [i, i + 1 + (k % 2)];
+            return [i, i + 2 - (k % 2)];
           }),
+          [1998, 1999],
           [1999, 0],
         ],
       ],
@@ -247,8 +261,20 @@ export const dfsRecipeLoop: Problem = {
             "  return false;",
             "}",
           ].join("\n"),
+          java: [
+            "boolean hasCycle(int v) {",
+            "    state[v] = 1;",
+            "    for (int w : graph.get(v)) {",
+            "        if (state[w] == 1) return true;",
+            "        if (state[w] == 0 && hasCycle(w)) return true;",
+            "    }",
+            "    ______;",
+            "    return false;",
+            "}",
+          ].join("\n"),
         },
-        caption: "탐색이 끝난 노드를 '끝남'으로 바꾸는 줄이 빈칸이에요.",
+        caption:
+          "탐색이 끝난 노드를 '끝남'으로 바꾸는 줄이 빈칸이에요. 탐색이 끝난 노드를 '끝남'으로 바꾸는 줄이 빈칸이에요.",
       },
       xpPenaltyRate: 0.5,
     },

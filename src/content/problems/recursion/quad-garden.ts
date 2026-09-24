@@ -21,12 +21,30 @@ export const recursionQuadGarden: Problem = {
   constraints: ["0 ≤ k ≤ 7 (한 변은 1 ~ 128칸)", "각 문자는 '0' 또는 '1'이에요."],
   signature: {
     name: "solution",
-    params: [{ name: "garden", type: { python: "list[str]", javascript: "string[]" }, description: "정원 사진" }],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "[0 조각 수, 1 조각 수]" },
+    params: [
+      {
+        name: "garden",
+        type: { python: "list[str]", javascript: "string[]", java: "String[]" },
+        description: "정원 사진",
+      },
+    ],
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+      description: "[0 조각 수, 1 조각 수]",
+    },
   },
   starterCode: {
     python: ["def solution(garden):", "    answer = [0, 0]", "    return answer", ""].join("\n"),
     javascript: ["function solution(garden) {", "  let answer = [0, 0];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int[] solution(String[] garden) {",
+      "        int[] answer = new int[2];",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -158,6 +176,13 @@ export const recursionQuadGarden: Problem = {
           ].join("\n"),
           javascript: [
             "const half = size / 2;",
+            "compress(r, c, half);",
+            "compress(r, c + half, half);",
+            "compress(r + half, c, half);",
+            "______;",
+          ].join("\n"),
+          java: [
+            "int half = size / 2;",
             "compress(r, c, half);",
             "compress(r, c + half, half);",
             "compress(r + half, c, half);",

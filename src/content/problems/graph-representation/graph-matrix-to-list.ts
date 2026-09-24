@@ -19,16 +19,31 @@ export const graphMatrixToList: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "table", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "연결 여부 표" },
+      {
+        name: "table",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "연결 여부 표",
+      },
     ],
     returns: {
-      type: { python: "list[list[int]]", javascript: "number[][]" },
+      type: { python: "list[list[int]]", javascript: "number[][]", java: "List<List<Integer>>" },
       description: "정류장별로 바로 갈 수 있는 곳",
     },
   },
   starterCode: {
     python: ["def solution(table):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(table) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<List<Integer>> solution(int[][] table) {",
+      "        List<List<Integer>> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -190,6 +205,15 @@ export const graphMatrixToList: Problem = {
             "  });",
             "  return next;",
             "});",
+          ].join("\n"),
+          java: [
+            "int n = table.length;",
+            "List<List<Integer>> answer = new ArrayList<>();",
+            "for (int i = 0; i < n; i++) {",
+            "    List<Integer> next = new ArrayList<>();",
+            "    for (int j = 0; j < n; j++) if (______) next.add(j);",
+            "    answer.add(next);",
+            "}",
           ].join("\n"),
         },
       },

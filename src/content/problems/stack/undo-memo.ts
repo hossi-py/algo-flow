@@ -22,12 +22,27 @@ export const stackUndoMemo: Problem = {
   constraints: ["1 ≤ commands의 길이 ≤ 2,000", "1 ≤ s의 길이 ≤ 10", "1 ≤ k ≤ 100"],
   signature: {
     name: "solution",
-    params: [{ name: "commands", type: { python: "list[str]", javascript: "string[]" }, description: "명령 목록" }],
-    returns: { type: { python: "str", javascript: "string" }, description: "남은 글" },
+    params: [
+      {
+        name: "commands",
+        type: { python: "list[str]", javascript: "string[]", java: "String[]" },
+        description: "명령 목록",
+      },
+    ],
+    returns: { type: { python: "str", javascript: "string", java: "String" }, description: "남은 글" },
   },
   starterCode: {
     python: ["def solution(commands):", '    answer = ""', "    return answer", ""].join("\n"),
     javascript: ["function solution(commands) {", '  let answer = "";', "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public String solution(String[] commands) {",
+      '        String answer = "";',
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -163,6 +178,14 @@ export const stackUndoMemo: Problem = {
             "  text = text.slice(0, Math.max(0, text.length - Number(arg)));",
             '} else if (name === "undo" && history.length > 0) {',
             "  text = ______;",
+            "}",
+          ].join("\n"),
+          java: [
+            '} else if (parts[0].equals("delete")) {',
+            "    history.push(text);",
+            "    text = text.substring(0, Math.max(0, text.length() - Integer.parseInt(parts[1])));",
+            '} else if (parts[0].equals("undo") && !history.isEmpty()) {',
+            "    text = ______;",
             "}",
           ].join("\n"),
         },

@@ -13,6 +13,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "validate:content": "tsx scripts/validate-content.ts",
+    "build:java": "tsx scripts/build-java-runtime.ts",
     "ai:smoke": "tsx --conditions react-server --env-file-if-exists=.env.local scripts/ai-smoke.ts"
   },
   "dependencies": {

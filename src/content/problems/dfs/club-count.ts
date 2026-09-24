@@ -21,14 +21,27 @@ export const dfsClubCount: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "학생 수" },
-      { name: "pairs", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "친구 관계" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "학생 수" },
+      {
+        name: "pairs",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "친구 관계",
+      },
     ],
-    returns: { type: { python: "int", javascript: "number" }, description: "동아리 수" },
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "동아리 수" },
   },
   starterCode: {
     python: ["def solution(n, pairs):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, pairs) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(int n, int[][] pairs) {",
+      "        int answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -179,6 +192,16 @@ export const dfsClubCount: Problem = {
             "    count += 1;",
             "    dfs(v);",
             "  }",
+            "}",
+            "return count;",
+          ].join("\n"),
+          java: [
+            "int count = 0;",
+            "for (int v = 0; v < n; v++) {",
+            "    if (______) {",
+            "        count++;",
+            "        dfs(v);",
+            "    }",
             "}",
             "return count;",
           ].join("\n"),

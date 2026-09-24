@@ -20,12 +20,27 @@ export const dfsMazeEscape: Problem = {
   constraints: ["1 ≤ 행 수, 열 수 ≤ 40", "각 문자는 'S', 'E', '.', '#' 중 하나예요."],
   signature: {
     name: "solution",
-    params: [{ name: "maze", type: { python: "list[str]", javascript: "string[]" }, description: "미로 지도" }],
-    returns: { type: { python: "bool", javascript: "boolean" }, description: "탈출 가능 여부" },
+    params: [
+      {
+        name: "maze",
+        type: { python: "list[str]", javascript: "string[]", java: "String[]" },
+        description: "미로 지도",
+      },
+    ],
+    returns: { type: { python: "bool", javascript: "boolean", java: "boolean" }, description: "탈출 가능 여부" },
   },
   starterCode: {
     python: ["def solution(maze):", "    answer = False", "    return answer", ""].join("\n"),
     javascript: ["function solution(maze) {", "  let answer = false;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public boolean solution(String[] maze) {",
+      "        boolean answer = false;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -183,7 +198,17 @@ export const dfsMazeEscape: Problem = {
             "  if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && ______ && !visited[nr][nc]) dfs(nr, nc);",
             "}",
           ].join("\n"),
+          java: [
+            "for (int[] d : new int[][] {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}) {",
+            "    int nr = r + d[0], nc = c + d[1];",
+            "    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && ______ && !visited[nr][nc]) {",
+            "        dfs(nr, nc);",
+            "    }",
+            "}",
+          ].join("\n"),
         },
+        caption:
+          "칸은 maze[r].charAt(c)로 읽어요. Java에서는 graph · visited처럼 dfs가 함께 쓰는 값을 Solution의 필드로 두면 편해요.",
       },
       xpPenaltyRate: 0.5,
     },

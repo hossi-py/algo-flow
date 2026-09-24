@@ -24,14 +24,23 @@ export const recursionHanoiKthMove: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "원판 수" },
-      { name: "k", type: { python: "int", javascript: "number" }, description: "몇 번째 이동" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "원판 수" },
+      { name: "k", type: { python: "int", javascript: "number", java: "long" }, description: "몇 번째 이동" },
     ],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "[출발, 도착]" },
+    returns: { type: { python: "list[int]", javascript: "number[]", java: "int[]" }, description: "[출발, 도착]" },
   },
   starterCode: {
     python: ["def solution(n, k):", "    answer = [1, 3]", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, k) {", "  let answer = [1, 3];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int[] solution(int n, long k) {",
+      "        int[] answer = new int[] {1, 3};",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -188,8 +197,17 @@ export const recursionHanoiKthMove: Problem = {
             "  return ______;",
             "}",
           ].join("\n"),
+          java: [
+            "int[] kth(int n, int a, int b, int c, long k) {",
+            "    long half = (1L << (n - 1)) - 1;",
+            "    if (k <= half) return kth(n - 1, a, c, b, k);",
+            "    if (k == half + 1) return new int[] {a, b};",
+            "    return ______;",
+            "}",
+          ].join("\n"),
         },
-        caption: "JS에서 1 << 49 같은 비트 연산은 32비트라 틀려요. 2 ** (n - 1)을 쓰세요.",
+        caption:
+          "JS에서 1 << 49 같은 비트 연산은 32비트라 틀려요. 2 ** (n - 1)을 쓰세요. k는 2^50에 가까울 수 있어서 long이에요. 1 << 49는 int라서 넘치니 1L << 49처럼 L을 붙여요.",
       },
       xpPenaltyRate: 0.5,
     },

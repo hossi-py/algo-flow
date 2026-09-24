@@ -24,12 +24,32 @@ export const queueFrontBack: Problem = {
   constraints: ["1 ≤ commands의 길이 ≤ 1,000", "1 ≤ x ≤ 10,000"],
   signature: {
     name: "solution",
-    params: [{ name: "commands", type: { python: "list[str]", javascript: "string[]" }, description: "명령 목록" }],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "front·back 기록" },
+    params: [
+      {
+        name: "commands",
+        type: { python: "list[str]", javascript: "string[]", java: "String[]" },
+        description: "명령 목록",
+      },
+    ],
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "List<Integer>" },
+      description: "front·back 기록",
+    },
   },
   starterCode: {
     python: ["def solution(commands):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(commands) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<Integer> solution(String[] commands) {",
+      "        List<Integer> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -116,7 +136,7 @@ export const queueFrontBack: Problem = {
       kind: "approach",
       title: "어떻게 접근할까요?",
       body: [
-        "1. 큐를 준비해요 (Python `deque`, JS는 배열 + head 번호).",
+        "1. 큐를 준비해요 (Python `deque`, JS는 배열 + head 번호, Java는 `ArrayDeque`).",
         "2. front는 큐의 첫 원소, back은 마지막 원소를 기록해요.",
         "3. 비어 있는지 먼저 확인하고, 비었으면 -1을 기록해요.",
       ].join("\n"),
@@ -157,7 +177,16 @@ export const queueFrontBack: Problem = {
             "  answer.push(head < line.length ? ______ : -1);",
             "}",
           ].join("\n"),
+          java: [
+            '} else if (parts[0].equals("front")) {',
+            "    answer.add(line.isEmpty() ? -1 : line.peekFirst());",
+            '} else if (parts[0].equals("back")) {',
+            "    answer.add(line.isEmpty() ? -1 : ______);",
+            "}",
+          ].join("\n"),
         },
+        caption:
+          "맨 뒤도 봐야 해서 Deque<Integer> line = new ArrayDeque<>()로 만들면 peekFirst · peekLast를 모두 쓸 수 있어요.",
       },
       xpPenaltyRate: 0.5,
     },

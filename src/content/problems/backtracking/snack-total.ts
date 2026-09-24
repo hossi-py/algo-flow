@@ -20,14 +20,27 @@ export const backtrackingSnackTotal: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "prices", type: { python: "list[int]", javascript: "number[]" }, description: "간식 가격" },
-      { name: "money", type: { python: "int", javascript: "number" }, description: "용돈" },
+      {
+        name: "prices",
+        type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+        description: "간식 가격",
+      },
+      { name: "money", type: { python: "int", javascript: "number", java: "int" }, description: "용돈" },
     ],
-    returns: { type: { python: "int", javascript: "number" }, description: "방법의 수" },
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "방법의 수" },
   },
   starterCode: {
     python: ["def solution(prices, money):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(prices, money) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(int[] prices, int money) {",
+      "        int answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -158,6 +171,12 @@ export const backtrackingSnackTotal: Problem = {
             "function go(i, total) {",
             "  if (i === n) return total === money ? 1 : 0;",
             "  return go(i + 1, total + prices[i]) + ______;",
+            "}",
+          ].join("\n"),
+          java: [
+            "int go(int i, int total) {",
+            "    if (i == prices.length) return total == money ? 1 : 0;",
+            "    return go(i + 1, total + prices[i]) + ______;",
             "}",
           ].join("\n"),
         },

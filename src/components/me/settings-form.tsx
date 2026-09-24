@@ -139,8 +139,18 @@ export function SettingsForm() {
         ))}
       </Row>
 
-      <Row label="기본 풀이 언어">
-        <LanguageToggle language={settings.language} onChange={settings.setLanguage} />
+      <Row label="주력 언어">
+        <div className="flex flex-col gap-1.5">
+          <LanguageToggle
+            language={settings.language}
+            onChange={settings.setLanguage}
+            preferred={settings.language}
+            label="주력 언어"
+          />
+          <p className="text-caption text-muted-foreground">
+            문제를 열면 이 언어로 시작해요. 문제 화면에서 바꾼 언어는 그 문제에서만 쓰여요.
+          </p>
+        </div>
       </Row>
 
       {message && (

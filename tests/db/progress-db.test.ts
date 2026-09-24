@@ -388,3 +388,34 @@ describe("약점 분석", () => {
     expect(top.map((w) => w.pattern)).not.toContain("grid-shortest-path");
   });
 });
+
+describe("Java 언어", () => {
+  it("주력 언어를 Java로 저장할 수 있고, 모르는 언어는 막는다", async () => {
+    const updated = await as(
+      db,
+      { kind: "user", id: A },
+      async () =>
+        (await db.query("update public.profiles set preferred_language = 'java' where id = $1", [A])).affectedRows,
+    );
+    expect(updated).toBe(1);
+    await expect(
+      as(db, { kind: "user", id: A }, () =>
+        db.query("update public.profiles set preferred_language = 'kotlin' where id = $1", [A]),
+      ),
+    ).rejects.toThrow(/check constraint/);
+  });
+
+  it("Java로 낸 제출도 기록된다", async () => {
+    const code = "class Solution {\n    public int[] solution(String[] g) {\n        return new int[0];\n    }\n}\n";
+    await submitForUser(
+      repo,
+      B,
+      flowerZones,
+      { ...payload("accepted", code), language: "java" },
+      TOPICS,
+      clock("2026-09-24"),
+    );
+    const submissions = await repo.listSubmissions(B, 10);
+    expect(submissions[0]).toMatchObject({ verdict: "accepted", language: "java", code });
+  });
+});

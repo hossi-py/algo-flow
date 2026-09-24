@@ -1,13 +1,13 @@
 import { SIGNALS } from "@/content/signals";
 import { BASE_XP_BY_LEVEL, DEFAULT_HINT_PENALTY } from "@/lib/progress/xp";
-import type { GenerationRequest, HintSet, JsonValue, Language, ParamSpec, Problem, TestCase } from "@/types";
+import type { GenerationRequest, HintSet, JsonValue, LanguageMap, ParamSpec, Problem, TestCase } from "@/types";
 import type { ProblemDraft } from "./schemas";
 
 /** AI 생성 문제의 채점 설정. 정답 코드는 제한 시간의 1/4 안에 끝나야 통과시킨다 */
 export const GENERATED_TIME_LIMIT_MS = 2000;
 export const GENERATED_RECURSION_LIMIT = 3000;
 
-export function starterCode(params: ParamSpec[]): Record<Language, string> {
+export function starterCode(params: ParamSpec[]): LanguageMap<string> {
   const names = params.map((p) => p.name).join(", ");
   return {
     python: [`def solution(${names}):`, "    answer = None", "    return answer", ""].join("\n"),

@@ -19,16 +19,34 @@ export const bfsExactHops: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "학생 수" },
-      { name: "pairs", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "친구 관계" },
-      { name: "me", type: { python: "int", javascript: "number" }, description: "기준 학생" },
-      { name: "k", type: { python: "int", javascript: "number" }, description: "다리 수" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "학생 수" },
+      {
+        name: "pairs",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "친구 관계",
+      },
+      { name: "me", type: { python: "int", javascript: "number", java: "int" }, description: "기준 학생" },
+      { name: "k", type: { python: "int", javascript: "number", java: "int" }, description: "다리 수" },
     ],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "정확히 k다리인 학생들" },
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "List<Integer>" },
+      description: "정확히 k다리인 학생들",
+    },
   },
   starterCode: {
     python: ["def solution(n, pairs, me, k):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, pairs, me, k) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<Integer> solution(int n, int[][] pairs, int me, int k) {",
+      "        List<Integer> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -191,6 +209,12 @@ export const bfsExactHops: Problem = {
             "const dist = bfs(me);",
             "const answer = [];",
             "for (let i = 0; i < n; i += 1) if (______) answer.push(i);",
+            "return answer;",
+          ].join("\n"),
+          java: [
+            "int[] dist = bfs(me);",
+            "List<Integer> answer = new ArrayList<>();",
+            "for (int i = 0; i < n; i++) if (______) answer.add(i);",
             "return answer;",
           ].join("\n"),
         },

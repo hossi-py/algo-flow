@@ -21,14 +21,28 @@ export const queueHotPotato: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "사람 수" },
-      { name: "k", type: { python: "int", javascript: "number" }, description: "빠지는 차례" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "사람 수" },
+      { name: "k", type: { python: "int", javascript: "number", java: "int" }, description: "빠지는 차례" },
     ],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "빠지는 순서" },
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "List<Integer>" },
+      description: "빠지는 순서",
+    },
   },
   starterCode: {
     python: ["def solution(n, k):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, k) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<Integer> solution(int n, int k) {",
+      "        List<Integer> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -150,6 +164,12 @@ export const queueHotPotato: Problem = {
             "while (circle.length - head > 0) {",
             "  for (let i = 0; i < k - 1; i += 1) ______;",
             "  out.push(circle[head++]);",
+            "}",
+          ].join("\n"),
+          java: [
+            "while (!circle.isEmpty()) {",
+            "    for (int i = 0; i < k - 1; i++) ______;",
+            "    out.add(circle.poll());",
             "}",
           ].join("\n"),
         },

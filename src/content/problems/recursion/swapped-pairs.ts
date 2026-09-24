@@ -18,12 +18,23 @@ export const recursionSwappedPairs: Problem = {
   constraints: ["1 ≤ heights의 길이 ≤ 50,000", "1 ≤ 각 키 ≤ 1,000,000,000"],
   signature: {
     name: "solution",
-    params: [{ name: "heights", type: { python: "list[int]", javascript: "number[]" }, description: "키 목록" }],
-    returns: { type: { python: "int", javascript: "number" }, description: "뒤바뀐 쌍의 수" },
+    params: [
+      { name: "heights", type: { python: "list[int]", javascript: "number[]", java: "int[]" }, description: "키 목록" },
+    ],
+    returns: { type: { python: "int", javascript: "number", java: "long" }, description: "뒤바뀐 쌍의 수" },
   },
   starterCode: {
     python: ["def solution(heights):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(heights) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public long solution(int[] heights) {",
+      "        long answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -164,7 +175,17 @@ export const recursionSwappedPairs: Problem = {
             "  }",
             "}",
           ].join("\n"),
+          java: [
+            "while (i < left.length && j < right.length) {",
+            "    if (left[i] <= right[j]) merged[k++] = left[i++];",
+            "    else {",
+            "        merged[k++] = right[j++];",
+            "        swaps += ______;",
+            "    }",
+            "}",
+          ].join("\n"),
         },
+        caption: "바꾸는 횟수는 10억을 넘을 수 있어서 long으로 세요.",
       },
       xpPenaltyRate: 0.5,
     },

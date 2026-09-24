@@ -22,7 +22,7 @@ export const QUEUE_DEQUE_CARDS: ConceptCard[] = [
       "- **dequeue()**: 앞에서 하나를 꺼내요.",
       "- **front()**: 앞에 있는 값을 보기만 해요.",
       "",
-      "Python은 `collections.deque`를 큐로 써요. JavaScript에는 큐가 따로 없어서, 배열에 넣고 **앞 위치를 가리키는 번호(head)** 를 하나 두는 방법이 가장 간단해요.",
+      "Python은 `collections.deque`를 큐로 써요. JavaScript에는 큐가 따로 없어서, 배열에 넣고 **앞 위치를 가리키는 번호(head)** 를 하나 두는 방법이 가장 간단해요. Java는 `Queue<Integer> queue = new ArrayDeque<>()`를 쓰고 `offer`로 넣고 `poll`로 꺼내요.",
     ].join("\n"),
     illustration: "queue-line",
     keyPoints: ["enqueue = 뒤에 넣기", "dequeue = 앞에서 꺼내기", "front = 앞 보기 (꺼내지 않음)"],
@@ -45,6 +45,13 @@ export const QUEUE_DEQUE_CARDS: ConceptCard[] = [
           "const first = queue[head];   // front → 3",
           "const x = queue[head++];     // dequeue → 3",
         ].join("\n"),
+        java: [
+          "Queue<Integer> queue = new ArrayDeque<>();",
+          "queue.offer(3);             // enqueue",
+          "queue.offer(5);",
+          "int first = queue.peek();   // front → 3",
+          "int x = queue.poll();       // dequeue → 3",
+        ].join("\n"),
       },
     },
   },
@@ -57,6 +64,7 @@ export const QUEUE_DEQUE_CARDS: ConceptCard[] = [
       "",
       "- Python: `deque.popleft()`는 O(1)이에요.",
       "- JavaScript: 원소를 옮기지 않고 **head 번호만 한 칸 옮기면** O(1)이에요.",
+      "- Java: `ArrayDeque`의 `poll()`은 O(1)이에요. (`ArrayList`의 `remove(0)`은 O(N))",
     ].join("\n"),
     illustration: "queue-line",
     keyPoints: ["list.pop(0) · shift()는 O(N)", "deque.popleft()는 O(1)", "JS는 head 번호를 옮겨서 꺼내요"],
@@ -74,7 +82,7 @@ export const QUEUE_DEQUE_CARDS: ConceptCard[] = [
       "뒤로만 넣고 앞으로만 빼면 큐, 한쪽으로만 넣고 빼면 스택처럼 쓸 수 있어요.",
     ].join("\n"),
     illustration: "deque-train",
-    keyPoints: ["양쪽 끝 모두 넣고 빼기 O(1)", "큐처럼도, 스택처럼도 쓸 수 있어요", "Python은 collections.deque"],
+    keyPoints: ["양쪽 끝 모두 넣고 빼기 O(1)", "큐처럼도, 스택처럼도 쓸 수 있어요", "Python deque · Java ArrayDeque"],
     code: {
       code: {
         python: [
@@ -94,6 +102,13 @@ export const QUEUE_DEQUE_CARDS: ConceptCard[] = [
           "slots[tail++] = 4;              // 뒤에 넣기",
           "const front = slots[head++];    // 앞에서 꺼내기",
           "const back = slots[--tail];     // 뒤에서 꺼내기",
+        ].join("\n"),
+        java: [
+          "Deque<Integer> d = new ArrayDeque<>(List.of(2, 3));",
+          "d.offerFirst(1);   // [1, 2, 3]",
+          "d.offerLast(4);    // [1, 2, 3, 4]",
+          "d.pollFirst();     // 1 → [2, 3, 4]",
+          "d.pollLast();      // 4 → [2, 3]",
         ].join("\n"),
       },
     },

@@ -31,7 +31,11 @@ function EngineNote({ language, engine, progress }: Pick<RunBarProps, "language"
     return (
       <span className="inline-flex items-center gap-2" aria-live="polite">
         <Nodi mood="loading" size={28} decorative />
-        {language === "python" ? "Python 엔진 준비 중 (처음 한 번은 몇 초 걸려요)" : "엔진 준비 중"}
+        {language === "python"
+          ? "Python 엔진 준비 중 (처음 한 번은 몇 초 걸려요)"
+          : language === "java"
+            ? "Java 엔진 준비 중 (처음 한 번은 10~20초 걸려요)"
+            : "엔진 준비 중"}
       </span>
     );
   }

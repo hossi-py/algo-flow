@@ -21,13 +21,26 @@ export const bfsFrogLeaps: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "leap", type: { python: "list[int]", javascript: "number[]" }, description: "연잎마다 뛰는 칸 수" },
+      {
+        name: "leap",
+        type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+        description: "연잎마다 뛰는 칸 수",
+      },
     ],
-    returns: { type: { python: "int", javascript: "number" }, description: "최소 점프 수" },
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "최소 점프 수" },
   },
   starterCode: {
     python: ["def solution(leap):", "    answer = -1", "    return answer", ""].join("\n"),
     javascript: ["function solution(leap) {", "  let answer = -1;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(int[] leap) {",
+      "        int answer = -1;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -164,6 +177,15 @@ export const bfsFrogLeaps: Problem = {
             "    dist[j] = dist[i] + 1;",
             "    queue.push(j);",
             "  }",
+            "}",
+          ].join("\n"),
+          java: [
+            "int i = queue.poll();",
+            "for (int j : new int[] {i + leap[i], ______}) {",
+            "    if (j >= 0 && j < n && dist[j] == -1) {",
+            "        dist[j] = dist[i] + 1;",
+            "        queue.offer(j);",
+            "    }",
             "}",
           ].join("\n"),
         },

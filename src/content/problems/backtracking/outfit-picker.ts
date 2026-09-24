@@ -21,13 +21,31 @@ export const backtrackingOutfitPicker: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "closet", type: { python: "list[list[str]]", javascript: "string[][]" }, description: "종류별 옷 목록" },
+      {
+        name: "closet",
+        type: { python: "list[list[str]]", javascript: "string[][]", java: "String[][]" },
+        description: "종류별 옷 목록",
+      },
     ],
-    returns: { type: { python: "list[list[str]]", javascript: "string[][]" }, description: "모든 옷차림" },
+    returns: {
+      type: { python: "list[list[str]]", javascript: "string[][]", java: "List<List<String>>" },
+      description: "모든 옷차림",
+    },
   },
   starterCode: {
     python: ["def solution(closet):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(closet) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<List<String>> solution(String[][] closet) {",
+      "        List<List<String>> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -199,8 +217,21 @@ export const backtrackingOutfitPicker: Problem = {
             "  }",
             "}",
           ].join("\n"),
+          java: [
+            "void choose(int i) {",
+            "    if (i == closet.length) {",
+            "        result.add(______);",
+            "        return;",
+            "    }",
+            "    for (String item : closet[i]) {",
+            "        path.add(item);",
+            "        choose(i + 1);",
+            "        path.remove(path.size() - 1);",
+            "    }",
+            "}",
+          ].join("\n"),
         },
-        caption: "Python은 path[:], JavaScript는 [...path]로 복사해요.",
+        caption: "Python은 path[:], JavaScript는 [...path]로 복사해요. Java는 new ArrayList<>(path)로 복사해요.",
       },
       xpPenaltyRate: 0.5,
     },

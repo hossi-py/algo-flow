@@ -19,14 +19,27 @@ export const backtrackingGiftWeights: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "weights", type: { python: "list[int]", javascript: "number[]" }, description: "상자 무게" },
-      { name: "limit", type: { python: "int", javascript: "number" }, description: "맞출 무게" },
+      {
+        name: "weights",
+        type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+        description: "상자 무게",
+      },
+      { name: "limit", type: { python: "int", javascript: "number", java: "int" }, description: "맞출 무게" },
     ],
-    returns: { type: { python: "int", javascript: "number" }, description: "방법의 수" },
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "방법의 수" },
   },
   starterCode: {
     python: ["def solution(weights, limit):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(weights, limit) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(int[] weights, int limit) {",
+      "        int answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -169,8 +182,17 @@ export const backtrackingGiftWeights: Problem = {
             "  else count += go(i + 1, w);",
             "}",
           ].join("\n"),
+          java: [
+            "for (int i = start; i < n; i++) {",
+            "    int w = total + weights[i];",
+            "    if (w > limit) ______;",
+            "    if (w == limit) count++;",
+            "    else count += go(i + 1, w);",
+            "}",
+          ].join("\n"),
         },
-        caption: "정렬해 두었기 때문에 continue가 아니라 반복 자체를 끝내도 돼요.",
+        caption:
+          "정렬해 두었기 때문에 continue가 아니라 반복 자체를 끝내도 돼요. 먼저 Arrays.sort(weights)로 오름차순 정렬해 두세요.",
       },
       xpPenaltyRate: 0.5,
     },

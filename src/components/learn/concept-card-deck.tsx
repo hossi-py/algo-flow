@@ -13,7 +13,7 @@ import { spring } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { useProgressStore } from "@/stores/progress-store";
 import { useSettingsStore } from "@/stores/settings-store";
-import { LANGUAGES, LANGUAGE_LABELS, type CodeSnippet, type Topic } from "@/types";
+import { hasLanguage, LANGUAGES, LANGUAGE_LABELS, type CodeSnippet, type Language, type Topic } from "@/types";
 import { ConceptIllustration } from "./concept-illustration";
 import { useConceptCelebration } from "./use-concept-celebration";
 
@@ -30,15 +30,18 @@ const slide = {
 
 function CodeSnippetView({ snippet }: { snippet: CodeSnippet }) {
   const mounted = useMounted();
-  const stored = useSettingsStore((s) => s.language);
-  const setLanguage = useSettingsStore((s) => s.setLanguage);
+  const preferred = useSettingsStore((s) => s.language);
+  // 카드에서 바꾼 언어는 주력 언어를 바꾸지 않는다
+  const [picked, setLanguage] = useState<Language | null>(null);
+  const languages = LANGUAGES.filter((l) => hasLanguage(snippet.code, l));
   // 저장된 언어는 localStorage에 있으므로 하이드레이션이 끝난 뒤에 반영한다
-  const language = mounted ? stored : "python";
+  const wanted = picked ?? (mounted ? preferred : "python");
+  const language = languages.includes(wanted) ? wanted : "python";
 
   return (
     <div className="flex flex-col gap-2">
       <div role="radiogroup" aria-label="코드 언어" className="inline-flex w-fit rounded-full bg-muted p-0.5">
-        {LANGUAGES.map((value) => (
+        {languages.map((value) => (
           <button
             key={value}
             type="button"

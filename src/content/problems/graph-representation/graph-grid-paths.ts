@@ -18,15 +18,26 @@ export const graphGridPaths: Problem = {
   constraints: ["1 ≤ 행 수, 열 수 ≤ 100", "각 문자는 '.' 또는 '#'이에요."],
   signature: {
     name: "solution",
-    params: [{ name: "grid", type: { python: "list[str]", javascript: "string[]" }, description: "지도" }],
+    params: [
+      { name: "grid", type: { python: "list[str]", javascript: "string[]", java: "String[]" }, description: "지도" },
+    ],
     returns: {
-      type: { python: "list[list[int]]", javascript: "number[][]" },
+      type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
       description: "칸별 이웃 길 수 (벽은 -1)",
     },
   },
   starterCode: {
     python: ["def solution(grid):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(grid) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int[][] solution(String[] grid) {",
+      "        int[][] answer = new int[grid.length][grid[0].length()];",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -159,7 +170,16 @@ export const graphGridPaths: Problem = {
             "  if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && ______) count += 1;",
             "}",
           ].join("\n"),
+          java: [
+            "int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};",
+            "int count = 0;",
+            "for (int[] d : dirs) {",
+            "    int nr = r + d[0], nc = c + d[1];",
+            "    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && ______) count++;",
+            "}",
+          ].join("\n"),
         },
+        caption: "격자 한 줄은 String이라 칸은 grid[r].charAt(c)로 읽고, 문자 비교는 '.'처럼 작은따옴표로 해요.",
       },
       xpPenaltyRate: 0.5,
     },

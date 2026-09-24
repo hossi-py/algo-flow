@@ -19,12 +19,32 @@ export const backtrackingSeatOrders: Problem = {
   constraints: ["1 ≤ names의 길이 ≤ 6"],
   signature: {
     name: "solution",
-    params: [{ name: "names", type: { python: "list[str]", javascript: "string[]" }, description: "친구 이름" }],
-    returns: { type: { python: "list[list[str]]", javascript: "string[][]" }, description: "모든 앉는 순서" },
+    params: [
+      {
+        name: "names",
+        type: { python: "list[str]", javascript: "string[]", java: "String[]" },
+        description: "친구 이름",
+      },
+    ],
+    returns: {
+      type: { python: "list[list[str]]", javascript: "string[][]", java: "List<List<String>>" },
+      description: "모든 앉는 순서",
+    },
   },
   starterCode: {
     python: ["def solution(names):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(names) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<List<String>> solution(String[] names) {",
+      "        List<List<String>> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -179,6 +199,17 @@ export const backtrackingSeatOrders: Problem = {
             "    path.pop();",
             "    ______;",
             "  }",
+            "}",
+          ].join("\n"),
+          java: [
+            "for (int i = 0; i < n; i++) {",
+            "    if (!used[i]) {",
+            "        used[i] = true;",
+            "        path.add(names[i]);",
+            "        place();",
+            "        path.remove(path.size() - 1);",
+            "        ______;",
+            "    }",
             "}",
           ].join("\n"),
         },

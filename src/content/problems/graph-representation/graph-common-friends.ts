@@ -19,16 +19,34 @@ export const graphCommonFriends: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "학생 수" },
-      { name: "pairs", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "친구 관계" },
-      { name: "u", type: { python: "int", javascript: "number" }, description: "첫 번째 학생" },
-      { name: "v", type: { python: "int", javascript: "number" }, description: "두 번째 학생" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "학생 수" },
+      {
+        name: "pairs",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "친구 관계",
+      },
+      { name: "u", type: { python: "int", javascript: "number", java: "int" }, description: "첫 번째 학생" },
+      { name: "v", type: { python: "int", javascript: "number", java: "int" }, description: "두 번째 학생" },
     ],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "공통 친구 (오름차순)" },
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "List<Integer>" },
+      description: "공통 친구 (오름차순)",
+    },
   },
   starterCode: {
     python: ["def solution(n, pairs, u, v):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, pairs, u, v) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<Integer> solution(int n, int[][] pairs, int u, int v) {",
+      "        List<Integer> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -195,6 +213,13 @@ export const graphCommonFriends: Problem = {
             "const friendsU = new Set(graph[u]);",
             "const common = graph[v].filter((x) => ______);",
             "return common.sort((p, q) => p - q);",
+          ].join("\n"),
+          java: [
+            "Set<Integer> friendsU = new HashSet<>(graph.get(u));",
+            "List<Integer> common = new ArrayList<>();",
+            "for (int x : graph.get(v)) if (______) common.add(x);",
+            "Collections.sort(common);",
+            "return common;",
           ].join("\n"),
         },
       },

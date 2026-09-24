@@ -19,14 +19,27 @@ export const dfsDownhillRoutes: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "쉼터 수" },
-      { name: "trails", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "내리막 길 목록" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "쉼터 수" },
+      {
+        name: "trails",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "내리막 길 목록",
+      },
     ],
-    returns: { type: { python: "int", javascript: "number" }, description: "길의 수 (나머지)" },
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "길의 수 (나머지)" },
   },
   starterCode: {
     python: ["def solution(n, trails):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, trails) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(int n, int[][] trails) {",
+      "        int answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -218,7 +231,18 @@ export const dfsDownhillRoutes: Problem = {
             "  return total;",
             "}",
           ].join("\n"),
+          java: [
+            "int ways(int v) {",
+            "    if (v == n - 1) return 1;",
+            "    if (memo[v] != -1) return ______;",
+            "    long total = 0;",
+            "    for (int w : graph.get(v)) total = (total + ways(w)) % MOD;",
+            "    memo[v] = (int) total;",
+            "    return memo[v];",
+            "}",
+          ].join("\n"),
         },
+        caption: "두 나머지를 더하면 int 범위를 넘을 수 있어서 합은 long으로 계산해요.",
       },
       xpPenaltyRate: 0.5,
     },

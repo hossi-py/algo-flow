@@ -3,7 +3,7 @@
 스택부터 백트래킹까지, 알고리즘을 쉬운 단계부터 순서대로 배우는 학습 플랫폼. 마스코트는 새싹 노드 **노디** 🌱
 
 - 설계 문서: [docs/README.md](docs/README.md)
-- 지원 언어: Python, JavaScript
+- 지원 언어: Python, JavaScript, Java (Java는 큐레이션 문제만. 설정의 **주력 언어**로 문제를 열 때의 기본 언어를 정해요)
 
 ## 실행
 
@@ -45,11 +45,20 @@ pnpm dev          # http://localhost:3000
 | `pnpm typecheck`            | 라우트 타입 생성 + `tsc`                                                                                                                                             |
 | `pnpm lint`                 | ESLint                                                                                                                                                               |
 | `pnpm test`                 | Vitest (진도 규칙, 채점기, JS·Python 하네스, 시각화, 개념 학습 화면, AI 코치 가드·문제 생성 파이프라인·서버 Python 러너, PGlite로 마이그레이션·RLS·진도 RPC 검증 등) |
-| `pnpm validate:content`     | 모든 문제의 Python·JS 정답 코드를 실제 하네스로 실행해 기대값 검증 (Pyodide)                                                                                         |
+| `pnpm validate:content`     | 모든 문제의 Python·JS 정답 코드를 실제 하네스로 실행해 기대값 검증 (Pyodide). `JAVA_HOME`에 JDK 11+가 있으면 Java 정답도 같은 Java 하네스로 검증                     |
+| `pnpm build:java`           | Java 채점 하네스(`java-runtime/src`)를 `public/java/algoflow-runner.jar`로 빌드 (JDK 11+ 필요, 결과 jar는 커밋)                                                      |
 | `pnpm ai:smoke [횟수]`      | 실제 Claude API로 AI 문제를 여러 번(기본 10회) 생성·검증해 통과율 확인 (API 비용 발생)                                                                               |
 | `pnpm format`               | Prettier                                                                                                                                                             |
 
 개발 서버에서는 화면 오른쪽 아래 🔧 버튼(개발용 도구)으로 예시 진도 불러오기 · XP 추가 · 축하 연출 · 진도 초기화를 할 수 있습니다. 프로덕션 빌드에는 나타나지 않습니다.
+
+## Java 실행 (브라우저)
+
+Java 코드는 서버 없이 브라우저에서 실행해요. [CheerpJ](https://cheerpj.com/)(WebAssembly JVM, Java 11)가 워커(`public/workers/java.worker.js`)에서 돌고, [Eclipse 컴파일러(ECJ) 3.26](https://github.com/eclipse-jdt/eclipse.jdt.core)가 사용자의 `class Solution`을 컴파일해요. 입력·출력 JSON 변환과 채점은 `java-runtime/src/algoflow`의 하네스가 맡고, 같은 하네스를 Node 검증(진짜 JDK)에서도 써요.
+
+- 첫 실행 때 CheerpJ 런타임을 CDN(`cjrtnc.leaningtech.com`)에서 받느라 10~20초 걸리고, 그 뒤엔 브라우저 캐시로 빨라져요.
+- 브라우저 JVM은 재귀 깊이 약 2,000까지 안전하고, 런타임 예외에 줄 번호를 주지 못해 어느 메서드에서 났는지만 알려 줘요.
+- **라이선스**: CheerpJ는 개인·비상업 용도는 무료이고, 상업 서비스로 운영하려면 Leaning Technologies의 라이선스가 필요해요 (`cheerpjInit`의 `licenseKey`). ECJ(`public/java/ecj.jar`)는 EPL-2.0이에요 (`public/java/NOTICE.md`).
 
 ## 구조
 

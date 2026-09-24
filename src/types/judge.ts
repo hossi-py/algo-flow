@@ -46,8 +46,8 @@ export interface JudgeResult {
 
 /** 메인 스레드 → 워커 (Python: public/workers/pyodide.worker.mjs, JS: src/workers/js.worker.ts — 같은 프로토콜) */
 export type WorkerRequest =
-  /** Python 워커는 Pyodide 위치와 채점 하네스 코드를 함께 받는다 */
-  | { type: "init"; indexURL?: string; harness?: string }
+  /** Python 워커는 Pyodide 위치와 채점 하네스 코드를, Java 워커는 CheerpJ 로더 주소와 Java 버전을 받는다 */
+  | { type: "init"; indexURL?: string; harness?: string; javaVersion?: number }
   | {
       type: "run-case";
       runId: string;

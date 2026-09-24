@@ -25,14 +25,23 @@ export const recursionCookieBoxes: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "a", type: { python: "int", javascript: "number" }, description: "초코 쿠키 수" },
-      { name: "b", type: { python: "int", javascript: "number" }, description: "버터 쿠키 수" },
+      { name: "a", type: { python: "int", javascript: "number", java: "int" }, description: "초코 쿠키 수" },
+      { name: "b", type: { python: "int", javascript: "number", java: "int" }, description: "버터 쿠키 수" },
     ],
-    returns: { type: { python: "int", javascript: "number" }, description: "최대공약수" },
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "최대공약수" },
   },
   starterCode: {
     python: ["def solution(a, b):", "    answer = 1", "    return answer", ""].join("\n"),
     javascript: ["function solution(a, b) {", "  let answer = 1;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(int a, int b) {",
+      "        int answer = 1;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -148,6 +157,9 @@ export const recursionCookieBoxes: Problem = {
         code: {
           python: ["def solution(a, b):", "    if b == 0:", "        return a", "    return ______"].join("\n"),
           javascript: ["function solution(a, b) {", "  if (b === 0) return a;", "  return ______;", "}"].join("\n"),
+          java: ["public int solution(int a, int b) {", "    if (b == 0) return a;", "    return ______;", "}"].join(
+            "\n",
+          ),
         },
       },
       xpPenaltyRate: 0.5,

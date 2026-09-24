@@ -23,12 +23,21 @@ export const queueCardShuffle: Problem = {
   constraints: ["1 ≤ n ≤ 200,000"],
   signature: {
     name: "solution",
-    params: [{ name: "n", type: { python: "int", javascript: "number" }, description: "카드 수" }],
-    returns: { type: { python: "int", javascript: "number" }, description: "마지막 카드 번호" },
+    params: [{ name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "카드 수" }],
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "마지막 카드 번호" },
   },
   starterCode: {
     python: ["def solution(n):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(n) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(int n) {",
+      "        int answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -125,6 +134,7 @@ export const queueCardShuffle: Problem = {
         "",
         "- Python: `list.pop(0)`은 O(N)이에요. `collections.deque`의 `popleft()`는 O(1)이에요.",
         "- JavaScript: `shift()`도 O(N)이라, 배열과 **앞을 가리키는 번호(head)** 로 큐를 만들어요.",
+        "- Java: `ArrayDeque`의 `offer` · `poll`은 O(1)이에요.",
       ].join("\n"),
       xpPenaltyRate: 0.15,
     },
@@ -165,6 +175,15 @@ export const queueCardShuffle: Problem = {
             "  ______;                 // 다음 카드를 맨 아래로",
             "}",
             "return cards[head];",
+          ].join("\n"),
+          java: [
+            "Queue<Integer> cards = new ArrayDeque<>();",
+            "for (int i = 1; i <= n; i++) cards.offer(i);",
+            "while (cards.size() > 1) {",
+            "    cards.poll();          // 맨 위 카드 버리기",
+            "    ______;                // 다음 카드를 맨 아래로",
+            "}",
+            "return cards.peek();",
           ].join("\n"),
         },
       },

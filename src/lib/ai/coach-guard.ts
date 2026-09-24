@@ -53,10 +53,29 @@ const CODE_STARTS = [
   "} else",
   "try:",
   "except",
+  // Java
+  "public ",
+  "private ",
+  "static ",
+  "int ",
+  "long ",
+  "boolean ",
+  "String ",
+  "char ",
+  "double ",
+  "int[",
+  "List<",
+  "Map<",
+  "Set<",
+  "Deque<",
+  "Queue<",
+  "else {",
 ] as const;
 const SPECIAL_STARTS: readonly string[] = [...FENCES, ...CODE_STARTS];
 
-const SOLUTION_DEFINITION = /\b(def|function)\s+solution\s*\(|\bsolution\s*=\s*(function\b|\(|async\b)/;
+/** Python·JS의 solution 정의, Java의 solution 메서드 정의(반환 타입 + solution(...)) 또는 class Solution */
+const SOLUTION_DEFINITION =
+  /\b(def|function)\s+solution\s*\(|\bsolution\s*=\s*(function\b|\(|async\b)|\b(?!return\b)[\w>\]]+\s+solution\s*\([^)]*\)\s*\{|\bclass\s+Solution\b/;
 
 function couldBeSpecial(trimmed: string): boolean {
   return SPECIAL_STARTS.some((start) => start.startsWith(trimmed) || trimmed.startsWith(start));

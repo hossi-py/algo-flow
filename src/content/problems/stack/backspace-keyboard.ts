@@ -18,12 +18,23 @@ export const stackBackspaceKeyboard: Problem = {
   constraints: ["1 ≤ keys의 길이 ≤ 100,000", "keys는 영어 소문자와 '<'로만 이루어져 있어요."],
   signature: {
     name: "solution",
-    params: [{ name: "keys", type: { python: "str", javascript: "string" }, description: "누른 키 기록" }],
-    returns: { type: { python: "str", javascript: "string" }, description: "남은 글자" },
+    params: [
+      { name: "keys", type: { python: "str", javascript: "string", java: "String" }, description: "누른 키 기록" },
+    ],
+    returns: { type: { python: "str", javascript: "string", java: "String" }, description: "남은 글자" },
   },
   starterCode: {
     python: ["def solution(keys):", '    answer = ""', "    return answer", ""].join("\n"),
     javascript: ["function solution(keys) {", '  let answer = "";', "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public String solution(String keys) {",
+      '        String answer = "";',
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -163,7 +174,19 @@ export const stackBackspaceKeyboard: Problem = {
             "}",
             'return stack.join("");',
           ].join("\n"),
+          java: [
+            "StringBuilder stack = new StringBuilder();   // 끝이 스택의 꼭대기",
+            "for (char key : keys.toCharArray()) {",
+            "    if (key == '<') {",
+            "        if (stack.length() > 0) ______;",
+            "    } else {",
+            "        stack.append(key);",
+            "    }",
+            "}",
+            "return stack.toString();",
+          ].join("\n"),
         },
+        caption: "StringBuilder의 끝을 스택의 꼭대기로 쓰면 마지막에 toString()만 하면 돼요.",
       },
       xpPenaltyRate: 0.5,
     },

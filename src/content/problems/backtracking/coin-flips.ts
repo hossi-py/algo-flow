@@ -18,12 +18,26 @@ export const backtrackingCoinFlips: Problem = {
   constraints: ["1 ≤ n ≤ 10"],
   signature: {
     name: "solution",
-    params: [{ name: "n", type: { python: "int", javascript: "number" }, description: "던지는 횟수" }],
-    returns: { type: { python: "list[str]", javascript: "string[]" }, description: "모든 기록 (사전 순)" },
+    params: [{ name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "던지는 횟수" }],
+    returns: {
+      type: { python: "list[str]", javascript: "string[]", java: "List<String>" },
+      description: "모든 기록 (사전 순)",
+    },
   },
   starterCode: {
     python: ["def solution(n):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(n) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<String> solution(int n) {",
+      "        List<String> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -156,7 +170,15 @@ export const backtrackingCoinFlips: Problem = {
           javascript: ['for (const face of ["H", "T"]) {', "  path.push(face);", "  pick();", "  ______;", "}"].join(
             "\n",
           ),
+          java: [
+            "for (char face : new char[] {'H', 'T'}) {",
+            "    path.append(face);",
+            "    pick();",
+            "    ______;",
+            "}",
+          ].join("\n"),
         },
+        caption: "Java는 path를 StringBuilder로 두면 append로 고르고 deleteCharAt(path.length() - 1)로 되돌려요.",
       },
       xpPenaltyRate: 0.5,
     },

@@ -9,7 +9,7 @@ import { LANGUAGES, TOPIC_SLUGS, type JsonValue, type Problem } from "@/types";
 
 const ROOT = path.resolve(__dirname, "../..");
 
-function solutionPath(problem: Problem, ext: "js" | "py"): string {
+function solutionPath(problem: Problem, ext: "js" | "py" | "java"): string {
   const name = problem.slug.startsWith(`${problem.topic}-`)
     ? problem.slug.slice(problem.topic.length + 1)
     : problem.slug;
@@ -84,7 +84,7 @@ describe.each(PROBLEMS.map((p) => [p.slug, p] as const))("문제 %s", (_, proble
     expect(problem.id).toBe(`c:${problem.slug}`);
     expect(problem.xp).toBe(BASE_XP_BY_LEVEL[problem.level]);
     expect(problem.signalIds.every((id) => getSignal(id) !== undefined)).toBe(true);
-    for (const language of LANGUAGES) expect(problem.starterCode[language].length).toBeGreaterThan(0);
+    for (const language of LANGUAGES) expect(problem.starterCode[language]?.length ?? 0).toBeGreaterThan(0);
   });
 
   it("힌트는 4단계이고 감소율이 점점 커진다", () => {
@@ -109,9 +109,20 @@ describe.each(PROBLEMS.map((p) => [p.slug, p] as const))("문제 %s", (_, proble
     }
   });
 
-  it("Python·JavaScript 정답 코드 파일이 모두 있다", () => {
-    expect(existsSync(solutionPath(problem, "py")), solutionPath(problem, "py")).toBe(true);
-    expect(existsSync(solutionPath(problem, "js")), solutionPath(problem, "js")).toBe(true);
+  it("Python·JavaScript·Java 정답 코드 파일이 모두 있다", () => {
+    for (const ext of ["py", "js", "java"] as const) {
+      expect(existsSync(solutionPath(problem, ext)), solutionPath(problem, ext)).toBe(true);
+    }
+  });
+
+  it("Java 시그니처·시작 코드가 서로 맞다 (큐레이션 문제는 Java를 모두 지원)", () => {
+    const java = problem.starterCode.java ?? "";
+    expect(java).toContain("class Solution");
+    for (const param of problem.signature.params) {
+      expect(param.type.java, param.name).toBeTruthy();
+      expect(java).toContain(`${param.type.java} ${param.name}`);
+    }
+    expect(java).toContain(`public ${problem.signature.returns.type.java} solution(`);
   });
 
   it("JavaScript 정답 코드가 모든 테스트케이스를 통과한다", () => {

@@ -19,14 +19,27 @@ export const dequeSteadySignal: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "signal", type: { python: "list[int]", javascript: "number[]" }, description: "신호 세기" },
-      { name: "limit", type: { python: "int", javascript: "number" }, description: "허용 차이" },
+      {
+        name: "signal",
+        type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+        description: "신호 세기",
+      },
+      { name: "limit", type: { python: "int", javascript: "number", java: "int" }, description: "허용 차이" },
     ],
-    returns: { type: { python: "int", javascript: "number" }, description: "가장 긴 구간 길이" },
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "가장 긴 구간 길이" },
   },
   starterCode: {
     python: ["def solution(signal, limit):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(signal, limit) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(int[] signal, int limit) {",
+      "        int answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -173,6 +186,14 @@ export const dequeSteadySignal: Problem = {
             "  left += 1;",
             "  if (maxq[maxHead] < left) maxHead += 1;",
             "  if (______) minHead += 1;",
+            "}",
+            "best = Math.max(best, right - left + 1);",
+          ].join("\n"),
+          java: [
+            "while (signal[maxq.peekFirst()] - signal[minq.peekFirst()] > limit) {",
+            "    left++;",
+            "    if (maxq.peekFirst() < left) maxq.pollFirst();",
+            "    if (______) minq.pollFirst();",
             "}",
             "best = Math.max(best, right - left + 1);",
           ].join("\n"),

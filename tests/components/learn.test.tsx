@@ -90,14 +90,16 @@ describe("ConceptCardDeck", () => {
     }
   });
 
-  it("코드 예시는 고른 언어로 보여 주고, 고른 언어를 기억한다", () => {
+  it("코드 예시는 주력 언어로 시작하고, 카드에서 바꾼 언어는 주력 언어를 바꾸지 않는다", () => {
+    useSettingsStore.getState().setLanguage("java");
     render(<ConceptCardDeck topic={stack} onFinish={() => {}} />);
     const withCode = cards.findIndex((card) => card.code);
     fireEvent.click(screen.getByRole("button", { name: new RegExp(`^${withCode + 1}번째 카드`) }));
-    expect(document.querySelector("pre")?.textContent).toContain("stack.append");
+    expect(document.querySelector("pre")?.textContent).toContain("ArrayDeque");
     fireEvent.click(screen.getByRole("radio", { name: "JavaScript" }));
     expect(document.querySelector("pre")?.textContent).toContain("stack.push");
-    expect(useSettingsStore.getState().language).toBe("javascript");
+    expect(useSettingsStore.getState().language).toBe("java");
+    useSettingsStore.getState().setLanguage("python");
   });
 });
 

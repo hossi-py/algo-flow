@@ -23,14 +23,27 @@ export const bfsSafeDial: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "target", type: { python: "str", javascript: "string" }, description: "비밀번호" },
-      { name: "jammed", type: { python: "list[str]", javascript: "string[]" }, description: "걸리는 조합 목록" },
+      { name: "target", type: { python: "str", javascript: "string", java: "String" }, description: "비밀번호" },
+      {
+        name: "jammed",
+        type: { python: "list[str]", javascript: "string[]", java: "String[]" },
+        description: "걸리는 조합 목록",
+      },
     ],
-    returns: { type: { python: "int", javascript: "number" }, description: "최소 회전 횟수" },
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "최소 회전 횟수" },
   },
   starterCode: {
     python: ["def solution(target, jammed):", "    answer = -1", "    return answer", ""].join("\n"),
     javascript: ["function solution(target, jammed) {", "  let answer = -1;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(String target, String[] jammed) {",
+      "        int answer = -1;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -195,8 +208,21 @@ export const bfsSafeDial: Problem = {
             "  }",
             "}",
           ].join("\n"),
+          java: [
+            "for (int i = 0; i < 4; i++) {",
+            "    for (int d : new int[] {1, 9}) {   // -1 대신 +9 하면 음수가 안 나와요",
+            "        int digit = (s.charAt(i) - '0' + d) % 10;",
+            "        String t = s.substring(0, i) + digit + s.substring(i + 1);",
+            "        if (!blocked.contains(t) && ______) {",
+            "            dist.put(t, dist.get(s) + 1);",
+            "            queue.offer(t);",
+            "        }",
+            "    }",
+            "}",
+          ].join("\n"),
         },
-        caption: "Python의 %는 음수에도 0 ~ 9를 주지만, JavaScript의 %는 -1을 줄 수 있어요.",
+        caption:
+          "Python의 %는 음수에도 0 ~ 9를 주지만, JavaScript의 %는 -1을 줄 수 있어요. 걸리는 조합은 Set<String> blocked = new HashSet<>(Arrays.asList(jammed))에, 거리는 Map<String, Integer> dist에 담아요. Java의 %도 음수를 줄 수 있어요.",
       },
       xpPenaltyRate: 0.5,
     },

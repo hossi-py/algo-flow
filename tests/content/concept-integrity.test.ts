@@ -12,15 +12,18 @@ describe("개념 카드", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it.each(WITH_CONCEPT.map((t) => [t.slug, t] as const))("%s: 카드 4–6장, 핵심 포인트와 코드가 제대로 있다", (_, topic) => {
-    const { cards } = topic.concept;
-    expect(cards.length).toBeGreaterThanOrEqual(4);
-    expect(cards.length).toBeLessThanOrEqual(6);
-    for (const card of cards) {
-      expect(card.keyPoints.length, card.id).toBeGreaterThan(0);
-      if (card.code) for (const language of LANGUAGES) expect(card.code.code[language].trim(), card.id).not.toBe("");
-    }
-  });
+  it.each(WITH_CONCEPT.map((t) => [t.slug, t] as const))(
+    "%s: 카드 4–6장, 핵심 포인트와 코드가 제대로 있다",
+    (_, topic) => {
+      const { cards } = topic.concept;
+      expect(cards.length).toBeGreaterThanOrEqual(4);
+      expect(cards.length).toBeLessThanOrEqual(6);
+      for (const card of cards) {
+        expect(card.keyPoints.length, card.id).toBeGreaterThan(0);
+        if (card.code) for (const language of LANGUAGES) expect(card.code.code[language]?.trim(), card.id).toBeTruthy();
+      }
+    },
+  );
 });
 
 describe("유형 인식 퀴즈", () => {

@@ -18,12 +18,26 @@ export const backtrackingBracketStrings: Problem = {
   constraints: ["1 ≤ n ≤ 8"],
   signature: {
     name: "solution",
-    params: [{ name: "n", type: { python: "int", javascript: "number" }, description: "괄호 쌍의 수" }],
-    returns: { type: { python: "list[str]", javascript: "string[]" }, description: "짝 맞는 괄호열" },
+    params: [{ name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "괄호 쌍의 수" }],
+    returns: {
+      type: { python: "list[str]", javascript: "string[]", java: "List<String>" },
+      description: "짝 맞는 괄호열",
+    },
   },
   starterCode: {
     python: ["def solution(n):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(n) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<String> solution(int n) {",
+      "        List<String> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -166,6 +180,9 @@ export const backtrackingBracketStrings: Problem = {
             'if (open < n) make(s + "(", open + 1, close);',
             'if (______) make(s + ")", open, close + 1);',
           ].join("\n"),
+          java: ['if (open < n) make(s + "(", open + 1, close);', 'if (______) make(s + ")", open, close + 1);'].join(
+            "\n",
+          ),
         },
       },
       xpPenaltyRate: 0.5,

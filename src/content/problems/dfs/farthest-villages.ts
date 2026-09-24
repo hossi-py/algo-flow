@@ -19,14 +19,27 @@ export const dfsFarthestVillages: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "마을 수" },
-      { name: "roads", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "도로 목록" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "마을 수" },
+      {
+        name: "roads",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "도로 목록",
+      },
     ],
-    returns: { type: { python: "int", javascript: "number" }, description: "가장 먼 거리" },
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "가장 먼 거리" },
   },
   starterCode: {
     python: ["def solution(n, roads):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, roads) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(int n, int[][] roads) {",
+      "        int answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -205,6 +218,14 @@ export const dfsFarthestVillages: Problem = {
             "  for (const w of graph[v]) {",
             "    if (______) dfs(w, v, d + 1);",
             "  }",
+            "}",
+          ].join("\n"),
+          java: [
+            "void dfs(int v, int parent, int d) {",
+            "    dist[v] = d;",
+            "    for (int w : graph.get(v)) {",
+            "        if (______) dfs(w, v, d + 1);",
+            "    }",
             "}",
           ].join("\n"),
         },

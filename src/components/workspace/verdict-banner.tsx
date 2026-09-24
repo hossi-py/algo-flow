@@ -37,13 +37,18 @@ function copyFor(result: JudgeResult): BannerCopy {
         mood: "oops",
         tone: "bg-danger text-danger-foreground",
       };
-    case "runtime-error":
+    case "runtime-error": {
+      // 브라우저 Java는 줄 번호를 알려 주지 못해서, 그때는 아래 오류 설명을 보라고 안내한다
+      const hasLine = result.results.some((r) => r.error?.line != null);
       return {
         title: "실행 중에 오류가 났어요",
-        message: "오류가 난 줄이 에디터에 빨간 밑줄로 표시돼요. 인덱스 범위나 빈 값을 확인해 보세요.",
+        message: hasLine
+          ? "오류가 난 줄이 에디터에 빨간 밑줄로 표시돼요. 인덱스 범위나 빈 값을 확인해 보세요."
+          : "아래 오류 설명에서 어느 함수에서 났는지 확인해 보세요. 인덱스 범위나 빈 값을 확인해 보세요.",
         mood: "oops",
         tone: "bg-danger text-danger-foreground",
       };
+    }
     case "time-limit-exceeded":
       return {
         title: "시간이 너무 오래 걸렸어요",
@@ -54,7 +59,7 @@ function copyFor(result: JudgeResult): BannerCopy {
     case "syntax-error":
       return {
         title: "문법 오류가 있어요",
-        message: "괄호 짝, 콜론(:), 들여쓰기를 확인해 보세요. 오류 위치를 에디터에 표시했어요.",
+        message: "괄호 짝, 콜론(:)이나 세미콜론(;), 들여쓰기를 확인해 보세요. 오류 위치를 에디터에 표시했어요.",
         mood: "thinking",
         tone: "bg-warning text-warning-foreground",
       };

@@ -20,8 +20,17 @@ export const stackTallerNeighbor: Problem = {
   constraints: ["1 ≤ heights의 길이 ≤ 100,000", "1 ≤ 각 키 ≤ 1,000,000,000"],
   signature: {
     name: "solution",
-    params: [{ name: "heights", type: { python: "list[int]", javascript: "number[]" }, description: "해바라기 키" }],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "왼쪽의 더 큰 해바라기 번호" },
+    params: [
+      {
+        name: "heights",
+        type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+        description: "해바라기 키",
+      },
+    ],
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+      description: "왼쪽의 더 큰 해바라기 번호",
+    },
   },
   starterCode: {
     python: ["def solution(heights):", "    answer = [0] * len(heights)", "    return answer", ""].join("\n"),
@@ -29,6 +38,15 @@ export const stackTallerNeighbor: Problem = {
       "function solution(heights) {",
       "  let answer = new Array(heights.length).fill(0);",
       "  return answer;",
+      "}",
+      "",
+    ].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int[] solution(int[] heights) {",
+      "        int[] answer = new int[heights.length];",
+      "        return answer;",
+      "    }",
       "}",
       "",
     ].join("\n"),
@@ -167,6 +185,13 @@ export const stackTallerNeighbor: Problem = {
             "  answer[i] = stack.length > 0 ? stack[stack.length - 1] + 1 : 0;",
             "  stack.push(i);",
             "});",
+          ].join("\n"),
+          java: [
+            "for (int i = 0; i < heights.length; i++) {",
+            "    while (!stack.isEmpty() && ______) stack.pop();",
+            "    answer[i] = stack.isEmpty() ? 0 : stack.peek() + 1;",
+            "    stack.push(i);",
+            "}",
           ].join("\n"),
         },
       },

@@ -19,12 +19,27 @@ export const bfsMazeShortest: Problem = {
   constraints: ["1 ≤ 행 수, 열 수 ≤ 100", "각 문자는 'S', 'E', '.', '#' 중 하나예요."],
   signature: {
     name: "solution",
-    params: [{ name: "maze", type: { python: "list[str]", javascript: "string[]" }, description: "미로 지도" }],
-    returns: { type: { python: "int", javascript: "number" }, description: "최소 이동 횟수" },
+    params: [
+      {
+        name: "maze",
+        type: { python: "list[str]", javascript: "string[]", java: "String[]" },
+        description: "미로 지도",
+      },
+    ],
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "최소 이동 횟수" },
   },
   starterCode: {
     python: ["def solution(maze):", "    answer = -1", "    return answer", ""].join("\n"),
     javascript: ["function solution(maze) {", "  let answer = -1;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(String[] maze) {",
+      "        int answer = -1;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -180,7 +195,17 @@ export const bfsMazeShortest: Problem = {
             "  }",
             "}",
           ].join("\n"),
+          java: [
+            "for (int[] d : new int[][] {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}) {",
+            "    int nr = r + d[0], nc = c + d[1];",
+            "    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && maze[nr].charAt(nc) != '#' && dist[nr][nc] == -1) {",
+            "        dist[nr][nc] = ______;",
+            "        queue.offer(new int[] {nr, nc});",
+            "    }",
+            "}",
+          ].join("\n"),
         },
+        caption: "격자 칸은 new int[] {r, c}로 큐에 넣고, 칸 문자는 grid[r].charAt(c)로 읽어요.",
       },
       xpPenaltyRate: 0.5,
     },

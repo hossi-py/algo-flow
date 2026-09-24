@@ -25,16 +25,27 @@ export const queueRoundKitchen: Problem = {
     params: [
       {
         name: "dishes",
-        type: { python: "list[list]", javascript: "Array<[string, number]>" },
+        type: { python: "list[list]", javascript: "Array<[string, number]>", java: "Object[][]" },
         description: "[이름, 굽는 시간] 목록",
       },
-      { name: "q", type: { python: "int", javascript: "number" }, description: "한 번에 굽는 최대 시간" },
+      { name: "q", type: { python: "int", javascript: "number", java: "int" }, description: "한 번에 굽는 최대 시간" },
     ],
-    returns: { type: { python: "list[str]", javascript: "string[]" }, description: "완성 순서" },
+    returns: { type: { python: "list[str]", javascript: "string[]", java: "List<String>" }, description: "완성 순서" },
   },
   starterCode: {
     python: ["def solution(dishes, q):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(dishes, q) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<String> solution(Object[][] dishes, int q) {",
+      "        List<String> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -194,7 +205,17 @@ export const queueRoundKitchen: Problem = {
             "  else ______;",
             "}",
           ].join("\n"),
+          java: [
+            "while (!line.isEmpty()) {",
+            "    Object[] dish = line.poll();",
+            "    String name = (String) dish[0];",
+            "    int left = (int) dish[1];",
+            "    if (left - q <= 0) done.add(name);",
+            "    else ______;",
+            "}",
+          ].join("\n"),
         },
+        caption: "요리 이름(문자열)과 시간(정수)이 섞여 있어서 Object[]로 받고, 꺼낼 때 (String) · (int)로 바꿔요.",
       },
       xpPenaltyRate: 0.5,
     },

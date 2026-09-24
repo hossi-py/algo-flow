@@ -104,3 +104,23 @@ describe("코치 스트림 가드 — 사용자 머리줄 재사용", () => {
     expect(stream(text, { userCode, hintsOpened: 1 }).violation).toBeNull();
   });
 });
+
+describe("코치 스트림 가드 (Java)", () => {
+  it("Java solution 메서드 정의를 막는다", () => {
+    const text = "이렇게 해 보세요:\n```java\npublic int solution(int[] a) {\n    return a.length;\n}\n```";
+    const { shown, violation } = stream(text, { hintsOpened: 4 });
+    expect(violation?.kind).toBe("full-solution");
+    expect(shown).not.toContain("public int solution");
+  });
+
+  it("class Solution 전체를 쓰는 것도 막는다", () => {
+    const { violation } = stream("```java\nclass Solution {\n}\n```", { hintsOpened: 4 });
+    expect(violation?.kind).toBe("full-solution");
+  });
+
+  it("재귀 호출 한 줄(return solution(...))은 정의로 보지 않는다", () => {
+    const text = "이 줄이 한 단계 작은 호출이에요:\n```java\nreturn solution(b, a % b);\n```";
+    const { violation } = stream(text, { hintsOpened: 4 });
+    expect(violation).toBeNull();
+  });
+});

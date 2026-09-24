@@ -18,12 +18,23 @@ export const stackTwinBalloons: Problem = {
   constraints: ["1 ≤ balloons의 길이 ≤ 100,000"],
   signature: {
     name: "solution",
-    params: [{ name: "balloons", type: { python: "str", javascript: "string" }, description: "풍선 글자" }],
-    returns: { type: { python: "str", javascript: "string" }, description: "남은 풍선" },
+    params: [
+      { name: "balloons", type: { python: "str", javascript: "string", java: "String" }, description: "풍선 글자" },
+    ],
+    returns: { type: { python: "str", javascript: "string", java: "String" }, description: "남은 풍선" },
   },
   starterCode: {
     python: ["def solution(balloons):", '    answer = ""', "    return answer", ""].join("\n"),
     javascript: ["function solution(balloons) {", '  let answer = "";', "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public String solution(String balloons) {",
+      '        String answer = "";',
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -151,7 +162,14 @@ export const stackTwinBalloons: Problem = {
             "  else stack.push(c);",
             "}",
           ].join("\n"),
+          java: [
+            "for (char c : balloons.toCharArray()) {",
+            "    if (stack.length() > 0 && ______) stack.deleteCharAt(stack.length() - 1);",
+            "    else stack.append(c);",
+            "}",
+          ].join("\n"),
         },
+        caption: "StringBuilder의 끝을 스택의 꼭대기로 써요.",
       },
       xpPenaltyRate: 0.5,
     },

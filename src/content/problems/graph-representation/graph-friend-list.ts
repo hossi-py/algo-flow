@@ -25,14 +25,32 @@ export const graphFriendList: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "학생 수" },
-      { name: "pairs", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "친구 관계" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "학생 수" },
+      {
+        name: "pairs",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "친구 관계",
+      },
     ],
-    returns: { type: { python: "list[list[int]]", javascript: "number[][]" }, description: "학생별 친구 목록" },
+    returns: {
+      type: { python: "list[list[int]]", javascript: "number[][]", java: "List<List<Integer>>" },
+      description: "학생별 친구 목록",
+    },
   },
   starterCode: {
     python: ["def solution(n, pairs):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, pairs) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<List<Integer>> solution(int n, int[][] pairs) {",
+      "        List<List<Integer>> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -194,7 +212,18 @@ export const graphFriendList: Problem = {
             "}",
             "for (const friends of graph) friends.sort((p, q) => p - q);",
           ].join("\n"),
+          java: [
+            "List<List<Integer>> graph = new ArrayList<>();",
+            "for (int i = 0; i < n; i++) graph.add(new ArrayList<>());",
+            "for (int[] p : pairs) {",
+            "    graph.get(p[0]).add(p[1]);",
+            "    ______;",
+            "}",
+            "for (List<Integer> friends : graph) Collections.sort(friends);",
+          ].join("\n"),
         },
+        caption:
+          "Java의 인접 리스트: List<List<Integer>> graph = new ArrayList<>(); 에 빈 리스트를 n개 넣어 두고 graph.get(a).add(b)로 이어요.",
       },
       xpPenaltyRate: 0.5,
     },

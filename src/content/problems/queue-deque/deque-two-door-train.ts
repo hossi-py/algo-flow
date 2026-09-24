@@ -24,12 +24,32 @@ export const dequeTwoDoorTrain: Problem = {
   constraints: ["1 ≤ commands의 길이 ≤ 100,000", "1 ≤ x ≤ 1,000,000"],
   signature: {
     name: "solution",
-    params: [{ name: "commands", type: { python: "list[str]", javascript: "string[]" }, description: "승객 기록" }],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "앞에서부터의 승객 번호" },
+    params: [
+      {
+        name: "commands",
+        type: { python: "list[str]", javascript: "string[]", java: "String[]" },
+        description: "승객 기록",
+      },
+    ],
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "List<Integer>" },
+      description: "앞에서부터의 승객 번호",
+    },
   },
   starterCode: {
     python: ["def solution(commands):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(commands) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<Integer> solution(String[] commands) {",
+      "        List<Integer> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -125,6 +145,7 @@ export const dequeTwoDoorTrain: Problem = {
       body: [
         "- Python: `collections.deque`의 `appendleft`, `append`, `popleft`, `pop`이 모두 O(1)이에요.",
         "- JavaScript: 배열의 `unshift`는 O(N)이라 느려요. 앞쪽 전용 배열과 뒤쪽 전용 배열 두 개로 덱을 흉내 내거나, 충분히 큰 배열 가운데서 시작하는 **head·tail 번호** 두 개를 쓰면 O(1)이 돼요.",
+        "- Java: `ArrayDeque`의 `offerFirst` · `offerLast` · `pollFirst` · `pollLast`가 모두 O(1)이에요.",
       ].join("\n"),
       xpPenaltyRate: 0.15,
     },
@@ -148,7 +169,7 @@ export const dequeTwoDoorTrain: Problem = {
       step: 4,
       kind: "key-code",
       title: "핵심 코드",
-      body: ["JS는 가운데서 시작하는 배열로 덱을 만들어요. 빈칸을 채워 보세요."].join("\n"),
+      body: ["JS는 가운데서 시작하는 배열로, Java는 `ArrayDeque`로 덱을 만들어요. 빈칸을 채워 보세요."].join("\n"),
       code: {
         code: {
           python: [
@@ -169,7 +190,19 @@ export const dequeTwoDoorTrain: Problem = {
             "// push_back x",
             "______;",
           ].join("\n"),
+          java: [
+            "Deque<Integer> train = new ArrayDeque<>();",
+            "// push_front x",
+            "train.offerFirst(x);",
+            "// push_back x",
+            "______;",
+            "// pop_front / pop_back (비어 있으면 poll은 null을 돌려줘서 괜찮아요)",
+            "train.pollFirst();",
+            "train.pollLast();",
+          ].join("\n"),
         },
+        caption:
+          "Java의 ArrayDeque는 앞뒤 모두 O(1)이에요: offerFirst · offerLast · pollFirst · pollLast · peekFirst · peekLast.",
       },
       xpPenaltyRate: 0.5,
     },

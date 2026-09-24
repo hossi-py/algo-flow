@@ -26,17 +26,32 @@ export const dfsCaveOrder: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "방의 수" },
-      { name: "tunnels", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "굴 목록" },
-      { name: "start", type: { python: "int", javascript: "number" }, description: "출발 방" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "방의 수" },
+      {
+        name: "tunnels",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "굴 목록",
+      },
+      { name: "start", type: { python: "int", javascript: "number", java: "int" }, description: "출발 방" },
     ],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "방문 순서" },
+    returns: { type: { python: "list[int]", javascript: "number[]", java: "List<Integer>" }, description: "방문 순서" },
   },
   starterCode: {
     python: ["def solution(n, tunnels, start):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, tunnels, start) {", "  let answer = [];", "  return answer;", "}", ""].join(
       "\n",
     ),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<Integer> solution(int n, int[][] tunnels, int start) {",
+      "        List<Integer> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -215,7 +230,17 @@ export const dfsCaveOrder: Problem = {
             "  }",
             "}",
           ].join("\n"),
+          java: [
+            "void dfs(int v) {",
+            "    visited[v] = true;",
+            "    order.add(v);",
+            "    for (int w : graph.get(v)) {",
+            "        if (______) dfs(w);",
+            "    }",
+            "}",
+          ].join("\n"),
         },
+        caption: "Java에서는 graph · visited처럼 dfs가 함께 쓰는 값을 Solution의 필드로 두면 편해요.",
       },
       xpPenaltyRate: 0.5,
     },

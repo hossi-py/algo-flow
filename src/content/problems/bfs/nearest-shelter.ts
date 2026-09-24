@@ -24,15 +24,30 @@ export const bfsNearestShelter: Problem = {
   constraints: ["1 ≤ 행 수, 열 수 ≤ 100", "각 문자는 'H', '.', '#' 중 하나예요."],
   signature: {
     name: "solution",
-    params: [{ name: "city", type: { python: "list[str]", javascript: "string[]" }, description: "도시 지도" }],
+    params: [
+      {
+        name: "city",
+        type: { python: "list[str]", javascript: "string[]", java: "String[]" },
+        description: "도시 지도",
+      },
+    ],
     returns: {
-      type: { python: "list[list[int]]", javascript: "number[][]" },
+      type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
       description: "칸별 가장 가까운 대피소 거리",
     },
   },
   starterCode: {
     python: ["def solution(city):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(city) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int[][] solution(String[] city) {",
+      "        int[][] answer = new int[city.length][city[0].length()];",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -199,7 +214,17 @@ export const bfsNearestShelter: Problem = {
             "  }",
             "}",
           ].join("\n"),
+          java: [
+            "for (int[] d : new int[][] {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}) {",
+            "    int nr = r + d[0], nc = c + d[1];",
+            "    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && ______) {",
+            "        dist[nr][nc] = dist[r][c] + 1;",
+            "        queue.offer(new int[] {nr, nc});",
+            "    }",
+            "}",
+          ].join("\n"),
         },
+        caption: "격자 칸은 new int[] {r, c}로 큐에 넣고, 칸 문자는 grid[r].charAt(c)로 읽어요.",
       },
       xpPenaltyRate: 0.5,
     },

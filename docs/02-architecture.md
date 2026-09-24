@@ -83,6 +83,14 @@
 - `sys.setrecursionlimit(judge.recursionLimit)` (기본 3000). 재귀 DFS 문제는 제약을 깊이 1,000 이하로 설계.
 - 에러는 `{ type, message, line }`로 반환하고, 줄 번호는 사용자 코드 기준으로 보정.
 
+**Java** (`public/workers/java.worker.js`, 하네스 소스 `java-runtime/src/algoflow`)
+- CheerpJ 4.3(WebAssembly JVM, Java 11)을 classic 워커에서 `importScripts`로 불러오고, `cheerpjRunLibrary`로 하네스 jar와 ECJ jar를 한 클래스패스로 올린다 (워커당 한 번만 부를 수 있다).
+- 컴파일: ECJ `-11`. CheerpJ 런타임에는 `lib/jrt-fs.jar`가 없어 ECJ가 시스템 라이브러리를 못 찾으므로, `/files/jdk`에 실행 중인 JVM과 같은 버전의 `release` 파일과 빈 `jrt-fs.jar`를 만들어 `--system`으로 넘긴다. 그러면 ECJ가 JVM 자체의 `jrt:/` 파일 시스템을 쓴다.
+- 코드가 바뀔 때만 새 폴더(`/files/runN`)에 컴파일하고, 케이스마다 새 `URLClassLoader`로 불러온 `Solution`의 `solution` 메서드를 리플렉션으로 호출한다. 인자는 매개변수의 제네릭 타입을 보고 JSON에서 변환한다 (`int[]`, `int[][]`, `String[]`, `List<Integer>`, `long`, `Object[]` 등). 반환값은 배열·컬렉션·Map·박싱 타입을 JSON으로 바꾸고, 정수는 ±2^53 안이어야 한다.
+- `System.out`/`err`는 케이스마다 64KB 버퍼로 바꿔 캡처한다.
+- CheerpJ는 JS 스택 위에서 돌아 재귀 깊이 약 2,000까지 안전하다 (Java 모범 답안 70개를 브라우저에서 모두 돌려 확인). 스택이 넘치면 메시지 없는 `ArithmeticException`이 나서 이를 스택 초과로 바꿔 안내한다. 예외에 메시지·줄 번호가 없는 경우가 많아, 흔한 예외는 쉬운 설명과 발생 메서드 이름으로 채운다.
+- 같은 하네스를 Node 검증(`scripts/java-tools.ts`, 진짜 JDK)에서도 쓴다. JVM과 CheerpJ는 속도가 달라 Node 검증은 정답 여부만 보고, 속도는 브라우저에서 따로 확인했다.
+
 ### 2.3 워커 메시지 프로토콜 (요약, 타입은 04 문서)
 ```
 main → worker : init | run-case
@@ -278,7 +286,7 @@ algo-flow/
 | 폰트 | `pretendard` (로컬), `next/font/google`(JetBrains Mono) |
 | 레이아웃 | `react-resizable-panels` (shadcn `Resizable`) |
 | 에디터 | `@monaco-editor/react` |
-| 실행 | `pyodide` (브라우저는 CDN 로드, Node는 npm 패키지). JavaScript는 추가 의존성 없음 |
+| 실행 | `pyodide` (브라우저는 CDN 로드, Node는 npm 패키지). JavaScript는 추가 의존성 없음. Java는 CheerpJ 4.3(CDN) + ECJ 3.26(`public/java/ecj.jar`) |
 | 상태 | `zustand` |
 | AI | `@anthropic-ai/sdk` (공식 SDK, Step 5 확정), `zod` |
 | DB | `@supabase/supabase-js`, `@supabase/ssr` |

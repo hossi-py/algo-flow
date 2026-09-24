@@ -25,15 +25,33 @@ export const graphStationNeighbors: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "역의 수" },
-      { name: "edges", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "선로 목록" },
-      { name: "x", type: { python: "int", javascript: "number" }, description: "알고 싶은 역" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "역의 수" },
+      {
+        name: "edges",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "선로 목록",
+      },
+      { name: "x", type: { python: "int", javascript: "number", java: "int" }, description: "알고 싶은 역" },
     ],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "이웃 역 (오름차순)" },
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "List<Integer>" },
+      description: "이웃 역 (오름차순)",
+    },
   },
   starterCode: {
     python: ["def solution(n, edges, x):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, edges, x) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<Integer> solution(int n, int[][] edges, int x) {",
+      "        List<Integer> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -195,8 +213,17 @@ export const graphStationNeighbors: Problem = {
             "}",
             "return result.sort((p, q) => p - q);",
           ].join("\n"),
+          java: [
+            "for (int[] e : edges) {",
+            "    if (e[0] == x) result.add(e[1]);",
+            "    else if (______) result.add(e[0]);",
+            "}",
+            "Collections.sort(result);",
+            "return result;",
+          ].join("\n"),
         },
-        caption: "JS의 sort()는 숫자도 글자처럼 정렬해요. (p, q) => p - q 를 꼭 넣으세요.",
+        caption:
+          "JS의 sort()는 숫자도 글자처럼 정렬해요. (p, q) => p - q 를 꼭 넣으세요. 간선 하나는 int[] e = {a, b}로 들어와요. e[0]이 a, e[1]이 b예요.",
       },
       xpPenaltyRate: 0.5,
     },

@@ -19,13 +19,31 @@ export const graphFamilyTree: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "parent", type: { python: "list[int]", javascript: "number[]" }, description: "부모 번호 (조상은 -1)" },
+      {
+        name: "parent",
+        type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+        description: "부모 번호 (조상은 -1)",
+      },
     ],
-    returns: { type: { python: "list[list[int]]", javascript: "number[][]" }, description: "사람별 자녀 목록" },
+    returns: {
+      type: { python: "list[list[int]]", javascript: "number[][]", java: "List<List<Integer>>" },
+      description: "사람별 자녀 목록",
+    },
   },
   starterCode: {
     python: ["def solution(parent):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(parent) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<List<Integer>> solution(int[] parent) {",
+      "        List<List<Integer>> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -149,6 +167,13 @@ export const graphFamilyTree: Problem = {
             "parent.forEach((p, i) => {",
             "  if (p !== -1) ______;",
             "});",
+          ].join("\n"),
+          java: [
+            "List<List<Integer>> children = new ArrayList<>();",
+            "for (int i = 0; i < parent.length; i++) children.add(new ArrayList<>());",
+            "for (int i = 0; i < parent.length; i++) {",
+            "    if (parent[i] != -1) ______;",
+            "}",
           ].join("\n"),
         },
       },

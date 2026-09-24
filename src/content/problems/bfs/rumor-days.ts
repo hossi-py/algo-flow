@@ -20,12 +20,27 @@ export const bfsRumorDays: Problem = {
   constraints: ["1 ≤ 행 수, 열 수 ≤ 100", "각 문자는 'R', 'P', '.' 중 하나예요."],
   signature: {
     name: "solution",
-    params: [{ name: "town", type: { python: "list[str]", javascript: "string[]" }, description: "마을 지도" }],
-    returns: { type: { python: "int", javascript: "number" }, description: "모두 알게 되는 날" },
+    params: [
+      {
+        name: "town",
+        type: { python: "list[str]", javascript: "string[]", java: "String[]" },
+        description: "마을 지도",
+      },
+    ],
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "모두 알게 되는 날" },
   },
   starterCode: {
     python: ["def solution(town):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(town) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(String[] town) {",
+      "        int answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -184,7 +199,19 @@ export const bfsRumorDays: Problem = {
             "  }",
             "}",
           ].join("\n"),
+          java: [
+            "Queue<int[]> queue = new ArrayDeque<>();",
+            "for (int r = 0; r < rows; r++) {",
+            "    for (int c = 0; c < cols; c++) {",
+            "        if (______) {",
+            "            dist[r][c] = 0;",
+            "            queue.offer(new int[] {r, c});",
+            "        }",
+            "    }",
+            "}",
+          ].join("\n"),
         },
+        caption: "격자 칸은 new int[] {r, c}로 큐에 넣고, 칸 문자는 grid[r].charAt(c)로 읽어요.",
       },
       xpPenaltyRate: 0.5,
     },

@@ -21,13 +21,26 @@ export const dfsTeamSize: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "boss", type: { python: "list[int]", javascript: "number[]" }, description: "바로 위 상사 (대표는 -1)" },
+      {
+        name: "boss",
+        type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+        description: "바로 위 상사 (대표는 -1)",
+      },
     ],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "직원별 팀 인원 수" },
+    returns: { type: { python: "list[int]", javascript: "number[]", java: "int[]" }, description: "직원별 팀 인원 수" },
   },
   starterCode: {
     python: ["def solution(boss):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(boss) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int[] solution(int[] boss) {",
+      "        int[] answer = new int[boss.length];",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -160,7 +173,16 @@ export const dfsTeamSize: Problem = {
             "  return total;",
             "}",
           ].join("\n"),
+          java: [
+            "int dfs(int v) {",
+            "    int total = 1;",
+            "    for (int w : children.get(v)) total += ______;",
+            "    sizes[v] = total;",
+            "    return total;",
+            "}",
+          ].join("\n"),
         },
+        caption: "Java에서는 graph · visited처럼 dfs가 함께 쓰는 값을 Solution의 필드로 두면 편해요.",
       },
       xpPenaltyRate: 0.5,
     },

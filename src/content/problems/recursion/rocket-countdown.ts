@@ -21,12 +21,26 @@ export const recursionRocketCountdown: Problem = {
   constraints: ["1 ≤ n ≤ 500"],
   signature: {
     name: "solution",
-    params: [{ name: "n", type: { python: "int", javascript: "number" }, description: "시작하는 수" }],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "카운트다운 목록" },
+    params: [{ name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "시작하는 수" }],
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "List<Integer>" },
+      description: "카운트다운 목록",
+    },
   },
   starterCode: {
     python: ["def solution(n):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(n) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<Integer> solution(int n) {",
+      "        List<Integer> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -127,6 +141,15 @@ export const recursionRocketCountdown: Problem = {
           javascript: ["function solution(n) {", "  if (n === 1) return [1];", "  return [n, ...______];", "}"].join(
             "\n",
           ),
+          java: [
+            "public List<Integer> solution(int n) {",
+            "    if (n == 1) return new ArrayList<>(List.of(1));",
+            "    List<Integer> answer = new ArrayList<>();",
+            "    answer.add(n);",
+            "    answer.addAll(______);",
+            "    return answer;",
+            "}",
+          ].join("\n"),
         },
       },
       xpPenaltyRate: 0.5,

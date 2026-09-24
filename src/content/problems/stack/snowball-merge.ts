@@ -20,12 +20,32 @@ export const stackSnowballMerge: Problem = {
   constraints: ["1 ≤ sizes의 길이 ≤ 100,000", "1 ≤ 각 크기 ≤ 1,000,000"],
   signature: {
     name: "solution",
-    params: [{ name: "sizes", type: { python: "list[int]", javascript: "number[]" }, description: "굴린 눈덩이 크기" }],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "최종 눈덩이 크기" },
+    params: [
+      {
+        name: "sizes",
+        type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+        description: "굴린 눈덩이 크기",
+      },
+    ],
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "List<Integer>" },
+      description: "최종 눈덩이 크기",
+    },
   },
   starterCode: {
     python: ["def solution(sizes):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(sizes) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<Integer> solution(int[] sizes) {",
+      "        List<Integer> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -171,7 +191,19 @@ export const stackSnowballMerge: Problem = {
             "  stack.push(ball);",
             "}",
           ].join("\n"),
+          java: [
+            "for (int size : sizes) {",
+            "    int ball = size;",
+            "    while (!stack.isEmpty() && stack.peek() == ball) {",
+            "        stack.pop();",
+            "        ball = ______;",
+            "    }",
+            "    stack.push(ball);",
+            "}",
+          ].join("\n"),
         },
+        caption:
+          "Deque<Integer>에서 꺼낸 값은 Integer예요. int와 ==로 비교하면 자동으로 풀려서 괜찮지만, Integer끼리는 equals를 써요.",
       },
       xpPenaltyRate: 0.5,
     },

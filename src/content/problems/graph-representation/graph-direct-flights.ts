@@ -19,17 +19,34 @@ export const graphDirectFlights: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "도시 수" },
-      { name: "flights", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "직항 목록" },
-      { name: "queries", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "질문 목록" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "도시 수" },
+      {
+        name: "flights",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "직항 목록",
+      },
+      {
+        name: "queries",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "질문 목록",
+      },
     ],
-    returns: { type: { python: "list[bool]", javascript: "boolean[]" }, description: "질문별 답" },
+    returns: { type: { python: "list[bool]", javascript: "boolean[]", java: "boolean[]" }, description: "질문별 답" },
   },
   starterCode: {
     python: ["def solution(n, flights, queries):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, flights, queries) {", "  let answer = [];", "  return answer;", "}", ""].join(
       "\n",
     ),
+    java: [
+      "class Solution {",
+      "    public boolean[] solution(int n, int[][] flights, int[][] queries) {",
+      "        boolean[] answer = new boolean[queries.length];",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -208,6 +225,12 @@ export const graphDirectFlights: Problem = {
             "const table = Array.from({ length: n }, () => new Array(n).fill(false));",
             "for (const [a, b] of flights) ______;",
             "return queries.map(([s, t]) => table[s][t]);",
+          ].join("\n"),
+          java: [
+            "boolean[][] table = new boolean[n][n];   // 처음엔 모두 false",
+            "for (int[] f : flights) ______;",
+            "boolean[] answer = new boolean[queries.length];",
+            "for (int i = 0; i < queries.length; i++) answer[i] = table[queries[i][0]][queries[i][1]];",
           ].join("\n"),
         },
       },

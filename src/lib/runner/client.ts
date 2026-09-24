@@ -1,7 +1,14 @@
 "use client";
 
 import type { JsonValue, JudgeConfig, Language, WorkerRequest, WorkerResponse } from "@/types";
-import { ENGINE_INIT_TIMEOUT_MS, PYODIDE_INDEX_URL, STDOUT_LIMIT } from "./config";
+import {
+  CHEERPJ_JAVA_VERSION,
+  CHEERPJ_LOADER_URL,
+  ENGINE_INIT_TIMEOUT_MS,
+  JAVA_IO_ALLOWANCE_MS,
+  PYODIDE_INDEX_URL,
+  STDOUT_LIMIT,
+} from "./config";
 import { PYTHON_HARNESS } from "./harness-python";
 import type { ExecOutcome } from "./judge";
 
@@ -26,6 +33,10 @@ function createWorker(language: Language): Worker {
   if (language === "python") {
     // Pyodide 314+는 module 워커가 필요한데 Turbopack은 워커를 classic으로 띄우므로, 번들하지 않은 정적 파일을 쓴다
     return new Worker("/workers/pyodide.worker.mjs", { type: "module", name: "pyodide" });
+  }
+  if (language === "java") {
+    // CheerpJ 로더를 importScripts로 불러야 해서 번들하지 않은 classic 워커를 쓴다
+    return new Worker("/workers/java.worker.js", { name: "java-runner" });
   }
   // new URL(..., import.meta.url) 형태여야 번들러가 워커를 별도 번들로 만든다
   return new Worker(new URL("../../workers/js.worker.ts", import.meta.url), { name: "js-runner" });
@@ -116,7 +127,9 @@ export class LanguageRunner {
     const initMessage: WorkerRequest =
       this.language === "python"
         ? { type: "init", indexURL: PYODIDE_INDEX_URL, harness: PYTHON_HARNESS }
-        : { type: "init" };
+        : this.language === "java"
+          ? { type: "init", indexURL: CHEERPJ_LOADER_URL, javaVersion: CHEERPJ_JAVA_VERSION }
+          : { type: "init" };
     worker.postMessage(initMessage);
 
     this.handle = { worker, ready, pending };
@@ -149,11 +162,14 @@ export class LanguageRunner {
     return new Promise<ExecOutcome>((resolve) => {
       const runId = `run-${++runSeq}`;
       const started = performance.now();
+      // 벽시계 제한: 브라우저 JVM(CheerpJ)은 큰 입력을 JSON에서 Java 값으로 바꾸는 데 시간이 걸려서 여유를 더 준다.
+      // 제한 시간 판정 자체는 하네스가 잰 순수 실행 시간(timeMs)으로 한다.
+      const wallLimitMs = judge.timeLimitMs + (this.language === "java" ? JAVA_IO_ALLOWANCE_MS : 0);
       const timer = window.setTimeout(() => {
         handle.pending.delete(runId);
         resolve({ kind: "timeout", timeMs: judge.timeLimitMs });
         this.replaceWorker(handle);
-      }, judge.timeLimitMs);
+      }, wallLimitMs);
 
       handle.pending.set(runId, (result) => {
         window.clearTimeout(timer);
@@ -161,7 +177,9 @@ export class LanguageRunner {
           resolve({ kind: "crash", message: result.crashed });
           return;
         }
-        if (result.ok) {
+        if (result.ok && result.timeMs > judge.timeLimitMs) {
+          resolve({ kind: "timeout", timeMs: judge.timeLimitMs });
+        } else if (result.ok) {
           resolve({ kind: "ok", value: result.value, stdout: result.stdout, timeMs: result.timeMs });
         } else {
           resolve({

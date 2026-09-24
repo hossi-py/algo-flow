@@ -20,15 +20,28 @@ export const dfsPowerRestore: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "집의 수" },
-      { name: "wires", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "전선 목록" },
-      { name: "plant", type: { python: "int", javascript: "number" }, description: "발전소 집" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "집의 수" },
+      {
+        name: "wires",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "전선 목록",
+      },
+      { name: "plant", type: { python: "int", javascript: "number", java: "int" }, description: "발전소 집" },
     ],
-    returns: { type: { python: "int", javascript: "number" }, description: "전기가 들어온 집 수" },
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "전기가 들어온 집 수" },
   },
   starterCode: {
     python: ["def solution(n, wires, plant):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, wires, plant) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(int n, int[][] wires, int plant) {",
+      "        int answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -191,7 +204,18 @@ export const dfsPowerRestore: Problem = {
             "  return count;",
             "}",
           ].join("\n"),
+          java: [
+            "int dfs(int v) {",
+            "    visited[v] = true;",
+            "    int count = 1;",
+            "    for (int w : graph.get(v)) {",
+            "        if (!visited[w]) count += ______;",
+            "    }",
+            "    return count;",
+            "}",
+          ].join("\n"),
         },
+        caption: "Java에서는 graph · visited처럼 dfs가 함께 쓰는 값을 Solution의 필드로 두면 편해요.",
       },
       xpPenaltyRate: 0.5,
     },

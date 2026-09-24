@@ -19,14 +19,32 @@ export const dequeWindowMax: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "temps", type: { python: "list[int]", javascript: "number[]" }, description: "날짜별 기온" },
-      { name: "k", type: { python: "int", javascript: "number" }, description: "묶음 길이" },
+      {
+        name: "temps",
+        type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+        description: "날짜별 기온",
+      },
+      { name: "k", type: { python: "int", javascript: "number", java: "int" }, description: "묶음 길이" },
     ],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "묶음별 최고 기온" },
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "List<Integer>" },
+      description: "묶음별 최고 기온",
+    },
   },
   starterCode: {
     python: ["def solution(temps, k):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(temps, k) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<Integer> solution(int[] temps, int k) {",
+      "        List<Integer> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -168,8 +186,17 @@ export const dequeWindowMax: Problem = {
             "  if (i >= k - 1) answer.push(temps[dq[head]]);",
             "});",
           ].join("\n"),
+          java: [
+            "for (int i = 0; i < temps.length; i++) {",
+            "    while (!dq.isEmpty() && ______) dq.pollLast();",
+            "    dq.offerLast(i);",
+            "    if (dq.peekFirst() <= i - k) dq.pollFirst();",
+            "    if (i >= k - 1) answer.add(temps[dq.peekFirst()]);",
+            "}",
+          ].join("\n"),
         },
-        caption: "JS는 크기 n인 배열 dq와 head·tail 번호로 덱을 만들었어요.",
+        caption:
+          "JS는 크기 n인 배열 dq와 head·tail 번호로 덱을 만들었어요. 덱에는 온도가 아니라 날짜 번호(인덱스)를 넣어요. Deque<Integer> dq = new ArrayDeque<>().",
       },
       xpPenaltyRate: 0.5,
     },

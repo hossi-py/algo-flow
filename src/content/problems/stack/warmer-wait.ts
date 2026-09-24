@@ -20,8 +20,17 @@ export const stackWarmerWait: Problem = {
   constraints: ["1 ≤ temps의 길이 ≤ 100,000", "0 ≤ 각 온도 ≤ 1,000,000"],
   signature: {
     name: "solution",
-    params: [{ name: "temps", type: { python: "list[int]", javascript: "number[]" }, description: "날짜별 온도" }],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "날마다 기다리는 날 수" },
+    params: [
+      {
+        name: "temps",
+        type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+        description: "날짜별 온도",
+      },
+    ],
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+      description: "날마다 기다리는 날 수",
+    },
   },
   starterCode: {
     python: ["def solution(temps):", "    answer = [0] * len(temps)", "    return answer", ""].join("\n"),
@@ -29,6 +38,15 @@ export const stackWarmerWait: Problem = {
       "function solution(temps) {",
       "  let answer = new Array(temps.length).fill(0);",
       "  return answer;",
+      "}",
+      "",
+    ].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int[] solution(int[] temps) {",
+      "        int[] answer = new int[temps.length];",
+      "        return answer;",
+      "    }",
       "}",
       "",
     ].join("\n"),
@@ -162,6 +180,15 @@ export const stackWarmerWait: Problem = {
             "  }",
             "  stack.push(today);",
             "});",
+          ].join("\n"),
+          java: [
+            "for (int today = 0; today < temps.length; today++) {",
+            "    while (!stack.isEmpty() && ______ < temps[today]) {",
+            "        int day = stack.pop();",
+            "        answer[day] = today - day;",
+            "    }",
+            "    stack.push(today);",
+            "}",
           ].join("\n"),
         },
       },

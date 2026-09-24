@@ -5,7 +5,7 @@ import Editor, { loader, type BeforeMount, type OnMount } from "@monaco-editor/r
 import type { editor as MonacoEditor } from "monaco-editor";
 import { useTheme } from "next-themes";
 import { Nodi } from "@/components/mascot/nodi";
-import type { CodeError, Language } from "@/types";
+import { LANGUAGE_LABELS, type CodeError, type Language } from "@/types";
 import { ALGO_DARK_THEME, ALGO_LIGHT_THEME } from "./editor-theme";
 
 /** CDN에서 받는 Monaco 버전 고정 (devDependency monaco-editor와 같은 버전) */
@@ -136,7 +136,7 @@ export function CodeEditor({
         minimap: { enabled: false },
         scrollBeyondLastLine: false,
         automaticLayout: true,
-        tabSize: language === "python" ? 4 : 2,
+        tabSize: language === "javascript" ? 2 : 4,
         insertSpaces: true,
         padding: { top: 14, bottom: 14 },
         renderLineHighlight: "all",
@@ -149,7 +149,7 @@ export function CodeEditor({
         "semanticHighlighting.enabled": false,
         guides: { indentation: true, bracketPairs: false },
         scrollbar: { verticalScrollbarSize: 10, horizontalScrollbarSize: 10 },
-        ariaLabel: `${language === "python" ? "Python" : "JavaScript"} 코드 에디터`,
+        ariaLabel: `${LANGUAGE_LABELS[language]} 코드 에디터`,
       }}
     />
   );

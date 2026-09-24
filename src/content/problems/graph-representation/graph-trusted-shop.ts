@@ -24,14 +24,27 @@ export const graphTrustedShop: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "가게 수" },
-      { name: "recs", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "추천 목록" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "가게 수" },
+      {
+        name: "recs",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "추천 목록",
+      },
     ],
-    returns: { type: { python: "int", javascript: "number" }, description: "명가 번호 또는 -1" },
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "명가 번호 또는 -1" },
   },
   starterCode: {
     python: ["def solution(n, recs):", "    answer = -1", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, recs) {", "  let answer = -1;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(int n, int[][] recs) {",
+      "        int answer = -1;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -202,6 +215,9 @@ export const graphTrustedShop: Problem = {
             "}",
             "return -1;",
           ].join("\n"),
+          java: ["for (int x = 1; x <= n; x++) {", "    if (______ && out[x] == 0) return x;", "}", "return -1;"].join(
+            "\n",
+          ),
         },
       },
       xpPenaltyRate: 0.5,

@@ -15,7 +15,15 @@ import { celebrateBadges, LEVEL_CLEAR_DELAY_MS, useCelebrationStore } from "@/st
 import { useProgressStore } from "@/stores/progress-store";
 import { useSettingsStore } from "@/stores/settings-store";
 import { draftKey, useWorkspaceStore } from "@/stores/workspace-store";
-import type { CodeError, HintStep, JudgeMode, Language, Problem } from "@/types";
+import {
+  hasLanguage,
+  LANGUAGES,
+  type CodeError,
+  type HintStep,
+  type JudgeMode,
+  type Language,
+  type Problem,
+} from "@/types";
 import { CodeEditor, type EditorApi } from "./code-editor";
 import { HintStack } from "./hint-stack";
 import { OutputPanel, SOFT_TABS_LIST, SOFT_TABS_TRIGGER } from "./output-panel";
@@ -27,8 +35,10 @@ import { WorkspaceHeader } from "./workspace-header";
 
 const DRAFT_SAVE_DELAY_MS = 400;
 
+const FILE_EXTENSIONS: Record<Language, string> = { python: "py", javascript: "js", java: "java" };
+
 function fileName(problem: Problem, language: Language) {
-  return `${problem.slug}.${language === "python" ? "py" : "js"}`;
+  return `${problem.slug}.${FILE_EXTENSIONS[language]}`;
 }
 
 /** 채점 결과에서 에디터에 표시할 오류 하나 */
@@ -53,8 +63,11 @@ export function Workspace(props: WorkspaceProps) {
 
 function WorkspaceBody({ problem, aiEnabled }: WorkspaceProps) {
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
-  const language = useSettingsStore((s) => s.language);
-  const setLanguage = useSettingsStore((s) => s.setLanguage);
+  // 문제를 열 때는 주력 언어로 시작하고, 여기서 바꾼 언어는 이 문제 화면에서만 쓴다
+  const preferred = useSettingsStore((s) => s.language);
+  const setPreferred = useSettingsStore((s) => s.setLanguage);
+  const languages = useMemo(() => LANGUAGES.filter((l) => hasLanguage(problem.starterCode, l)), [problem.starterCode]);
+  const [language, setLanguage] = useState<Language>(() => (languages.includes(preferred) ? preferred : "python"));
   const fontSize = useSettingsStore((s) => s.editorFontSize);
   const setFontSize = useSettingsStore((s) => s.setEditorFontSize);
   const draft = useWorkspaceStore((s) => s.drafts[draftKey(problem.id, language)]);
@@ -72,7 +85,7 @@ function WorkspaceBody({ problem, aiEnabled }: WorkspaceProps) {
   const [leftTab, setLeftTab] = useState("problem");
   const [mobileTab, setMobileTab] = useState("problem");
 
-  const starter = problem.starterCode[language];
+  const starter = problem.starterCode[language] ?? "";
   const opened = problemProgress?.maxHintOpened ?? 0;
   const solved = problemProgress?.status === "solved";
   const error = useMemo(() => firstError(result), [result]);
@@ -224,6 +237,9 @@ function WorkspaceBody({ problem, aiEnabled }: WorkspaceProps) {
         solved={solved}
         language={language}
         onLanguageChange={setLanguage}
+        languages={languages}
+        preferred={preferred}
+        onMakePreferred={setPreferred}
         fontSize={fontSize}
         onFontSizeChange={setFontSize}
       />

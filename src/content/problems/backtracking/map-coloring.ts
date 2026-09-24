@@ -21,15 +21,28 @@ export const backtrackingMapColoring: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "구역 수" },
-      { name: "borders", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "맞닿은 구역 쌍" },
-      { name: "k", type: { python: "int", javascript: "number" }, description: "색의 수" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "구역 수" },
+      {
+        name: "borders",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "맞닿은 구역 쌍",
+      },
+      { name: "k", type: { python: "int", javascript: "number", java: "int" }, description: "색의 수" },
     ],
-    returns: { type: { python: "int", javascript: "number" }, description: "방법의 수" },
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "방법의 수" },
   },
   starterCode: {
     python: ["def solution(n, borders, k):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, borders, k) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(int n, int[][] borders, int k) {",
+      "        int answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -214,6 +227,16 @@ export const backtrackingMapColoring: Problem = {
             "  color[v] = c;",
             "  count += paint(v + 1);",
             "  color[v] = -1;",
+            "}",
+          ].join("\n"),
+          java: [
+            "for (int c = 0; c < k; c++) {",
+            "    boolean clash = false;",
+            "    for (int w : graph.get(v)) if (______) clash = true;",
+            "    if (clash) continue;",
+            "    color[v] = c;",
+            "    count += paint(v + 1);",
+            "    color[v] = -1;",
             "}",
           ].join("\n"),
         },

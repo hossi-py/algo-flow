@@ -21,12 +21,26 @@ export const recursionSnowflakeKnit: Problem = {
   constraints: ["0 ≤ k ≤ 5"],
   signature: {
     name: "solution",
-    params: [{ name: "k", type: { python: "int", javascript: "number" }, description: "무늬 단계" }],
-    returns: { type: { python: "list[str]", javascript: "string[]" }, description: "무늬의 각 행" },
+    params: [{ name: "k", type: { python: "int", javascript: "number", java: "int" }, description: "무늬 단계" }],
+    returns: {
+      type: { python: "list[str]", javascript: "string[]", java: "List<String>" },
+      description: "무늬의 각 행",
+    },
   },
   starterCode: {
     python: ["def solution(k):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(k) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<String> solution(int k) {",
+      "        List<String> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -166,6 +180,15 @@ export const recursionSnowflakeKnit: Problem = {
             "const top = small.map((row) => row.repeat(3));",
             "const mid = ______;",
             "return [...top, ...mid, ...top];",
+          ].join("\n"),
+          java: [
+            "List<String> small = pattern(k - 1);",
+            'String blank = " ".repeat(small.size());',
+            "List<String> result = new ArrayList<>();",
+            "for (String row : small) result.add(row.repeat(3));",
+            "for (String row : small) result.add(______);",
+            "for (String row : small) result.add(row.repeat(3));",
+            "return result;",
           ].join("\n"),
         },
       },

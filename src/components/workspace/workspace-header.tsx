@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, CircleCheck, Minus, Plus } from "lucide-react";
+import { ArrowLeft, CircleCheck, Minus, Plus, Star } from "lucide-react";
 import { PopButton } from "@/components/common/pop-button";
 import { ThemeToggle } from "@/components/common/theme-toggle";
 import { LevelBadge } from "@/components/common/topic-badges";
@@ -9,11 +9,19 @@ import { cn } from "@/lib/utils";
 import { EDITOR_FONT_SIZES } from "@/stores/settings-store";
 import { LANGUAGES, LANGUAGE_LABELS, type Language, type Problem } from "@/types";
 
+/** 언어 이름 뒤 목적격 조사 (파이썬을 · 자바스크립트를 · 자바를) */
+const OBJECT_PARTICLE: Record<Language, string> = { python: "을", javascript: "를", java: "를" };
+
 interface WorkspaceHeaderProps {
   problem: Problem;
   solved: boolean;
   language: Language;
   onLanguageChange: (language: Language) => void;
+  /** 이 문제에서 고를 수 있는 언어 */
+  languages: readonly Language[];
+  /** 주력 언어 (문제를 열면 이 언어로 시작) */
+  preferred: Language;
+  onMakePreferred: (language: Language) => void;
   fontSize: number;
   onFontSizeChange: (size: number) => void;
 }
@@ -21,27 +29,37 @@ interface WorkspaceHeaderProps {
 export function LanguageToggle({
   language,
   onChange,
+  languages = LANGUAGES,
+  preferred,
+  label = "풀이 언어",
   className,
 }: {
   language: Language;
   onChange: (language: Language) => void;
+  languages?: readonly Language[];
+  /** 주어지면 그 언어에 별 표시 */
+  preferred?: Language;
+  label?: string;
   className?: string;
 }) {
   return (
-    <div role="group" aria-label="풀이 언어" className={cn("inline-flex h-9 rounded-full bg-muted p-1", className)}>
-      {LANGUAGES.map((value) => {
+    <div role="group" aria-label={label} className={cn("inline-flex h-9 rounded-full bg-muted p-1", className)}>
+      {languages.map((value) => {
         const active = value === language;
+        const isPreferred = value === preferred;
         return (
           <button
             key={value}
             type="button"
             aria-pressed={active}
+            aria-label={isPreferred ? `${LANGUAGE_LABELS[value]} (주력 언어)` : undefined}
             onClick={() => onChange(value)}
             className={cn(
-              "rounded-full px-3 text-caption font-bold transition-colors outline-none focus-visible:ring-4 focus-visible:ring-ring/40",
+              "inline-flex items-center gap-1 rounded-full px-3 text-caption font-bold transition-colors outline-none focus-visible:ring-4 focus-visible:ring-ring/40",
               active ? "bg-card text-foreground shadow-soft" : "text-muted-foreground hover:text-foreground",
             )}
           >
+            {isPreferred && <Star className="text-streak size-3 fill-current" aria-hidden />}
             {LANGUAGE_LABELS[value]}
           </button>
         );
@@ -55,6 +73,9 @@ export function WorkspaceHeader({
   solved,
   language,
   onLanguageChange,
+  languages,
+  preferred,
+  onMakePreferred,
   fontSize,
   onFontSizeChange,
 }: WorkspaceHeaderProps) {
@@ -85,7 +106,20 @@ export function WorkspaceHeader({
           </span>
         )}
       </div>
-      <LanguageToggle language={language} onChange={onLanguageChange} />
+      {language !== preferred && (
+        <PopButton
+          variant="ghost"
+          size="sm"
+          className="hidden lg:inline-flex"
+          onClick={() => onMakePreferred(language)}
+          title="다음부터 문제를 열면 이 언어로 시작해요"
+        >
+          <Star />
+          {LANGUAGE_LABELS[language]}
+          {OBJECT_PARTICLE[language]} 주력 언어로
+        </PopButton>
+      )}
+      <LanguageToggle language={language} onChange={onLanguageChange} languages={languages} preferred={preferred} />
       <div className="hidden items-center md:flex" role="group" aria-label="에디터 글자 크기">
         <PopButton variant="ghost" size="icon-sm" aria-label="글자 작게" onClick={() => onFontSizeChange(smaller)}>
           <Minus />

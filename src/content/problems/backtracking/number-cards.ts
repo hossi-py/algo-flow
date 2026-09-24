@@ -21,14 +21,23 @@ export const backtrackingNumberCards: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "cards", type: { python: "list[int]", javascript: "number[]" }, description: "숫자 카드" },
-      { name: "k", type: { python: "int", javascript: "number" }, description: "고를 카드 수" },
+      { name: "cards", type: { python: "list[int]", javascript: "number[]", java: "int[]" }, description: "숫자 카드" },
+      { name: "k", type: { python: "int", javascript: "number", java: "int" }, description: "고를 카드 수" },
     ],
-    returns: { type: { python: "int", javascript: "number" }, description: "서로 다른 수의 개수" },
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "서로 다른 수의 개수" },
   },
   starterCode: {
     python: ["def solution(cards, k):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(cards, k) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(int[] cards, int k) {",
+      "        int answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -161,7 +170,11 @@ export const backtrackingNumberCards: Problem = {
           javascript: ["if (path.length === k) {", '  if (______) made.add(path.join(""));', "  return;", "}"].join(
             "\n",
           ),
+          java: ["if (path.length() == k) {", "    if (______) made.add(path.toString());", "    return;", "}"].join(
+            "\n",
+          ),
         },
+        caption: "Java는 path를 StringBuilder로, 만든 수는 Set<String> made = new HashSet<>()에 모아요.",
       },
       xpPenaltyRate: 0.5,
     },

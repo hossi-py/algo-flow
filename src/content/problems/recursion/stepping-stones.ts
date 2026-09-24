@@ -18,12 +18,21 @@ export const recursionSteppingStones: Problem = {
   constraints: ["1 ≤ n ≤ 50"],
   signature: {
     name: "solution",
-    params: [{ name: "n", type: { python: "int", javascript: "number" }, description: "도착할 돌 번호" }],
-    returns: { type: { python: "int", javascript: "number" }, description: "방법의 수" },
+    params: [{ name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "도착할 돌 번호" }],
+    returns: { type: { python: "int", javascript: "number", java: "long" }, description: "방법의 수" },
   },
   starterCode: {
     python: ["def solution(n):", "    answer = 0", "    return answer", ""].join("\n"),
     javascript: ["function solution(n) {", "  let answer = 0;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public long solution(int n) {",
+      "        long answer = 0;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -153,7 +162,16 @@ export const recursionSteppingStones: Problem = {
             "  return memo.get(k);",
             "}",
           ].join("\n"),
+          java: [
+            "long ways(int k) {",
+            "    if (k < 0) return 0;",
+            "    if (k == 0) return 1;",
+            "    if (!memo.containsKey(k)) memo.put(k, ______);",
+            "    return memo.get(k);",
+            "}",
+          ].join("\n"),
         },
+        caption: "답이 int 범위(약 21억)를 넘을 수 있어서 long을 써요.",
       },
       xpPenaltyRate: 0.5,
     },

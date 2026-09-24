@@ -20,14 +20,28 @@ export const backtrackingTeamPicks: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "선수 수" },
-      { name: "k", type: { python: "int", javascript: "number" }, description: "뽑을 인원" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "선수 수" },
+      { name: "k", type: { python: "int", javascript: "number", java: "int" }, description: "뽑을 인원" },
     ],
-    returns: { type: { python: "list[list[int]]", javascript: "number[][]" }, description: "모든 대표단" },
+    returns: {
+      type: { python: "list[list[int]]", javascript: "number[][]", java: "List<List<Integer>>" },
+      description: "모든 대표단",
+    },
   },
   starterCode: {
     python: ["def solution(n, k):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, k) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<List<Integer>> solution(int n, int k) {",
+      "        List<List<Integer>> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -193,7 +207,15 @@ export const backtrackingTeamPicks: Problem = {
             "  path.pop();",
             "}",
           ].join("\n"),
+          java: [
+            "for (int i = start; i <= n; i++) {",
+            "    path.add(i);",
+            "    pick(______);",
+            "    path.remove(path.size() - 1);",
+            "}",
+          ].join("\n"),
         },
+        caption: "List<Integer>의 remove(int)는 '그 위치'를 지워요. 마지막 칸을 지우려면 path.remove(path.size() - 1).",
       },
       xpPenaltyRate: 0.5,
     },

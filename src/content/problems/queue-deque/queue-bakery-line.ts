@@ -22,12 +22,32 @@ export const queueBakeryLine: Problem = {
   constraints: ["1 ≤ events의 길이 ≤ 1,000", "1 ≤ 이름의 길이 ≤ 10", "같은 이름의 손님이 여러 번 올 수 있어요."],
   signature: {
     name: "solution",
-    params: [{ name: "events", type: { python: "list[str]", javascript: "string[]" }, description: "하루 기록" }],
-    returns: { type: { python: "list[str]", javascript: "string[]" }, description: "빵을 받은 손님 순서" },
+    params: [
+      {
+        name: "events",
+        type: { python: "list[str]", javascript: "string[]", java: "String[]" },
+        description: "하루 기록",
+      },
+    ],
+    returns: {
+      type: { python: "list[str]", javascript: "string[]", java: "List<String>" },
+      description: "빵을 받은 손님 순서",
+    },
   },
   starterCode: {
     python: ["def solution(events):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(events) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<String> solution(String[] events) {",
+      "        List<String> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -111,7 +131,7 @@ export const queueBakeryLine: Problem = {
       kind: "approach",
       title: "어떻게 접근할까요?",
       body: [
-        "1. 줄을 큐로 만들어요. Python은 `collections.deque`, JavaScript는 배열에 넣고 **앞을 가리키는 번호(head)** 를 따로 둬요.",
+        "1. 줄을 큐로 만들어요. Python은 `collections.deque`, JavaScript는 배열에 넣고 **앞을 가리키는 번호(head)** 를 따로 둬요. Java는 `Queue<String> line = new ArrayDeque<>()`를 써요.",
         "2. arrive → 뒤에 추가, serve → 줄이 비어 있지 않으면 앞에서 꺼내 결과에 추가.",
       ].join("\n"),
       xpPenaltyRate: 0.15,
@@ -158,8 +178,17 @@ export const queueBakeryLine: Problem = {
             "  else if (head < line.length) served.push(______);",
             "}",
           ].join("\n"),
+          java: [
+            "Queue<String> line = new ArrayDeque<>();",
+            "for (String event : events) {",
+            '    String[] parts = event.split(" ");',
+            '    if (parts[0].equals("arrive")) line.offer(parts[1]);',
+            "    else if (!line.isEmpty()) served.add(______);",
+            "}",
+          ].join("\n"),
         },
-        caption: "JS의 shift()는 배열 전체를 한 칸씩 당겨서 느려요. head 번호를 옮기는 방식이 빨라요.",
+        caption:
+          "JS의 shift()는 배열 전체를 한 칸씩 당겨서 느려요. head 번호를 옮기는 방식이 빨라요. Java는 Queue<...> queue = new ArrayDeque<>()로 큐를 써요 (offer로 넣고 poll로 꺼내요, 둘 다 O(1)).",
       },
       xpPenaltyRate: 0.5,
     },

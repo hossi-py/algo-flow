@@ -1,4 +1,4 @@
-import type { JsonValue, Language, ParamSpec } from "@/types";
+import type { JsonValue, Language, ParamSpec, TypeNotation } from "@/types";
 
 function inline(value: JsonValue): string {
   if (value === null) return "null";
@@ -37,11 +37,11 @@ export function formatArgs(args: JsonValue[], params: ParamSpec[], maxLength = 1
 }
 
 /** 언어별 함수 시그니처 표기. 예: solution(garden: list[str]) -> list[int] */
-export function signatureText(
-  params: ParamSpec[],
-  returns: { type: Record<Language, string> },
-  language: Language,
-): string {
+export function signatureText(params: ParamSpec[], returns: { type: TypeNotation }, language: Language): string {
+  if (language === "java") {
+    const java = (type: TypeNotation) => type.java ?? "Object";
+    return `public ${java(returns.type)} solution(${params.map((p) => `${java(p.type)} ${p.name}`).join(", ")})`;
+  }
   if (language === "python") {
     return `def solution(${params.map((p) => `${p.name}: ${p.type.python}`).join(", ")}) -> ${returns.type.python}`;
   }

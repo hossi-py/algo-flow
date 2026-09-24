@@ -20,12 +20,32 @@ export const queueRecentVisits: Problem = {
   constraints: ["1 ≤ times의 길이 ≤ 100,000", "1 ≤ times[i] ≤ 1,000,000,000"],
   signature: {
     name: "solution",
-    params: [{ name: "times", type: { python: "list[int]", javascript: "number[]" }, description: "방문 시각(ms)" }],
-    returns: { type: { python: "list[int]", javascript: "number[]" }, description: "최근 3초 방문 수" },
+    params: [
+      {
+        name: "times",
+        type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+        description: "방문 시각(ms)",
+      },
+    ],
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "List<Integer>" },
+      description: "최근 3초 방문 수",
+    },
   },
   starterCode: {
     python: ["def solution(times):", "    answer = []", "    return answer", ""].join("\n"),
     javascript: ["function solution(times) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<Integer> solution(int[] times) {",
+      "        List<Integer> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -148,6 +168,13 @@ export const queueRecentVisits: Problem = {
             "  window.push(t);",
             "  while (______) head += 1;",
             "  answer.push(window.length - head);",
+            "}",
+          ].join("\n"),
+          java: [
+            "for (int t : times) {",
+            "    window.offer(t);",
+            "    while (______) window.poll();",
+            "    answer.add(window.size());",
             "}",
           ].join("\n"),
         },

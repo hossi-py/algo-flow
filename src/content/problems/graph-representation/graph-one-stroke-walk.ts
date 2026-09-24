@@ -28,14 +28,30 @@ export const graphOneStrokeWalk: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "n", type: { python: "int", javascript: "number" }, description: "쉼터 수" },
-      { name: "trails", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "산책로 목록" },
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "쉼터 수" },
+      {
+        name: "trails",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "산책로 목록",
+      },
     ],
-    returns: { type: { python: "bool", javascript: "boolean" }, description: "한 번에 걸을 수 있는지" },
+    returns: {
+      type: { python: "bool", javascript: "boolean", java: "boolean" },
+      description: "한 번에 걸을 수 있는지",
+    },
   },
   starterCode: {
     python: ["def solution(n, trails):", "    answer = False", "    return answer", ""].join("\n"),
     javascript: ["function solution(n, trails) {", "  let answer = false;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public boolean solution(int n, int[][] trails) {",
+      "        boolean answer = false;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -216,6 +232,7 @@ export const graphOneStrokeWalk: Problem = {
         code: {
           python: ["odd = sum(1 for d in degree if ______)", "return odd == 0 or odd == 2"].join("\n"),
           javascript: ["const odd = degree.filter((d) => ______).length;", "return odd === 0 || odd === 2;"].join("\n"),
+          java: ["int odd = 0;", "for (int d : degree) if (______) odd++;", "return odd == 0 || odd == 2;"].join("\n"),
         },
       },
       xpPenaltyRate: 0.5,

@@ -25,15 +25,24 @@ export const bfsTwoBuckets: Problem = {
   signature: {
     name: "solution",
     params: [
-      { name: "a", type: { python: "int", javascript: "number" }, description: "A 물통 크기" },
-      { name: "b", type: { python: "int", javascript: "number" }, description: "B 물통 크기" },
-      { name: "k", type: { python: "int", javascript: "number" }, description: "만들 양" },
+      { name: "a", type: { python: "int", javascript: "number", java: "int" }, description: "A 물통 크기" },
+      { name: "b", type: { python: "int", javascript: "number", java: "int" }, description: "B 물통 크기" },
+      { name: "k", type: { python: "int", javascript: "number", java: "int" }, description: "만들 양" },
     ],
-    returns: { type: { python: "int", javascript: "number" }, description: "최소 동작 수" },
+    returns: { type: { python: "int", javascript: "number", java: "int" }, description: "최소 동작 수" },
   },
   starterCode: {
     python: ["def solution(a, b, k):", "    answer = -1", "    return answer", ""].join("\n"),
     javascript: ["function solution(a, b, k) {", "  let answer = -1;", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int solution(int a, int b, int k) {",
+      "        int answer = -1;",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
   },
   testCases: [
     {
@@ -179,6 +188,12 @@ export const bfsTwoBuckets: Problem = {
             "const pourAB = [x - m, y + m];",
             "m = ______;                   // B → A",
             "const pourBA = [x + m, y - m];",
+          ].join("\n"),
+          java: [
+            "int m = Math.min(x, b - y);        // A → B",
+            "int[] pourAB = {x - m, y + m};",
+            "m = ______;                        // B → A",
+            "int[] pourBA = {x + m, y - m};",
           ].join("\n"),
         },
       },
