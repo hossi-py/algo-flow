@@ -1,0 +1,225 @@
+import type { Problem } from "@/types/content";
+import { problemPreset } from "@/content/visualizations";
+
+export const graphFriendList: Problem = {
+  id: "c:graph-friend-list",
+  slug: "graph-friend-list",
+  source: "curated",
+  topic: "graph-representation",
+  level: 2,
+  title: "친구 목록 만들기",
+  summary: "친구 관계 목록을 사람마다의 친구 목록(인접 리스트)으로 바꿔요",
+  statement: [
+    "새싹 학교 학생 `n`명에게 0번부터 `n-1`번까지 번호가 있어요. 친구 관계 `pairs`의 `[a, b]`는 a와 b가 서로 친구라는 뜻이에요.",
+    "",
+    "i번째 원소가 **i번 학생의 친구 번호를 오름차순으로 담은 리스트**인 리스트를 반환해 주세요.",
+  ].join("\n"),
+  inputFormat: "`n`: 학생 수, `pairs`: `[a, b]` 친구 관계 목록이에요.",
+  outputFormat: "길이 n인 리스트의 리스트 (각 친구 목록은 오름차순, 친구가 없으면 빈 리스트)",
+  constraints: [
+    "1 ≤ n ≤ 100,000",
+    "0 ≤ pairs의 길이 ≤ 100,000",
+    "0 ≤ a, b < n, a ≠ b",
+    "같은 관계는 두 번 주어지지 않아요.",
+  ],
+  signature: {
+    name: "solution",
+    params: [
+      { name: "n", type: { python: "int", javascript: "number" }, description: "학생 수" },
+      { name: "pairs", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "친구 관계" },
+    ],
+    returns: { type: { python: "list[list[int]]", javascript: "number[][]" }, description: "학생별 친구 목록" },
+  },
+  starterCode: {
+    python: ["def solution(n, pairs):", "    answer = []", "    return answer", ""].join("\n"),
+    javascript: ["function solution(n, pairs) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+  },
+  testCases: [
+    {
+      id: "ex-1",
+      visibility: "example",
+      purpose: "basic",
+      args: [
+        4,
+        [
+          [0, 1],
+          [2, 0],
+          [1, 2],
+          [3, 1],
+        ],
+      ],
+      expected: [[1, 2], [0, 2, 3], [0, 1], [1]],
+      explanation: "0번의 친구는 1, 2번, 1번의 친구는 0, 2, 3번이에요.",
+    },
+    {
+      id: "ex-2",
+      visibility: "example",
+      purpose: "edge",
+      args: [3, []],
+      expected: [[], [], []],
+      explanation: "관계가 없으면 모두 빈 리스트예요.",
+    },
+    {
+      id: "hid-1",
+      visibility: "hidden",
+      purpose: "edge",
+      args: [1, []],
+      expected: [[]],
+      failureNote: "학생이 한 명뿐이에요.",
+    },
+    {
+      id: "hid-2",
+      visibility: "hidden",
+      purpose: "basic",
+      args: [
+        5,
+        [
+          [4, 3],
+          [3, 2],
+          [2, 1],
+          [1, 0],
+        ],
+      ],
+      expected: [[1], [0, 2], [1, 3], [2, 4], [3]],
+      failureNote: "한 줄로 이어진 친구 관계예요.",
+    },
+    {
+      id: "hid-3",
+      visibility: "hidden",
+      purpose: "tricky",
+      args: [
+        4,
+        [
+          [3, 0],
+          [2, 0],
+          [1, 0],
+        ],
+      ],
+      expected: [[1, 2, 3], [0], [0], [0]],
+      failureNote: "관계가 역순으로 주어져도 목록은 오름차순이에요.",
+    },
+    {
+      id: "hid-4",
+      visibility: "hidden",
+      purpose: "basic",
+      args: [
+        6,
+        [
+          [0, 5],
+          [1, 4],
+          [2, 3],
+        ],
+      ],
+      expected: [[5], [4], [3], [2], [1], [0]],
+      failureNote: "짝꿍끼리만 친구예요.",
+    },
+    {
+      id: "hid-5",
+      visibility: "hidden",
+      purpose: "stress",
+      args: [100000, Array.from({ length: 99999 }, (_, i) => [i + 1, i])],
+      expected: Array.from({ length: 100000 }, (_, i) => (i === 0 ? [1] : i === 99999 ? [99998] : [i - 1, i + 1])),
+      failureNote: "학생 10만 명이 한 줄로 친구예요. 학생마다 관계 목록 전체를 훑으면 시간 초과예요.",
+    },
+  ],
+  judge: {
+    timeLimitMs: 2000,
+    compare: { type: "exact" },
+    recursionLimit: 3000,
+    revealFirstFailure: true,
+  },
+  hints: [
+    {
+      step: 1,
+      kind: "pattern",
+      title: "어떤 유형일까요?",
+      body: [
+        "관계(간선) 목록 → **인접 리스트**로 바꾸기예요. 거의 모든 그래프 문제의 첫 단계예요.",
+        "",
+        '인접 리스트는 "노드 번호 → 그 노드의 이웃 목록"이에요.',
+      ].join("\n"),
+      xpPenaltyRate: 0.05,
+    },
+    {
+      step: 2,
+      kind: "approach",
+      title: "어떻게 접근할까요?",
+      body: [
+        "1. 빈 리스트 n개를 만들어요.",
+        "2. 관계 `[a, b]`마다 a의 목록에 b, b의 목록에 a를 추가해요 (**양쪽 모두**).",
+        "3. 각 목록을 정렬해요.",
+        "",
+        "학생마다 관계 목록 전체를 다시 훑으면 O(N × 관계 수)라 느려요. 관계를 **한 번만** 훑으면 O(N + 관계 수)예요.",
+        "",
+        "> Python에서 `[[]] * n`은 **같은 리스트 하나**를 n번 가리켜서 모두 함께 바뀌어요. `[[] for _ in range(n)]`을 쓰세요.",
+      ].join("\n"),
+      xpPenaltyRate: 0.15,
+    },
+    {
+      step: 3,
+      kind: "pseudocode",
+      title: "의사코드",
+      body: [
+        "~~~text",
+        "graph = [빈 리스트를 n개]",
+        "for a, b in edges:",
+        "    graph[a]에 b 추가",
+        "    graph[b]에 a 추가     # 방향이 없으니 양쪽 모두",
+        "각 graph[i]를 정렬",
+        "return graph",
+        "~~~",
+      ].join("\n"),
+      xpPenaltyRate: 0.3,
+    },
+    {
+      step: 4,
+      kind: "key-code",
+      title: "핵심 코드",
+      body: ["양쪽에 추가하는 부분이에요."].join("\n"),
+      code: {
+        code: {
+          python: [
+            "graph = [[] for _ in range(n)]",
+            "for a, b in pairs:",
+            "    graph[a].append(b)",
+            "    ______",
+            "for friends in graph:",
+            "    friends.sort()",
+          ].join("\n"),
+          javascript: [
+            "const graph = Array.from({ length: n }, () => []);",
+            "for (const [a, b] of pairs) {",
+            "  graph[a].push(b);",
+            "  ______;",
+            "}",
+            "for (const friends of graph) friends.sort((p, q) => p - q);",
+          ].join("\n"),
+        },
+      },
+      xpPenaltyRate: 0.5,
+    },
+  ],
+  patternTags: ["adjacency-list", "edge-list-conversion"],
+  signalIds: ["sig-relations-given"],
+  visualization: {
+    presets: [
+      problemPreset(
+        "friend-list-ex1",
+        "graph-adjacency",
+        "예제 1",
+        "관계 하나를 읽을 때마다 양쪽 목록에 이름이 추가돼요.",
+        [
+          4,
+          [
+            [0, 1],
+            [2, 0],
+            [1, 2],
+            [3, 1],
+          ],
+        ],
+      ),
+    ],
+  },
+  estimatedMinutes: 12,
+  xp: 20,
+};

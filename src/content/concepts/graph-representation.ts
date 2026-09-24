@@ -1,0 +1,145 @@
+import type { ConceptCard, RecognitionQuestion } from "@/types";
+
+export const GRAPH_REPRESENTATION_CARDS: ConceptCard[] = [
+  {
+    id: "graph-what",
+    title: "점과 선으로 관계를 그려요",
+    analogy: "지하철 노선도에서 역은 점, 역과 역을 잇는 선로는 선이에요.",
+    body: [
+      "그래프(graph)는 **노드**(점)와 노드를 잇는 **간선**(선)으로 관계를 나타내요.",
+      "",
+      "- 친구 관계: 사람 = 노드, 친구 사이 = 간선",
+      "- 지도: 교차로 = 노드, 길 = 간선",
+      "",
+      "한 노드에 붙은 간선의 수를 그 노드의 **차수**라고 해요.",
+    ].join("\n"),
+    illustration: "graph-map",
+    keyPoints: ["노드 = 점, 간선 = 선", "관계·연결이 보이면 그래프", "차수 = 노드에 붙은 간선 수"],
+  },
+  {
+    id: "graph-kinds",
+    title: "방향 그래프 · 무방향 그래프 · 트리",
+    analogy: "양방향 도로는 서로 오갈 수 있지만, 일방통행 골목은 한쪽으로만 갈 수 있어요.",
+    body: [
+      "- **무방향 그래프**: 간선 `[a, b]`로 a ↔ b 양쪽 모두 갈 수 있어요. (친구 관계, 양방향 도로)",
+      "- **방향 그래프**: 간선 `[a, b]`는 a → b 한쪽만이에요. (일방통행, 팔로우, 추천)",
+      "  - 방향 그래프에서는 **나가는 차수**와 **들어오는 차수**를 따로 세요.",
+      "- **트리**: 사이클 없이 모든 노드가 이어진 그래프예요. 노드가 N개면 간선은 N−1개이고, 가계도처럼 **부모 배열**로 주어지기도 해요.",
+    ].join("\n"),
+    illustration: "graph-map",
+    keyPoints: ["무방향: 양쪽 모두 추가", "방향: 한쪽만 추가", "트리: 사이클 없음, 간선 N−1개"],
+  },
+  {
+    id: "graph-adj-list",
+    title: "인접 리스트: 노드마다 이웃 목록",
+    analogy: "학생마다 자기 친구 이름만 적어 둔 연락처 수첩.",
+    body: [
+      "문제는 보통 간선을 `[[a, b], ...]` 목록으로 줘요. 이걸 **노드 번호 → 이웃 목록**으로 바꾼 것이 **인접 리스트**예요.",
+      "",
+      "간선 목록을 한 번만 훑으면 만들 수 있고(O(N + M)), 이웃만 담으니 간선이 적을 때 공간도 아껴요. DFS·BFS 같은 탐색은 거의 모두 인접 리스트로 시작해요.",
+    ].join("\n"),
+    illustration: "graph-map",
+    keyPoints: ["간선 목록 → 인접 리스트가 첫 단계", "무방향이면 a에 b, b에 a 둘 다", "공간 O(N + M)"],
+    code: {
+      code: {
+        python: [
+          "graph = [[] for _ in range(n)]   # [[]] * n 은 안 돼요!",
+          "for a, b in edges:",
+          "    graph[a].append(b)",
+          "    graph[b].append(a)           # 무방향이면 양쪽 모두",
+        ].join("\n"),
+        javascript: [
+          "const graph = Array.from({ length: n }, () => []);",
+          "for (const [a, b] of edges) {",
+          "  graph[a].push(b);",
+          "  graph[b].push(a);               // 무방향이면 양쪽 모두",
+          "}",
+        ].join("\n"),
+      },
+    },
+  },
+  {
+    id: "graph-adj-matrix",
+    title: "인접 행렬: N × N 연결 표",
+    analogy: "모든 도시를 가로·세로로 적고, 직항이 있는 칸에 동그라미를 친 표.",
+    body: [
+      "`table[a][b]`가 1(또는 True)이면 a에서 b로 가는 간선이 있어요. 행이 출발, 열이 도착이에요.",
+      "",
+      "| | 인접 리스트 | 인접 행렬 |",
+      "| --- | --- | --- |",
+      "| 공간 | O(N + M) | O(N²) |",
+      "| a–b 연결 확인 | 이웃 목록 훑기 | **O(1)** |",
+      "| 이웃 모두 보기 | **이웃 수만큼** | N칸 전부 |",
+      "",
+      '노드가 수백 개 이하이고 "연결됐나요?"를 많이 물으면 행렬, 노드가 많고 간선이 적으면 리스트가 좋아요.',
+    ].join("\n"),
+    illustration: "graph-matrix",
+    keyPoints: ["연결 확인 O(1)", "공간 N² → N이 작을 때", "입력이 N×N 표면 이미 행렬"],
+  },
+  {
+    id: "graph-when",
+    title: "언제 그래프를 떠올릴까?",
+    analogy: "지도, 노선도, 친구 관계도, 가계도는 모두 점과 선으로 그릴 수 있어요.",
+    body: [
+      "- **관계 목록이 주어진다**: `[a, b]` 쌍의 목록 → 간선 목록 → 인접 리스트",
+      "- **N × N 표로 연결 여부가 주어진다**: 인접 행렬",
+      "- **부모 번호 배열이 주어진다**: 트리 → 자녀 목록으로 바꾸기",
+      "- **격자 지도**: 칸 = 노드, 상하좌우로 붙은 칸 = 간선",
+      "- **연결된 수 / 받은 수 / 보낸 수**만 물어본다: 탐색 없이 **차수 세기**",
+      "",
+      "그래프를 어떻게 표현할지 정하는 것이 뒤에서 배울 **DFS·BFS**의 첫 단계예요.",
+    ].join("\n"),
+    illustration: "graph-matrix",
+    keyPoints: ["[a, b] 목록 → 인접 리스트", "N×N 표 → 인접 행렬", "개수만 물으면 차수 세기"],
+  },
+];
+
+export const GRAPH_REPRESENTATION_QUIZ: RecognitionQuestion[] = [
+  {
+    id: "graph-q1",
+    snippet: "학생 N명의 친구 관계가 [a, b] 쌍으로 주어져요. 각 학생의 친구 목록을 번호 순서대로 출력하세요.",
+    choices: ["graph-representation", "stack", "recursion"],
+    answer: "graph-representation",
+    signalIds: ["sig-relations-given"],
+    highlightPhrases: ["[a, b] 쌍으로 주어져요", "친구 목록"],
+    explanation: "관계 쌍 목록은 간선 목록이에요. 노드마다 이웃 목록을 만드는 인접 리스트 문제예요.",
+  },
+  {
+    id: "graph-q2",
+    snippet:
+      "도시 N개 사이의 직항 여부가 N × N 표로 주어져요. 표의 i행 j열이 1이면 i에서 j로 가는 직항이 있어요. 질문마다 두 도시 사이 직항이 있는지 답하세요.",
+    choices: ["queue-deque", "graph-representation", "backtracking"],
+    answer: "graph-representation",
+    signalIds: ["sig-matrix-given"],
+    highlightPhrases: ["N × N 표로 주어져요"],
+    explanation: "연결 여부를 담은 N×N 표가 곧 인접 행렬이에요. 연결 확인을 O(1)에 답할 수 있어요.",
+  },
+  {
+    id: "graph-q3",
+    snippet: "SNS의 팔로우 기록이 [a, b](a가 b를 팔로우) 목록으로 주어져요. 팔로워가 가장 많은 사람을 찾으세요.",
+    choices: ["graph-representation", "stack", "queue-deque"],
+    answer: "graph-representation",
+    signalIds: ["sig-degree"],
+    highlightPhrases: ["팔로워가 가장 많은 사람"],
+    explanation: "팔로우는 방향 간선이고, 팔로워 수는 들어오는 차수예요. 탐색 없이 차수만 세면 돼요.",
+  },
+  {
+    id: "graph-q4",
+    snippet: "들어온 순서대로 주문을 처리해요. 각 주문이 끝나는 시각을 구하세요.",
+    choices: ["graph-representation", "queue-deque", "recursion"],
+    answer: "queue-deque",
+    signalIds: ["sig-arrival-order"],
+    highlightPhrases: ["들어온 순서대로"],
+    explanation: "노드와 간선으로 볼 관계가 없어요. 먼저 온 것이 먼저 나가는 FIFO라서 큐예요.",
+  },
+  {
+    id: "graph-q5",
+    snippet:
+      "가계도가 parent 배열로 주어져요. parent[i]는 i번의 부모이고, 조상은 -1이에요. 사람마다 자녀 수를 구하세요.",
+    choices: ["recursion", "stack", "graph-representation"],
+    answer: "graph-representation",
+    signalIds: ["sig-tree-structure"],
+    highlightPhrases: ["parent 배열로 주어져요"],
+    explanation: "부모 배열은 트리를 표현하는 한 방법이에요. 부모 → 자녀 목록으로 바꾸면 자녀 수가 바로 보여요.",
+  },
+];

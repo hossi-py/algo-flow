@@ -1,5 +1,15 @@
 import type { LevelNumber, PatternTag, Problem, TopicSlug } from "@/types";
 import { flowerZones } from "./dfs/flower-zones";
+import { graphCommonFriends } from "./graph-representation/graph-common-friends";
+import { graphDirectFlights } from "./graph-representation/graph-direct-flights";
+import { graphFamilyTree } from "./graph-representation/graph-family-tree";
+import { graphFriendList } from "./graph-representation/graph-friend-list";
+import { graphGridPaths } from "./graph-representation/graph-grid-paths";
+import { graphMatrixToList } from "./graph-representation/graph-matrix-to-list";
+import { graphOneStrokeWalk } from "./graph-representation/graph-one-stroke-walk";
+import { graphOneWayStreets } from "./graph-representation/graph-one-way-streets";
+import { graphStationNeighbors } from "./graph-representation/graph-station-neighbors";
+import { graphTrustedShop } from "./graph-representation/graph-trusted-shop";
 import { dequeEndCards } from "./queue-deque/deque-end-cards";
 import { dequeSteadySignal } from "./queue-deque/deque-steady-signal";
 import { dequeTwoDoorTrain } from "./queue-deque/deque-two-door-train";
@@ -34,6 +44,16 @@ import { stackWarmerWait } from "./stack/warmer-wait";
 /** 큐레이션 문제 전체. 새 문제는 여기에 추가하고 토픽의 레벨 problemSlugs에도 등록한다 */
 export const PROBLEMS: readonly Problem[] = [
   flowerZones,
+  graphCommonFriends,
+  graphDirectFlights,
+  graphFamilyTree,
+  graphFriendList,
+  graphGridPaths,
+  graphMatrixToList,
+  graphOneStrokeWalk,
+  graphOneWayStreets,
+  graphStationNeighbors,
+  graphTrustedShop,
   dequeEndCards,
   dequeSteadySignal,
   dequeTwoDoorTrain,
