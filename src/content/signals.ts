@@ -75,7 +75,10 @@ export const SIGNALS: PatternSignal[] = [
   {
     id: "sig-nested-structure",
     phrase: "안에 같은 모양이 또 들어 있는 구조",
-    examples: ["큰 정사각형을 4등분하고, 각 조각도 똑같이 다시 나눠요", "상자 안에 상자가, 그 안에 또 상자가 들어 있어요"],
+    examples: [
+      "큰 정사각형을 4등분하고, 각 조각도 똑같이 다시 나눠요",
+      "상자 안에 상자가, 그 안에 또 상자가 들어 있어요",
+    ],
     suspects: ["recursion", "dfs"],
     patterns: ["divide-and-conquer", "recursion-tree"],
     reason: "바깥 문제와 안쪽 문제가 모양이 같으니, 안쪽 문제는 같은 함수를 다시 불러 해결하면 돼요.",
@@ -85,7 +88,10 @@ export const SIGNALS: PatternSignal[] = [
   {
     id: "sig-shrink-by-one",
     phrase: "한 단계 작은 같은 문제로 줄일 수 있음",
-    examples: ["n층 탑은 n−1층 탑을 옮긴 뒤 맨 아래 판을 옮기면 돼요", "마지막 자릿수를 떼어 내고 나머지를 같은 방법으로 계산해요"],
+    examples: [
+      "n층 탑은 n−1층 탑을 옮긴 뒤 맨 아래 판을 옮기면 돼요",
+      "마지막 자릿수를 떼어 내고 나머지를 같은 방법으로 계산해요",
+    ],
     suspects: ["recursion"],
     patterns: ["recursive-definition", "recursion-tree"],
     reason: "f(n)을 f(n−1)로 설명할 수 있으면 '종료 조건 + 한 단계 줄여 부르기' 두 줄로 재귀 함수가 완성돼요.",
@@ -103,19 +109,27 @@ export const SIGNALS: PatternSignal[] = [
   {
     id: "sig-degree",
     phrase: "몇 곳과 연결되어 있는지 / 가장 많이 연결된 곳",
-    examples: ["환승역(3개 이상의 노선이 만나는 역)을 모두 찾으세요", "모두에게 추천받았지만 아무도 추천하지 않은 가게를 찾으세요"],
+    examples: [
+      "환승역(3개 이상의 노선이 만나는 역)을 모두 찾으세요",
+      "모두에게 추천받았지만 아무도 추천하지 않은 가게를 찾으세요",
+    ],
     suspects: ["graph-representation"],
     patterns: ["degree-count"],
-    reason: "탐색 없이 각 노드에 붙은 간선 수(차수)만 세면 풀려요. 방향 그래프라면 들어오는 수와 나가는 수를 따로 세요.",
+    reason:
+      "탐색 없이 각 노드에 붙은 간선 수(차수)만 세면 풀려요. 방향 그래프라면 들어오는 수와 나가는 수를 따로 세요.",
     strength: "medium",
   },
   {
     id: "sig-matrix-given",
     phrase: "N×N 표로 연결 여부가 주어짐",
-    examples: ["i번 컴퓨터와 j번 컴퓨터가 연결되어 있으면 grid[i][j] = 1이에요", "도시 사이 직항이 있으면 1, 없으면 0인 표가 주어져요"],
+    examples: [
+      "i번 컴퓨터와 j번 컴퓨터가 연결되어 있으면 grid[i][j] = 1이에요",
+      "도시 사이 직항이 있으면 1, 없으면 0인 표가 주어져요",
+    ],
     suspects: ["graph-representation", "dfs", "bfs"],
     patterns: ["adjacency-matrix"],
-    reason: "표 자체가 인접 행렬이에요. 두 노드의 연결 여부는 O(1)에 알 수 있고, 이웃을 모두 보려면 한 줄(행)을 훑어요.",
+    reason:
+      "표 자체가 인접 행렬이에요. 두 노드의 연결 여부는 O(1)에 알 수 있고, 이웃을 모두 보려면 한 줄(행)을 훑어요.",
     caution: "노드가 많고 간선이 적다면 인접 리스트로 바꾸는 편이 빨라요.",
     strength: "medium",
   },
@@ -197,7 +211,10 @@ export const SIGNALS: PatternSignal[] = [
   {
     id: "sig-placement-constraint",
     phrase: "서로 부딪히지 않게 배치하는 모든 방법",
-    examples: ["서로 공격할 수 없게 말을 놓는 방법의 수를 구하세요", "이웃한 지역은 다른 색이 되도록 칠하는 방법의 수를 구하세요"],
+    examples: [
+      "서로 공격할 수 없게 말을 놓는 방법의 수를 구하세요",
+      "이웃한 지역은 다른 색이 되도록 칠하는 방법의 수를 구하세요",
+    ],
     suspects: ["backtracking"],
     patterns: ["constraint-pruning"],
     reason: "하나씩 놓아 보다가 규칙을 어기는 순간 그 가지를 버리고 되돌아가요. 끝까지 도착한 배치만 셉니다.",

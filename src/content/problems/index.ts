@@ -10,6 +10,16 @@ import { queueFrontBack } from "./queue-deque/queue-front-back";
 import { queueHotPotato } from "./queue-deque/queue-hot-potato";
 import { queueRecentVisits } from "./queue-deque/queue-recent-visits";
 import { queueRoundKitchen } from "./queue-deque/queue-round-kitchen";
+import { recursionCookieBoxes } from "./recursion/cookie-boxes";
+import { recursionDigitSum } from "./recursion/digit-sum";
+import { recursionHailstoneTrip } from "./recursion/hailstone-trip";
+import { recursionHanoiKthMove } from "./recursion/hanoi-kth-move";
+import { recursionQuadGarden } from "./recursion/quad-garden";
+import { recursionRabbitFamily } from "./recursion/rabbit-family";
+import { recursionRocketCountdown } from "./recursion/rocket-countdown";
+import { recursionSnowflakeKnit } from "./recursion/snowflake-knit";
+import { recursionSteppingStones } from "./recursion/stepping-stones";
+import { recursionSwappedPairs } from "./recursion/swapped-pairs";
 import { stackBackspaceKeyboard } from "./stack/backspace-keyboard";
 import { stackPeekRecord } from "./stack/peek-record";
 import { stackPlateTower } from "./stack/plate-tower";
@@ -34,6 +44,16 @@ export const PROBLEMS: readonly Problem[] = [
   queueHotPotato,
   queueRecentVisits,
   queueRoundKitchen,
+  recursionCookieBoxes,
+  recursionDigitSum,
+  recursionHailstoneTrip,
+  recursionHanoiKthMove,
+  recursionQuadGarden,
+  recursionRabbitFamily,
+  recursionRocketCountdown,
+  recursionSnowflakeKnit,
+  recursionSteppingStones,
+  recursionSwappedPairs,
   stackBackspaceKeyboard,
   stackPeekRecord,
   stackPlateTower,

@@ -27,7 +27,11 @@ export const queueDequeTopic: Topic = {
       goal: "도착 순서·순번 돌리기 같은 시뮬레이션 문제를 큐로 옮길 수 있어요.",
       problemSlugs: ["queue-round-kitchen", "queue-hot-potato"],
     },
-    { title: "양쪽 끝 다루기", goal: "앞뒤에서 넣고 빼는 문제를 덱으로 풀어요.", problemSlugs: ["deque-two-door-train", "deque-end-cards"] },
+    {
+      title: "양쪽 끝 다루기",
+      goal: "앞뒤에서 넣고 빼는 문제를 덱으로 풀어요.",
+      problemSlugs: ["deque-two-door-train", "deque-end-cards"],
+    },
     {
       title: "슬라이딩 윈도우 최댓값",
       goal: "덱으로 구간 최댓값을 O(N)에 구하는 실전 문제를 풀어요.",
