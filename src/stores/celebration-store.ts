@@ -1,7 +1,8 @@
 "use client";
 
 import { create } from "zustand";
-import type { MascotMood, TopicColor } from "@/types";
+import { getBadge } from "@/content/badges";
+import type { BadgeId, MascotMood, TopicColor } from "@/types";
 
 export interface Celebration {
   id: number;
@@ -29,3 +30,22 @@ export const useCelebrationStore = create<CelebrationState>()((set) => ({
   celebrate: (celebration) => set({ current: { ...celebration, id: nextId++ } }),
   dismiss: () => set({ current: null }),
 }));
+
+/**
+ * 새로 얻은 배지를 차례로 축하한다. 앞선 연출(정답·레벨 클리어)이 있으면 그 뒤에 이어서.
+ * @param after 앞에 몇 개의 연출이 예약돼 있는지
+ */
+export function celebrateBadges(earned: readonly BadgeId[], after = 0) {
+  earned.forEach((id, index) => {
+    const badge = getBadge(id);
+    window.setTimeout(
+      () =>
+        useCelebrationStore.getState().celebrate({
+          title: `배지 획득: ${badge.name}`,
+          message: badge.description,
+          mood: "cheer",
+        }),
+      (after + index) * LEVEL_CLEAR_DELAY_MS,
+    );
+  });
+}

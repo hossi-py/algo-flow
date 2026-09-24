@@ -3,6 +3,7 @@
 import { useEffect, type ReactNode } from "react";
 import { MotionConfig } from "motion/react";
 import { ThemeProvider } from "next-themes";
+import { AccountSync } from "@/components/auth/account-sync";
 import { CelebrationLayer } from "@/components/common/celebration";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useProgressStore } from "@/stores/progress-store";
@@ -24,6 +25,7 @@ export function Providers({ children }: { children: ReactNode }) {
       <MotionConfig reducedMotion="user">
         <TooltipProvider delayDuration={150}>
           <ProgressHydrator />
+          <AccountSync />
           {children}
           <CelebrationLayer />
         </TooltipProvider>

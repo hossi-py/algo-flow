@@ -1,19 +1,27 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Sparkles } from "lucide-react";
+import Link from "next/link";
+import { LogIn, Sparkles } from "lucide-react";
+import { loginHref } from "@/components/auth/user-menu";
 import { EmptyState } from "@/components/common/empty-state";
+import { PopButton } from "@/components/common/pop-button";
 import { SectionTitle, SoftCard } from "@/components/common/soft-card";
 import { MascotBubble } from "@/components/mascot/mascot-bubble";
-import { TOPIC_PATTERNS } from "@/content/patterns";
+import { TOPIC_PATTERNS, topicOfPattern } from "@/content/patterns";
+import { SIGNALS } from "@/content/signals";
+import { useLearningRecord } from "@/hooks/use-learning-record";
 import { useProgress, useTopicViews } from "@/hooks/use-progress";
+import { recommendable } from "@/lib/progress/recommend";
+import { topWeaknesses } from "@/lib/progress/weakness";
 import { createGeneration, getGeneration, GenerateHttpError, listGenerations } from "@/lib/ai/generate-client";
 import type { GeneratedProblemSummary, GeneratedProblemView } from "@/lib/ai/views";
 import { DAILY_GENERATION_LIMIT } from "@/lib/ai/limits";
-import type { GenerationRequest, PatternTag, TopicSlug, TopicView } from "@/types";
+import type { GenerationRequest, PatternTag, TopicSlug, TopicView, WeaknessScore } from "@/types";
 import { GeneratedProblemList } from "./generated-problem-list";
 import { GenerateForm, type GenerateFormInitial } from "./generate-form";
 import { GenerationProgress } from "./generation-progress";
+import { WeaknessSummary } from "./weakness-summary";
 
 const POLL_MS = 2000;
 const IN_PROGRESS = new Set(["queued", "generating", "verifying"]);
@@ -23,6 +31,21 @@ export interface AiLabPreset {
   level?: GenerationRequest["level"];
   patterns: PatternTag[];
   signals: string[];
+}
+
+/**
+ * URL로 받은 조건이 없으면 약점에서 고른다: 가장 약한 패턴의 토픽(열려 있을 때)과 그 토픽의 약한 패턴들.
+ * 약점도 없으면 지금 공부 중인 토픽.
+ */
+function presetFromWeakness(preset: AiLabPreset, weak: WeaknessScore[], views: TopicView[]): AiLabPreset {
+  if (preset.topic || preset.patterns.length > 0) return preset;
+  const open = weak.filter((w) => views.find((v) => v.topic === topicOfPattern(w.pattern))?.status !== "locked");
+  const first = open[0];
+  if (!first) return preset;
+  const topic = topicOfPattern(first.pattern);
+  const patterns = open.map((w) => w.pattern).filter((p) => topicOfPattern(p) === topic);
+  const signals = SIGNALS.filter((s) => s.patterns.some((p) => patterns.includes(p))).map((s) => s.id);
+  return { ...preset, topic, patterns, signals: signals.slice(0, 3) };
 }
 
 /** 추천·URL로 받은 값이 없으면: 지금 공부 중인 토픽, 아직 못 깬 가장 낮은 레벨(2~5) */
@@ -50,6 +73,12 @@ export function AiLabView({ aiEnabled, preset }: { aiEnabled: boolean; preset: A
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formKey, setFormKey] = useState(0);
+  const [loginRequired, setLoginRequired] = useState(false);
+  const record = useLearningRecord(100);
+  const weaknesses = useMemo(
+    () => (record.patternStats ? recommendable(topWeaknesses(record.patternStats)) : null),
+    [record.patternStats],
+  );
 
   const refresh = useCallback(async () => {
     try {
@@ -69,6 +98,7 @@ export function AiLabView({ aiEnabled, preset }: { aiEnabled: boolean; preset: A
         if (cancelled) return;
         setList(data.problems);
         setRemaining(data.remainingToday);
+        setLoginRequired(data.loginRequired);
         const running = data.problems.find((p) => IN_PROGRESS.has(p.status));
         if (running) setJobId(running.id);
       })
@@ -108,7 +138,11 @@ export function AiLabView({ aiEnabled, preset }: { aiEnabled: boolean; preset: A
     };
   }, [jobId, refresh]);
 
-  const initial = useMemo(() => defaultInitial(views, preset), [views, preset]);
+  const effectivePreset = useMemo(
+    () => presetFromWeakness(preset, weaknesses ?? [], views),
+    [preset, weaknesses, views],
+  );
+  const initial = useMemo(() => defaultInitial(views, effectivePreset), [views, effectivePreset]);
   const busy = submitting || (job !== null && IN_PROGRESS.has(job.status));
 
   async function submit(request: GenerationRequest) {
@@ -153,6 +187,8 @@ export function AiLabView({ aiEnabled, preset }: { aiEnabled: boolean; preset: A
         <p className="text-muted-foreground">정답 코드로 모든 테스트를 직접 검증한 문제만 보여 드려요.</p>
       </MascotBubble>
 
+      <WeaknessSummary weaknesses={weaknesses} />
+
       {job && (
         <GenerationProgress
           job={job}
@@ -173,12 +209,24 @@ export function AiLabView({ aiEnabled, preset }: { aiEnabled: boolean; preset: A
             오늘 {remaining}/{DAILY_GENERATION_LIMIT}개 남음
           </span>
         </div>
-        {hydrated ? (
+        {loginRequired ? (
+          <div className="flex flex-col items-start gap-3 rounded-md bg-primary-soft px-4 py-4">
+            <p className="text-small font-bold text-primary-soft-foreground">
+              로그인하면 약점에 맞춘 문제를 하루 10개까지 만들 수 있어요.
+            </p>
+            <PopButton asChild size="sm">
+              <Link href={loginHref("/ai-lab")}>
+                <LogIn />
+                로그인하기
+              </Link>
+            </PopButton>
+          </div>
+        ) : hydrated ? (
           <GenerateForm
-            key={`${formKey}:${initial.topic}`}
+            key={`${formKey}:${initial.topic}:${initial.focusPatterns.join(",")}`}
             views={views}
             initial={initial}
-            weakSignalIds={preset.signals}
+            weakSignalIds={effectivePreset.signals}
             busy={busy}
             disabledReason={disabledReason}
             onSubmit={(request) => void submit(request)}

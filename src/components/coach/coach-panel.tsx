@@ -8,6 +8,7 @@ import { Nodi } from "@/components/mascot/nodi";
 import { CoachHttpError, streamCoach, summarizeResult } from "@/lib/ai/coach-client";
 import { COACH_HISTORY_TURNS, COACH_MESSAGE_MAX, type CoachRequest } from "@/lib/ai/schemas";
 import { cn } from "@/lib/utils";
+import { useAccountStore } from "@/stores/account-store";
 import { metaPatch, useCoachStore, type CoachThreadMessage } from "@/stores/coach-store";
 import type { HintsOpened, JudgeResult, Language, MascotMood, Problem } from "@/types";
 
@@ -63,6 +64,23 @@ export function CoachPanel({
   }, [messages.length, lastContent]);
 
   useEffect(() => () => abortRef.current?.abort(), []);
+
+  // 로그인 사용자는 다른 기기에서 나눈 대화도 이어서 본다
+  const isUser = useAccountStore((s) => s.status === "user");
+  useEffect(() => {
+    if (!isUser || !enabled) return;
+    let cancelled = false;
+    fetch(`/api/coach/thread?problemKey=${encodeURIComponent(problem.id)}`, { cache: "no-store" })
+      .then((response) => (response.ok ? (response.json() as Promise<{ messages: CoachThreadMessage[] }>) : null))
+      .then((data) => {
+        if (cancelled || !data || data.messages.length === 0) return;
+        useCoachStore.setState((state) => ({ threads: { ...state.threads, [problem.id]: data.messages } }));
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [enabled, isUser, problem.id]);
 
   async function ask(question: string) {
     const text = question.trim();

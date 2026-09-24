@@ -6,7 +6,7 @@ import { generationRequestSchema } from "@/lib/ai/schemas";
 import { getGeneratedStore } from "@/lib/ai/store";
 import { toSummary } from "@/lib/ai/views";
 import { startOfLocalDay } from "@/lib/server/rate-limit";
-import { getRequester } from "@/lib/server/requester";
+import { aiLabRequiresLogin, getRequester } from "@/lib/server/requester";
 import type { GeneratedProblem, GenerationRequest } from "@/types";
 
 /** 생성·검증은 응답 뒤(after)에서 계속된다. 재시도까지 여유 있게 */
@@ -28,6 +28,9 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) return error(400, parsed.error.issues[0]?.message ?? "요청 내용을 확인해 주세요.");
 
   const requester = await getRequester();
+  if (requester.kind === "guest" && aiLabRequiresLogin()) {
+    return error(401, "로그인하면 AI 맞춤 문제를 만들 수 있어요.");
+  }
   const store = getGeneratedStore();
 
   const used = await store.countSince(requester.id, startOfLocalDay());
@@ -74,5 +77,6 @@ export async function GET() {
     problems: records.map((record) => toSummary(withStaleCheck(record))),
     remainingToday: Math.max(0, DAILY_GENERATION_LIMIT - used),
     aiEnabled: isAiConfigured(),
+    loginRequired: requester.kind === "guest" && aiLabRequiresLogin(),
   });
 }

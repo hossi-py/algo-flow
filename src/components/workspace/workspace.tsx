@@ -11,7 +11,7 @@ import { useProgress, useTopicViews } from "@/hooks/use-progress";
 import { useEngine, useJudge } from "@/hooks/use-runner";
 import { toLocalDate } from "@/lib/date";
 import { cn } from "@/lib/utils";
-import { LEVEL_CLEAR_DELAY_MS, useCelebrationStore } from "@/stores/celebration-store";
+import { celebrateBadges, LEVEL_CLEAR_DELAY_MS, useCelebrationStore } from "@/stores/celebration-store";
 import { useProgressStore } from "@/stores/progress-store";
 import { useSettingsStore } from "@/stores/settings-store";
 import { draftKey, useWorkspaceStore } from "@/stores/workspace-store";
@@ -112,13 +112,16 @@ function WorkspaceBody({ problem, aiEnabled }: WorkspaceProps) {
       if (!judged || mode !== "submit") return;
 
       const now = new Date();
-      const outcome = recordSubmission({
-        problem,
-        verdict: judged.verdict,
-        runtimeMs: judged.verdict === "accepted" ? judged.totalTimeMs : null,
-        today: toLocalDate(now),
-        now: now.toISOString(),
-      });
+      const outcome = recordSubmission(
+        {
+          problem,
+          verdict: judged.verdict,
+          runtimeMs: judged.verdict === "accepted" ? judged.totalTimeMs : null,
+          today: toLocalDate(now),
+          now: now.toISOString(),
+        },
+        { judged, code, language },
+      );
       if (outcome.firstSolve) {
         celebrate({
           title: "정답이에요!",
@@ -139,8 +142,9 @@ function WorkspaceBody({ problem, aiEnabled }: WorkspaceProps) {
           });
         }, LEVEL_CLEAR_DELAY_MS);
       }
+      celebrateBadges(outcome.earnedBadges, (outcome.firstSolve ? 1 : 0) + (outcome.levelCleared ? 1 : 0));
     },
-    [celebrate, draft, isDesktop, opened, problem, recordSubmission, run, starter, topic?.color],
+    [celebrate, draft, isDesktop, language, opened, problem, recordSubmission, run, starter, topic?.color],
   );
 
   const handleReset = () => editorApi.current?.replaceAll(starter);

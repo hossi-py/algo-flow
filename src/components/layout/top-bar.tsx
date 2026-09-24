@@ -1,6 +1,7 @@
 "use client";
 
 import { StreakFlame, XpPill } from "@/components/common/stat-pills";
+import { UserMenu } from "@/components/auth/user-menu";
 import { ThemeToggle } from "@/components/common/theme-toggle";
 import { useProgress } from "@/hooks/use-progress";
 import { useToday } from "@/hooks/use-today";
@@ -39,6 +40,7 @@ export function TopBar({ className }: { className?: string }) {
         <div className="md:hidden">
           <ThemeToggle />
         </div>
+        <UserMenu />
       </div>
     </header>
   );

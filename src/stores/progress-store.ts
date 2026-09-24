@@ -4,15 +4,25 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { addDays } from "@/lib/date";
 import { TOPICS } from "@/content/topics";
-import { applyCardRead, applyQuizResult, type ConceptOutcome } from "@/lib/progress/concept";
+import { cardAction, hintAction, quizAction, submitAction } from "@/lib/progress/actions";
+import type { ConceptOutcome } from "@/lib/progress/concept";
+import { connectProgressSink, pushProgress } from "@/lib/progress/remote";
 import { addActivityDay, applyActivity } from "@/lib/progress/streak";
-import {
-  applyHintOpen,
-  applySubmission,
-  type SubmissionInput,
-  type SubmissionOutcome,
-} from "@/lib/progress/submission";
-import type { HintStep, IsoDateTime, LevelClear, LocalDate, Problem, Topic, TopicSlug, UserProgress } from "@/types";
+import type { SubmissionInput, SubmissionOutcome } from "@/lib/progress/submission";
+import { useSubmissionLogStore } from "@/stores/submission-log-store";
+import type {
+  BadgeId,
+  HintStep,
+  IsoDateTime,
+  JudgeResult,
+  Language,
+  LevelClear,
+  LocalDate,
+  Problem,
+  Topic,
+  TopicSlug,
+  UserProgress,
+} from "@/types";
 
 export function createEmptyProgress(): UserProgress {
   return {
@@ -80,6 +90,16 @@ export function createDemoProgress(today: LocalDate, now: IsoDateTime): UserProg
   };
 }
 
+/** 제출을 서버·게스트 기록에 남길 때 필요한 채점 정보 */
+export interface SubmissionDetails {
+  judged: JudgeResult;
+  code: string;
+  language: Language;
+}
+
+export type SubmissionResult = SubmissionOutcome & { earnedBadges: BadgeId[] };
+export type ConceptResult = ConceptOutcome & { earnedBadges: BadgeId[] };
+
 interface ProgressState {
   progress: UserProgress;
   /** localStorage에서 불러오기를 마쳤는지 (마치기 전에는 스켈레톤을 보여준다) */
@@ -89,12 +109,17 @@ interface ProgressState {
   awardXp: (amount: number, today: LocalDate, solvedDelta?: number) => void;
   /** 힌트 열기 (순서대로만) */
   openHint: (problem: Problem, step: HintStep, now: IsoDateTime) => void;
-  /** 제출 결과 반영. 첫 정답·레벨 클리어 여부를 돌려준다 */
-  recordSubmission: (input: SubmissionInput) => SubmissionOutcome;
+  /**
+   * 제출 결과 반영. 첫 정답·레벨 클리어·새 배지를 돌려준다.
+   * 로그인 상태면 서버에도 기록하고(서버 결과로 다시 맞춤), 게스트면 이 브라우저의 제출 기록에 남긴다.
+   */
+  recordSubmission: (input: SubmissionInput, details?: SubmissionDetails) => SubmissionResult;
   /** 개념 카드 한 장을 읽음. 모든 카드를 처음 다 읽으면 XP */
-  readConceptCard: (topic: Topic, cardId: string, today: LocalDate, now: IsoDateTime) => ConceptOutcome;
+  readConceptCard: (topic: Topic, cardId: string, today: LocalDate, now: IsoDateTime) => ConceptResult;
   /** 유형 인식 퀴즈 한 번을 끝까지 풂 (score: 0~1). 처음 통과하면 XP */
-  recordQuiz: (topic: Topic, score: number, today: LocalDate, now: IsoDateTime) => ConceptOutcome;
+  recordQuiz: (topic: Topic, score: number, today: LocalDate, now: IsoDateTime) => ConceptResult;
+  /** 서버가 계산한 진도로 덮어쓴다 (로그인 사용자) */
+  replace: (progress: UserProgress) => void;
   loadDemo: (today: LocalDate, now: IsoDateTime) => void;
   reset: () => void;
 }
@@ -113,23 +138,72 @@ export const useProgressStore = create<ProgressState>()(
             activity: addActivityDay(state.progress.activity, today, amount, solvedDelta),
           },
         })),
-      openHint: (problem, step, now) =>
-        set((state) => ({ progress: applyHintOpen(state.progress, problem, step, now) })),
-      recordSubmission: (input) => {
-        const { progress, outcome } = applySubmission(get().progress, input, TOPICS);
+      openHint: (problem, step, now) => {
+        const before = get().progress;
+        const progress = hintAction(before, problem, step, now);
+        if (progress === before) return;
         set({ progress });
-        return outcome;
+        if (before.userId !== null) void pushProgress("/api/progress/hint", { problemKey: problem.id, step });
+      },
+      recordSubmission: (input, details) => {
+        const before = get().progress;
+        const hintsOpened = before.problems[input.problem.id]?.maxHintOpened ?? 0;
+        const { progress, outcome, earnedBadges } = submitAction(before, input, TOPICS);
+        set({ progress });
+        if (details && input.verdict !== "internal-error") {
+          const { judged, code, language } = details;
+          if (before.userId !== null) {
+            void pushProgress("/api/progress/submit", {
+              problemKey: input.problem.id,
+              verdict: judged.verdict,
+              passed: judged.passed,
+              total: judged.total,
+              runtimeMs: input.runtimeMs,
+              language,
+              code,
+              results: judged.results.map((r) => ({ ...r, stdout: "" })),
+            });
+          } else {
+            useSubmissionLogStore.getState().add({
+              id: crypto.randomUUID(),
+              problemKey: input.problem.id,
+              source: input.problem.source,
+              topic: input.problem.topic,
+              level: input.problem.level,
+              patternTags: input.problem.patternTags,
+              language,
+              code,
+              verdict: judged.verdict,
+              passed: judged.passed,
+              total: judged.total,
+              runtimeMs: input.runtimeMs,
+              hintsOpened,
+              createdAt: input.now,
+            });
+          }
+        }
+        return { ...outcome, earnedBadges };
       },
       readConceptCard: (topic, cardId, today, now) => {
-        const { progress, outcome } = applyCardRead(get().progress, topic, cardId, TOPICS, today, now);
-        if (progress !== get().progress) set({ progress });
-        return outcome;
+        const before = get().progress;
+        const { progress, outcome, earnedBadges } = cardAction(before, topic, cardId, TOPICS, today, now);
+        if (progress !== before) {
+          set({ progress });
+          if (before.userId !== null) {
+            void pushProgress("/api/progress/concept", { kind: "card", topic: topic.slug, cardId });
+          }
+        }
+        return { ...outcome, earnedBadges };
       },
       recordQuiz: (topic, score, today, now) => {
-        const { progress, outcome } = applyQuizResult(get().progress, topic, score, TOPICS, today, now);
+        const before = get().progress;
+        const { progress, outcome, earnedBadges } = quizAction(before, topic, score, TOPICS, today, now);
         set({ progress });
-        return outcome;
+        if (before.userId !== null)
+          void pushProgress("/api/progress/concept", { kind: "quiz", topic: topic.slug, score });
+        return { ...outcome, earnedBadges };
       },
+      replace: (progress) => set({ progress }),
       loadDemo: (today, now) => set({ progress: createDemoProgress(today, now) }),
       reset: () => set({ progress: createEmptyProgress() }),
     }),
@@ -143,3 +217,5 @@ export const useProgressStore = create<ProgressState>()(
     },
   ),
 );
+
+connectProgressSink((progress) => useProgressStore.getState().replace(progress));

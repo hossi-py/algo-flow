@@ -35,5 +35,10 @@ export function getGeneration(id: string) {
 }
 
 export function listGenerations() {
-  return request<{ problems: GeneratedProblemSummary[]; remainingToday: number; aiEnabled: boolean }>("/api/generate");
+  return request<{
+    problems: GeneratedProblemSummary[];
+    remainingToday: number;
+    aiEnabled: boolean;
+    loginRequired: boolean;
+  }>("/api/generate");
 }

@@ -25,6 +25,12 @@ export interface Submission {
   createdAt: IsoDateTime;
 }
 
+/** 제출 기록 목록·약점 분석에 쓰는 가벼운 형태 (게스트는 localStorage, 로그인 사용자는 submissions 테이블) */
+export type SubmissionSummary = Omit<Submission, "userId" | "code" | "results" | "failedTestCaseId"> & {
+  /** 오래된 기록은 저장 공간을 아끼려고 코드를 지운다 */
+  code: string | null;
+};
+
 export type ProblemStatus = "attempted" | "solved";
 
 export interface ProblemProgress {
@@ -49,6 +55,8 @@ export interface ConceptProgress {
   /** 0~1 */
   quizBestScore: number | null;
   quizAttempts: number;
+  /** 만점으로 끝낸 퀴즈 수 ("유형 탐정" 배지). 예전 게스트 데이터에는 없을 수 있다 */
+  quizPerfectCount?: number;
 }
 
 export interface LevelClear {

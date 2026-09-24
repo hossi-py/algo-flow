@@ -127,7 +127,27 @@ after()에서:
 
 ---
 
-## 4. 디렉토리 구조
+## 4. 인증 · 진도 저장 (Step 6 구현)
+
+```
+[게스트]  브라우저가 lib/progress 규칙으로 진도 계산 → localStorage (진도 · 제출 기록 · 코치 대화)
+[로그인]  브라우저: 같은 규칙으로 먼저 반영(낙관적)
+             └─ POST /api/progress/{submit|hint|concept}
+                  서버: 사용자 확인(getUser) → 현재 진도 읽기 → 같은 TS 규칙으로 새 진도 계산(+배지)
+                        → 바뀐 행만 RPC 한 번 = 한 트랜잭션 (record_submission 등, service role 전용)
+                        → revision이 달라졌으면(동시 요청) 다시 읽어 계산 (최대 3회)
+             └─ 응답의 진도로 덮어씀 (요청은 순서대로 하나씩)
+```
+
+- **규칙은 한 곳**: XP·스트릭·레벨 클리어·배지 판단은 콘텐츠(`src/content`)가 있어야 하므로 SQL이 아니라 TS(`lib/progress/actions.ts`)에 두고, 게스트(브라우저)와 서버가 같은 함수를 쓴다. DB RPC는 계산된 결과를 원자적으로 기록만 한다.
+- **쓰기 권한**: 진도 테이블에는 클라이언트 쓰기 정책이 없고, RPC 실행 권한도 service role에만 있다. 클라이언트 키로는 XP를 직접 쓸 수 없다. (채점이 브라우저에서 일어나는 한계는 §1 그대로)
+- **로그인 직후 병합**: 이 브라우저에 게스트 진도가 있으면 `POST /api/progress/merge` → `mergeProgress`(문제별 해결 여부·시도 합산, 같은 문제·개념 XP는 한 번만, 활동일 합치고 스트릭 재계산) → `merge_guest_progress` RPC가 진도와 게스트 제출 기록을 한 번에 기록. 성공하면 게스트 기록을 비우고 새 계정에는 게스트 때 설정을 옮긴다.
+- **로그아웃·세션 만료**: 화면의 진도를 빈 게스트 진도로 되돌린다 (다른 계정 진도가 남지 않게).
+- **약점 분석**: 로그인은 `user_pattern_stats` 뷰(security_invoker), 게스트는 브라우저 제출 기록으로 같은 집계(`computePatternStats`)를 하고, 점수는 `weaknessScores` 하나로 계산한다. 대시보드 RecommendCard와 AI 랩 자동 패턴 선택이 이 결과를 쓴다.
+- **AI 랩**: Supabase가 설정돼 있으면 로그인 사용자만 생성할 수 있고, 생성 문제는 `generated_problems`(공개부) / `generated_problem_solutions`(정답 코드, 클라이언트 권한 없음)에 저장한다. 코치 대화는 로그인 사용자면 `coach_messages`에도 남긴다.
+- **설정이 없으면**: Supabase 환경 변수가 없으면 로그인 UI를 숨기고 게스트 모드로만 동작한다.
+
+## 5. 디렉토리 구조
 
 ```
 algo-flow/
@@ -229,7 +249,7 @@ algo-flow/
 │  │  │  ├─ unlock.ts                     # 토픽/레벨 잠금 계산
 │  │  │  ├─ badges.ts                     # 배지 판정
 │  │  │  └─ weakness.ts                   # 패턴별 약점 점수
-│  │  ├─ supabase/                        # client.ts, server.ts, middleware.ts, database.types.ts
+│  │  ├─ supabase/                        # env.ts, client.ts(브라우저), server.ts(세션·getAuthUser), admin.ts(서비스 키), proxy.ts
 │  │  ├─ motion.ts                        # spring/duration 프리셋
 │  │  └─ utils.ts                         # cn() 등
 │  ├─ workers/
@@ -240,7 +260,7 @@ algo-flow/
 │  │  └─ settings-store.ts                # 에디터 글꼴 크기, 패널 비율
 │  ├─ hooks/                              # use-runner.ts, use-player.ts, use-breakpoint.ts, use-celebration.ts
 │  ├─ types/                              # common.ts, content.ts, judge.ts, visualization.ts, progress.ts, ai.ts
-│  └─ middleware.ts                       # Supabase 세션 갱신
+│  └─ proxy.ts                            # Supabase 세션 갱신 (Next 16: middleware → proxy)
 ├─ tests/                                 # vitest: compare, judge, unlock, streak, xp, generators
 ├─ .env.example
 ├─ components.json                        # shadcn 설정

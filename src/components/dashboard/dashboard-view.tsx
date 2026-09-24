@@ -2,14 +2,18 @@
 
 import { useMemo } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import { useLearningRecord } from "@/hooks/use-learning-record";
+import { recommendable } from "@/lib/progress/recommend";
+import { weaknessScores } from "@/lib/progress/weakness";
 import { useLearnerSummary, useNextStep, useProgress, useTopicViews } from "@/hooks/use-progress";
 import { useToday } from "@/hooks/use-today";
 import { riseIn } from "@/lib/motion";
 import { visibleStreak, xpOnDate } from "@/lib/progress/streak";
-import { DEFAULT_DAILY_GOAL_XP } from "@/lib/progress/xp";
+import { useSettingsStore } from "@/stores/settings-store";
 import type { ProblemProgress } from "@/types";
 import { ContinueCard } from "./continue-card";
 import { GreetingHero } from "./greeting-hero";
+import { RecommendCard } from "./recommend-card";
 import { SignalOfTheDay } from "./signal-of-the-day";
 import { StatStrip } from "./stat-strip";
 import { TopicProgressRow } from "./topic-progress-row";
@@ -22,6 +26,9 @@ export function DashboardView() {
   const nextStep = useNextStep();
   const learner = useLearnerSummary();
   const reduceMotion = useReducedMotion();
+  const dailyGoal = useSettingsStore((s) => s.dailyGoalXp);
+  const record = useLearningRecord();
+  const weakest = record.patternStats ? recommendable(weaknessScores(record.patternStats))[0] : undefined;
 
   const { inProgress, solvedCount } = useMemo(() => {
     const entries = Object.values(progress.problems).filter((p): p is ProblemProgress => p !== undefined);
@@ -40,7 +47,7 @@ export function DashboardView() {
       hour={clock.hour}
       learner={learner}
       todayXp={xpOnDate(progress.activity, clock.today)}
-      dailyGoal={DEFAULT_DAILY_GOAL_XP}
+      dailyGoal={dailyGoal}
     />,
     <div key="main" className="grid gap-4 lg:grid-cols-5">
       <div className="lg:col-span-3">
@@ -58,6 +65,7 @@ export function DashboardView() {
       level={learner.level}
       solvedCount={solvedCount}
     />,
+    ...(weakest ? [<RecommendCard key="recommend" weakest={weakest} />] : []),
     <TopicProgressRow key="topics" views={views} />,
     <SignalOfTheDay key="signal" today={clock.today} />,
   ];
@@ -66,7 +74,7 @@ export function DashboardView() {
     <div className="flex flex-col gap-6">
       {sections.map((section, index) => (
         <motion.div
-          key={index}
+          key={section.key ?? index}
           variants={riseIn}
           initial={reduceMotion ? false : "hidden"}
           animate="show"

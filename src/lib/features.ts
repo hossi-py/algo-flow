@@ -10,7 +10,7 @@ export const FEATURES = {
   /** Step 5: AI 맞춤 문제 (/ai-lab) */
   aiLab: true,
   /** Step 6: 로그인 · 마이페이지 (/me) */
-  account: false,
+  account: true,
 } as const;
 
 export type FeatureKey = keyof typeof FEATURES;

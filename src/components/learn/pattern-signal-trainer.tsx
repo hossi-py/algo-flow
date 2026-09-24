@@ -159,7 +159,7 @@ function RecognitionQuiz({ topic }: { topic: Topic }) {
     const now = new Date();
     const outcome = recordQuiz(topic, score, toLocalDate(now), now.toISOString());
     setFinished(true);
-    if (outcome.quizPassed) {
+    if (outcome.quizPassed || outcome.earnedBadges.length > 0) {
       celebrateOutcome(outcome, {
         title: "유형 인식 통과!",
         message: `${questions.length}문제 중 ${correctCount}문제 정답. 신호를 잘 찾았어요`,

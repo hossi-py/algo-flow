@@ -120,6 +120,7 @@ export function applyQuizResult(
         ...current,
         quizAttempts: current.quizAttempts + 1,
         quizBestScore: Math.max(current.quizBestScore ?? 0, clamped),
+        quizPerfectCount: (current.quizPerfectCount ?? 0) + (clamped === 1 ? 1 : 0),
       },
     },
   };

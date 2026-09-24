@@ -5,9 +5,10 @@ import { claudeCoachCall } from "@/lib/ai/coach-claude";
 import { COACH_DAILY_LIMIT, COACH_DAILY_LIMIT_PER_IP } from "@/lib/ai/limits";
 import { mockCoachCall } from "@/lib/ai/mock";
 import { loadProblem } from "@/lib/ai/problem-source";
-import { coachRequestSchema, type CoachStreamEvent } from "@/lib/ai/schemas";
+import { coachRequestSchema, type CoachRequest, type CoachStreamEvent } from "@/lib/ai/schemas";
 import { consumeDaily } from "@/lib/server/rate-limit";
 import { getRequester } from "@/lib/server/requester";
+import { createServerSupabase } from "@/lib/supabase/server";
 
 export const maxDuration = 120;
 
@@ -59,6 +60,7 @@ export async function POST(request: NextRequest) {
         const call = isAiMock() ? mockCoachCall(coachRequest) : claudeCoachCall(problem, coachRequest, upstream.signal);
         const result = await runCoach(coachRequest, call, send);
         if (result.blocked > 0) console.warn(`[coach] ${coachRequest.problemKey} 가드 차단 ${result.blocked}회`);
+        if (requester.kind === "user") await saveThread(coachRequest, result.reply, result.meta.mood, requester.id);
       } catch (cause) {
         if (!upstream.signal.aborted) {
           console.error("[coach] 실패", cause);
@@ -84,4 +86,17 @@ export async function POST(request: NextRequest) {
       "X-Accel-Buffering": "no",
     },
   });
+}
+
+/** 로그인 사용자의 대화는 서버에도 남긴다 (사용자 세션 → RLS가 본인 이름으로만 허용) */
+async function saveThread(request: CoachRequest, reply: string, mood: string, userId: string) {
+  const supabase = await createServerSupabase();
+  const question = request.messages.at(-1)?.content;
+  if (!supabase || !question || !reply) return;
+  const base = { user_id: userId, problem_key: request.problemKey, hint_level: request.hintsOpened };
+  const { error } = await supabase.from("coach_messages").insert([
+    { ...base, role: "user", content: question.slice(0, 8000) },
+    { ...base, role: "assistant", content: reply.slice(0, 8000), mood },
+  ]);
+  if (error) console.warn("[coach] 대화 저장 실패", error.message);
 }

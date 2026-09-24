@@ -52,13 +52,14 @@ M1 설계 ─▶ M2 디자인 시스템·대시보드 ─▶ M3 워크스페이�
 | 완료 기준 | ☑ 코치에게 "정답 코드 줘"라고 해도 전체 코드가 나오지 않음 — 가드 테스트 + 모의 AI로 브라우저 확인(유출 답변 차단 → 지우고 재작성) ◐ 힌트 2단계 사용자에게 의사코드 수준 정보가 나오지 않음 — 프롬프트 정보 상한 + 힌트 3 전 새 코드 2줄 제한은 동작, 글로 쓴 의사코드는 기계로 막지 못하므로 **실제 모델로 확인 필요** ☑ 코치 응답의 mood로 노디 표정 변경 (답변 말풍선·헤더 노디) ◐ 생성 10회 시도 중 검증 통과 문제가 모두 실제로 풀림 — 파이프라인 마지막 단계가 완성 문제를 정답 코드로 재채점해 AC일 때만 통과시키고, 테스트에서 JS 풀이로도 AC 확인. **실제 API 10회는 키 설정 후 `pnpm ai:smoke`로 확인 필요** ☑ 무한 루프 정답 코드가 섞이면 폐기·재생성 (테스트 + 브라우저: 1차 execution 탈락 → 2차 통과 기록) ☑ 정답 코드가 브라우저 네트워크 응답에 포함되지 않음 (저장소에 읽기 메서드 없음, 응답 본문 검사) ☑ 사용자당 일일 생성 한도(10개, 동시 1개) 동작 |
 | 참고 | 로그인 전(Step 5)에는 httpOnly 게스트 쿠키로 사용 한도와 생성 문제 소유자를 구분한다. 문서의 "AI 랩은 로그인 사용자만"은 Step 6에서 Supabase가 설정된 경우에 적용한다 |
 
-## M6. 인증, 진도 저장, 약점 분석 (Step 6)
+## M6. 인증, 진도 저장, 약점 분석 (Step 6) — 검토 대기
 
 | 구분 | 내용 |
 | --- | --- |
 | 목표 | 학습 기록을 안전하게 저장하고, 약점을 AI 추천에 연결 |
-| 산출물 | Supabase 마이그레이션 적용 · 로그인(이메일 매직링크 + 선택: Google/GitHub/Kakao) · `record_submission`/`record_concept_progress`/`merge_guest_progress` RPC · 게스트 → 계정 병합 · 마이페이지(통계, 잔디, 약점 차트, 배지, 제출 기록) · `weakness.ts` · 대시보드 RecommendCard / AI 랩 자동 패턴 선택 |
-| 완료 기준 | ☐ 다른 사용자 데이터가 RLS로 조회되지 않음(anon/타 계정 테스트) ☐ `generated_problem_solutions`는 클라이언트 키로 조회 불가 ☐ 게스트로 3문제 푼 뒤 로그인 → XP·진도·스트릭 보존 ☐ 제출 1회 = submission·progress·XP·스트릭·배지가 한 트랜잭션으로 갱신 ☐ 약점 Top3가 실제 제출 데이터와 일치 ☐ 추천 → AI 문제 생성까지 한 흐름으로 동작 |
+| 산출물 | Supabase 마이그레이션 3개(스키마·RLS·뷰 / 진도 RPC / 배지) · `config.toml` · 로그인(이메일 로그인 링크 + 선택: Google/GitHub/Kakao, `/auth/login`, `/auth/callback`) · `proxy.ts` 세션 갱신 · `record_submission`/`record_concept_progress`/`record_problem_state`/`merge_guest_progress`/`complete_generated_problem` RPC(service role 전용, revision 낙관적 잠금) · 진도 API(`/api/progress`, submit·hint·concept·merge·submissions·weakness, `/api/profile`, `/api/coach/thread`) · 브라우저·서버 공통 규칙 `lib/progress/actions.ts`(+ `badges.ts`, `merge.ts`, `weakness.ts`, `rows.ts`, `service.ts`) · 게스트 → 계정 병합(AccountSync) · 게스트 제출 기록 저장 · 마이페이지(프로필·통계·12주 잔디·유형별 숙련도·배지·최근 제출과 코드 다시 보기·설정) · 대시보드 RecommendCard · AI 랩 약점 Top3 + 자동 패턴 선택 + 로그인 게이트 · 생성 문제 Supabase 저장소 |
+| 완료 기준 | ☑ 다른 사용자 데이터가 RLS로 조회되지 않음 — PGlite(실제 Postgres)에 Supabase 역할·기본 권한을 흉내 내 마이그레이션을 적용하고 anon/타 계정으로 10개 테이블과 뷰를 검사 ☑ `generated_problem_solutions`는 클라이언트 키로 조회 불가 (본인 문제여도 permission denied) ☑ 게스트로 3문제 푼 뒤 로그인 → XP·진도·스트릭(·배지) 보존 — 병합 서비스를 DB에 실제로 기록해 확인, 이미 푼 문제는 XP 중복 없음 ☑ 제출 1회 = submission·progress·XP·스트릭·배지가 한 트랜잭션 — revision 충돌·제약 위반 시 제출 기록까지 되돌아감, 동시 제출 2건 모두 반영 ☑ 약점 Top3가 실제 제출 데이터와 일치 — DB 뷰 집계와 TS 집계가 같고 Top3 순서·점수 확인 ◐ 추천 → AI 문제 생성까지 한 흐름 — 대시보드·마이페이지 추천 링크가 토픽·패턴·신호를 채운 AI 랩으로 연결되고 폼에 자동 선택됨(브라우저 확인). **실제 Supabase 프로젝트와 로그인 메일 흐름은 키를 넣은 뒤 확인 필요** |
+| 참고 | 로그인하지 않아도 모든 학습이 되고(게스트), 마이페이지·약점 분석도 이 브라우저 기록으로 보여 준다. 설정의 "게스트 데이터 가져오기"는 로그인 직후 자동 병합으로 대신했다 |
 
 ## 트랙 C. 콘텐츠 제작 (M3 이후 병행)
 

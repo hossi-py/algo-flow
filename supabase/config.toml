@@ -1,0 +1,20 @@
+# Supabase CLI 설정 (로컬 개발: `supabase start`, 원격 적용: `supabase link` 후 `supabase db push`)
+project_id = "algo-flow"
+
+[api]
+port = 54321
+schemas = ["public"]
+
+[db]
+port = 54322
+major_version = 17
+
+[auth]
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+# 로그인 링크(매직 링크)만 쓰므로 비밀번호 확인 메일은 필요 없다
+enable_confirmations = false
