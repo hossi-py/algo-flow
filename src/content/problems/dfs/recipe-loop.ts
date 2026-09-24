@@ -1,0 +1,260 @@
+import type { Problem } from "@/types/content";
+
+export const dfsRecipeLoop: Problem = {
+  id: "c:dfs-recipe-loop",
+  slug: "dfs-recipe-loop",
+  source: "curated",
+  topic: "dfs",
+  level: 4,
+  title: "꼬인 요리 순서",
+  summary: '"먼저 해야 하는 일" 관계에 순환이 있는지 찾아요',
+  statement: [
+    "요리사 노디의 레시피에는 단계가 `n`개(0번 ~ `n-1`번) 있어요. 규칙 목록 `rules`의 `[a, b]`는 **a 단계를 끝내야 b 단계를 시작할 수 있다**는 뜻이에요.",
+    "",
+    '그런데 규칙이 꼬여서 "A 다음 B, B 다음 C, C 다음 A"처럼 **서로가 서로를 기다리는** 순환이 생기면 요리를 끝낼 수 없어요.',
+    "",
+    "모든 단계를 끝낼 수 있으면 `True`, 순환 때문에 끝낼 수 없으면 `False`를 반환해 주세요.",
+  ].join("\n"),
+  inputFormat: "`n`: 단계 수, `rules`: `[a, b]`(a를 먼저) 규칙 목록이에요.",
+  outputFormat: "모든 단계를 끝낼 수 있는지 (bool)",
+  constraints: ["1 ≤ n ≤ 2,000", "0 ≤ rules의 길이 ≤ 5,000", "a ≠ b"],
+  signature: {
+    name: "solution",
+    params: [
+      { name: "n", type: { python: "int", javascript: "number" }, description: "단계 수" },
+      { name: "rules", type: { python: "list[list[int]]", javascript: "number[][]" }, description: "순서 규칙" },
+    ],
+    returns: { type: { python: "bool", javascript: "boolean" }, description: "끝낼 수 있는지" },
+  },
+  starterCode: {
+    python: ["def solution(n, rules):", "    answer = True", "    return answer", ""].join("\n"),
+    javascript: ["function solution(n, rules) {", "  let answer = true;", "  return answer;", "}", ""].join("\n"),
+  },
+  testCases: [
+    {
+      id: "ex-1",
+      visibility: "example",
+      purpose: "basic",
+      args: [
+        3,
+        [
+          [0, 1],
+          [1, 2],
+        ],
+      ],
+      expected: true,
+      explanation: "0 → 1 → 2 순서로 하면 돼요.",
+    },
+    {
+      id: "ex-2",
+      visibility: "example",
+      purpose: "basic",
+      args: [
+        3,
+        [
+          [0, 1],
+          [1, 2],
+          [2, 0],
+        ],
+      ],
+      expected: false,
+      explanation: "0 → 1 → 2 → 0 순환이라 끝낼 수 없어요.",
+    },
+    {
+      id: "hid-1",
+      visibility: "hidden",
+      purpose: "tricky",
+      args: [
+        4,
+        [
+          [0, 1],
+          [0, 2],
+          [1, 3],
+          [2, 3],
+        ],
+      ],
+      expected: true,
+      failureNote: "3번에 두 갈래로 닿지만 순환은 아니에요. '이미 방문함'만으로 순환이라고 판단하면 틀려요.",
+    },
+    {
+      id: "hid-2",
+      visibility: "hidden",
+      purpose: "edge",
+      args: [
+        2,
+        [
+          [0, 1],
+          [1, 0],
+        ],
+      ],
+      expected: false,
+      failureNote: "두 단계가 서로를 기다려요.",
+    },
+    {
+      id: "hid-3",
+      visibility: "hidden",
+      purpose: "edge",
+      args: [1, []],
+      expected: true,
+      failureNote: "규칙이 없어요.",
+    },
+    {
+      id: "hid-4",
+      visibility: "hidden",
+      purpose: "tricky",
+      args: [
+        6,
+        [
+          [0, 1],
+          [1, 2],
+          [3, 4],
+          [4, 5],
+          [5, 3],
+        ],
+      ],
+      expected: false,
+      failureNote: "0번에서 시작한 탐색에는 순환이 없지만, 3–4–5에 순환이 있어요.",
+    },
+    {
+      id: "hid-5",
+      visibility: "hidden",
+      purpose: "basic",
+      args: [
+        5,
+        [
+          [4, 3],
+          [3, 2],
+          [2, 1],
+          [1, 0],
+          [4, 0],
+        ],
+      ],
+      expected: true,
+      failureNote: "번호가 거꾸로여도 순환이 없어요.",
+    },
+    {
+      id: "hid-6",
+      visibility: "hidden",
+      purpose: "stress",
+      args: [
+        2000,
+        Array.from({ length: 3997 }, (_, k) => {
+          const i = Math.floor(k / 2);
+          return [i, i + 1 + (k % 2)];
+        }),
+      ],
+      expected: true,
+      failureNote: "2,000단계에 규칙 약 4,000개, 순환은 없어요. 단계마다 처음부터 다시 탐색하면 느려요.",
+    },
+    {
+      id: "hid-7",
+      visibility: "hidden",
+      purpose: "stress",
+      args: [
+        2000,
+        [
+          ...Array.from({ length: 3997 }, (_, k) => {
+            const i = Math.floor(k / 2);
+            return [i, i + 1 + (k % 2)];
+          }),
+          [1999, 0],
+        ],
+      ],
+      expected: false,
+      failureNote: "같은 레시피에 마지막 단계 → 첫 단계 규칙 하나가 더해져 긴 순환이 생겼어요.",
+    },
+  ],
+  judge: {
+    timeLimitMs: 2000,
+    compare: { type: "exact" },
+    recursionLimit: 3000,
+    revealFirstFailure: true,
+  },
+  hints: [
+    {
+      step: 1,
+      kind: "pattern",
+      title: "어떤 유형일까요?",
+      body: [
+        "방향 그래프에서 **순환**(사이클)을 찾는 문제예요.",
+        "",
+        '조심할 점: 방향 그래프에서는 "이미 방문한 노드를 또 만났다"가 곧 순환이 아니에요. 두 갈래 길이 한 곳에서 만날 수도 있거든요.',
+      ].join("\n"),
+      xpPenaltyRate: 0.05,
+    },
+    {
+      step: 2,
+      kind: "approach",
+      title: "어떻게 접근할까요?",
+      body: [
+        "노드 상태를 **세 가지**로 나눠요.",
+        "- `0` 아직 안 감",
+        "- `1` **지금 탐색 중** (현재 DFS 경로 위에 있음)",
+        "- `2` 탐색 끝 (여기서 이어지는 곳엔 순환이 없음이 확인됨)",
+        "",
+        "DFS 중에 상태가 **1인 노드**를 다시 만나면, 지금 걸어온 길로 되돌아온 것이라 **순환**이에요. 상태 2인 노드는 이미 안전하니 건너뛰어요.",
+        "",
+        "상태 2 덕분에 각 노드를 한 번씩만 탐색해서 O(N + M)이에요.",
+      ].join("\n"),
+      xpPenaltyRate: 0.15,
+    },
+    {
+      step: 3,
+      kind: "pseudocode",
+      title: "의사코드",
+      body: [
+        "~~~text",
+        "has_cycle(v):",
+        "    state[v] = 1",
+        "    for w in graph[v]:",
+        "        if state[w] == 1: return True",
+        "        if state[w] == 0 and has_cycle(w): return True",
+        "    state[v] = 2",
+        "    return False",
+        "for v in 0..n-1:",
+        "    if state[v] == 0 and has_cycle(v): return False",
+        "return True",
+        "~~~",
+      ].join("\n"),
+      xpPenaltyRate: 0.3,
+    },
+    {
+      step: 4,
+      kind: "key-code",
+      title: "핵심 코드",
+      body: ["세 가지 상태를 쓰는 부분이에요."].join("\n"),
+      code: {
+        code: {
+          python: [
+            "def has_cycle(v):",
+            "    state[v] = 1",
+            "    for w in graph[v]:",
+            "        if state[w] == 1:",
+            "            return True",
+            "        if state[w] == 0 and has_cycle(w):",
+            "            return True",
+            "    ______",
+            "    return False",
+          ].join("\n"),
+          javascript: [
+            "function hasCycle(v) {",
+            "  state[v] = 1;",
+            "  for (const w of graph[v]) {",
+            "    if (state[w] === 1) return true;",
+            "    if (state[w] === 0 && hasCycle(w)) return true;",
+            "  }",
+            "  ______;",
+            "  return false;",
+            "}",
+          ].join("\n"),
+        },
+        caption: "탐색이 끝난 노드를 '끝남'으로 바꾸는 줄이 빈칸이에요.",
+      },
+      xpPenaltyRate: 0.5,
+    },
+  ],
+  patternTags: ["cycle-detection"],
+  signalIds: ["sig-path-exists", "sig-relations-given"],
+  estimatedMinutes: 25,
+  xp: 40,
+};

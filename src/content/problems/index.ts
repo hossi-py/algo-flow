@@ -1,5 +1,14 @@
 import type { LevelNumber, PatternTag, Problem, TopicSlug } from "@/types";
+import { dfsCaveOrder } from "./dfs/cave-order";
+import { dfsClubCount } from "./dfs/club-count";
+import { dfsDownhillRoutes } from "./dfs/downhill-routes";
+import { dfsFarthestVillages } from "./dfs/farthest-villages";
 import { flowerZones } from "./dfs/flower-zones";
+import { dfsMazeEscape } from "./dfs/maze-escape";
+import { dfsPowerRestore } from "./dfs/power-restore";
+import { dfsRadioNetwork } from "./dfs/radio-network";
+import { dfsRecipeLoop } from "./dfs/recipe-loop";
+import { dfsTeamSize } from "./dfs/team-size";
 import { graphCommonFriends } from "./graph-representation/graph-common-friends";
 import { graphDirectFlights } from "./graph-representation/graph-direct-flights";
 import { graphFamilyTree } from "./graph-representation/graph-family-tree";
@@ -43,7 +52,16 @@ import { stackWarmerWait } from "./stack/warmer-wait";
 
 /** 큐레이션 문제 전체. 새 문제는 여기에 추가하고 토픽의 레벨 problemSlugs에도 등록한다 */
 export const PROBLEMS: readonly Problem[] = [
+  dfsCaveOrder,
+  dfsClubCount,
+  dfsDownhillRoutes,
+  dfsFarthestVillages,
   flowerZones,
+  dfsMazeEscape,
+  dfsPowerRestore,
+  dfsRadioNetwork,
+  dfsRecipeLoop,
+  dfsTeamSize,
   graphCommonFriends,
   graphDirectFlights,
   graphFamilyTree,

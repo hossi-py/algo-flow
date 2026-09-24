@@ -88,6 +88,43 @@ export const DFS_CARDS: ConceptCard[] = [
       },
     },
   },
+  {
+    id: "dfs-return",
+    title: "돌아오면서 답을 모아요",
+    analogy: '팀장이 부하 팀장들에게 "너희 팀 몇 명이야?"라고 묻고, 받은 답을 더해 자기 팀 인원을 보고해요.',
+    body: [
+      "DFS 함수가 **값을 반환**하게 만들면, 재귀가 돌아올 때 자식들의 답을 모아 내 답을 만들 수 있어요.",
+      "",
+      "- **서브트리 크기**: `size(v) = 1 + 자식들의 size 합`",
+      "- **경로 수**: `ways(v) = 다음 노드들의 ways 합` (같은 v는 메모로 한 번만)",
+      "",
+      "방향 그래프에서 **순환**을 찾을 때는 상태를 셋으로 나눠요: 안 감(0) · **탐색 중**(1) · 끝남(2). 탐색 중인 노드를 다시 만나면 지금 걸어온 길로 되돌아온 것이라 순환이에요.",
+    ].join("\n"),
+    illustration: "dfs-maze-dive",
+    keyPoints: [
+      "자식 답을 다 받은 뒤 내 답을 계산",
+      "같은 노드의 답은 메모로 재사용",
+      "순환 찾기: 0 · 1(탐색 중) · 2(끝남)",
+    ],
+    code: {
+      code: {
+        python: [
+          "def size(v):",
+          "    total = 1",
+          "    for w in children[v]:",
+          "        total += size(w)    # 자식의 답을 모아요",
+          "    return total",
+        ].join("\n"),
+        javascript: [
+          "function size(v) {",
+          "  let total = 1;",
+          "  for (const w of children[v]) total += size(w);   // 자식의 답을 모아요",
+          "  return total;",
+          "}",
+        ].join("\n"),
+      },
+    },
+  },
 ];
 
 export const DFS_QUIZ: RecognitionQuestion[] = [
