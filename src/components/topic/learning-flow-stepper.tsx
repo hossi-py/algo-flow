@@ -40,7 +40,7 @@ const STEPS: FlowStep[] = [
     description: "약한 부분을 더 연습해요",
     icon: WandSparkles,
     feature: "aiLab",
-    href: () => "/ai-lab",
+    href: (t) => `/ai-lab?topic=${t}`,
   },
 ];
 

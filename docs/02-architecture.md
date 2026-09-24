@@ -23,7 +23,7 @@
 │ /api/generate     AI 문제 생성 + 검증 파이프라인 │──▶│ Postgres + RLS            │
 │   └─ NodeRunner: Pyodide(Node) in worker_thread │   │  progress, submissions,   │
 │       정답 코드 실행 → expected 생성            │   │  generated_problems ...   │
-│ Vercel AI SDK ──▶ LLM Provider                  │   │ RPC: record_submission    │
+│ @anthropic-ai/sdk ──▶ Claude (claude-opus-5)    │   │ RPC: record_submission    │
 └─────────────────────────────────────────────────┘   └───────────────────────────┘
 ```
 
@@ -93,26 +93,37 @@ worker → main : ready | init-error | case-result
 
 ## 3. AI 파이프라인 (Step 5 구현)
 
+공통: 공식 Anthropic SDK(`@anthropic-ai/sdk`)로 Claude를 호출한다. 모델은 `AI_COACH_MODEL`·`AI_GENERATOR_MODEL`(기본 `claude-opus-5`), 적응형 사고(adaptive thinking), 안전 분류기가 거절하면 서버가 권장 모델로 다시 실행하는 `fallbacks: "default"`를 켠다. 규칙 프롬프트는 고정 문자열이라 프롬프트 캐시를 탄다. `AI_MOCK=1`(개발 전용)이면 키 없이 모의 응답으로 같은 흐름을 돌린다(`lib/ai/mock.ts`).
+
 ### 3.1 AI 코치 `/api/coach`
-- 입력: 문제 요약, 사용자 현재 코드, 열어본 힌트 단계(0–4), 최근 채점 결과, 대화 이력(최근 10턴).
-- 시스템 프롬프트 규칙: 소크라테스식 질문 우선, **힌트 단계를 넘어서는 정보 금지**(예: 힌트2까지 연 사용자에게 의사코드 제시 금지), 정답 전체 코드 금지, 한 번에 코드 최대 3줄.
-- 출력: 스트리밍 텍스트 + 구조화 메타(`mood`, `suggestHintStep`)를 함께 반환해 노디 표정을 바꾼다.
-- 가드: 응답에 `def solution` 전체가 포함되면 서버에서 차단 후 재생성.
+- 입력: 문제 키, 사용자 현재 코드, 열어본 힌트 단계(0–4), 최근 채점 요약(화면에 이미 공개된 정보만), 대화 이력(최근 10턴). **문제 본문은 클라이언트 값이 아니라 서버 원본**을 쓴다 (AI 생성 문제는 본인 것만).
+- 프롬프트: 소크라테스식 질문 우선, 힌트 단계별 **정보 상한**(0: 유형 이름도 금지 · 1: 유형과 근거 · 2: 접근 아이디어까지, 의사코드 금지 · 3: 의사코드 흐름 · 4: 빈칸 있는 핵심 코드), 정답 전체 코드 금지. 이미 연 힌트만 컨텍스트에 넣는다.
+- 출력: NDJSON 스트림 `text* → (reset → text*)? → meta → done`. 메타(`mood`, `suggestHintStep`, `followUps`)는 답변 뒤 strict 도구 `coach_meta` 호출로 받아 노디 표정·후속 질문·힌트 추천 버튼에 쓴다.
+- **서버 가드**(`lib/ai/coach-guard.ts`): 스트리밍 중 코드 블록과 코드로 시작하는 줄은 모아서 검사한 뒤 내보낸다. `solution` 정의가 새로 나오거나(사용자의 머리줄 아래 새 본문 2줄 이상 포함), 사용자 코드에 없던 코드가 허용량(힌트 3 전 2줄, 이후 3줄)을 넘으면 차단 → 모델 요청을 끊고 `reset`을 보낸 뒤 사유를 붙여 한 번 다시 쓴다. 두 번 모두 막히면 준비된 질문형 답변으로 대신한다.
+- 한도: 게스트 하루 30회(+ IP당 60회), 로그인 사용자 100회 (프로세스 메모리 카운터).
 
 ### 3.2 AI 문제 생성 `/api/generate`
 ```
-요청(토픽, 레벨, 약점 패턴)
-  → [1] LLM 구조화 출력 (zod: ProblemDraft)
-  → [2] 스키마 검증 + 정적 검사 (solution 정의, 금지 import: os/sys/subprocess/open/input 등)
-  → [3] NodeRunner로 정답 코드 × 테스트 입력 전부 실행 (케이스당 2s, 전체 15s)
-        · 실패/타임아웃/직렬화 불가 → 폐기
-        · 2회 실행해 결과가 다르면(비결정적) → 폐기
-  → [4] 품질 검사: 예제 ≥ 2, 숨은 케이스 ≥ 4, 모든 출력이 동일하면 폐기(퇴화 케이스)
-  → [5] 실패 사유를 프롬프트에 붙여 재생성 (최대 3회) → 모두 실패 시 status = rejected
-  → [6] 통과 시 generated_problems(공개부) + generated_problem_solutions(비공개) 저장, status = verified
+POST(토픽, 레벨 2~5, 집중 패턴 ≤3, 약한 신호, 테마 ≤20자) → 202 { id }, 이후 GET /api/generate/[id] 폴링
+after()에서:
+  → [1] Claude 구조화 출력 (zod: ProblemDraft, 스트리밍). 잘리거나 JSON이 아니면 스키마 실패로 처리
+  → [2] 스키마 검증 (argsJson 파싱, 인자 수 = params 수)
+        + 정적 검사 (Pyodide ast: import 허용 목록, open/eval/exec/__import__/getattr 등 금지,
+          던더 속성 금지, 최상위 solution 필요, 8,000자 이하)
+  → [3] NodeRunner로 정답 코드 × 테스트 입력 전부 실행 → expected 계산
+        (케이스당 500ms = 사용자 제한 2s의 1/4, 워커는 2s에 강제 종료, 합계 15s)
+  → [4] 결정성: PYTHONHASHSEED가 다른 두 번째 워커로 다시 실행해 비교 (set·dict 순서 의존 검출)
+  → [5] 품질: 예제 2~3, 숨은 ≥4, edge 케이스 포함, 기대값이 전부 같지 않음, 입력 중복 없음,
+        제목·설명에 알고리즘 이름 금지, 힌트 4 코드가 그대로 정답이면 폐기,
+        완성된 문제를 정답 코드로 다시 채점해 AC 확인
+  → 실패 사유를 프롬프트에 붙여 재생성 (총 3회) → 모두 실패 시 rejected
+  → 통과 시 문제(공개부)와 정답 코드(비공개)를 따로 저장, status = verified
 ```
-- 사용자에게는 `verified` 상태만 노출. 진행 상태는 노디 `loading` 애니메이션과 단계 표시(생성 중 → 검증 중 → 완료)로 보여준다.
-- 모델 ID·제공자는 환경 변수로 주입(`AI_COACH_MODEL`, `AI_GENERATOR_MODEL`). 구체적인 모델 선택은 Step 5에서 확정.
+- NodeRunner(`lib/runner-node`): Pyodide를 worker_threads로 띄우고(환경 변수 비움, 힙 512MB), 실행 코드가 JS 세계에 닿지 못하게 `js`·`pyodide` 모듈을 막는다. 실행은 직렬화해 시간 초과 종료가 다른 실행에 영향을 주지 않게 한다.
+- 저장소(`lib/ai/store`)에는 정답 코드를 **읽는 메서드가 없다**. Step 5는 파일 저장소(`.data/`, 개발용), Step 6에서 Supabase(`generated_problems` / `generated_problem_solutions`)로 바뀐다.
+- 사용자에게는 `verified` 문제만 풀이 화면을 연다. 진행 상태는 노디 `loading`과 단계 표시(문제 쓰는 중 → 정답 코드로 검증 중 → 완성), 재시도 중에는 "검증에서 떨어져서 다시 만들고 있어요 (2/3)"로 보여 준다. 10분 넘게 진행 중이면 중단된 것으로 본다.
+- 한도: 사용자당 하루 10개, 동시에 1개.
+- `pnpm ai:smoke [횟수]`: 실제 API로 생성 → 검증을 여러 번 돌려 통과율을 확인한다 (비용 발생).
 
 ---
 
@@ -198,11 +209,20 @@ algo-flow/
 │  │  │  └─ generators/                   # stack.ts, queue.ts, deque.ts, recursion.ts, graph-dfs.ts,
 │  │  │                                   # graph-bfs.ts, grid-dfs.ts, grid-bfs.ts, backtracking.ts
 │  │  ├─ ai/
-│  │  │  ├─ schemas.ts                    # zod: ProblemDraft, CoachMeta
-│  │  │  ├─ prompts/coach.ts
-│  │  │  ├─ prompts/generator.ts
-│  │  │  ├─ static-check.ts               # 정답 코드 정적 검사
-│  │  │  └─ pipeline.ts                   # 생성 → 검증 → 재시도 → 저장
+│  │  │  ├─ schemas.ts                    # zod: ProblemDraft, CoachMeta, 코치·생성 요청 본문
+│  │  │  ├─ client.ts                     # (server-only) Anthropic 클라이언트, 모델·effort, fallbacks
+│  │  │  ├─ prompts/coach.ts              # 코치 규칙 + 힌트 단계별 정보 상한 + coach_meta 도구
+│  │  │  ├─ prompts/generator.ts          # 출제 규칙 + 스타일 예시 + 재생성 사유
+│  │  │  ├─ coach.ts / coach-guard.ts     # 가드를 통과시키며 스트리밍, 막히면 재작성
+│  │  │  ├─ coach-claude.ts               # (server-only) 코치 모델 호출
+│  │  │  ├─ generator.ts                  # (server-only) 구조화 출력으로 초안 받기
+│  │  │  ├─ static-check.ts               # 정답 코드 AST 정적 검사 (Python)
+│  │  │  ├─ build-problem.ts              # 초안 + 실행 결과 → Problem
+│  │  │  ├─ pipeline.ts                   # 생성 → 검증 → 재시도 (의존성 주입, 테스트 가능)
+│  │  │  ├─ jobs.ts                       # (server-only) after()에서 파이프라인 실행·상태 저장
+│  │  │  ├─ store/                        # 생성 문제 저장소 (정답 코드는 쓰기만 가능)
+│  │  │  └─ mock.ts, mock-draft.ts        # 개발용 모의 AI (AI_MOCK=1)
+│  │  ├─ server/                          # requester.ts (게스트 쿠키 / 로그인 사용자), rate-limit.ts
 │  │  ├─ progress/
 │  │  │  ├─ xp.ts                         # XP 계산, 사용자 레벨
 │  │  │  ├─ streak.ts                     # KST 기준 스트릭
@@ -240,7 +260,7 @@ algo-flow/
 | 에디터 | `@monaco-editor/react` |
 | 실행 | `pyodide` (브라우저는 CDN 로드, Node는 npm 패키지). JavaScript는 추가 의존성 없음 |
 | 상태 | `zustand` |
-| AI | `ai`, `@ai-sdk/anthropic`(제공자는 Step 5에서 확정), `zod` |
+| AI | `@anthropic-ai/sdk` (공식 SDK, Step 5 확정), `zod` |
 | DB | `@supabase/supabase-js`, `@supabase/ssr` |
 | 마크다운 | `react-markdown`, `remark-gfm` |
 | 테스트 | `vitest`, `@testing-library/react` |

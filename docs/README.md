@@ -28,7 +28,7 @@
 | D6 | 타임아웃 처리 | **워커 terminate + 대기 워커 교체** | COOP/COEP 헤더 없이 확실하게 중단 | SharedArrayBuffer 인터럽트 |
 | D7 | 데스크톱 3분할 기준 폭 | **1024px 이상** | 13인치 노트북에서도 3분할 (각 패널 최소 280px) | 1280px 이상 |
 | D8 | MVP 콘텐츠 분량 | **레벨당 2문제 = 70문제**, 트랙 C로 병행 제작 | 원래 Step 목록에 콘텐츠 제작 단계가 없어 별도 트랙으로 추가 | 레벨당 3문제 = 105문제 |
-| D9 | AI 제공자 | **Vercel AI SDK + Anthropic**, 모델 ID는 환경 변수 | 긴 한국어 교육 대화와 구조화 출력 품질. 구체 모델은 Step 5에서 확정 | OpenAI 등 (AI SDK라 교체 쉬움) |
+| D9 | AI 제공자 | **Anthropic 공식 SDK(`@anthropic-ai/sdk`) + `claude-opus-5`**, 모델 ID는 환경 변수 (Step 5 확정: 처음 안은 Vercel AI SDK였으나, 구조화 출력·스트리밍·안전 분류기 fallbacks를 SDK에서 바로 쓰려고 공식 SDK로 변경) | 긴 한국어 교육 대화와 구조화 출력 품질 | OpenAI 등 |
 | D10 | 패키지 매니저 | **pnpm** | 빠른 설치, 엄격한 의존성 | npm |
 | D11 | 마스코트 | **노디** — 새싹이 난 말랑한 그래프 노드, 팔이 "간선 + 이웃 노드" 모양 | 동물 모티프가 아닌 도메인 고유 모티프라 기존 캐릭터와 겹치지 않음 | 다른 컨셉 제안 요청 |
 | D12 | 지원 언어 | **Python + JavaScript** (MVP부터) | 테스트케이스가 JSON이라 같은 문제·채점 공유. JS는 Pyodide 없이 워커에서 바로 실행 | Python만 |

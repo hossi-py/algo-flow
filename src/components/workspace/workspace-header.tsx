@@ -65,8 +65,13 @@ export function WorkspaceHeader({
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-2 border-b bg-card px-2 sm:px-3">
-      <PopButton asChild variant="ghost" size="icon-sm" aria-label="토픽으로 돌아가기">
-        <Link href={`/topics/${problem.topic}`}>
+      <PopButton
+        asChild
+        variant="ghost"
+        size="icon-sm"
+        aria-label={problem.source === "generated" ? "AI 랩으로 돌아가기" : "토픽으로 돌아가기"}
+      >
+        <Link href={problem.source === "generated" ? "/ai-lab" : `/topics/${problem.topic}`}>
           <ArrowLeft />
         </Link>
       </PopButton>

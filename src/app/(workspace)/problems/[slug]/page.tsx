@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Workspace } from "@/components/workspace/workspace";
 import { PROBLEMS, getProblem } from "@/content/problems";
+import { isAiConfigured } from "@/lib/ai/client";
 
 export function generateStaticParams() {
   return PROBLEMS.map((problem) => ({ slug: problem.slug }));
@@ -17,6 +18,7 @@ export async function generateMetadata(props: PageProps<"/problems/[slug]">): Pr
 
 export default async function ProblemPage(props: PageProps<"/problems/[slug]">) {
   const { slug } = await props.params;
-  if (!getProblem(slug)) notFound();
-  return <Workspace slug={slug} />;
+  const problem = getProblem(slug);
+  if (!problem) notFound();
+  return <Workspace problem={problem} aiEnabled={isAiConfigured()} />;
 }

@@ -1,4 +1,4 @@
-import { Clock, Lock, Star } from "lucide-react";
+import { Clock, Lock, Sparkles, Star } from "lucide-react";
 import { Markdown } from "@/components/common/markdown";
 import { LevelBadge, TopicChip } from "@/components/common/topic-badges";
 import { getTopic } from "@/content/topics";
@@ -41,6 +41,15 @@ export function ProblemPanel({
         <div className="flex flex-wrap items-center gap-1.5">
           {topic && <TopicChip topic={topic} />}
           <LevelBadge level={problem.level} />
+          {problem.source === "generated" && (
+            <span
+              className="inline-flex h-7 items-center gap-1 rounded-full bg-info px-2.5 text-caption font-bold text-info-foreground"
+              title="정답 코드로 모든 테스트를 검증한 AI 맞춤 문제예요. 풀면 XP를 받지만 레벨 클리어에는 들어가지 않아요."
+            >
+              <Sparkles className="size-3.5" aria-hidden />
+              AI 맞춤 문제
+            </span>
+          )}
         </div>
         <h1 className="text-h2 text-foreground">{problem.title}</h1>
         <p className="flex flex-wrap gap-x-4 gap-y-1 text-caption text-muted-foreground">

@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDefaultLayout } from "react-resizable-panels";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getProblem } from "@/content/problems";
 import { getTopic } from "@/content/topics";
 import { DESKTOP_QUERY, useMediaQuery } from "@/hooks/use-media-query";
 import { useMounted } from "@/hooks/use-mounted";
@@ -22,7 +21,8 @@ import { HintStack } from "./hint-stack";
 import { OutputPanel, SOFT_TABS_LIST, SOFT_TABS_TRIGGER } from "./output-panel";
 import { ProblemPanel } from "./problem-panel";
 import { EngineStatusLine, RunBar } from "./run-bar";
-import { CoachPlaceholder, VisualPanel } from "./side-placeholders";
+import { CoachPanel } from "@/components/coach/coach-panel";
+import { VisualPanel } from "./visual-panel";
 import { WorkspaceHeader } from "./workspace-header";
 
 const DRAFT_SAVE_DELAY_MS = 400;
@@ -38,16 +38,20 @@ function firstError(result: ReturnType<typeof useJudge>["result"]): CodeError | 
   return result.results.find((r) => r.error)?.error ?? null;
 }
 
-export function Workspace({ slug }: { slug: string }) {
-  const problem = getProblem(slug);
-  const mounted = useMounted();
-  const { hydrated } = useProgress();
-  if (!problem) return null;
-  if (!mounted || !hydrated) return <WorkspaceSkeleton />;
-  return <WorkspaceBody problem={problem} />;
+interface WorkspaceProps {
+  problem: Problem;
+  /** 서버에 AI 키가 설정돼 있는지 (AI 코치 사용 가능 여부) */
+  aiEnabled: boolean;
 }
 
-function WorkspaceBody({ problem }: { problem: Problem }) {
+export function Workspace(props: WorkspaceProps) {
+  const mounted = useMounted();
+  const { hydrated } = useProgress();
+  if (!mounted || !hydrated) return <WorkspaceSkeleton />;
+  return <WorkspaceBody {...props} />;
+}
+
+function WorkspaceBody({ problem, aiEnabled }: WorkspaceProps) {
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const language = useSettingsStore((s) => s.language);
   const setLanguage = useSettingsStore((s) => s.setLanguage);
@@ -76,7 +80,11 @@ function WorkspaceBody({ problem }: { problem: Problem }) {
   const topicViews = useTopicViews();
   const topicView = topicViews.find((v) => v.topic === problem.topic);
   const levelView = topicView?.levels[problem.level - 1];
-  const lockedReason = levelView?.status === "locked" ? (topicView?.lockedReason ?? levelView.lockedReason) : null;
+  // AI 생성 문제는 레벨 클리어와 무관하므로 잠금 안내를 하지 않는다
+  const lockedReason =
+    problem.source === "curated" && levelView?.status === "locked"
+      ? (topicView?.lockedReason ?? levelView.lockedReason)
+      : null;
 
   // 코드 초안 저장 (입력이 멈추면 저장, 시작 코드와 같으면 지움)
   const saveDraft = useCallback(
@@ -191,8 +199,16 @@ function WorkspaceBody({ problem }: { problem: Problem }) {
       <TabsContent value="hints" className="min-h-0 flex-1 overflow-y-auto">
         <HintStack problem={problem} language={language} opened={opened} solved={solved} onOpen={handleOpenHint} />
       </TabsContent>
-      <TabsContent value="coach" className="min-h-0 flex-1 overflow-y-auto">
-        <CoachPlaceholder />
+      <TabsContent value="coach" className="min-h-0 flex-1">
+        <CoachPanel
+          problem={problem}
+          language={language}
+          hintsOpened={opened}
+          getCode={() => editorApi.current?.getValue() ?? draft ?? starter}
+          lastResult={result}
+          enabled={aiEnabled}
+          onShowHints={() => setLeftTab("hints")}
+        />
       </TabsContent>
     </Tabs>
   );
