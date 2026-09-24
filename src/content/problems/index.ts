@@ -1,4 +1,14 @@
 import type { LevelNumber, PatternTag, Problem, TopicSlug } from "@/types";
+import { backtrackingBracketStrings } from "./backtracking/bracket-strings";
+import { backtrackingCoinFlips } from "./backtracking/coin-flips";
+import { backtrackingGiftWeights } from "./backtracking/gift-weights";
+import { backtrackingGuardRobots } from "./backtracking/guard-robots";
+import { backtrackingMapColoring } from "./backtracking/map-coloring";
+import { backtrackingNumberCards } from "./backtracking/number-cards";
+import { backtrackingOutfitPicker } from "./backtracking/outfit-picker";
+import { backtrackingSeatOrders } from "./backtracking/seat-orders";
+import { backtrackingSnackTotal } from "./backtracking/snack-total";
+import { backtrackingTeamPicks } from "./backtracking/team-picks";
 import { bfsExactHops } from "./bfs/exact-hops";
 import { bfsFriendDistance } from "./bfs/friend-distance";
 import { bfsFrogLeaps } from "./bfs/frog-leaps";
@@ -62,6 +72,16 @@ import { stackWarmerWait } from "./stack/warmer-wait";
 
 /** 큐레이션 문제 전체. 새 문제는 여기에 추가하고 토픽의 레벨 problemSlugs에도 등록한다 */
 export const PROBLEMS: readonly Problem[] = [
+  backtrackingBracketStrings,
+  backtrackingCoinFlips,
+  backtrackingGiftWeights,
+  backtrackingGuardRobots,
+  backtrackingMapColoring,
+  backtrackingNumberCards,
+  backtrackingOutfitPicker,
+  backtrackingSeatOrders,
+  backtrackingSnackTotal,
+  backtrackingTeamPicks,
   bfsExactHops,
   bfsFriendDistance,
   bfsFrogLeaps,

@@ -1,0 +1,216 @@
+import type { Problem } from "@/types/content";
+import { problemPreset } from "@/content/visualizations";
+
+export const backtrackingTeamPicks: Problem = {
+  id: "c:backtracking-team-picks",
+  slug: "backtracking-team-picks",
+  source: "curated",
+  topic: "backtracking",
+  level: 3,
+  title: "대표 선수 뽑기",
+  summary: "1번부터 n번 선수 중 k명을 뽑는 모든 조합을 나열해요",
+  statement: [
+    "노디네 반 선수 `n`명(1번 ~ `n`번) 중 `k`명을 대표로 뽑아요. 뽑는 **순서는 상관없어요**. {1, 2}와 {2, 1}은 같은 대표단이에요.",
+    "",
+    "가능한 **모든 대표단**을 반환해 주세요. 대표단은 번호를 오름차순으로 담은 리스트이고, 전체는 사전 순으로 나열해요.",
+  ].join("\n"),
+  inputFormat: "`n`: 선수 수, `k`: 뽑을 인원이에요.",
+  outputFormat: "대표단(오름차순 번호 리스트)들의 사전 순 리스트",
+  constraints: ["1 ≤ k ≤ n ≤ 10"],
+  signature: {
+    name: "solution",
+    params: [
+      { name: "n", type: { python: "int", javascript: "number" }, description: "선수 수" },
+      { name: "k", type: { python: "int", javascript: "number" }, description: "뽑을 인원" },
+    ],
+    returns: { type: { python: "list[list[int]]", javascript: "number[][]" }, description: "모든 대표단" },
+  },
+  starterCode: {
+    python: ["def solution(n, k):", "    answer = []", "    return answer", ""].join("\n"),
+    javascript: ["function solution(n, k) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+  },
+  testCases: [
+    {
+      id: "ex-1",
+      visibility: "example",
+      purpose: "basic",
+      args: [4, 2],
+      expected: [
+        [1, 2],
+        [1, 3],
+        [1, 4],
+        [2, 3],
+        [2, 4],
+        [3, 4],
+      ],
+      explanation: "[1,2] [1,3] [1,4] [2,3] [2,4] [3,4]로 6가지예요.",
+    },
+    {
+      id: "ex-2",
+      visibility: "example",
+      purpose: "tricky",
+      args: [3, 3],
+      expected: [[1, 2, 3]],
+      explanation: "모두 뽑으면 한 가지예요. 순서만 바꾼 [2,1,3] 같은 건 따로 세지 않아요.",
+    },
+    {
+      id: "hid-1",
+      visibility: "hidden",
+      purpose: "edge",
+      args: [1, 1],
+      expected: [[1]],
+      failureNote: "한 명 중 한 명이에요.",
+    },
+    {
+      id: "hid-2",
+      visibility: "hidden",
+      purpose: "basic",
+      args: [5, 1],
+      expected: [[1], [2], [3], [4], [5]],
+      failureNote: "한 명씩 뽑는 5가지예요.",
+    },
+    {
+      id: "hid-3",
+      visibility: "hidden",
+      purpose: "basic",
+      args: [5, 3],
+      expected: [
+        [1, 2, 3],
+        [1, 2, 4],
+        [1, 2, 5],
+        [1, 3, 4],
+        [1, 3, 5],
+        [1, 4, 5],
+        [2, 3, 4],
+        [2, 3, 5],
+        [2, 4, 5],
+        [3, 4, 5],
+      ],
+      failureNote: "10가지예요.",
+    },
+    {
+      id: "hid-4",
+      visibility: "hidden",
+      purpose: "basic",
+      args: [6, 4],
+      expected: [
+        [1, 2, 3, 4],
+        [1, 2, 3, 5],
+        [1, 2, 3, 6],
+        [1, 2, 4, 5],
+        [1, 2, 4, 6],
+        [1, 2, 5, 6],
+        [1, 3, 4, 5],
+        [1, 3, 4, 6],
+        [1, 3, 5, 6],
+        [1, 4, 5, 6],
+        [2, 3, 4, 5],
+        [2, 3, 4, 6],
+        [2, 3, 5, 6],
+        [2, 4, 5, 6],
+        [3, 4, 5, 6],
+      ],
+      failureNote: "15가지예요.",
+    },
+    {
+      id: "hid-5",
+      visibility: "hidden",
+      purpose: "stress",
+      args: [10, 5],
+      expected: Array.from({ length: 1024 }, (_, m) => m)
+        .filter((m) => m.toString(2).split("1").length - 1 === 5)
+        .map((m) => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter((_, j) => ((m >> j) & 1) === 1))
+        .sort((a, b) => {
+          for (let j = 0; j < 5; j += 1) if (a[j] !== b[j]) return a[j] - b[j];
+          return 0;
+        }),
+      failureNote: "10명 중 5명은 252가지예요.",
+    },
+  ],
+  judge: {
+    timeLimitMs: 2000,
+    compare: { type: "exact" },
+    recursionLimit: 3000,
+    revealFirstFailure: true,
+  },
+  hints: [
+    {
+      step: 1,
+      kind: "pattern",
+      title: "어떤 유형일까요?",
+      body: [
+        "순서가 상관없는 뽑기 → **조합**이에요.",
+        "",
+        "순열처럼 뽑으면 {1, 2}와 {2, 1}이 둘 다 나와요. 중복을 막으려면 **다음에 고를 수 있는 번호가 방금 고른 번호보다 커야** 해요.",
+      ].join("\n"),
+      xpPenaltyRate: 0.05,
+    },
+    {
+      step: 2,
+      kind: "approach",
+      title: "어떻게 접근할까요?",
+      body: [
+        "`pick(start)`: start번부터 n번 중에서 다음 선수를 고르는 함수예요.",
+        "",
+        "1. `path`에 k명이 모였으면 복사본을 결과에 추가해요.",
+        "2. i = start, …, n 마다: i를 고르고 → `pick(i + 1)` → 되돌리기.",
+        "",
+        "**시작 번호를 넘겨 주는 것**이 조합의 핵심이에요. `used` 배열이 필요 없어요.",
+      ].join("\n"),
+      xpPenaltyRate: 0.15,
+    },
+    {
+      step: 3,
+      kind: "pseudocode",
+      title: "의사코드",
+      body: [
+        "~~~text",
+        "pick(start):",
+        "    if len(path) == k: result에 path 복사본 추가; return",
+        "    for i in start..n:",
+        "        path에 i 추가",
+        "        pick(i + 1)",
+        "        path에서 빼기",
+        "pick(1)",
+        "~~~",
+      ].join("\n"),
+      xpPenaltyRate: 0.3,
+    },
+    {
+      step: 4,
+      kind: "key-code",
+      title: "핵심 코드",
+      body: ["다음 호출에 넘길 시작 번호가 빈칸이에요."].join("\n"),
+      code: {
+        code: {
+          python: ["for i in range(start, n + 1):", "    path.append(i)", "    pick(______)", "    path.pop()"].join(
+            "\n",
+          ),
+          javascript: [
+            "for (let i = start; i <= n; i += 1) {",
+            "  path.push(i);",
+            "  pick(______);",
+            "  path.pop();",
+            "}",
+          ].join("\n"),
+        },
+      },
+      xpPenaltyRate: 0.5,
+    },
+  ],
+  patternTags: ["combination"],
+  signalIds: ["sig-all-cases", "sig-small-n"],
+  visualization: {
+    presets: [
+      problemPreset(
+        "team-subset-tree",
+        "backtracking-subset",
+        "고르거나 안 고르거나",
+        "번호마다 '고른다/안 고른다' 갈림길을 따라가며 조합이 만들어져요.",
+        [[1, 2, 3]],
+      ),
+    ],
+  },
+  estimatedMinutes: 18,
+  xp: 30,
+};
