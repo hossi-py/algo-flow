@@ -59,7 +59,33 @@ describe("applySubmission", () => {
 
   it("정답으로 레벨 조건을 채우면 레벨 클리어 + 다음 토픽 해제 (DFS Lv3 → BFS)", () => {
     const demo = createDemoProgress(TODAY, NOW);
-    const { progress, outcome } = submit(demo, "accepted");
+    // DFS Lv3은 2문제를 풀어야 해요. 다른 한 문제는 이미 푼 상태에서 꽃밭 구역을 맞힌다
+    const otherSlug = TOPICS.find((t) => t.slug === "dfs")?.levels[2].problemSlugs.find(
+      (slug) => slug !== flowerZones.slug,
+    );
+    if (!otherSlug) throw new Error("DFS Lv3에 두 번째 문제가 없어요");
+    const before = {
+      ...demo,
+      problems: {
+        ...demo.problems,
+        [`c:${otherSlug}`]: {
+          problemKey: `c:${otherSlug}`,
+          source: "curated" as const,
+          topic: "dfs" as const,
+          level: 3 as const,
+          status: "solved" as const,
+          attempts: 1,
+          maxHintOpened: 0,
+          lastCode: null,
+          solvedAt: NOW,
+          bestRuntimeMs: 10,
+          xpAwarded: 30,
+          updatedAt: NOW,
+        },
+      },
+    };
+    expect(submit(demo, "accepted").outcome.levelCleared).toBeNull();
+    const { progress, outcome } = submit(before, "accepted");
     expect(outcome.levelCleared).toBe(3);
     expect(outcome.unlockedTopic).toBe("bfs");
     expect(progress.levelClears.some((c) => c.topic === "dfs" && c.level === 3)).toBe(true);

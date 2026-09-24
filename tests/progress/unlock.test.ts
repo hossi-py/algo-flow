@@ -70,8 +70,8 @@ describe("레벨 클리어 조건", () => {
   const stack = getTopic("stack");
   if (!dfs || !stack) throw new Error("topics missing");
 
-  it("문제 수보다 많이 요구하지 않는다 (DFS Lv3: 문제 1개 → 1개 해결로 클리어)", () => {
-    const level = dfs.levels[2];
+  it("문제 수보다 많이 요구하지 않는다 (문제 1개뿐인 레벨 → 1개 해결로 클리어)", () => {
+    const level = { ...dfs.levels[2], problemSlugs: ["dfs-flower-zones"] };
     const solved = facts([], {
       "c:dfs-flower-zones": {
         problemKey: "c:dfs-flower-zones",
@@ -99,10 +99,14 @@ describe("레벨 클리어 조건", () => {
 
 describe("findNextStep", () => {
   it("처음이면 스택 Lv1", () => {
-    expect(findNextStep(createEmptyProgress(), TOPICS)).toEqual({ topic: "stack", level: 1, problemSlug: null });
+    expect(findNextStep(createEmptyProgress(), TOPICS)).toEqual({
+      topic: "stack",
+      level: 1,
+      problemSlug: TOPICS[0]?.levels[0].problemSlugs[0],
+    });
   });
 
-  it("풀 문제가 있는 열린 레벨을 우선한다", () => {
+  it("이미 시작한 레벨을 이어서 하도록 먼저 추천한다 (앞 토픽에 남은 레벨이 있어도)", () => {
     const demo = createDemoProgress("2026-09-23", NOW);
     expect(findNextStep(demo, TOPICS)).toEqual({ topic: "dfs", level: 3, problemSlug: "dfs-flower-zones" });
   });

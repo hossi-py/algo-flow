@@ -130,22 +130,23 @@ export interface NextStep {
  */
 export function findNextStep(facts: ProgressFacts, topics: readonly Topic[]): NextStep | null {
   const views = computeTopicViews(facts, topics);
-  const candidates: { topic: Topic; level: Level }[] = [];
+  const candidates: { topic: Topic; level: Level; started: boolean }[] = [];
   for (const topic of topics) {
     const view = views.find((v) => v.topic === topic.slug);
     if (!view) continue;
     for (const levelView of view.levels) {
       if (levelView.status !== "available" && levelView.status !== "in-progress") continue;
       const level = topic.levels[levelView.level - 1];
-      if (level) candidates.push({ topic, level });
+      if (level) candidates.push({ topic, level, started: levelView.status === "in-progress" });
     }
   }
 
   const unsolvedSlug = (level: Level) =>
     level.problemSlugs.find((slug) => facts.problems[curatedKey(slug)]?.status !== "solved") ?? null;
 
-  const withProblem = candidates.find(({ level }) => unsolvedSlug(level) !== null);
-  const chosen = withProblem ?? candidates[0];
+  // 이미 손댄 레벨을 이어서 하도록 먼저 추천하고, 없으면 풀 문제가 있는 가장 앞 레벨
+  const withProblem = candidates.filter(({ level }) => unsolvedSlug(level) !== null);
+  const chosen = withProblem.find(({ started }) => started) ?? withProblem[0] ?? candidates[0];
   if (!chosen) return null;
   return { topic: chosen.topic.slug, level: chosen.level.level, problemSlug: unsolvedSlug(chosen.level) };
 }

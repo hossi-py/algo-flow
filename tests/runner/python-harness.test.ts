@@ -82,7 +82,9 @@ describe("Python 하네스", () => {
 
 describe.each(PROBLEMS.map((p) => [p.slug, p] as const))("Python 정답 코드: %s", (_, problem) => {
   it("모든 테스트케이스를 통과한다", async () => {
-    const name = problem.slug.slice(problem.topic.length + 1);
+    const name = problem.slug.startsWith(`${problem.topic}-`)
+      ? problem.slug.slice(problem.topic.length + 1)
+      : problem.slug;
     const code = readFileSync(path.resolve(__dirname, "../../content-solutions", problem.topic, `${name}.py`), "utf8");
     const result = await judge({
       problem,
