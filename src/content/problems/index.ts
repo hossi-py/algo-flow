@@ -1,8 +1,30 @@
 import type { LevelNumber, PatternTag, Problem, TopicSlug } from "@/types";
 import { flowerZones } from "./dfs/flower-zones";
+import { stackBackspaceKeyboard } from "./stack/backspace-keyboard";
+import { stackPeekRecord } from "./stack/peek-record";
+import { stackPlateTower } from "./stack/plate-tower";
+import { stackRibbonTags } from "./stack/ribbon-tags";
+import { stackSnowballMerge } from "./stack/snowball-merge";
+import { stackTallerNeighbor } from "./stack/taller-neighbor";
+import { stackTwinBalloons } from "./stack/twin-balloons";
+import { stackUndoMemo } from "./stack/undo-memo";
+import { stackVaultBrackets } from "./stack/vault-brackets";
+import { stackWarmerWait } from "./stack/warmer-wait";
 
 /** 큐레이션 문제 전체. 새 문제는 여기에 추가하고 토픽의 레벨 problemSlugs에도 등록한다 */
-export const PROBLEMS: readonly Problem[] = [flowerZones];
+export const PROBLEMS: readonly Problem[] = [
+  flowerZones,
+  stackBackspaceKeyboard,
+  stackPeekRecord,
+  stackPlateTower,
+  stackRibbonTags,
+  stackSnowballMerge,
+  stackTallerNeighbor,
+  stackTwinBalloons,
+  stackUndoMemo,
+  stackVaultBrackets,
+  stackWarmerWait,
+];
 
 /** 목록 화면에서 쓰는 가벼운 요약 (테스트케이스·힌트 제외) */
 export interface ProblemMeta {

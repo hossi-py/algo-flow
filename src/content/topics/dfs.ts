@@ -30,5 +30,5 @@ export const dfsTopic: Topic = {
       problemSlugs: [],
     },
   ]),
-  signalIds: ["sig-connected-group", "sig-grid-neighbors", "sig-path-exists"],
+  signalIds: ["sig-connected-group", "sig-grid-neighbors", "sig-path-exists", "sig-tree-structure"],
 };

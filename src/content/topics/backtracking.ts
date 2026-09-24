@@ -21,5 +21,5 @@ export const backtrackingTopic: Topic = {
     { title: "가지치기", goal: "답이 될 수 없는 가지를 일찍 잘라 탐색량을 줄여요.", problemSlugs: [] },
     { title: "제약 만족 문제", goal: "N-Queen 같은 제약 조건 탐색 실전 문제를 풀어요.", problemSlugs: [] },
   ]),
-  signalIds: ["sig-all-cases", "sig-small-n"],
+  signalIds: ["sig-all-cases", "sig-small-n", "sig-placement-constraint"],
 };

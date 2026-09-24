@@ -33,5 +33,5 @@ export const graphRepresentationTopic: Topic = {
       problemSlugs: [],
     },
   ]),
-  signalIds: ["sig-relations-given"],
+  signalIds: ["sig-relations-given", "sig-degree", "sig-matrix-given"],
 };

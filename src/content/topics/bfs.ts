@@ -29,5 +29,5 @@ export const bfsTopic: Topic = {
     { title: "동시에 퍼지기", goal: "시작점이 여러 개인 멀티 소스 BFS를 구현해요.", problemSlugs: [] },
     { title: "상태 공간 BFS", goal: "칸 대신 상태를 노드로 보는 실전 최소 횟수 문제를 풀어요.", problemSlugs: [] },
   ]),
-  signalIds: ["sig-shortest-steps", "sig-spread-simultaneous"],
+  signalIds: ["sig-shortest-steps", "sig-spread-simultaneous", "sig-grid-neighbors"],
 };

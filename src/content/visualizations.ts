@@ -19,6 +19,17 @@ function preset(
   };
 }
 
+/** 문제 풀이 화면의 시각화 프리셋 (예제 입력을 그대로 보여 주므로 입력은 고정) */
+export function problemPreset(
+  id: string,
+  generator: VisualizationGeneratorKey,
+  title: string,
+  description: string,
+  input: JsonValue[],
+): VisualizationPreset {
+  return { ...preset(id, generator, title, description, input), editableInput: false };
+}
+
 /** 같은 그래프를 DFS와 BFS로 비교해 볼 수 있게 두 토픽에서 함께 쓴다 */
 const COMPARE_GRAPH: JsonValue[] = [
   6,

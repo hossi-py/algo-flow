@@ -33,5 +33,5 @@ export const queueDequeTopic: Topic = {
       problemSlugs: [],
     },
   ]),
-  signalIds: ["sig-arrival-order", "sig-both-ends"],
+  signalIds: ["sig-arrival-order", "sig-both-ends", "sig-recent-window"],
 };

@@ -29,5 +29,5 @@ export const recursionTopic: Topic = {
       problemSlugs: [],
     },
   ]),
-  signalIds: ["sig-self-similar"],
+  signalIds: ["sig-self-similar", "sig-nested-structure", "sig-shrink-by-one"],
 };
