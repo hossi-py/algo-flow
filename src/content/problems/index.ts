@@ -1,5 +1,15 @@
 import type { LevelNumber, PatternTag, Problem, TopicSlug } from "@/types";
 import { flowerZones } from "./dfs/flower-zones";
+import { dequeEndCards } from "./queue-deque/deque-end-cards";
+import { dequeSteadySignal } from "./queue-deque/deque-steady-signal";
+import { dequeTwoDoorTrain } from "./queue-deque/deque-two-door-train";
+import { dequeWindowMax } from "./queue-deque/deque-window-max";
+import { queueBakeryLine } from "./queue-deque/queue-bakery-line";
+import { queueCardShuffle } from "./queue-deque/queue-card-shuffle";
+import { queueFrontBack } from "./queue-deque/queue-front-back";
+import { queueHotPotato } from "./queue-deque/queue-hot-potato";
+import { queueRecentVisits } from "./queue-deque/queue-recent-visits";
+import { queueRoundKitchen } from "./queue-deque/queue-round-kitchen";
 import { stackBackspaceKeyboard } from "./stack/backspace-keyboard";
 import { stackPeekRecord } from "./stack/peek-record";
 import { stackPlateTower } from "./stack/plate-tower";
@@ -14,6 +24,16 @@ import { stackWarmerWait } from "./stack/warmer-wait";
 /** 큐레이션 문제 전체. 새 문제는 여기에 추가하고 토픽의 레벨 problemSlugs에도 등록한다 */
 export const PROBLEMS: readonly Problem[] = [
   flowerZones,
+  dequeEndCards,
+  dequeSteadySignal,
+  dequeTwoDoorTrain,
+  dequeWindowMax,
+  queueBakeryLine,
+  queueCardShuffle,
+  queueFrontBack,
+  queueHotPotato,
+  queueRecentVisits,
+  queueRoundKitchen,
   stackBackspaceKeyboard,
   stackPeekRecord,
   stackPlateTower,
