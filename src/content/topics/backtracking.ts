@@ -1,0 +1,42 @@
+import { BACKTRACKING_CARDS, BACKTRACKING_QUIZ } from "@/content/concepts/backtracking";
+import type { Topic } from "@/types";
+import { defineConcept, defineLevels } from "./define";
+
+export const backtrackingTopic: Topic = {
+  slug: "backtracking",
+  order: 7,
+  title: "백트래킹",
+  tagline: "갈림길마다 하나씩 골라 보고, 아니면 되돌아와요",
+  color: "sage",
+  icon: "maze",
+  unlock: { type: "level-cleared", topic: "bfs", level: 3 },
+  concept: defineConcept("backtracking", { cards: BACKTRACKING_CARDS, recognitionQuiz: BACKTRACKING_QUIZ }),
+  levels: defineLevels("backtracking", [
+    {
+      title: "선택하고 되돌리기",
+      goal: "고르기 → 더 깊이 → 되돌리기 흐름을 선택 트리로 설명할 수 있어요.",
+      problemSlugs: ["backtracking-coin-flips", "backtracking-outfit-picker", "backtracking-stair-steps"],
+    },
+    {
+      title: "순열 만들기",
+      goal: "사용 여부 배열로 모든 순서를 만들어 내는 코드를 구현해요.",
+      problemSlugs: ["backtracking-seat-orders", "backtracking-number-cards", "backtracking-podium-orders"],
+    },
+    {
+      title: "조합과 부분집합",
+      goal: "시작 인덱스를 넘겨 중복 없이 조합·부분집합을 만들어요.",
+      problemSlugs: ["backtracking-team-picks", "backtracking-snack-total", "backtracking-sticker-score"],
+    },
+    {
+      title: "가지치기",
+      goal: "답이 될 수 없는 가지를 일찍 잘라 탐색량을 줄여요.",
+      problemSlugs: ["backtracking-bracket-strings", "backtracking-gift-weights", "backtracking-letter-board"],
+    },
+    {
+      title: "제약 만족 문제",
+      goal: "N-Queen 같은 제약 조건 탐색 실전 문제를 풀어요.",
+      problemSlugs: ["backtracking-guard-robots", "backtracking-map-coloring", "backtracking-flower-sudoku"],
+    },
+  ]),
+  signalIds: ["sig-all-cases", "sig-small-n", "sig-placement-constraint"],
+};

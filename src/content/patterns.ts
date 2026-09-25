@@ -1,0 +1,52 @@
+import type { PatternTag, TopicSlug } from "@/types";
+
+/** 화면에 보여 줄 패턴 이름 */
+export const PATTERN_LABELS: Record<PatternTag, string> = {
+  "bracket-matching": "괄호 짝 맞추기",
+  "stack-simulation": "스택 시뮬레이션",
+  "monotonic-stack": "단조 스택",
+  "undo-history": "되돌리기 기록",
+  "queue-simulation": "큐 시뮬레이션",
+  "round-robin": "차례로 돌아가기",
+  "sliding-window-deque": "덱 슬라이딩 윈도우",
+  "two-ended-deque": "양쪽 끝 덱",
+  "recursive-definition": "재귀적 정의",
+  "divide-and-conquer": "분할 정복",
+  "recursion-tree": "재귀 트리",
+  "adjacency-list": "인접 리스트",
+  "adjacency-matrix": "인접 행렬",
+  "edge-list-conversion": "간선 목록 변환",
+  "degree-count": "차수 세기",
+  "connected-components": "연결 요소",
+  "grid-flood-fill": "격자 칠하기",
+  "path-existence": "경로 존재",
+  "cycle-detection": "사이클 찾기",
+  "tree-traversal": "트리 순회",
+  "shortest-path-unweighted": "최단 거리",
+  "grid-shortest-path": "격자 최단 거리",
+  "multi-source-bfs": "여러 시작점 BFS",
+  "state-space-bfs": "상태 공간 BFS",
+  "level-order": "층별 탐색",
+  permutation: "순열",
+  combination: "조합",
+  subset: "부분집합",
+  "constraint-pruning": "가지치기",
+};
+
+/** 토픽별 대표 패턴 (AI 문제 생성의 집중 패턴 후보) */
+export const TOPIC_PATTERNS: Record<TopicSlug, PatternTag[]> = {
+  stack: ["bracket-matching", "stack-simulation", "monotonic-stack", "undo-history"],
+  "queue-deque": ["queue-simulation", "round-robin", "sliding-window-deque", "two-ended-deque"],
+  recursion: ["recursive-definition", "divide-and-conquer", "recursion-tree"],
+  "graph-representation": ["adjacency-list", "adjacency-matrix", "edge-list-conversion", "degree-count"],
+  dfs: ["connected-components", "grid-flood-fill", "path-existence", "cycle-detection", "tree-traversal"],
+  bfs: ["shortest-path-unweighted", "grid-shortest-path", "multi-source-bfs", "state-space-bfs", "level-order"],
+  backtracking: ["permutation", "combination", "subset", "constraint-pruning"],
+};
+
+/** 패턴이 속한 토픽 */
+export function topicOfPattern(pattern: PatternTag): TopicSlug {
+  const entry = Object.entries(TOPIC_PATTERNS).find(([, patterns]) => patterns.includes(pattern));
+  if (!entry) throw new Error(`토픽이 없는 패턴이에요: ${pattern}`);
+  return entry[0] as TopicSlug;
+}

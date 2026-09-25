@@ -1,0 +1,232 @@
+import type { Problem } from "@/types/content";
+
+export const backtrackingStairSteps: Problem = {
+  id: "c:backtracking-stair-steps",
+  slug: "backtracking-stair-steps",
+  source: "curated",
+  topic: "backtracking",
+  level: 1,
+  title: "계단 오르는 모든 방법",
+  summary: "한 번에 1칸 또는 2칸씩 오를 때 가능한 모든 순서를 나열해요",
+  statement: [
+    "노디가 `n`칸짜리 계단을 올라가요. 한 번에 **1칸 또는 2칸**씩 오를 수 있어요.",
+    "",
+    "계단 꼭대기에 정확히 도착하는 **모든 방법**을, 매번 오른 칸 수를 차례로 적은 리스트로 나타내요. 예를 들어 3칸은 `[1, 1, 1]`, `[1, 2]`, `[2, 1]` 세 가지예요.",
+    "",
+    "모든 방법을 담은 리스트를 반환해 주세요. 순서는 **앞에서부터 비교해 1이 2보다 먼저** 오게 해요 (위의 예시 순서예요).",
+  ].join("\n"),
+  inputFormat: "`n`: 계단 칸 수예요.",
+  outputFormat: "오르는 방법(칸 수 리스트)들을 정해진 순서로 담은 리스트",
+  constraints: ["1 ≤ n ≤ 15"],
+  signature: {
+    name: "solution",
+    params: [{ name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "계단 칸 수" }],
+    returns: {
+      type: { python: "list[list[int]]", javascript: "number[][]", java: "List<List<Integer>>" },
+      description: "모든 오르는 방법",
+    },
+  },
+  starterCode: {
+    python: ["def solution(n):", "    answer = []", "    return answer", ""].join("\n"),
+    javascript: ["function solution(n) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<List<Integer>> solution(int n) {",
+      "        List<List<Integer>> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
+  },
+  testCases: [
+    {
+      id: "ex-1",
+      visibility: "example",
+      purpose: "basic",
+      args: [3],
+      expected: [
+        [1, 1, 1],
+        [1, 2],
+        [2, 1],
+      ],
+      explanation: "1을 먼저 고른 방법부터 나와요. [1, 1, 1], [1, 2], 그다음 [2, 1]이에요.",
+    },
+    {
+      id: "ex-2",
+      visibility: "example",
+      purpose: "edge",
+      args: [1],
+      expected: [[1]],
+      explanation: "한 칸이면 방법은 [1] 하나예요.",
+    },
+    {
+      id: "hid-1",
+      visibility: "hidden",
+      purpose: "basic",
+      args: [2],
+      expected: [[1, 1], [2]],
+      failureNote: "[1, 1]과 [2]예요.",
+    },
+    {
+      id: "hid-2",
+      visibility: "hidden",
+      purpose: "tricky",
+      args: [4],
+      expected: [
+        [1, 1, 1, 1],
+        [1, 1, 2],
+        [1, 2, 1],
+        [2, 1, 1],
+        [2, 2],
+      ],
+      failureNote:
+        "고른 칸 수 리스트를 답에 넣을 때 **복사**해서 넣어야 해요. 그대로 넣으면 되돌리기 때문에 나중에 모두 빈 리스트가 돼요.",
+    },
+    {
+      id: "hid-3",
+      visibility: "hidden",
+      purpose: "basic",
+      args: [5],
+      expected: [
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 2],
+        [1, 1, 2, 1],
+        [1, 2, 1, 1],
+        [1, 2, 2],
+        [2, 1, 1, 1],
+        [2, 1, 2],
+        [2, 2, 1],
+      ],
+      failureNote: "모두 8가지예요.",
+    },
+    {
+      id: "hid-4",
+      visibility: "hidden",
+      purpose: "stress",
+      args: [15],
+      expected: (() => {
+        const out: number[][] = [];
+        const go = (r: number, p: number[]) => {
+          if (r === 0) {
+            out.push([...p]);
+            return;
+          }
+          for (const s of [1, 2]) if (s <= r) go(r - s, [...p, s]);
+        };
+        go(15, []);
+        return out;
+      })(),
+      failureNote: "15칸이면 987가지예요.",
+    },
+  ],
+  judge: {
+    timeLimitMs: 2000,
+    compare: { type: "exact" },
+    recursionLimit: 3000,
+    revealFirstFailure: true,
+  },
+  hints: [
+    {
+      step: 1,
+      kind: "pattern",
+      title: "어떤 유형일까요?",
+      body: [
+        "'**모든 방법**을 나열'하고 n이 작아요 → **백트래킹**이에요.",
+        "",
+        "매 순간 '1칸 오를까, 2칸 오를까'를 **골라 보고**, 끝까지 가 본 뒤 **되돌아와** 다른 선택을 해요.",
+      ].join("\n"),
+      xpPenaltyRate: 0.05,
+    },
+    {
+      step: 2,
+      kind: "approach",
+      title: "어떻게 접근할까요?",
+      body: [
+        "1. 지금까지 고른 칸 수를 담는 `path`와, 남은 칸 수 `remain`을 들고 다녀요.",
+        "2. `remain`이 0이면 꼭대기예요. path의 **복사본**을 answer에 넣어요.",
+        "3. 아니면 1, 2 순서로: 남은 칸보다 크지 않으면 path에 넣고(고르기) → 한 단계 더 들어가고 → path에서 빼요(되돌리기).",
+        "",
+        "1을 먼저 해 보니까 답도 저절로 정해진 순서로 쌓여요.",
+      ].join("\n"),
+      xpPenaltyRate: 0.15,
+    },
+    {
+      step: 3,
+      kind: "pseudocode",
+      title: "의사코드",
+      body: [
+        "~~~text",
+        "function climb(remain):",
+        "    if remain == 0: answer에 path의 복사본 추가, return",
+        "    for step in [1, 2]:",
+        "        if step ≤ remain:",
+        "            path에 step 추가       # 고르기",
+        "            climb(remain - step)",
+        "            path에서 마지막 빼기    # 되돌리기",
+        "climb(n)",
+        "~~~",
+      ].join("\n"),
+      xpPenaltyRate: 0.3,
+    },
+    {
+      step: 4,
+      kind: "key-code",
+      title: "핵심 코드",
+      body: ["꼭대기에 닿았을 때 답을 저장하는 부분이에요. 빈칸을 채워 보세요."].join("\n"),
+      code: {
+        code: {
+          python: [
+            "def climb(remain):",
+            "    if remain == 0:",
+            "        answer.append(______)   # 복사본!",
+            "        return",
+            "    for step in (1, 2):",
+            "        if step <= remain:",
+            "            path.append(step)",
+            "            climb(remain - step)",
+            "            path.pop()",
+          ].join("\n"),
+          javascript: [
+            "function climb(remain) {",
+            "  if (remain === 0) {",
+            "    answer.push(______); // 복사본!",
+            "    return;",
+            "  }",
+            "  for (const step of [1, 2]) {",
+            "    if (step <= remain) {",
+            "      path.push(step);",
+            "      climb(remain - step);",
+            "      path.pop();",
+            "    }",
+            "  }",
+            "}",
+          ].join("\n"),
+          java: [
+            "void climb(int remain) {",
+            "    if (remain == 0) {",
+            "        answer.add(______);   // 복사본!",
+            "        return;",
+            "    }",
+            "    for (int step = 1; step <= 2; step++) {",
+            "        if (step <= remain) {",
+            "            path.add(step);",
+            "            climb(remain - step);",
+            "            path.remove(path.size() - 1);",
+            "        }",
+            "    }",
+            "}",
+          ].join("\n"),
+        },
+        caption: "Java는 new ArrayList<>(path)로 복사본을 만들어요.",
+      },
+      xpPenaltyRate: 0.5,
+    },
+  ],
+  patternTags: ["combination"],
+  signalIds: ["sig-all-cases", "sig-small-n"],
+  estimatedMinutes: 10,
+  xp: 10,
+};

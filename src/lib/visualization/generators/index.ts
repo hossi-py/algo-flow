@@ -1,0 +1,164 @@
+import type { JsonValue, VisualizationGeneratorKey, VisualizationStep } from "@/types";
+import {
+  PERMUTATION_PSEUDOCODE,
+  SUBSET_PSEUDOCODE,
+  permutation,
+  subset,
+  validatePermutation,
+  validateSubset,
+} from "./backtracking";
+import {
+  DEQUE_BASIC_PSEUDOCODE,
+  QUEUE_BASIC_PSEUDOCODE,
+  STACK_BASIC_PSEUDOCODE,
+  STACK_BRACKET_PSEUDOCODE,
+  dequeBasic,
+  queueBasic,
+  stackBasic,
+  stackBracket,
+  validateDequeBasic,
+  validateQueueBasic,
+  validateStackBasic,
+  validateStackBracket,
+} from "./linear";
+import {
+  GRAPH_ADJACENCY_PSEUDOCODE,
+  GRAPH_BFS_PSEUDOCODE,
+  GRAPH_DFS_PSEUDOCODE,
+  graphAdjacency,
+  graphBfs,
+  graphDfs,
+  validateGraphAdjacency,
+  validateGraphBfs,
+  validateGraphDfs,
+} from "./graph";
+import { GRID_BFS_PSEUDOCODE, GRID_DFS_PSEUDOCODE, gridBfs, gridDfs, validateGridBfs, validateGridDfs } from "./grid";
+import {
+  FACTORIAL_PSEUDOCODE,
+  FIBONACCI_PSEUDOCODE,
+  factorial,
+  fibonacci,
+  validateFactorial,
+  validateFibonacci,
+} from "./recursion";
+import { InputError } from "./shared";
+
+export interface GeneratorDefinition {
+  key: VisualizationGeneratorKey;
+  /** 입력 편집기에 보여 줄 형식 설명 */
+  inputHint: string;
+  pseudocode: string[];
+  /** 문제가 있으면 예외를 던진다 (InputError) */
+  validate: (input: JsonValue[]) => void;
+  generate: (input: JsonValue[]) => VisualizationStep[];
+}
+
+export const GENERATORS: Record<VisualizationGeneratorKey, GeneratorDefinition> = {
+  "stack-basic": {
+    key: "stack-basic",
+    inputHint: '[명령 목록] 예: [["push 3", "push 5", "peek", "pop"]] — push x / pop / peek, 최대 16개',
+    pseudocode: STACK_BASIC_PSEUDOCODE,
+    validate: validateStackBasic,
+    generate: stackBasic,
+  },
+  "stack-bracket": {
+    key: "stack-bracket",
+    inputHint: '[괄호 문자열] 예: ["({[]})"] — ( ) [ ] { } 만, 최대 16글자',
+    pseudocode: STACK_BRACKET_PSEUDOCODE,
+    validate: validateStackBracket,
+    generate: stackBracket,
+  },
+  "queue-basic": {
+    key: "queue-basic",
+    inputHint: '[명령 목록] 예: [["enqueue 1", "enqueue 2", "dequeue"]] — enqueue x / dequeue / peek, 최대 16개',
+    pseudocode: QUEUE_BASIC_PSEUDOCODE,
+    validate: validateQueueBasic,
+    generate: queueBasic,
+  },
+  "deque-basic": {
+    key: "deque-basic",
+    inputHint:
+      '[명령 목록] 예: [["push_back 1", "push_front 2", "pop_back"]] — push_front x / push_back x / pop_front / pop_back',
+    pseudocode: DEQUE_BASIC_PSEUDOCODE,
+    validate: validateDequeBasic,
+    generate: dequeBasic,
+  },
+  "recursion-factorial": {
+    key: "recursion-factorial",
+    inputHint: "[n] 예: [4] — 1 ~ 8",
+    pseudocode: FACTORIAL_PSEUDOCODE,
+    validate: validateFactorial,
+    generate: factorial,
+  },
+  "recursion-fibonacci": {
+    key: "recursion-fibonacci",
+    inputHint: "[n] 예: [4] — 0 ~ 5 (n이 1 늘 때마다 호출 수가 약 1.6배로 늘어나요)",
+    pseudocode: FIBONACCI_PSEUDOCODE,
+    validate: validateFibonacci,
+    generate: fibonacci,
+  },
+  "graph-adjacency": {
+    key: "graph-adjacency",
+    inputHint: "[노드 수, 간선 목록] 예: [4, [[0, 1], [1, 2], [0, 3]]] — 노드 2 ~ 9개, 간선 최대 14개",
+    pseudocode: GRAPH_ADJACENCY_PSEUDOCODE,
+    validate: validateGraphAdjacency,
+    generate: graphAdjacency,
+  },
+  "graph-dfs": {
+    key: "graph-dfs",
+    inputHint: "[노드 수, 간선 목록, 시작 노드] 예: [5, [[0, 1], [0, 2], [1, 3]], 0]",
+    pseudocode: GRAPH_DFS_PSEUDOCODE,
+    validate: validateGraphDfs,
+    generate: graphDfs,
+  },
+  "graph-bfs": {
+    key: "graph-bfs",
+    inputHint: "[노드 수, 간선 목록, 시작 노드] 예: [5, [[0, 1], [0, 2], [1, 3]], 0]",
+    pseudocode: GRAPH_BFS_PSEUDOCODE,
+    validate: validateGraphBfs,
+    generate: graphBfs,
+  },
+  "grid-dfs": {
+    key: "grid-dfs",
+    inputHint: '[격자] 예: [["110", "010", "001"]] — 1은 꽃, 0은 빈 땅, 최대 8×8',
+    pseudocode: GRID_DFS_PSEUDOCODE,
+    validate: validateGridDfs,
+    generate: gridDfs,
+  },
+  "grid-bfs": {
+    key: "grid-bfs",
+    inputHint: '[미로] 예: [["S.#", "..#", "#.E"]] — S 출발, E 도착, . 길, # 벽, 최대 8×8',
+    pseudocode: GRID_BFS_PSEUDOCODE,
+    validate: validateGridBfs,
+    generate: gridBfs,
+  },
+  "backtracking-permutation": {
+    key: "backtracking-permutation",
+    inputHint: "[원소 목록] 예: [[1, 2, 3]] — 서로 다른 정수 1 ~ 4개",
+    pseudocode: PERMUTATION_PSEUDOCODE,
+    validate: validatePermutation,
+    generate: permutation,
+  },
+  "backtracking-subset": {
+    key: "backtracking-subset",
+    inputHint: "[원소 목록] 예: [[1, 2, 3]] — 서로 다른 정수 1 ~ 3개",
+    pseudocode: SUBSET_PSEUDOCODE,
+    validate: validateSubset,
+    generate: subset,
+  },
+};
+
+/** 입력을 검사하고 스텝을 만든다. 입력 오류는 사용자에게 보여 줄 메시지로 돌려준다 */
+export function runGenerator(
+  key: VisualizationGeneratorKey,
+  input: JsonValue[],
+): { ok: true; steps: VisualizationStep[] } | { ok: false; error: string } {
+  const definition = GENERATORS[key];
+  try {
+    definition.validate(input);
+    return { ok: true, steps: definition.generate(input) };
+  } catch (error) {
+    if (error instanceof InputError) return { ok: false, error: error.message };
+    throw error;
+  }
+}
