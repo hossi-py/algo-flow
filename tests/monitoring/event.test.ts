@@ -24,7 +24,8 @@ describe("개인정보 가리기", () => {
     const frame =
       "at render (node_modules/.pnpm/next@16.3.6_@babel+core@7.2_c25acd63a173a11f93c41cfe894097bb/node_modules/next/dist/x.js:88:1)";
     expect(redact(frame)).toBe(frame);
-    const chunk = "at progress (http://localhost:3000/_next/static/chunks/0f3a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d._.js:2711:13)";
+    const chunk =
+      "at progress (http://localhost:3000/_next/static/chunks/0f3a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d._.js:2711:13)";
     expect(redact(chunk)).toBe(chunk);
   });
 
