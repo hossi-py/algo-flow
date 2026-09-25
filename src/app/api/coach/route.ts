@@ -6,6 +6,7 @@ import { COACH_DAILY_LIMIT, COACH_DAILY_LIMIT_PER_IP } from "@/lib/ai/limits";
 import { mockCoachCall } from "@/lib/ai/mock";
 import { loadProblem } from "@/lib/ai/problem-source";
 import { coachRequestSchema, type CoachRequest, type CoachStreamEvent } from "@/lib/ai/schemas";
+import { recordServerException } from "@/lib/monitoring/store";
 import { consumeDaily } from "@/lib/server/rate-limit";
 import { getRequester } from "@/lib/server/requester";
 import { createServerSupabase } from "@/lib/supabase/server";
@@ -63,7 +64,7 @@ export async function POST(request: NextRequest) {
         if (requester.kind === "user") await saveThread(coachRequest, result.reply, result.meta.mood, requester.id);
       } catch (cause) {
         if (!upstream.signal.aborted) {
-          console.error("[coach] 실패", cause);
+          await recordServerException("coach", cause, "/api/coach");
           send({ type: "error", message: "노디가 잠깐 대답하지 못했어요. 다시 물어봐 주세요." });
         }
       } finally {

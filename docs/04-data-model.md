@@ -958,6 +958,8 @@ export type CoachMeta = z.infer<typeof coachMetaSchema>;
 | `user_badges` | `(user_id, badge_id)` | 획득 배지 | 본인 조회 (쓰기는 RPC) |
 | `coach_messages` | `id` | AI 코치 대화 | 본인 조회·작성 |
 | `user_pattern_stats` (view) | — | 패턴별 제출 통계 (약점 분석) | 본인 행만 (security_invoker) |
+| `error_events` | `id` | 에러 모니터링 기록 (server·client·boundary·engine, 쿼리·이메일·토큰을 가린 뒤 저장) | **접근 불가** (service role 전용) |
+| `error_groups` (view) | — | `error_events`를 지문(fingerprint)별로 묶은 통계 | **접근 불가** (service role 전용) |
 
 > 쓰기 RPC(`record_submission`, `record_concept_progress`, `record_problem_state`, `merge_guest_progress`, `complete_generated_problem`)는 Step 6에서 `supabase/migrations/20260924000000_progress_rpc.sql`로 작성했다. XP·스트릭·레벨 클리어·배지 **계산은 서버의 TS 규칙**(`lib/progress/actions.ts`)이 하고, RPC는 계산된 행들을 `revision` 확인 뒤 한 트랜잭션으로 기록한다 (service role만 실행 가능).
 

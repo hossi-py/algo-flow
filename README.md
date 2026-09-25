@@ -20,14 +20,15 @@ pnpm dev          # http://localhost:3000
 
 `.env.example`을 `.env.local`로 복사해 채웁니다. 비워 두면 해당 기능만 꺼지고 화면에 안내가 나옵니다.
 
-| 변수                                                                | 용도                                                                                      |
-| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `ANTHROPIC_API_KEY`                                                 | AI 코치 · AI 맞춤 문제 생성                                                               |
-| `AI_COACH_MODEL` / `AI_GENERATOR_MODEL`                             | 모델 ID (기본 `claude-opus-5`)                                                            |
-| `AI_MOCK=1`                                                         | 개발 전용 모의 AI. 키 없이 코치 스트리밍·가드 재작성, 생성 → 검증 실패 → 재생성 흐름 확인 |
-| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | 로그인 · 진도 저장 (없으면 게스트 모드만)                                                 |
-| `SUPABASE_SERVICE_ROLE_KEY`                                         | 서버 전용. 진도 기록 RPC · AI 생성 문제 저장                                              |
-| `NEXT_PUBLIC_AUTH_PROVIDERS`                                        | 로그인 화면의 소셜 로그인 (`google,github,kakao` 중 켠 것)                                |
+| 변수                                                                | 용도                                                                                        |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `ANTHROPIC_API_KEY`                                                 | AI 코치 · AI 맞춤 문제 생성                                                                 |
+| `AI_COACH_MODEL` / `AI_GENERATOR_MODEL`                             | 모델 ID (기본 `claude-opus-5`)                                                              |
+| `AI_MOCK=1`                                                         | 개발 전용 모의 AI. 키 없이 코치 스트리밍·가드 재작성, 생성 → 검증 실패 → 재생성 흐름 확인   |
+| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | 로그인 · 진도 저장 (없으면 게스트 모드만)                                                   |
+| `SUPABASE_SERVICE_ROLE_KEY`                                         | 서버 전용. 진도 기록 RPC · AI 생성 문제 저장                                                |
+| `NEXT_PUBLIC_AUTH_PROVIDERS`                                        | 로그인 화면의 소셜 로그인 (`google,github,kakao` 중 켠 것)                                  |
+| `NEXT_PUBLIC_RELEASE`                                               | 선택. 배포 버전(커밋 해시 등). 에러 기록에 함께 남아 어느 배포에서 난 에러인지 알 수 있어요 |
 
 ### Supabase 연결
 
@@ -52,6 +53,19 @@ pnpm dev          # http://localhost:3000
 | `pnpm format`               | Prettier                                                                                                                                                                                                             |
 
 개발 서버에서는 화면 오른쪽 아래 🔧 버튼(개발용 도구)으로 예시 진도 불러오기 · XP 추가 · 축하 연출 · 진도 초기화를 할 수 있습니다. 프로덕션 빌드에는 나타나지 않습니다.
+
+## 에러 모니터링
+
+외부 서비스 없이 에러를 직접 모아요. Supabase가 연결돼 있으면 `error_events` 테이블에 저장하고, 없으면 서버 로그에 `[error:출처] {…}` 한 줄로만 남겨요.
+
+- **server**: `src/instrumentation.ts`의 `onRequestError`가 서버 컴포넌트·Route Handler·Server Action·Proxy 에러를 기록해요.
+- **client**: `src/instrumentation-client.ts`가 처리되지 않은 브라우저 에러·Promise 거부를 `/api/errors`로 보내요. 같은 에러는 페이지당 한 번, 최대 10건이고 확장 프로그램·ResizeObserver 같은 잡음은 뺍니다.
+- **boundary**: 화면이 깨졌을 때 뜨는 `error.tsx`·`global-error.tsx`가 보내요. 서버 에러와 같은 `digest`로 이어져요.
+- **engine**: 채점 엔진(Pyodide·CheerpJ)이 CDN에서 로딩에 실패하거나 멈추면 보내요.
+
+저장 전에 길이를 자르고 주소의 쿼리, 이메일, 토큰(`token=…`, JWT, API 키)을 가려요. 요청 헤더·쿠키는 저장하지 않아요. `/api/errors`는 IP마다 하루 300건까지 받아요.
+
+`error_events`와 묶어 보기 뷰 `error_groups`는 service role만 읽을 수 있어요 (Supabase 대시보드 SQL 편집기에서 `select * from error_groups order by last_seen desc;`). 오래된 기록은 `select public.prune_error_events(30);`로 지워요 (Supabase Cron에 매일 등록 권장).
 
 ## Java 실행 (브라우저)
 

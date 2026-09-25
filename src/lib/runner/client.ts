@@ -9,6 +9,7 @@ import {
   PYODIDE_INDEX_URL,
   STDOUT_LIMIT,
 } from "./config";
+import { reportClientError } from "@/lib/monitoring/report-client";
 import { PYTHON_HARNESS } from "./harness-python";
 import type { ExecOutcome } from "./judge";
 
@@ -80,6 +81,8 @@ export class LanguageRunner {
     const worker = createWorker(this.language);
     const pending: WorkerHandle["pending"] = new Map();
     this.setState({ status: "loading", runtime: null, error: null });
+    /** 워커가 죽어서 준비에 실패한 경우 (충돌로 한 번만 보고한다) */
+    let crashed = false;
 
     const ready = new Promise<void>((resolve, reject) => {
       const timer = window.setTimeout(() => {
@@ -105,6 +108,8 @@ export class LanguageRunner {
       worker.onerror = (event) => {
         window.clearTimeout(timer);
         const reason = event.message || "실행 엔진이 멈췄어요";
+        crashed = true;
+        reportClientError(new Error(reason), { source: "engine", context: `${this.language} worker crash` });
         for (const callback of pending.values()) callback({ crashed: reason });
         pending.clear();
         // 준비가 끝난 뒤 죽은 워커는 버리고, 다음 실행 때 새로 만든다
@@ -120,6 +125,8 @@ export class LanguageRunner {
     ready.catch((error: unknown) => {
       const message = error instanceof Error ? error.message : String(error);
       this.setState({ status: "error", runtime: null, error: message });
+      // CDN에서 엔진을 못 받았거나 초기화가 멈춘 경우: 사용자는 채점을 못 하므로 꼭 알아야 한다
+      if (!crashed) reportClientError(error, { source: "engine", context: `${this.language} init` });
       if (this.handle?.worker === worker) this.handle = null;
       worker.terminate();
     });

@@ -419,3 +419,63 @@ describe("Java 언어", () => {
     expect(submissions[0]).toMatchObject({ verdict: "accepted", language: "java", code });
   });
 });
+
+describe("에러 기록 (error_events)", () => {
+  const insertSql = "insert into public.error_events (source, fingerprint, message, path) values ($1, $2, $3, $4)";
+
+  it("클라이언트 키로는 읽지도 쓰지도 못한다", async () => {
+    for (const role of [{ kind: "anon" }, { kind: "user", id: A }] as const) {
+      await expect(as(db, role, () => db.query("select * from public.error_events"))).rejects.toThrow(
+        /permission denied/,
+      );
+      await expect(as(db, role, () => db.query("select * from public.error_groups"))).rejects.toThrow(
+        /permission denied/,
+      );
+      await expect(as(db, role, () => db.query(insertSql, ["client", "f0", "가짜", "/"]))).rejects.toThrow(
+        /permission denied/,
+      );
+      await expect(as(db, role, () => db.query("select public.prune_error_events(1)"))).rejects.toThrow(
+        /permission denied/,
+      );
+    }
+  });
+
+  it("서버(service role)는 기록하고, 같은 지문끼리 묶어 볼 수 있다", async () => {
+    await as(db, { kind: "service" }, async () => {
+      await db.query(insertSql, ["client", "aaaa", "TypeError: x", "/problems/a"]);
+      await db.query(insertSql, ["client", "aaaa", "TypeError: x", "/problems/b"]);
+      await db.query(insertSql, ["server", "bbbb", "DB timeout", "/api/progress"]);
+    });
+    const groups = await as(
+      db,
+      { kind: "service" },
+      async () =>
+        (
+          await db.query<{ fingerprint: string; occurrences: number; latest_path: string }>(
+            "select fingerprint, occurrences, latest_path from public.error_groups where fingerprint in ('aaaa', 'bbbb') order by fingerprint",
+          )
+        ).rows,
+    );
+    expect(groups).toEqual([
+      { fingerprint: "aaaa", occurrences: 2, latest_path: expect.stringMatching(/^\/problems\/[ab]$/) },
+      { fingerprint: "bbbb", occurrences: 1, latest_path: "/api/progress" },
+    ]);
+  });
+
+  it("출처와 길이를 제한하고, 오래된 기록을 정리할 수 있다", async () => {
+    await expect(as(db, { kind: "service" }, () => db.query(insertSql, ["hacker", "cccc", "x", "/"]))).rejects.toThrow(
+      /check constraint/,
+    );
+    await expect(
+      as(db, { kind: "service" }, () => db.query(insertSql, ["client", "cccc", "x".repeat(501), "/"])),
+    ).rejects.toThrow(/check constraint/);
+
+    const pruned = await as(db, { kind: "service" }, async () => {
+      await db.query(
+        "insert into public.error_events (created_at, source, fingerprint, message) values (now() - interval '40 days', 'client', 'old', 'old')",
+      );
+      return (await db.query<{ n: number }>("select public.prune_error_events(30) as n")).rows[0]?.n;
+    });
+    expect(pruned).toBe(1);
+  });
+});

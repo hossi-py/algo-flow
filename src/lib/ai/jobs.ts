@@ -1,4 +1,5 @@
 import "server-only";
+import { recordServerException } from "@/lib/monitoring/store";
 import { createNodePythonRunner, type PythonRunner } from "@/lib/runner-node/node-runner";
 import type { GeneratedProblem } from "@/types";
 import { isAiMock } from "./client";
@@ -60,7 +61,9 @@ export async function runGenerationJob(record: GeneratedProblem): Promise<void> 
       error instanceof GenerationRefusedError
         ? error.message
         : "문제를 만드는 중에 오류가 났어요. 잠시 뒤 다시 시도해 주세요.";
-    console.error(`[generate] ${record.id} failed`, error);
+    // 모델이 거절한 건 예상된 결과라 로그만, 그 밖의 예외는 에러로 기록한다
+    if (error instanceof GenerationRefusedError) console.warn(`[generate] ${record.id} refused`, error.message);
+    else await recordServerException("generate", error, "/api/generate");
     await writes.catch(() => {});
     await store.update(record.id, { status: "failed", error: message });
   }
