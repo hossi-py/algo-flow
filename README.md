@@ -38,17 +38,18 @@ pnpm dev          # http://localhost:3000
 
 ## 명령
 
-| 명령                        | 설명                                                                                                                                                                 |
-| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev`                  | 개발 서버                                                                                                                                                            |
-| `pnpm build` / `pnpm start` | 프로덕션 빌드 / 실행                                                                                                                                                 |
-| `pnpm typecheck`            | 라우트 타입 생성 + `tsc`                                                                                                                                             |
-| `pnpm lint`                 | ESLint                                                                                                                                                               |
-| `pnpm test`                 | Vitest (진도 규칙, 채점기, JS·Python 하네스, 시각화, 개념 학습 화면, AI 코치 가드·문제 생성 파이프라인·서버 Python 러너, PGlite로 마이그레이션·RLS·진도 RPC 검증 등) |
-| `pnpm validate:content`     | 모든 문제의 Python·JS 정답 코드를 실제 하네스로 실행해 기대값 검증 (Pyodide). `JAVA_HOME`에 JDK 11+가 있으면 Java 정답도 같은 Java 하네스로 검증                     |
-| `pnpm build:java`           | Java 채점 하네스(`java-runtime/src`)를 `public/java/algoflow-runner.jar`로 빌드 (JDK 11+ 필요, 결과 jar는 커밋)                                                      |
-| `pnpm ai:smoke [횟수]`      | 실제 Claude API로 AI 문제를 여러 번(기본 10회) 생성·검증해 통과율 확인 (API 비용 발생)                                                                               |
-| `pnpm format`               | Prettier                                                                                                                                                             |
+| 명령                        | 설명                                                                                                                                                                                                                 |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                  | 개발 서버                                                                                                                                                                                                            |
+| `pnpm build` / `pnpm start` | 프로덕션 빌드 / 실행                                                                                                                                                                                                 |
+| `pnpm typecheck`            | 라우트 타입 생성 + `tsc`                                                                                                                                                                                             |
+| `pnpm lint`                 | ESLint                                                                                                                                                                                                               |
+| `pnpm test`                 | Vitest (진도 규칙, 채점기, JS·Python 하네스, 시각화, 개념 학습 화면, AI 코치 가드·문제 생성 파이프라인·서버 Python 러너, PGlite로 마이그레이션·RLS·진도 RPC 검증 등)                                                 |
+| `pnpm test:e2e`             | Playwright E2E. 프로덕션 빌드를 3100번 포트에 띄워 게스트 흐름(길 찾기, Python·JS·Java 채점, 힌트, 개념 학습, 모바일)을 확인. 처음엔 `pnpm exec playwright install chromium` 필요, 엔진을 CDN에서 받아 네트워크 필요 |
+| `pnpm validate:content`     | 모든 문제의 Python·JS 정답 코드를 실제 하네스로 실행해 기대값 검증 (Pyodide). `JAVA_HOME`에 JDK 11+가 있으면 Java 정답도 같은 Java 하네스로 검증                                                                     |
+| `pnpm build:java`           | Java 채점 하네스(`java-runtime/src`)를 `public/java/algoflow-runner.jar`로 빌드 (JDK 11+ 필요, 결과 jar는 커밋)                                                                                                      |
+| `pnpm ai:smoke [횟수]`      | 실제 Claude API로 AI 문제를 여러 번(기본 10회) 생성·검증해 통과율 확인 (API 비용 발생)                                                                                                                               |
+| `pnpm format`               | Prettier                                                                                                                                                                                                             |
 
 개발 서버에서는 화면 오른쪽 아래 🔧 버튼(개발용 도구)으로 예시 진도 불러오기 · XP 추가 · 축하 연출 · 진도 초기화를 할 수 있습니다. 프로덕션 빌드에는 나타나지 않습니다.
 

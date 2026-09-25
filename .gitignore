@@ -45,3 +45,9 @@ next-env.d.ts
 
 # 개발용 로컬 저장소 (Supabase 없이 AI 생성 문제 저장)
 /.data/
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

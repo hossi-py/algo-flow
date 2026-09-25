@@ -119,7 +119,13 @@ export function WorkspaceHeader({
           {OBJECT_PARTICLE[language]} 주력 언어로
         </PopButton>
       )}
-      <LanguageToggle language={language} onChange={onLanguageChange} languages={languages} preferred={preferred} />
+      <LanguageToggle
+        language={language}
+        onChange={onLanguageChange}
+        languages={languages}
+        preferred={preferred}
+        label="풀이 언어"
+      />
       <div className="hidden items-center md:flex" role="group" aria-label="에디터 글자 크기">
         <PopButton variant="ghost" size="icon-sm" aria-label="글자 작게" onClick={() => onFontSizeChange(smaller)}>
           <Minus />
