@@ -1,13 +1,18 @@
 import type { LevelNumber, PatternTag, Problem, TopicSlug } from "@/types";
 import { backtrackingBracketStrings } from "./backtracking/bracket-strings";
 import { backtrackingCoinFlips } from "./backtracking/coin-flips";
+import { backtrackingFlowerSudoku } from "./backtracking/flower-sudoku";
 import { backtrackingGiftWeights } from "./backtracking/gift-weights";
 import { backtrackingGuardRobots } from "./backtracking/guard-robots";
+import { backtrackingLetterBoard } from "./backtracking/letter-board";
 import { backtrackingMapColoring } from "./backtracking/map-coloring";
 import { backtrackingNumberCards } from "./backtracking/number-cards";
 import { backtrackingOutfitPicker } from "./backtracking/outfit-picker";
+import { backtrackingPodiumOrders } from "./backtracking/podium-orders";
 import { backtrackingSeatOrders } from "./backtracking/seat-orders";
 import { backtrackingSnackTotal } from "./backtracking/snack-total";
+import { backtrackingStairSteps } from "./backtracking/stair-steps";
+import { backtrackingStickerScore } from "./backtracking/sticker-score";
 import { backtrackingTeamPicks } from "./backtracking/team-picks";
 import { bfsExactHops } from "./bfs/exact-hops";
 import { bfsFireStations } from "./bfs/fire-stations";
@@ -104,13 +109,18 @@ import { stackWidestBanner } from "./stack/widest-banner";
 export const PROBLEMS: readonly Problem[] = [
   backtrackingBracketStrings,
   backtrackingCoinFlips,
+  backtrackingFlowerSudoku,
   backtrackingGiftWeights,
   backtrackingGuardRobots,
+  backtrackingLetterBoard,
   backtrackingMapColoring,
   backtrackingNumberCards,
   backtrackingOutfitPicker,
+  backtrackingPodiumOrders,
   backtrackingSeatOrders,
   backtrackingSnackTotal,
+  backtrackingStairSteps,
+  backtrackingStickerScore,
   backtrackingTeamPicks,
   bfsExactHops,
   bfsFireStations,
