@@ -41,14 +41,19 @@ import { graphStationNeighbors } from "./graph-representation/graph-station-neig
 import { graphTrustedShop } from "./graph-representation/graph-trusted-shop";
 import { dequeEndCards } from "./queue-deque/deque-end-cards";
 import { dequeSteadySignal } from "./queue-deque/deque-steady-signal";
+import { dequeSteppingScore } from "./queue-deque/deque-stepping-score";
+import { dequeSushiRail } from "./queue-deque/deque-sushi-rail";
 import { dequeTwoDoorTrain } from "./queue-deque/deque-two-door-train";
 import { dequeWindowMax } from "./queue-deque/deque-window-max";
 import { queueBakeryLine } from "./queue-deque/queue-bakery-line";
 import { queueCardShuffle } from "./queue-deque/queue-card-shuffle";
+import { queueCarouselLine } from "./queue-deque/queue-carousel-line";
+import { queueDoughSplit } from "./queue-deque/queue-dough-split";
 import { queueFrontBack } from "./queue-deque/queue-front-back";
 import { queueHotPotato } from "./queue-deque/queue-hot-potato";
 import { queueRecentVisits } from "./queue-deque/queue-recent-visits";
 import { queueRoundKitchen } from "./queue-deque/queue-round-kitchen";
+import { queueShuttleBus } from "./queue-deque/queue-shuttle-bus";
 import { recursionCookieBoxes } from "./recursion/cookie-boxes";
 import { recursionDigitSum } from "./recursion/digit-sum";
 import { recursionHailstoneTrip } from "./recursion/hailstone-trip";
@@ -119,14 +124,19 @@ export const PROBLEMS: readonly Problem[] = [
   graphTrustedShop,
   dequeEndCards,
   dequeSteadySignal,
+  dequeSteppingScore,
+  dequeSushiRail,
   dequeTwoDoorTrain,
   dequeWindowMax,
   queueBakeryLine,
   queueCardShuffle,
+  queueCarouselLine,
+  queueDoughSplit,
   queueFrontBack,
   queueHotPotato,
   queueRecentVisits,
   queueRoundKitchen,
+  queueShuttleBus,
   recursionCookieBoxes,
   recursionDigitSum,
   recursionHailstoneTrip,
