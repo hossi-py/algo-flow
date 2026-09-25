@@ -10,12 +10,17 @@ import { backtrackingSeatOrders } from "./backtracking/seat-orders";
 import { backtrackingSnackTotal } from "./backtracking/snack-total";
 import { backtrackingTeamPicks } from "./backtracking/team-picks";
 import { bfsExactHops } from "./bfs/exact-hops";
+import { bfsFireStations } from "./bfs/fire-stations";
 import { bfsFriendDistance } from "./bfs/friend-distance";
 import { bfsFrogLeaps } from "./bfs/frog-leaps";
+import { bfsKangarooField } from "./bfs/kangaroo-field";
+import { bfsKeyEscape } from "./bfs/key-escape";
 import { bfsMazeShortest } from "./bfs/maze-shortest";
 import { bfsNearestShelter } from "./bfs/nearest-shelter";
+import { bfsNearestStore } from "./bfs/nearest-store";
 import { bfsNewsOrder } from "./bfs/news-order";
 import { bfsPigeonPost } from "./bfs/pigeon-post";
+import { bfsRippleRings } from "./bfs/ripple-rings";
 import { bfsRumorDays } from "./bfs/rumor-days";
 import { bfsSafeDial } from "./bfs/safe-dial";
 import { bfsTwoBuckets } from "./bfs/two-buckets";
@@ -108,12 +113,17 @@ export const PROBLEMS: readonly Problem[] = [
   backtrackingSnackTotal,
   backtrackingTeamPicks,
   bfsExactHops,
+  bfsFireStations,
   bfsFriendDistance,
   bfsFrogLeaps,
+  bfsKangarooField,
+  bfsKeyEscape,
   bfsMazeShortest,
   bfsNearestShelter,
+  bfsNearestStore,
   bfsNewsOrder,
   bfsPigeonPost,
+  bfsRippleRings,
   bfsRumorDays,
   bfsSafeDial,
   bfsTwoBuckets,
