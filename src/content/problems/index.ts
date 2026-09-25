@@ -60,6 +60,10 @@ import { recursionSnowflakeKnit } from "./recursion/snowflake-knit";
 import { recursionSteppingStones } from "./recursion/stepping-stones";
 import { recursionSwappedPairs } from "./recursion/swapped-pairs";
 import { stackBackspaceKeyboard } from "./stack/backspace-keyboard";
+import { stackBracketPartner } from "./stack/bracket-partner";
+import { stackDeadEndParking } from "./stack/dead-end-parking";
+import { stackFolderPath } from "./stack/folder-path";
+import { stackLightestBox } from "./stack/lightest-box";
 import { stackPeekRecord } from "./stack/peek-record";
 import { stackPlateTower } from "./stack/plate-tower";
 import { stackRibbonTags } from "./stack/ribbon-tags";
@@ -69,6 +73,7 @@ import { stackTwinBalloons } from "./stack/twin-balloons";
 import { stackUndoMemo } from "./stack/undo-memo";
 import { stackVaultBrackets } from "./stack/vault-brackets";
 import { stackWarmerWait } from "./stack/warmer-wait";
+import { stackWidestBanner } from "./stack/widest-banner";
 
 /** 큐레이션 문제 전체. 새 문제는 여기에 추가하고 토픽의 레벨 problemSlugs에도 등록한다 */
 export const PROBLEMS: readonly Problem[] = [
@@ -133,6 +138,10 @@ export const PROBLEMS: readonly Problem[] = [
   recursionSteppingStones,
   recursionSwappedPairs,
   stackBackspaceKeyboard,
+  stackBracketPartner,
+  stackDeadEndParking,
+  stackFolderPath,
+  stackLightestBox,
   stackPeekRecord,
   stackPlateTower,
   stackRibbonTags,
@@ -142,6 +151,7 @@ export const PROBLEMS: readonly Problem[] = [
   stackUndoMemo,
   stackVaultBrackets,
   stackWarmerWait,
+  stackWidestBanner,
 ];
 
 /** 목록 화면에서 쓰는 가벼운 요약 (테스트케이스·힌트 제외) */
