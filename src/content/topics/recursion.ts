@@ -15,27 +15,27 @@ export const recursionTopic: Topic = {
     {
       title: "재귀란?",
       goal: "함수가 자기 자신을 부를 때 호출 스택이 어떻게 쌓이고 풀리는지 설명할 수 있어요.",
-      problemSlugs: ["recursion-rocket-countdown", "recursion-digit-sum"],
+      problemSlugs: ["recursion-rocket-countdown", "recursion-digit-sum", "recursion-echo-valley"],
     },
     {
       title: "종료 조건과 호출",
       goal: "종료 조건과 재귀 호출, 두 부분으로 함수를 설계할 수 있어요.",
-      problemSlugs: ["recursion-cookie-boxes", "recursion-hailstone-trip"],
+      problemSlugs: ["recursion-cookie-boxes", "recursion-hailstone-trip", "recursion-bulb-signal"],
     },
     {
       title: "점화식을 코드로",
       goal: "팩토리얼·피보나치처럼 식으로 정의된 문제를 재귀로 옮겨요.",
-      problemSlugs: ["recursion-rabbit-family", "recursion-stepping-stones"],
+      problemSlugs: ["recursion-rabbit-family", "recursion-stepping-stones", "recursion-hallway-tiles"],
     },
     {
       title: "나눠서 정복하기",
       goal: "문제를 절반으로 나눠 풀고 합치는 분할 정복을 구현해요.",
-      problemSlugs: ["recursion-swapped-pairs", "recursion-quad-garden"],
+      problemSlugs: ["recursion-swapped-pairs", "recursion-quad-garden", "recursion-cell-division"],
     },
     {
       title: "재귀 트리로 생각하기",
       goal: "재귀 호출 트리를 그려 시간 복잡도를 예측하고 실전 문제를 풀어요.",
-      problemSlugs: ["recursion-hanoi-kth-move", "recursion-snowflake-knit"],
+      problemSlugs: ["recursion-hanoi-kth-move", "recursion-snowflake-knit", "recursion-magic-scroll"],
     },
   ]),
   signalIds: ["sig-self-similar", "sig-nested-structure", "sig-shrink-by-one"],

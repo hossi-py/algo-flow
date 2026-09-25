@@ -54,10 +54,15 @@ import { queueHotPotato } from "./queue-deque/queue-hot-potato";
 import { queueRecentVisits } from "./queue-deque/queue-recent-visits";
 import { queueRoundKitchen } from "./queue-deque/queue-round-kitchen";
 import { queueShuttleBus } from "./queue-deque/queue-shuttle-bus";
+import { recursionBulbSignal } from "./recursion/bulb-signal";
+import { recursionCellDivision } from "./recursion/cell-division";
 import { recursionCookieBoxes } from "./recursion/cookie-boxes";
 import { recursionDigitSum } from "./recursion/digit-sum";
+import { recursionEchoValley } from "./recursion/echo-valley";
 import { recursionHailstoneTrip } from "./recursion/hailstone-trip";
+import { recursionHallwayTiles } from "./recursion/hallway-tiles";
 import { recursionHanoiKthMove } from "./recursion/hanoi-kth-move";
+import { recursionMagicScroll } from "./recursion/magic-scroll";
 import { recursionQuadGarden } from "./recursion/quad-garden";
 import { recursionRabbitFamily } from "./recursion/rabbit-family";
 import { recursionRocketCountdown } from "./recursion/rocket-countdown";
@@ -137,10 +142,15 @@ export const PROBLEMS: readonly Problem[] = [
   queueRecentVisits,
   queueRoundKitchen,
   queueShuttleBus,
+  recursionBulbSignal,
+  recursionCellDivision,
   recursionCookieBoxes,
   recursionDigitSum,
+  recursionEchoValley,
   recursionHailstoneTrip,
+  recursionHallwayTiles,
   recursionHanoiKthMove,
+  recursionMagicScroll,
   recursionQuadGarden,
   recursionRabbitFamily,
   recursionRocketCountdown,

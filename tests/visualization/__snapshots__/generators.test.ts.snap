@@ -263,6 +263,39 @@ exports[`프리셋 deque-basic-intro > 스텝 흐름 스냅샷 1`] = `
     명령=<push_back 1 push_back 2 push_front 0 pop_back push_front 9 pop_front pop_front> cur=- done=7 | deque=[1] | vars{"크기":1}"
 `;
 
+exports[`프리셋 echo-valley-stack > 스텝 흐름 스냅샷 1`] = `
+"#0 call L1 factorial(4) 호출 — 호출 스택에 새 칸이 쌓여요
+    calls[factorial(4)*{"n":4}] | vars{"호출 깊이":1}
+#1 call L3 4 × factorial(3) 계산에는 먼저 factorial(3) 값이 필요해요 → 재귀 호출
+    calls[factorial(4)*{"n":4}] | vars{"호출 깊이":1}
+#2 call L1 factorial(3) 호출 — 호출 스택에 새 칸이 쌓여요
+    calls[factorial(4){"n":4} > factorial(3)*{"n":3}] | vars{"호출 깊이":2}
+#3 call L3 3 × factorial(2) 계산에는 먼저 factorial(2) 값이 필요해요 → 재귀 호출
+    calls[factorial(4){"n":4} > factorial(3)*{"n":3}] | vars{"호출 깊이":2}
+#4 call L1 factorial(2) 호출 — 호출 스택에 새 칸이 쌓여요
+    calls[factorial(4){"n":4} > factorial(3){"n":3} > factorial(2)*{"n":2}] | vars{"호출 깊이":3}
+#5 call L3 2 × factorial(1) 계산에는 먼저 factorial(1) 값이 필요해요 → 재귀 호출
+    calls[factorial(4){"n":4} > factorial(3){"n":3} > factorial(2)*{"n":2}] | vars{"호출 깊이":3}
+#6 call L1 factorial(1) 호출 — 호출 스택에 새 칸이 쌓여요
+    calls[factorial(4){"n":4} > factorial(3){"n":3} > factorial(2){"n":2} > factorial(1)*{"n":1}] | vars{"호출 깊이":4}
+#7 return L2 n = 1 → 종료 조건! 더 부르지 않고 1을 돌려줘요
+    calls[factorial(4){"n":4} > factorial(3){"n":3} > factorial(2){"n":2} > factorial(1)*{"n":1,"결과":1}] | vars{"호출 깊이":4}
+#8 return-to L3 factorial(1) = 1 값이 돌아왔어요 → 2 × 1 = 2
+    calls[factorial(4){"n":4} > factorial(3){"n":3} > factorial(2)*{"n":2,"결과":2}] | vars{"호출 깊이":3}
+#9 return L3 factorial(2)의 계산이 끝났어요. 결과 2 반환, 칸이 사라져요
+    calls[factorial(4){"n":4} > factorial(3){"n":3} > factorial(2)*{"n":2,"결과":2}] | vars{"호출 깊이":3}
+#10 return-to L3 factorial(2) = 2 값이 돌아왔어요 → 3 × 2 = 6
+    calls[factorial(4){"n":4} > factorial(3)*{"n":3,"결과":6}] | vars{"호출 깊이":2}
+#11 return L3 factorial(3)의 계산이 끝났어요. 결과 6 반환, 칸이 사라져요
+    calls[factorial(4){"n":4} > factorial(3)*{"n":3,"결과":6}] | vars{"호출 깊이":2}
+#12 return-to L3 factorial(3) = 6 값이 돌아왔어요 → 4 × 6 = 24
+    calls[factorial(4)*{"n":4,"결과":24}] | vars{"호출 깊이":1}
+#13 return L3 factorial(4)의 계산이 끝났어요. 결과 24 반환, 칸이 사라져요
+    calls[factorial(4)*{"n":4,"결과":24}] | vars{"호출 깊이":1}
+#14 done L- factorial(4) = 24. 호출은 4칸까지 쌓였다가 거꾸로 풀렸어요.
+    calls[] | vars{"결과":24}"
+`;
+
 exports[`프리셋 factorial-4 > 스텝 흐름 스냅샷 1`] = `
 "#0 call L1 factorial(4) 호출 — 호출 스택에 새 칸이 쌓여요
     calls[factorial(4)*{"n":4}] | vars{"호출 깊이":1}
@@ -970,6 +1003,127 @@ exports[`프리셋 grid-dfs-mini > 스텝 흐름 스냅샷 1`] = `
     grid zone=110/010/002 cur=2,2 | calls[] | vars{"sizes":[3,1]}
 #32 done L11 모든 칸 확인 완료! 정렬한 [1, 3]이 정답이에요.
     grid zone=110/010/002 | calls[] | vars{"sizes":[1,3]}"
+`;
+
+exports[`프리셋 hallway-tiles-repeat > 스텝 흐름 스냅샷 1`] = `
+"#0 call L1 fib(5) 호출
+    graph{5*(fib(5))} @t0 | calls[fib(5)*{"n":5}] | vars{"총 호출":1,"같은 계산 반복":0}
+#1 call L3 fib(5)의 첫 번째 재귀 호출: fib(4)
+    graph{5*(fib(5))} @t0 | calls[fib(5)*{"n":5}] | vars{"총 호출":1,"같은 계산 반복":0}
+#2 call L1 fib(4) 호출
+    graph{5?(fib(5)) 4*(fib(4))} edges{t0-t1~} @t1 | calls[fib(5){"n":5} > fib(4)*{"n":4}] | vars{"총 호출":2,"같은 계산 반복":0}
+#3 call L3 fib(4)의 첫 번째 재귀 호출: fib(3)
+    graph{5?(fib(5)) 4*(fib(4))} edges{t0-t1~} @t1 | calls[fib(5){"n":5} > fib(4)*{"n":4}] | vars{"총 호출":2,"같은 계산 반복":0}
+#4 call L1 fib(3) 호출
+    graph{5?(fib(5)) 4?(fib(4)) 3*(fib(3))} edges{t0-t1~ t1-t2~} @t2 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3)*{"n":3}] | vars{"총 호출":3,"같은 계산 반복":0}
+#5 call L3 fib(3)의 첫 번째 재귀 호출: fib(2)
+    graph{5?(fib(5)) 4?(fib(4)) 3*(fib(3))} edges{t0-t1~ t1-t2~} @t2 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3)*{"n":3}] | vars{"총 호출":3,"같은 계산 반복":0}
+#6 call L1 fib(2) 호출
+    graph{5?(fib(5)) 4?(fib(4)) 3?(fib(3)) 2*(fib(2))} edges{t0-t1~ t1-t2~ t2-t3~} @t3 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3){"n":3} > fib(2)*{"n":2}] | vars{"총 호출":4,"같은 계산 반복":0}
+#7 call L3 fib(2)의 첫 번째 재귀 호출: fib(1)
+    graph{5?(fib(5)) 4?(fib(4)) 3?(fib(3)) 2*(fib(2))} edges{t0-t1~ t1-t2~ t2-t3~} @t3 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3){"n":3} > fib(2)*{"n":2}] | vars{"총 호출":4,"같은 계산 반복":0}
+#8 call L1 fib(1) 호출
+    graph{5?(fib(5)) 4?(fib(4)) 3?(fib(3)) 2?(fib(2)) 1*(fib(1))} edges{t0-t1~ t1-t2~ t2-t3~ t3-t4~} @t4 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3){"n":3} > fib(2){"n":2} > fib(1)*{"n":1}] | vars{"총 호출":5,"같은 계산 반복":0}
+#9 return L2 n = 1 → 종료 조건! 바로 1 반환
+    graph{5?(fib(5)) 4?(fib(4)) 3?(fib(3)) 2*(fib(2)) 1✓(fib(1)=1)} edges{t0-t1~ t1-t2~ t2-t3~ t3-t4=} @t3 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3){"n":3} > fib(2)*{"n":2}] | vars{"총 호출":5,"같은 계산 반복":0}
+#10 return-to L3 fib(1) = 1 값이 돌아왔어요 (지금까지 합 1)
+    graph{5?(fib(5)) 4?(fib(4)) 3?(fib(3)) 2*(fib(2)) 1✓(fib(1)=1)} edges{t0-t1~ t1-t2~ t2-t3~ t3-t4=} @t3 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3){"n":3} > fib(2)*{"n":2,"지금까지":1}] | vars{"총 호출":5,"같은 계산 반복":0}
+#11 call L3 fib(2)의 두 번째 재귀 호출: fib(0)
+    graph{5?(fib(5)) 4?(fib(4)) 3?(fib(3)) 2*(fib(2)) 1✓(fib(1)=1)} edges{t0-t1~ t1-t2~ t2-t3~ t3-t4=} @t3 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3){"n":3} > fib(2)*{"n":2,"지금까지":1}] | vars{"총 호출":5,"같은 계산 반복":0}
+#12 call L1 fib(0) 호출
+    graph{5?(fib(5)) 4?(fib(4)) 3?(fib(3)) 2?(fib(2)) 1✓(fib(1)=1) 0*(fib(0))} edges{t0-t1~ t1-t2~ t2-t3~ t3-t4= t3-t5~} @t5 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3){"n":3} > fib(2){"n":2,"지금까지":1} > fib(0)*{"n":0}] | vars{"총 호출":6,"같은 계산 반복":0}
+#13 return L2 n = 0 → 종료 조건! 바로 0 반환
+    graph{5?(fib(5)) 4?(fib(4)) 3?(fib(3)) 2*(fib(2)) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1~ t1-t2~ t2-t3~ t3-t4= t3-t5=} @t3 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3){"n":3} > fib(2)*{"n":2,"지금까지":1}] | vars{"총 호출":6,"같은 계산 반복":0}
+#14 return-to L3 fib(0) = 0 값이 돌아왔어요 (지금까지 합 1)
+    graph{5?(fib(5)) 4?(fib(4)) 3?(fib(3)) 2*(fib(2)) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1~ t1-t2~ t2-t3~ t3-t4= t3-t5=} @t3 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3){"n":3} > fib(2)*{"n":2,"지금까지":1}] | vars{"총 호출":6,"같은 계산 반복":0}
+#15 return L3 fib(2) = 1 반환
+    graph{5?(fib(5)) 4?(fib(4)) 3*(fib(3)) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1~ t1-t2~ t2-t3= t3-t4= t3-t5=} @t2 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3)*{"n":3}] | vars{"총 호출":6,"같은 계산 반복":0}
+#16 return-to L3 fib(2) = 1 값이 돌아왔어요 (지금까지 합 1)
+    graph{5?(fib(5)) 4?(fib(4)) 3*(fib(3)) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1~ t1-t2~ t2-t3= t3-t4= t3-t5=} @t2 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3)*{"n":3,"지금까지":1}] | vars{"총 호출":6,"같은 계산 반복":0}
+#17 call L3 fib(3)의 두 번째 재귀 호출: fib(1)
+    graph{5?(fib(5)) 4?(fib(4)) 3*(fib(3)) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1~ t1-t2~ t2-t3= t3-t4= t3-t5=} @t2 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3)*{"n":3,"지금까지":1}] | vars{"총 호출":6,"같은 계산 반복":0}
+#18 call L1 fib(1) 호출 — 앞에서 이미 계산한 적 있는 값이에요! 같은 일을 또 하고 있어요
+    graph{5?(fib(5)) 4?(fib(4)) 3?(fib(3)) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1*(fib(1))} edges{t0-t1~ t1-t2~ t2-t3= t3-t4= t3-t5= t2-t6~} @t6 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3){"n":3,"지금까지":1} > fib(1)*{"n":1}] | vars{"총 호출":7,"같은 계산 반복":1}
+#19 return L2 n = 1 → 종료 조건! 바로 1 반환
+    graph{5?(fib(5)) 4?(fib(4)) 3*(fib(3)) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1)} edges{t0-t1~ t1-t2~ t2-t3= t3-t4= t3-t5= t2-t6=} @t2 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3)*{"n":3,"지금까지":1}] | vars{"총 호출":7,"같은 계산 반복":1}
+#20 return-to L3 fib(1) = 1 값이 돌아왔어요 (지금까지 합 2)
+    graph{5?(fib(5)) 4?(fib(4)) 3*(fib(3)) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1)} edges{t0-t1~ t1-t2~ t2-t3= t3-t4= t3-t5= t2-t6=} @t2 | calls[fib(5){"n":5} > fib(4){"n":4} > fib(3)*{"n":3,"지금까지":2}] | vars{"총 호출":7,"같은 계산 반복":1}
+#21 return L3 fib(3) = 2 반환
+    graph{5?(fib(5)) 4*(fib(4)) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1)} edges{t0-t1~ t1-t2= t2-t3= t3-t4= t3-t5= t2-t6=} @t1 | calls[fib(5){"n":5} > fib(4)*{"n":4}] | vars{"총 호출":7,"같은 계산 반복":1}
+#22 return-to L3 fib(3) = 2 값이 돌아왔어요 (지금까지 합 2)
+    graph{5?(fib(5)) 4*(fib(4)) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1)} edges{t0-t1~ t1-t2= t2-t3= t3-t4= t3-t5= t2-t6=} @t1 | calls[fib(5){"n":5} > fib(4)*{"n":4,"지금까지":2}] | vars{"총 호출":7,"같은 계산 반복":1}
+#23 call L3 fib(4)의 두 번째 재귀 호출: fib(2)
+    graph{5?(fib(5)) 4*(fib(4)) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1)} edges{t0-t1~ t1-t2= t2-t3= t3-t4= t3-t5= t2-t6=} @t1 | calls[fib(5){"n":5} > fib(4)*{"n":4,"지금까지":2}] | vars{"총 호출":7,"같은 계산 반복":1}
+#24 call L1 fib(2) 호출 — 앞에서 이미 계산한 적 있는 값이에요! 같은 일을 또 하고 있어요
+    graph{5?(fib(5)) 4?(fib(4)) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2*(fib(2))} edges{t0-t1~ t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7~} @t7 | calls[fib(5){"n":5} > fib(4){"n":4,"지금까지":2} > fib(2)*{"n":2}] | vars{"총 호출":8,"같은 계산 반복":2}
+#25 call L3 fib(2)의 첫 번째 재귀 호출: fib(1)
+    graph{5?(fib(5)) 4?(fib(4)) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2*(fib(2))} edges{t0-t1~ t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7~} @t7 | calls[fib(5){"n":5} > fib(4){"n":4,"지금까지":2} > fib(2)*{"n":2}] | vars{"총 호출":8,"같은 계산 반복":2}
+#26 call L1 fib(1) 호출 — 앞에서 이미 계산한 적 있는 값이에요! 같은 일을 또 하고 있어요
+    graph{5?(fib(5)) 4?(fib(4)) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2?(fib(2)) 1*(fib(1))} edges{t0-t1~ t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7~ t7-t8~} @t8 | calls[fib(5){"n":5} > fib(4){"n":4,"지금까지":2} > fib(2){"n":2} > fib(1)*{"n":1}] | vars{"총 호출":9,"같은 계산 반복":3}
+#27 return L2 n = 1 → 종료 조건! 바로 1 반환
+    graph{5?(fib(5)) 4?(fib(4)) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2*(fib(2)) 1✓(fib(1)=1)} edges{t0-t1~ t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7~ t7-t8=} @t7 | calls[fib(5){"n":5} > fib(4){"n":4,"지금까지":2} > fib(2)*{"n":2}] | vars{"총 호출":9,"같은 계산 반복":3}
+#28 return-to L3 fib(1) = 1 값이 돌아왔어요 (지금까지 합 1)
+    graph{5?(fib(5)) 4?(fib(4)) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2*(fib(2)) 1✓(fib(1)=1)} edges{t0-t1~ t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7~ t7-t8=} @t7 | calls[fib(5){"n":5} > fib(4){"n":4,"지금까지":2} > fib(2)*{"n":2,"지금까지":1}] | vars{"총 호출":9,"같은 계산 반복":3}
+#29 call L3 fib(2)의 두 번째 재귀 호출: fib(0)
+    graph{5?(fib(5)) 4?(fib(4)) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2*(fib(2)) 1✓(fib(1)=1)} edges{t0-t1~ t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7~ t7-t8=} @t7 | calls[fib(5){"n":5} > fib(4){"n":4,"지금까지":2} > fib(2)*{"n":2,"지금까지":1}] | vars{"총 호출":9,"같은 계산 반복":3}
+#30 call L1 fib(0) 호출 — 앞에서 이미 계산한 적 있는 값이에요! 같은 일을 또 하고 있어요
+    graph{5?(fib(5)) 4?(fib(4)) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2?(fib(2)) 1✓(fib(1)=1) 0*(fib(0))} edges{t0-t1~ t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7~ t7-t8= t7-t9~} @t9 | calls[fib(5){"n":5} > fib(4){"n":4,"지금까지":2} > fib(2){"n":2,"지금까지":1} > fib(0)*{"n":0}] | vars{"총 호출":10,"같은 계산 반복":4}
+#31 return L2 n = 0 → 종료 조건! 바로 0 반환
+    graph{5?(fib(5)) 4?(fib(4)) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2*(fib(2)) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1~ t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7~ t7-t8= t7-t9=} @t7 | calls[fib(5){"n":5} > fib(4){"n":4,"지금까지":2} > fib(2)*{"n":2,"지금까지":1}] | vars{"총 호출":10,"같은 계산 반복":4}
+#32 return-to L3 fib(0) = 0 값이 돌아왔어요 (지금까지 합 1)
+    graph{5?(fib(5)) 4?(fib(4)) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2*(fib(2)) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1~ t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7~ t7-t8= t7-t9=} @t7 | calls[fib(5){"n":5} > fib(4){"n":4,"지금까지":2} > fib(2)*{"n":2,"지금까지":1}] | vars{"총 호출":10,"같은 계산 반복":4}
+#33 return L3 fib(2) = 1 반환
+    graph{5?(fib(5)) 4*(fib(4)) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1~ t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9=} @t1 | calls[fib(5){"n":5} > fib(4)*{"n":4,"지금까지":2}] | vars{"총 호출":10,"같은 계산 반복":4}
+#34 return-to L3 fib(2) = 1 값이 돌아왔어요 (지금까지 합 3)
+    graph{5?(fib(5)) 4*(fib(4)) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1~ t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9=} @t1 | calls[fib(5){"n":5} > fib(4)*{"n":4,"지금까지":3}] | vars{"총 호출":10,"같은 계산 반복":4}
+#35 return L3 fib(4) = 3 반환
+    graph{5*(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9=} @t0 | calls[fib(5)*{"n":5}] | vars{"총 호출":10,"같은 계산 반복":4}
+#36 return-to L3 fib(4) = 3 값이 돌아왔어요 (지금까지 합 3)
+    graph{5*(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9=} @t0 | calls[fib(5)*{"n":5,"지금까지":3}] | vars{"총 호출":10,"같은 계산 반복":4}
+#37 call L3 fib(5)의 두 번째 재귀 호출: fib(3)
+    graph{5*(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9=} @t0 | calls[fib(5)*{"n":5,"지금까지":3}] | vars{"총 호출":10,"같은 계산 반복":4}
+#38 call L1 fib(3) 호출 — 앞에서 이미 계산한 적 있는 값이에요! 같은 일을 또 하고 있어요
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3*(fib(3))} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~} @t10 | calls[fib(5){"n":5,"지금까지":3} > fib(3)*{"n":3}] | vars{"총 호출":11,"같은 계산 반복":5}
+#39 call L3 fib(3)의 첫 번째 재귀 호출: fib(2)
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3*(fib(3))} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~} @t10 | calls[fib(5){"n":5,"지금까지":3} > fib(3)*{"n":3}] | vars{"총 호출":11,"같은 계산 반복":5}
+#40 call L1 fib(2) 호출 — 앞에서 이미 계산한 적 있는 값이에요! 같은 일을 또 하고 있어요
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3?(fib(3)) 2*(fib(2))} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~ t10-t11~} @t11 | calls[fib(5){"n":5,"지금까지":3} > fib(3){"n":3} > fib(2)*{"n":2}] | vars{"총 호출":12,"같은 계산 반복":6}
+#41 call L3 fib(2)의 첫 번째 재귀 호출: fib(1)
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3?(fib(3)) 2*(fib(2))} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~ t10-t11~} @t11 | calls[fib(5){"n":5,"지금까지":3} > fib(3){"n":3} > fib(2)*{"n":2}] | vars{"총 호출":12,"같은 계산 반복":6}
+#42 call L1 fib(1) 호출 — 앞에서 이미 계산한 적 있는 값이에요! 같은 일을 또 하고 있어요
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3?(fib(3)) 2?(fib(2)) 1*(fib(1))} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~ t10-t11~ t11-t12~} @t12 | calls[fib(5){"n":5,"지금까지":3} > fib(3){"n":3} > fib(2){"n":2} > fib(1)*{"n":1}] | vars{"총 호출":13,"같은 계산 반복":7}
+#43 return L2 n = 1 → 종료 조건! 바로 1 반환
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3?(fib(3)) 2*(fib(2)) 1✓(fib(1)=1)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~ t10-t11~ t11-t12=} @t11 | calls[fib(5){"n":5,"지금까지":3} > fib(3){"n":3} > fib(2)*{"n":2}] | vars{"총 호출":13,"같은 계산 반복":7}
+#44 return-to L3 fib(1) = 1 값이 돌아왔어요 (지금까지 합 1)
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3?(fib(3)) 2*(fib(2)) 1✓(fib(1)=1)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~ t10-t11~ t11-t12=} @t11 | calls[fib(5){"n":5,"지금까지":3} > fib(3){"n":3} > fib(2)*{"n":2,"지금까지":1}] | vars{"총 호출":13,"같은 계산 반복":7}
+#45 call L3 fib(2)의 두 번째 재귀 호출: fib(0)
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3?(fib(3)) 2*(fib(2)) 1✓(fib(1)=1)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~ t10-t11~ t11-t12=} @t11 | calls[fib(5){"n":5,"지금까지":3} > fib(3){"n":3} > fib(2)*{"n":2,"지금까지":1}] | vars{"총 호출":13,"같은 계산 반복":7}
+#46 call L1 fib(0) 호출 — 앞에서 이미 계산한 적 있는 값이에요! 같은 일을 또 하고 있어요
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3?(fib(3)) 2?(fib(2)) 1✓(fib(1)=1) 0*(fib(0))} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~ t10-t11~ t11-t12= t11-t13~} @t13 | calls[fib(5){"n":5,"지금까지":3} > fib(3){"n":3} > fib(2){"n":2,"지금까지":1} > fib(0)*{"n":0}] | vars{"총 호출":14,"같은 계산 반복":8}
+#47 return L2 n = 0 → 종료 조건! 바로 0 반환
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3?(fib(3)) 2*(fib(2)) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~ t10-t11~ t11-t12= t11-t13=} @t11 | calls[fib(5){"n":5,"지금까지":3} > fib(3){"n":3} > fib(2)*{"n":2,"지금까지":1}] | vars{"총 호출":14,"같은 계산 반복":8}
+#48 return-to L3 fib(0) = 0 값이 돌아왔어요 (지금까지 합 1)
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3?(fib(3)) 2*(fib(2)) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~ t10-t11~ t11-t12= t11-t13=} @t11 | calls[fib(5){"n":5,"지금까지":3} > fib(3){"n":3} > fib(2)*{"n":2,"지금까지":1}] | vars{"총 호출":14,"같은 계산 반복":8}
+#49 return L3 fib(2) = 1 반환
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3*(fib(3)) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~ t10-t11= t11-t12= t11-t13=} @t10 | calls[fib(5){"n":5,"지금까지":3} > fib(3)*{"n":3}] | vars{"총 호출":14,"같은 계산 반복":8}
+#50 return-to L3 fib(2) = 1 값이 돌아왔어요 (지금까지 합 1)
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3*(fib(3)) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~ t10-t11= t11-t12= t11-t13=} @t10 | calls[fib(5){"n":5,"지금까지":3} > fib(3)*{"n":3,"지금까지":1}] | vars{"총 호출":14,"같은 계산 반복":8}
+#51 call L3 fib(3)의 두 번째 재귀 호출: fib(1)
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3*(fib(3)) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~ t10-t11= t11-t12= t11-t13=} @t10 | calls[fib(5){"n":5,"지금까지":3} > fib(3)*{"n":3,"지금까지":1}] | vars{"총 호출":14,"같은 계산 반복":8}
+#52 call L1 fib(1) 호출 — 앞에서 이미 계산한 적 있는 값이에요! 같은 일을 또 하고 있어요
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3?(fib(3)) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1*(fib(1))} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~ t10-t11= t11-t12= t11-t13= t10-t14~} @t14 | calls[fib(5){"n":5,"지금까지":3} > fib(3){"n":3,"지금까지":1} > fib(1)*{"n":1}] | vars{"총 호출":15,"같은 계산 반복":9}
+#53 return L2 n = 1 → 종료 조건! 바로 1 반환
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3*(fib(3)) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~ t10-t11= t11-t12= t11-t13= t10-t14=} @t10 | calls[fib(5){"n":5,"지금까지":3} > fib(3)*{"n":3,"지금까지":1}] | vars{"총 호출":15,"같은 계산 반복":9}
+#54 return-to L3 fib(1) = 1 값이 돌아왔어요 (지금까지 합 2)
+    graph{5?(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3*(fib(3)) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10~ t10-t11= t11-t12= t11-t13= t10-t14=} @t10 | calls[fib(5){"n":5,"지금까지":3} > fib(3)*{"n":3,"지금까지":2}] | vars{"총 호출":15,"같은 계산 반복":9}
+#55 return L3 fib(3) = 2 반환
+    graph{5*(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10= t10-t11= t11-t12= t11-t13= t10-t14=} @t0 | calls[fib(5)*{"n":5,"지금까지":3}] | vars{"총 호출":15,"같은 계산 반복":9}
+#56 return-to L3 fib(3) = 2 값이 돌아왔어요 (지금까지 합 5)
+    graph{5*(fib(5)) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10= t10-t11= t11-t12= t11-t13= t10-t14=} @t0 | calls[fib(5)*{"n":5,"지금까지":5}] | vars{"총 호출":15,"같은 계산 반복":9}
+#57 return L3 fib(5) = 5 반환
+    graph{5✓(fib(5)=5) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10= t10-t11= t11-t12= t11-t13= t10-t14=} | calls[] | vars{"총 호출":15,"같은 계산 반복":9}
+#58 done L- fib(5) = 5. 호출은 모두 15번, 그중 9번은 이미 했던 계산이에요 — 기억해 두면(메모이제이션) 줄일 수 있어요.
+    graph{5✓(fib(5)=5) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10= t10-t11= t11-t12= t11-t13= t10-t14=} | calls[] | vars{"총 호출":15,"같은 계산 반복":9}"
 `;
 
 exports[`프리셋 maze-ex1 > 스텝 흐름 스냅샷 1`] = `
