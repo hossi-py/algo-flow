@@ -24,7 +24,7 @@ M1 설계 ─▶ M2 디자인 시스템·대시보드 ─▶ M3 워크스페이�
 | --- | --- |
 | 목표 | 앱의 "첫인상"과 공통 부품을 완성한다. 백엔드 없이 게스트 진도(localStorage)로 동작 |
 | 산출물 | 프로젝트 스캐폴딩(Next.js·TS·Tailwind v4·shadcn·motion·vitest·pnpm) · `globals.css` 토큰(라이트/다크) · 폰트 · `types/` · 공통 컴포넌트(PopButton, SoftCard, ProgressRing, XpPill, StreakFlame, TopicChip, LevelBadge, EmptyState, ThemeToggle, Celebration) · `Nodi` 8개 mood · AppShell(사이드바/하단탭) · 대시보드 · 로드맵 · 주제 홈 · `lib/progress`(xp, streak, unlock) · 7개 토픽 메타데이터 + 스택·DFS 샘플 콘텐츠 |
-| 완료 기준 | ☑ `pnpm dev`, `pnpm build`, `pnpm lint`, `pnpm typecheck`, `pnpm test` 모두 통과 ☑ 375 / 1000 / 1280px 폭에서 가로 스크롤 없음 (768px는 사용자 확인 필요) ☑ 라이트·다크 전환 (토큰 대비는 계산값 AA 이상) ☑ `prefers-reduced-motion`에서 튀는 모션 비활성 ☑ unlock/xp/streak 단위 테스트(경계: 자정, 스트릭 리셋, 이전 토픽 Lv3) 통과 ☑ 게스트 진도가 새로고침 후 유지 |
+| 완료 기준 | ☑ `pnpm dev`, `pnpm build`, `pnpm lint`, `pnpm typecheck`, `pnpm test` 모두 통과 ☑ 375 / 768 / 1000 / 1280px 폭에서 가로 스크롤 없음 (768px: 대시보드·로드맵·주제 홈·개념 학습·마이페이지·AI 랩·문제 화면 브라우저 확인) ☑ 라이트·다크 전환 (토큰 대비는 계산값 AA 이상) ☑ `prefers-reduced-motion`에서 튀는 모션 비활성 ☑ unlock/xp/streak 단위 테스트(경계: 자정, 스트릭 리셋, 이전 토픽 Lv3) 통과 ☑ 게스트 진도가 새로고침 후 유지 |
 
 ## M3. 문제 풀이 워크스페이스 + 코드 실행/채점 (Step 3) — 검토 대기
 
