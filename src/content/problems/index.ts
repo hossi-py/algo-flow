@@ -23,8 +23,13 @@ import { dfsCaveOrder } from "./dfs/cave-order";
 import { dfsClubCount } from "./dfs/club-count";
 import { dfsDownhillRoutes } from "./dfs/downhill-routes";
 import { dfsFarthestVillages } from "./dfs/farthest-villages";
+import { dfsFinishOrder } from "./dfs/finish-order";
 import { flowerZones } from "./dfs/flower-zones";
+import { dfsForestLakes } from "./dfs/forest-lakes";
+import { dfsLoopTrail } from "./dfs/loop-trail";
 import { dfsMazeEscape } from "./dfs/maze-escape";
+import { dfsOneWayTour } from "./dfs/one-way-tour";
+import { dfsOrchardSplit } from "./dfs/orchard-split";
 import { dfsPowerRestore } from "./dfs/power-restore";
 import { dfsRadioNetwork } from "./dfs/radio-network";
 import { dfsRecipeLoop } from "./dfs/recipe-loop";
@@ -116,8 +121,13 @@ export const PROBLEMS: readonly Problem[] = [
   dfsClubCount,
   dfsDownhillRoutes,
   dfsFarthestVillages,
+  dfsFinishOrder,
   flowerZones,
+  dfsForestLakes,
+  dfsLoopTrail,
   dfsMazeEscape,
+  dfsOneWayTour,
+  dfsOrchardSplit,
   dfsPowerRestore,
   dfsRadioNetwork,
   dfsRecipeLoop,
