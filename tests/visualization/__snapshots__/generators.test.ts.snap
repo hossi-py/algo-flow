@@ -46,6 +46,31 @@ exports[`프리셋 bakery-ex1 > 스텝 흐름 스냅샷 1`] = `
     명령=<enqueue 1 enqueue 2 dequeue enqueue 3 dequeue dequeue> cur=- done=6 | queue=[] | vars{"크기":0}"
 `;
 
+exports[`프리셋 bracket-partner-tricky > 스텝 흐름 스냅샷 1`] = `
+"#0 init L1 "(()())"의 괄호를 왼쪽부터 한 글자씩 봐요. 여는 괄호는 스택에 쌓아 둬요.
+    s=<( ( ) ( ) )> cur=- done=0 | stack=[] | vars{"i":0}
+#1 push L3 '('는 여는 괄호 → push. 짝을 만날 때까지 기다려요.
+    s=<(* ( ) ( ) )> cur=0 done=0 | stack=[(*] | vars{"i":0,"ch":"("}
+#2 push L3 '('는 여는 괄호 → push. 짝을 만날 때까지 기다려요.
+    s=<( (* ) ( ) )> cur=1 done=1 | stack=[(,(*] | vars{"i":1,"ch":"("}
+#3 compare L5 ')'와 맨 위 '('의 짝이 맞아요
+    s=<( ( )* ( ) )> cur=2 done=2 | stack=[(,(!] | vars{"i":2,"ch":")"}
+#4 pop L6 짝을 찾은 '('를 스택에서 꺼내요
+    s=<( ( )* ( ) )> cur=2 done=3 | stack=[(] | vars{"i":2,"ch":")"}
+#5 push L3 '('는 여는 괄호 → push. 짝을 만날 때까지 기다려요.
+    s=<( ( ) (* ) )> cur=3 done=3 | stack=[(,(*] | vars{"i":3,"ch":"("}
+#6 compare L5 ')'와 맨 위 '('의 짝이 맞아요
+    s=<( ( ) ( )* )> cur=4 done=4 | stack=[(,(!] | vars{"i":4,"ch":")"}
+#7 pop L6 짝을 찾은 '('를 스택에서 꺼내요
+    s=<( ( ) ( )* )> cur=4 done=5 | stack=[(] | vars{"i":4,"ch":")"}
+#8 compare L5 ')'와 맨 위 '('의 짝이 맞아요
+    s=<( ( ) ( ) )*> cur=5 done=5 | stack=[(!] | vars{"i":5,"ch":")"}
+#9 pop L6 짝을 찾은 '('를 스택에서 꺼내요
+    s=<( ( ) ( ) )*> cur=5 done=6 | stack=[] | vars{"i":5,"ch":")"}
+#10 done L7 문자열 끝! 스택이 비었으니 모든 괄호의 짝이 맞아요 → True
+    s=<( ( ) ( ) )> cur=- done=6 | stack=[] | vars{"결과":true}"
+`;
+
 exports[`프리셋 cave-ex1 > 스텝 흐름 스냅샷 1`] = `
 "#0 init L7 0번 노드에서 DFS를 시작해요. 아직 아무 데도 방문하지 않았어요.
     graph{0. 1. 2. 3. 4.} | calls[] | vars{"방문 순서":[]}
@@ -173,6 +198,25 @@ exports[`프리셋 countdown-calls > 스텝 흐름 스냅샷 1`] = `
     calls[factorial(4)*{"n":4,"결과":24}] | vars{"호출 깊이":1}
 #14 done L- factorial(4) = 24. 호출은 4칸까지 쌓였다가 거꾸로 풀렸어요.
     calls[] | vars{"결과":24}"
+`;
+
+exports[`프리셋 dead-end-parking-ex1 > 스텝 흐름 스냅샷 1`] = `
+"#0 init L1 빈 스택에서 시작해요. 넣고 빼는 곳은 맨 위(top) 한 곳뿐이에요.
+    명령=<push 3 push 7 pop push 5 pop pop> cur=- done=0 | stack=[] | vars{"크기":0}
+#1 push L3 push(3): 맨 위에 올렸어요. 지금 크기 1
+    명령=<push 3* push 7 pop push 5 pop pop> cur=0 done=0 | stack=[3*] | vars{"크기":1}
+#2 push L3 push(7): 맨 위에 올렸어요. 지금 크기 2
+    명령=<push 3 push 7* pop push 5 pop pop> cur=1 done=1 | stack=[3,7*] | vars{"크기":2}
+#3 pop L4 pop(): 맨 위 값 7 꺼내기 — 가장 나중에 넣은 값이 먼저 나와요
+    명령=<push 3 push 7 pop* push 5 pop pop> cur=2 done=2 | stack=[3] | vars{"크기":1,"꺼낸 값":7}
+#4 push L3 push(5): 맨 위에 올렸어요. 지금 크기 2
+    명령=<push 3 push 7 pop push 5* pop pop> cur=3 done=3 | stack=[3,5*] | vars{"크기":2}
+#5 pop L4 pop(): 맨 위 값 5 꺼내기 — 가장 나중에 넣은 값이 먼저 나와요
+    명령=<push 3 push 7 pop push 5 pop* pop> cur=4 done=4 | stack=[3] | vars{"크기":1,"꺼낸 값":5}
+#6 pop L4 pop(): 맨 위 값 3 꺼내기 — 가장 나중에 넣은 값이 먼저 나와요
+    명령=<push 3 push 7 pop push 5 pop pop*> cur=5 done=5 | stack=[] | vars{"크기":0,"꺼낸 값":3}
+#7 done L- 명령을 모두 처리했어요. 남은 값 (아래 → 위): []
+    명령=<push 3 push 7 pop push 5 pop pop> cur=- done=6 | stack=[] | vars{"크기":0}"
 `;
 
 exports[`프리셋 deque-basic-intro > 스텝 흐름 스냅샷 1`] = `
