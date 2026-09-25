@@ -1,0 +1,272 @@
+import type { Problem } from "@/types/content";
+
+export const graphTwoTransfers: Problem = {
+  id: "c:graph-two-transfers",
+  slug: "graph-two-transfers",
+  source: "curated",
+  topic: "graph-representation",
+  level: 3,
+  title: "두 번 타면 갈 수 있나?",
+  summary: "직행 버스 표를 보고 버스를 정확히 두 번 타서 갈 수 있는 곳을 표로 만들어요",
+  statement: [
+    "노디의 도시에는 정류장이 `n`개 있어요. 직행 버스 표 `routes`는 n×n 표이고, `routes[i][j]`가 1이면 i번 정류장에서 j번 정류장으로 가는 **한쪽 방향** 직행 버스가 있다는 뜻이에요 (0이면 없어요).",
+    "",
+    "노디는 **버스를 정확히 두 번** 타서 갈 수 있는 곳이 궁금해요. i에서 어떤 정류장 k로 한 번, k에서 j로 한 번 타는 거예요.",
+    "",
+    "`answer[i][j]`가 i에서 버스를 정확히 두 번 타서 j에 갈 수 있으면 1, 아니면 0인 n×n 표를 반환해 주세요. 출발한 정류장으로 되돌아오는 것(i = j)도 가능하면 1이에요.",
+  ].join("\n"),
+  inputFormat: "`routes`: 0과 1로 된 n×n 표예요. `routes[i][i]`는 항상 0이에요.",
+  outputFormat: "0과 1로 된 n×n 표",
+  constraints: ["1 ≤ n ≤ 100", "routes[i][j]는 0 또는 1", "routes[i][i] = 0"],
+  signature: {
+    name: "solution",
+    params: [
+      {
+        name: "routes",
+        type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+        description: "직행 버스 표",
+      },
+    ],
+    returns: {
+      type: { python: "list[list[int]]", javascript: "number[][]", java: "int[][]" },
+      description: "두 번 타서 갈 수 있는지 표",
+    },
+  },
+  starterCode: {
+    python: [
+      "def solution(routes):",
+      "    answer = [[0] * len(routes) for _ in range(len(routes))]",
+      "    return answer",
+      "",
+    ].join("\n"),
+    javascript: [
+      "function solution(routes) {",
+      "  let answer = routes.map(() => new Array(routes.length).fill(0));",
+      "  return answer;",
+      "}",
+      "",
+    ].join("\n"),
+    java: [
+      "class Solution {",
+      "    public int[][] solution(int[][] routes) {",
+      "        int[][] answer = new int[routes.length][routes.length];",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
+  },
+  testCases: [
+    {
+      id: "ex-1",
+      visibility: "example",
+      purpose: "basic",
+      args: [
+        [
+          [0, 1, 0],
+          [0, 0, 1],
+          [0, 0, 0],
+        ],
+      ],
+      expected: [
+        [0, 0, 1],
+        [0, 0, 0],
+        [0, 0, 0],
+      ],
+      explanation: "0 → 1 → 2로 두 번 타면 0에서 2에 가요. 0에서 1은 한 번에 가지만 두 번 타서는 못 가요.",
+    },
+    {
+      id: "ex-2",
+      visibility: "example",
+      purpose: "tricky",
+      args: [
+        [
+          [0, 1],
+          [1, 0],
+        ],
+      ],
+      expected: [
+        [1, 0],
+        [0, 1],
+      ],
+      explanation: "0 → 1 → 0으로 두 번 타면 제자리로 돌아와요. 그래서 대각선이 1이에요.",
+    },
+    {
+      id: "hid-1",
+      visibility: "hidden",
+      purpose: "edge",
+      args: [[[0]]],
+      expected: [[0]],
+      failureNote: "정류장이 하나뿐이고 버스가 없어요.",
+    },
+    {
+      id: "hid-2",
+      visibility: "hidden",
+      purpose: "basic",
+      args: [
+        [
+          [0, 1, 0, 0],
+          [0, 0, 1, 0],
+          [0, 0, 0, 1],
+          [1, 0, 0, 0],
+        ],
+      ],
+      expected: [
+        [0, 0, 1, 0],
+        [0, 0, 0, 1],
+        [1, 0, 0, 0],
+        [0, 1, 0, 0],
+      ],
+      failureNote: "한 방향으로 도는 순환 노선이에요. 두 번 타면 두 칸 앞이에요.",
+    },
+    {
+      id: "hid-3",
+      visibility: "hidden",
+      purpose: "tricky",
+      args: [
+        [
+          [0, 1, 1],
+          [0, 0, 0],
+          [0, 1, 0],
+        ],
+      ],
+      expected: [
+        [0, 1, 0],
+        [0, 0, 0],
+        [0, 0, 0],
+      ],
+      failureNote: "0에서 1은 직행도 있고 0 → 2 → 1도 있어요. 두 번 타서 갈 수 있는지만 봐요.",
+    },
+    {
+      id: "hid-4",
+      visibility: "hidden",
+      purpose: "basic",
+      args: [
+        [
+          [0, 1, 1],
+          [1, 0, 1],
+          [1, 1, 0],
+        ],
+      ],
+      expected: [
+        [1, 1, 1],
+        [1, 1, 1],
+        [1, 1, 1],
+      ],
+      failureNote: "모든 정류장이 서로 이어져 있으면 어디든 두 번 만에 가요.",
+    },
+    {
+      id: "hid-5",
+      visibility: "hidden",
+      purpose: "stress",
+      args: [
+        Array.from({ length: 100 }, (_, i) => Array.from({ length: 100 }, (_, j) => (j === (i + 1) % 100 ? 1 : 0))),
+      ],
+      expected: Array.from({ length: 100 }, (_, i) =>
+        Array.from({ length: 100 }, (_, j) => (j === (i + 2) % 100 ? 1 : 0)),
+      ),
+      failureNote: "정류장 100개를 한 방향으로 도는 순환 노선이에요.",
+    },
+    {
+      id: "hid-6",
+      visibility: "hidden",
+      purpose: "stress",
+      args: [Array.from({ length: 100 }, (_, i) => Array.from({ length: 100 }, (_, j) => (i === j ? 0 : 1)))],
+      expected: Array.from({ length: 100 }, () => new Array(100).fill(1)),
+      failureNote: "정류장 100개가 모두 서로 이어져 있어요.",
+    },
+  ],
+  judge: {
+    timeLimitMs: 2000,
+    compare: { type: "exact" },
+    recursionLimit: 3000,
+    revealFirstFailure: true,
+  },
+  hints: [
+    {
+      step: 1,
+      kind: "pattern",
+      title: "어떤 유형일까요?",
+      body: [
+        "연결 여부가 **n×n 표**로 주어졌어요 → **인접 행렬**이에요.",
+        "",
+        "인접 행렬은 'i에서 j로 가는 버스가 있나?'를 `routes[i][j]` 한 번으로 바로 확인할 수 있는 게 장점이에요.",
+      ].join("\n"),
+      xpPenaltyRate: 0.05,
+    },
+    {
+      step: 2,
+      kind: "approach",
+      title: "어떻게 접근할까요?",
+      body: [
+        "i에서 j로 두 번 타서 가려면, **중간 정류장 k**가 있어서 `routes[i][k]`와 `routes[k][j]`가 모두 1이어야 해요.",
+        "",
+        "1. 출발 i마다, 중간 k마다 `routes[i][k]`가 1인지 봐요.",
+        "2. 1이면 k에서 갈 수 있는 모든 j에 대해 `answer[i][j] = 1`로 적어요.",
+        "",
+        "n이 100 이하라 i, k, j 세 겹 반복(100만 번)이면 충분해요.",
+      ].join("\n"),
+      xpPenaltyRate: 0.15,
+    },
+    {
+      step: 3,
+      kind: "pseudocode",
+      title: "의사코드",
+      body: [
+        "~~~text",
+        "answer = 0으로 채운 n×n 표",
+        "for i in 0..n-1:",
+        "    for k in 0..n-1:",
+        "        if routes[i][k] == 1:",
+        "            for j in 0..n-1:",
+        "                if routes[k][j] == 1: answer[i][j] = 1",
+        "return answer",
+        "~~~",
+      ].join("\n"),
+      xpPenaltyRate: 0.3,
+    },
+    {
+      step: 4,
+      kind: "key-code",
+      title: "핵심 코드",
+      body: ["중간 정류장 k에서 한 번 더 타는 부분이에요. 빈칸을 채워 보세요."].join("\n"),
+      code: {
+        code: {
+          python: [
+            "for i in range(n):",
+            "    for k in range(n):",
+            "        if routes[i][k]:",
+            "            for j in range(n):",
+            "                if ______:",
+            "                    answer[i][j] = 1",
+          ].join("\n"),
+          javascript: [
+            "for (let i = 0; i < n; i++) {",
+            "  for (let k = 0; k < n; k++) {",
+            "    if (!routes[i][k]) continue;",
+            "    for (let j = 0; j < n; j++) {",
+            "      if (______) answer[i][j] = 1;",
+            "    }",
+            "  }",
+            "}",
+          ].join("\n"),
+          java: [
+            "for (int i = 0; i < n; i++) {",
+            "    for (int k = 0; k < n; k++) {",
+            "        if (routes[i][k] == 0) continue;",
+            "        for (int j = 0; j < n; j++) {",
+            "            if (______) answer[i][j] = 1;",
+            "        }",
+            "    }",
+            "}",
+          ].join("\n"),
+        },
+      },
+      xpPenaltyRate: 0.5,
+    },
+  ],
+  patternTags: ["adjacency-matrix"],
+  signalIds: ["sig-matrix-given"],
+  estimatedMinutes: 15,
+  xp: 30,
+};

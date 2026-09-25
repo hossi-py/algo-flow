@@ -1126,6 +1126,21 @@ exports[`프리셋 hallway-tiles-repeat > 스텝 흐름 스냅샷 1`] = `
     graph{5✓(fib(5)=5) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10= t10-t11= t11-t12= t11-t13= t10-t14=} | calls[] | vars{"총 호출":15,"같은 계산 반복":9}"
 `;
 
+exports[`프리셋 island-bridges-ex1 > 스텝 흐름 스냅샷 1`] = `
+"#0 init L1 노드 3개, 간선 2개. 노드마다 이웃을 적을 빈 리스트를 준비해요.
+    graph{0. 1. 2.} | vars{"graph[0]":[],"graph[1]":[],"graph[2]":[]}
+#1 discover L3 간선 (0, 1): graph[0]에 1 추가
+    graph{0? 1? 2.} edges{0-1~} | vars{"graph[0]":[1],"graph[1]":[],"graph[2]":[]}
+#2 discover L4 반대 방향도 이어져 있으니 graph[1]에 0 추가
+    graph{0? 1? 2.} edges{0-1~} | vars{"graph[0]":[1],"graph[1]":[0],"graph[2]":[]}
+#3 discover L3 간선 (0, 2): graph[0]에 2 추가
+    graph{0? 1✓ 2?} edges{0-1= 0-2~} | vars{"graph[0]":[1,2],"graph[1]":[0],"graph[2]":[]}
+#4 discover L4 반대 방향도 이어져 있으니 graph[2]에 0 추가
+    graph{0? 1✓ 2?} edges{0-1= 0-2~} | vars{"graph[0]":[1,2],"graph[1]":[0],"graph[2]":[0]}
+#5 done L- 인접 리스트 완성! 이제 graph[v]만 보면 v의 이웃을 바로 찾을 수 있어요.
+    graph{0✓ 1✓ 2✓} edges{0-1= 0-2=} | vars{"graph[0]":[1,2],"graph[1]":[0],"graph[2]":[0]}"
+`;
+
 exports[`프리셋 maze-ex1 > 스텝 흐름 스냅샷 1`] = `
 "#0 init L1 출발점 (0, 0)의 거리는 0. 큐에 넣고 출발해요.
     queue=[(0, 0)] | grid zone=100/000/000 cur=0,0 dist=0,-,-/-,-,-/-,-,- | vars{"큐 길이":1}

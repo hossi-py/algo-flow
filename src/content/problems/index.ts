@@ -32,13 +32,18 @@ import { dfsTeamSize } from "./dfs/team-size";
 import { graphCommonFriends } from "./graph-representation/graph-common-friends";
 import { graphDirectFlights } from "./graph-representation/graph-direct-flights";
 import { graphFamilyTree } from "./graph-representation/graph-family-tree";
+import { graphFollowers } from "./graph-representation/graph-followers";
 import { graphFriendList } from "./graph-representation/graph-friend-list";
 import { graphGridPaths } from "./graph-representation/graph-grid-paths";
+import { graphIslandBridges } from "./graph-representation/graph-island-bridges";
 import { graphMatrixToList } from "./graph-representation/graph-matrix-to-list";
 import { graphOneStrokeWalk } from "./graph-representation/graph-one-stroke-walk";
 import { graphOneWayStreets } from "./graph-representation/graph-one-way-streets";
+import { graphOrgLevels } from "./graph-representation/graph-org-levels";
 import { graphStationNeighbors } from "./graph-representation/graph-station-neighbors";
+import { graphTripleFriends } from "./graph-representation/graph-triple-friends";
 import { graphTrustedShop } from "./graph-representation/graph-trusted-shop";
+import { graphTwoTransfers } from "./graph-representation/graph-two-transfers";
 import { dequeEndCards } from "./queue-deque/deque-end-cards";
 import { dequeSteadySignal } from "./queue-deque/deque-steady-signal";
 import { dequeSteppingScore } from "./queue-deque/deque-stepping-score";
@@ -120,13 +125,18 @@ export const PROBLEMS: readonly Problem[] = [
   graphCommonFriends,
   graphDirectFlights,
   graphFamilyTree,
+  graphFollowers,
   graphFriendList,
   graphGridPaths,
+  graphIslandBridges,
   graphMatrixToList,
   graphOneStrokeWalk,
   graphOneWayStreets,
+  graphOrgLevels,
   graphStationNeighbors,
+  graphTripleFriends,
   graphTrustedShop,
+  graphTwoTransfers,
   dequeEndCards,
   dequeSteadySignal,
   dequeSteppingScore,
