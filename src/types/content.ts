@@ -15,6 +15,7 @@ export const TOPIC_SLUGS = [
   "dp",
   "greedy",
   "two-pointers",
+  "heap",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
@@ -67,7 +68,8 @@ export type TopicIcon =
   | "target"
   | "table"
   | "coins"
-  | "pointers";
+  | "pointers"
+  | "heap";
 
 export const PATTERN_TAGS = [
   // 스택
@@ -139,6 +141,12 @@ export const PATTERN_TAGS = [
   "same-direction",
   "fixed-window",
   "variable-window",
+  // 힙
+  "top-k",
+  "repeated-min",
+  "k-way-merge",
+  "two-heaps",
+  "heap-scheduling",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -200,7 +208,9 @@ export type IllustrationKey =
   | "greedy-meetings"
   | "greedy-counterexample"
   | "tp-squeeze"
-  | "tp-window";
+  | "tp-window"
+  | "heap-tree"
+  | "heap-emergency";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {

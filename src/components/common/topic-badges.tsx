@@ -4,6 +4,7 @@ import {
   Coins,
   Crosshair,
   Grid3x3,
+  Pyramid,
   GitBranch,
   KeyRound,
   Layers,
@@ -33,6 +34,7 @@ const TOPIC_ICONS: Record<TopicIcon, LucideIcon> = {
   table: Grid3x3,
   coins: Coins,
   pointers: ArrowLeftRight,
+  heap: Pyramid,
 };
 
 export function TopicGlyph({ icon, ...props }: { icon: TopicIcon } & LucideProps) {

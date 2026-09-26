@@ -32,7 +32,7 @@ const MAX_EXPECTED_CHARS = 50_000;
 
 /** 문제 본문에 알고리즘 이름을 쓰면 유형 인식 훈련이 안 되므로 막는다 */
 const ALGORITHM_NAME_PATTERN =
-  /\b(DFS|BFS)\b|깊이\s*우선|너비\s*우선|넓이\s*우선|백트래킹|backtracking|스택을\s*(사용|이용)|큐를\s*(사용|이용)|재귀를\s*(사용|이용)|해시를\s*(사용|이용)|이분\s*탐색|binary\s*search|동적\s*계획|dynamic\s*programming|\bDP\b|그리디|탐욕\s*(법|알고리즘)|greedy|두\s*포인터|투\s*포인터|슬라이딩\s*윈도우|two\s*pointers?|sliding\s*window/i;
+  /\b(DFS|BFS)\b|깊이\s*우선|너비\s*우선|넓이\s*우선|백트래킹|backtracking|스택을\s*(사용|이용)|큐를\s*(사용|이용)|재귀를\s*(사용|이용)|해시를\s*(사용|이용)|이분\s*탐색|binary\s*search|동적\s*계획|dynamic\s*programming|\bDP\b|그리디|탐욕\s*(법|알고리즘)|greedy|두\s*포인터|투\s*포인터|슬라이딩\s*윈도우|two\s*pointers?|sliding\s*window|힙을\s*(사용|이용)|우선순위\s*큐|priority\s*queue|heapq/i;
 
 export interface DraftRequest {
   request: GenerationRequest;

@@ -492,6 +492,38 @@ export const SIGNALS: PatternSignal[] = [
       "읽는 손가락(빠름)과 쓰는 손가락(느림) 두 개를 같은 방향으로 움직이면, 한 번 훑으며 순서를 지켜 걸러 낼 수 있어요.",
     strength: "medium",
   },
+  {
+    id: "sig-repeated-min",
+    phrase: "가장 작은(큰) 것을 계속 꺼내고, 새로 넣기를 반복",
+    examples: [
+      "가장 작은 두 더미를 합치는 일을 하나가 남을 때까지 반복해요",
+      "가장 급한 환자부터 치료하고, 새 환자가 계속 와요",
+    ],
+    suspects: ["heap"],
+    patterns: ["repeated-min", "heap-scheduling"],
+    reason: "매번 정렬하면 O(N log N)씩 들어요. 힙은 가장 작은 것을 O(1)에 보고, 넣고 꺼내기를 O(log N)에 해요.",
+    caution: "한 번만 가장 작은 것이 필요하면 그냥 min으로 충분해요. '꺼내고 또 넣기'가 반복될 때 힙이에요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-top-k",
+    phrase: "상위 K개 / K번째로 큰 것 (계속 들어오는 값에서)",
+    examples: ["점수가 들어올 때마다 지금까지 3번째로 높은 점수를 알려 주세요", "가장 많이 나온 단어 K개를 구하세요"],
+    suspects: ["heap"],
+    patterns: ["top-k"],
+    reason: "크기가 K인 최소 힙을 두면, 맨 위가 곧 K번째로 큰 값이에요. 전체를 정렬하지 않아도 돼요.",
+    caution: "값이 한꺼번에 주어지고 한 번만 물으면 정렬도 괜찮아요.",
+    strength: "medium",
+  },
+  {
+    id: "sig-running-median",
+    phrase: "지금까지의 중앙값 / 계속 바뀌는 가운데 값",
+    examples: ["수를 하나 읽을 때마다 지금까지의 중앙값을 말하세요"],
+    suspects: ["heap"],
+    patterns: ["two-heaps"],
+    reason: "작은 절반은 최대 힙, 큰 절반은 최소 힙에 나눠 담으면 두 힙의 맨 위가 가운데 값이에요.",
+    strength: "strong",
+  },
 ];
 
 const SIGNALS_BY_ID = new Map(SIGNALS.map((signal) => [signal.id, signal]));

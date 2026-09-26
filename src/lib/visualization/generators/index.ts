@@ -85,6 +85,17 @@ import {
   validateDigits,
   validateIntervals,
 } from "./greedy";
+import {
+  HEAP_MERGE_PSEUDOCODE,
+  HEAP_OPS_PSEUDOCODE,
+  HEAP_TOP_K_PSEUDOCODE,
+  heapMerge,
+  heapOps,
+  heapTopK,
+  validateHeapMerge,
+  validateHeapOps,
+  validateHeapTopK,
+} from "./heap";
 import { InputError } from "./shared";
 import {
   DEDUPE_PSEUDOCODE,
@@ -338,6 +349,27 @@ export const GENERATORS: Record<VisualizationGeneratorKey, GeneratorDefinition> 
     pseudocode: DEDUPE_PSEUDOCODE,
     validate: validateDedupe,
     generate: dedupe,
+  },
+  "heap-ops": {
+    key: "heap-ops",
+    inputHint: '[명령 목록] 예: [["push 5", "push 3", "pop"]] — push 수 / pop, 최대 12개 (힙에는 15개까지)',
+    pseudocode: HEAP_OPS_PSEUDOCODE,
+    validate: validateHeapOps,
+    generate: heapOps,
+  },
+  "heap-merge": {
+    key: "heap-merge",
+    inputHint: "[더미 크기 목록] 예: [[10, 20, 40]] — 1~99 정수 2 ~ 8개",
+    pseudocode: HEAP_MERGE_PSEUDOCODE,
+    validate: validateHeapMerge,
+    generate: heapMerge,
+  },
+  "heap-top-k": {
+    key: "heap-top-k",
+    inputHint: "[수 목록, K] 예: [[5, 1, 9, 3, 7], 3] — 정수 1 ~ 12개, K 1 ~ 5",
+    pseudocode: HEAP_TOP_K_PSEUDOCODE,
+    validate: validateHeapTopK,
+    generate: heapTopK,
   },
 };
 

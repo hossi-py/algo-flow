@@ -37,6 +37,8 @@ const LABELS: Record<IllustrationKey, string> = {
   "greedy-counterexample": "6원을 만들 때 큰 동전부터 쓰면 3개, 3원 두 개면 2개라 욕심이 틀리는 반례 그림",
   "tp-squeeze": "정렬된 칸의 양 끝에 손가락을 두고 가운데로 좁혀 오는 그림",
   "tp-window": "칸들 위로 창틀이 오른쪽으로 미끄러지며 늘었다 줄었다 하는 그림",
+  "heap-tree": "가장 작은 값이 맨 위에 있고 부모가 자식보다 작은 트리 그림",
+  "heap-emergency": "응급실에서 급한 환자가 먼저 들어가는 대기 줄 그림",
 };
 
 /** 강조 면(HOT) 위 글자. 다크 모드에서도 밝은 보라 위에 어두운 글자가 되도록 */
@@ -1012,6 +1014,78 @@ function TpWindow() {
   );
 }
 
+function HeapTree() {
+  const nodes = [
+    { x: 80, y: 14, v: 1 },
+    { x: 48, y: 42, v: 3 },
+    { x: 112, y: 42, v: 5 },
+    { x: 32, y: 72, v: 7 },
+    { x: 64, y: 72, v: 4 },
+    { x: 96, y: 72, v: 9 },
+  ];
+  const parent = [-1, 0, 0, 1, 1, 2];
+  return (
+    <>
+      {nodes.map((n, i) =>
+        parent[i]! >= 0 ? (
+          <line
+            key={`e${i}`}
+            x1={nodes[parent[i]!]!.x}
+            y1={nodes[parent[i]!]!.y}
+            x2={n.x}
+            y2={n.y}
+            stroke="currentColor"
+            strokeWidth={1.8}
+          />
+        ) : null,
+      )}
+      {nodes.map((n, i) => (
+        <g key={i}>
+          <circle cx={n.x} cy={n.y} r={9} fill={i === 0 ? HOT : PAPER} stroke="currentColor" strokeWidth={1.8} />
+          <Label x={n.x} y={n.y + 3} fill={i === 0 ? ON_HOT : "currentColor"}>
+            {n.v}
+          </Label>
+        </g>
+      ))}
+      <Label x={140} y={17} anchor="end">
+        가장 작은 값
+      </Label>
+      <Label x={80} y={96}>
+        부모 ≤ 자식
+      </Label>
+    </>
+  );
+}
+
+function HeapEmergency() {
+  const queue = [
+    { label: "3", fill: WAIT },
+    { label: "1", fill: BAD },
+    { label: "4", fill: PAPER },
+    { label: "2", fill: WAIT },
+  ];
+  return (
+    <>
+      <rect x={112} y={26} width={38} height={40} rx={6} fill={PAPER} stroke="currentColor" strokeWidth={1.8} />
+      <Label x={131} y={50}>
+        진료실
+      </Label>
+      {queue.map((q, i) => (
+        <g key={i}>
+          <circle cx={20 + i * 22} cy={46} r={9} fill={q.fill} stroke="currentColor" strokeWidth={1.6} />
+          <Label x={20 + i * 22} y={49}>
+            {q.label}
+          </Label>
+        </g>
+      ))}
+      <Arrow d="M42 30 Q76 10 108 36" />
+      <Label x={70} y={86}>
+        도착 순서가 아니라 급한 순서(1)부터
+      </Label>
+    </>
+  );
+}
+
 const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "stack-plates": StackPlates,
   "stack-undo": StackUndo,
@@ -1036,6 +1110,8 @@ const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "greedy-counterexample": GreedyCounterexample,
   "tp-squeeze": TpSqueeze,
   "tp-window": TpWindow,
+  "heap-tree": HeapTree,
+  "heap-emergency": HeapEmergency,
 };
 
 export function ConceptIllustration({

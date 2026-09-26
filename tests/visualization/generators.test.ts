@@ -154,10 +154,10 @@ describe("generator 등록", () => {
     }
   });
 
-  it("31개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
+  it("34개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
     const used = new Set(TOPIC_PRESETS.map((preset) => preset.generator));
     expect([...used].sort()).toEqual(Object.keys(GENERATORS).sort());
-    expect(used.size).toBe(31);
+    expect(used.size).toBe(34);
   });
 
   it("프리셋 id가 겹치지 않는다", () => {
@@ -277,6 +277,11 @@ describe("입력 검증", () => {
     ["tp-min-window", [[0, 5], 3]],
     ["tp-min-window", [[1, 2], 0]],
     ["tp-dedupe", [[2, 1]]],
+    ["heap-ops", [["pop"]]],
+    ["heap-ops", [["push 1000"]]],
+    ["heap-ops", [["add 1"]]],
+    ["heap-merge", [[5]]],
+    ["heap-top-k", [[1, 2], 6]],
   ];
 
   it.each(BAD_INPUTS)("%s %j → 예외 대신 한국어 오류 메시지", (key, input) => {
@@ -503,5 +508,34 @@ describe("두 포인터 generator", () => {
     const last = run("tp-dedupe", [[1, 1, 2, 3, 3, 3, 5, 8, 8]]).at(-1)!;
     expect(last.state.variables!.결과).toBe("1, 2, 3, 5, 8");
     expect(last.state.bars!.sorted).toHaveLength(5);
+  });
+});
+
+describe("힙 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+  const isHeap = (labels: string[]) =>
+    labels.every((v, i) => i === 0 || Number(labels[Math.floor((i - 1) / 2)]) <= Number(v));
+
+  it("넣고 꺼내도 부모 ≤ 자식이 유지되고, 가장 작은 값부터 나온다", () => {
+    const steps = run("heap-ops", [["push 5", "push 3", "push 8", "push 1", "push 4", "pop", "pop", "push 2", "pop"]]);
+    expect(steps.at(-1)!.message).toContain("꺼낸 순서: 1, 3, 2");
+    const last = steps.at(-1)!.state.graph!.nodes.map((n) => n.label);
+    expect(isHeap(last)).toBe(true);
+    expect(last).toHaveLength(3);
+  });
+
+  it("가장 작은 두 더미부터 합쳐 총 비용을 구한다", () => {
+    expect(run("heap-merge", [[10, 20, 40]]).at(-1)!.state.variables!["총 비용"]).toBe(100);
+    expect(run("heap-merge", [[1, 2, 3, 4]]).at(-1)!.state.variables!["총 비용"]).toBe(19);
+  });
+
+  it("크기 K인 최소 힙의 맨 위가 K번째로 큰 수다", () => {
+    const steps = run("heap-top-k", [[5, 1, 9, 3, 7, 2, 8], 3]);
+    expect(steps.at(-1)!.state.variables!["지금 3번째로 큰 수"]).toBe(7);
+    expect(run("heap-top-k", [[4], 2]).at(-1)!.message).toContain("없어요");
   });
 });

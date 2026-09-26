@@ -312,4 +312,27 @@ export const TOPIC_VISUALIZATIONS: Record<TopicSlug, VisualizationPreset[]> = {
       [[1, 1, 2, 3, 3, 3, 5, 8, 8]],
     ),
   ],
+  heap: [
+    preset(
+      "heap-ops-7",
+      "heap-ops",
+      "넣기와 꺼내기",
+      "넣은 값은 맨 끝에서 부모보다 작으면 위로 올라가요. 꺼낼 땐 맨 위를 빼고, 맨 끝 값을 올려 아래로 내려 보내요.",
+      [["push 5", "push 3", "push 8", "push 1", "push 4", "pop", "pop"]],
+    ),
+    preset(
+      "heap-merge-5",
+      "heap-merge",
+      "가장 작은 두 더미 합치기",
+      "가장 작은 두 개를 꺼내 합치고 다시 넣기를 반복해요. 매번 정렬하지 않아도 힙이 가장 작은 것을 알려 줘요.",
+      [[10, 20, 40, 5, 15]],
+    ),
+    preset(
+      "heap-top-k-3",
+      "heap-top-k",
+      "상위 3개만 남기기",
+      "크기 3인 최소 힙을 두면 맨 위가 늘 3번째로 큰 수예요. 그보다 작은 수는 들어올 필요가 없어요.",
+      [[5, 1, 9, 3, 7, 2, 8], 3],
+    ),
+  ],
 };

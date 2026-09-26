@@ -119,6 +119,21 @@ import { hashSnackLine } from "./hash/snack-line";
 import { hashSnackPair } from "./hash/snack-pair";
 import { hashStickerAlbum } from "./hash/sticker-album";
 import { hashSubarraySum } from "./hash/subarray-sum";
+import { heapBestProjects } from "./heap/best-projects";
+import { heapClosestTrees } from "./heap/closest-trees";
+import { heapCoursePlan } from "./heap/course-plan";
+import { heapFewestRefuels } from "./heap/fewest-refuels";
+import { heapKthLargest } from "./heap/kth-largest";
+import { heapLastStone } from "./heap/last-stone";
+import { heapMatrixKth } from "./heap/matrix-kth";
+import { heapMergePiles } from "./heap/merge-piles";
+import { heapMergeShelves } from "./heap/merge-shelves";
+import { heapNearlySorted } from "./heap/nearly-sorted";
+import { heapNoRepeatString } from "./heap/no-repeat-string";
+import { heapRunningMedian } from "./heap/running-median";
+import { heapSmallestK } from "./heap/smallest-k";
+import { heapTaskOrder } from "./heap/task-order";
+import { heapTopWords } from "./heap/top-words";
 import { dequeEndCards } from "./queue-deque/deque-end-cards";
 import { dequeSteadySignal } from "./queue-deque/deque-steady-signal";
 import { dequeSteppingScore } from "./queue-deque/deque-stepping-score";
@@ -317,6 +332,21 @@ export const PROBLEMS: readonly Problem[] = [
   hashSnackPair,
   hashStickerAlbum,
   hashSubarraySum,
+  heapBestProjects,
+  heapClosestTrees,
+  heapCoursePlan,
+  heapFewestRefuels,
+  heapKthLargest,
+  heapLastStone,
+  heapMatrixKth,
+  heapMergePiles,
+  heapMergeShelves,
+  heapNearlySorted,
+  heapNoRepeatString,
+  heapRunningMedian,
+  heapSmallestK,
+  heapTaskOrder,
+  heapTopWords,
   dequeEndCards,
   dequeSteadySignal,
   dequeSteppingScore,

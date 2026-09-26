@@ -31,7 +31,10 @@ export type VisualizationGeneratorKey =
   | "greedy-digits"
   | "tp-pair-sum"
   | "tp-min-window"
-  | "tp-dedupe";
+  | "tp-dedupe"
+  | "heap-ops"
+  | "heap-merge"
+  | "heap-top-k";
 
 export interface VisualizationPreset {
   id: string;
@@ -95,6 +98,8 @@ export type VizAction =
   // 두 포인터
   | "move-left"
   | "move-right"
+  // 힙
+  | "swap"
   // 공통
   | "compare"
   | "init"

@@ -7,6 +7,7 @@ import { dpTopic } from "./dp";
 import { graphRepresentationTopic } from "./graph-representation";
 import { greedyTopic } from "./greedy";
 import { hashTopic } from "./hash";
+import { heapTopic } from "./heap";
 import { queueDequeTopic } from "./queue-deque";
 import { recursionTopic } from "./recursion";
 import { sortingTopic } from "./sorting";
@@ -28,6 +29,7 @@ export const TOPICS: readonly Topic[] = [
   dpTopic,
   greedyTopic,
   twoPointersTopic,
+  heapTopic,
 ];
 
 const TOPICS_BY_SLUG = new Map<string, Topic>(TOPICS.map((topic) => [topic.slug, topic]));

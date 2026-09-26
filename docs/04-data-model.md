@@ -55,6 +55,7 @@ export const TOPIC_SLUGS = [
   "dp",
   "greedy",
   "two-pointers",
+  "heap",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
@@ -81,7 +82,7 @@ export const LEVEL_STAGE_LABELS: Record<LevelStage, string> = {
 };
 
 export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum" | "teal" | "coral" | "indigo";
-export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table" | "coins" | "pointers";
+export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table" | "coins" | "pointers" | "heap";
 
 export const PATTERN_TAGS = [
   // 스택
@@ -153,6 +154,12 @@ export const PATTERN_TAGS = [
   "same-direction",
   "fixed-window",
   "variable-window",
+  // 힙
+  "top-k",
+  "repeated-min",
+  "k-way-merge",
+  "two-heaps",
+  "heap-scheduling",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -216,7 +223,9 @@ export type IllustrationKey =
   | "greedy-meetings"
   | "greedy-counterexample"
   | "tp-squeeze"
-  | "tp-window";
+  | "tp-window"
+  | "heap-tree"
+  | "heap-emergency";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {
@@ -422,7 +431,10 @@ export type VisualizationGeneratorKey =
   | "greedy-digits"
   | "tp-pair-sum"
   | "tp-min-window"
-  | "tp-dedupe";
+  | "tp-dedupe"
+  | "heap-ops"
+  | "heap-merge"
+  | "heap-top-k";
 
 export interface VisualizationPreset {
   id: string;
@@ -486,6 +498,8 @@ export type VizAction =
   // 두 포인터
   | "move-left"
   | "move-right"
+  // 힙
+  | "swap"
   // 공통
   | "compare"
   | "init"

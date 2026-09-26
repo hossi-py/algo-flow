@@ -58,6 +58,11 @@ export const PATTERN_LABELS: Record<PatternTag, string> = {
   "same-direction": "같은 방향 두 포인터",
   "fixed-window": "고정 길이 창",
   "variable-window": "늘였다 줄이는 창",
+  "top-k": "상위 K개",
+  "repeated-min": "가장 작은 것 계속 꺼내기",
+  "k-way-merge": "여러 줄 합치기",
+  "two-heaps": "힙 두 개",
+  "heap-scheduling": "힙으로 순서 정하기",
 };
 
 /** 토픽별 대표 패턴 (AI 문제 생성의 집중 패턴 후보) */
@@ -75,6 +80,7 @@ export const TOPIC_PATTERNS: Record<TopicSlug, PatternTag[]> = {
   dp: ["linear-dp", "grid-dp", "knapsack", "sequence-dp", "state-dp"],
   greedy: ["greedy-by-sort", "interval-scheduling", "greedy-accumulate", "digit-greedy"],
   "two-pointers": ["opposite-ends", "same-direction", "fixed-window", "variable-window"],
+  heap: ["top-k", "repeated-min", "k-way-merge", "two-heaps", "heap-scheduling"],
 };
 
 /** 패턴이 속한 토픽 */
