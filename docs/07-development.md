@@ -49,6 +49,8 @@ pnpm dev          # http://localhost:3000
 | `pnpm ai:smoke [횟수]`      | 실제 Claude API로 AI 문제를 여러 번(기본 10회) 생성·검증해 통과율 확인 (API 비용 발생)                                                                                                                               |
 | `pnpm format`               | Prettier                                                                                                                                                                                                             |
 
+README의 스크린샷(`docs/images/`)은 개발 서버를 켠 채 `node scripts/readme-screenshots.mjs`로 다시 찍어요 (예시 진도를 불러와 로드맵·DFS 시각화·다크 모드 문제 풀이 화면을 저장).
+
 개발 서버에서는 화면 오른쪽 아래 🔧 버튼(개발용 도구)으로 예시 진도 불러오기 · XP 추가 · 축하 연출 · 진도 초기화를 할 수 있습니다. 프로덕션 빌드에는 나타나지 않습니다.
 
 ## 주간 랭킹
