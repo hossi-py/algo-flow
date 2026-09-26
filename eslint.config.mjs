@@ -17,6 +17,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Monaco 에디터 복사본 (scripts/copy-monaco.mjs)
+    "public/monaco/**",
   ]),
 ]);
 

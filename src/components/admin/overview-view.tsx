@@ -1,5 +1,6 @@
-import { Activity, Bot, Send, Sparkles, Trophy, Users } from "lucide-react";
-import type { AdminOverview, ErrorGroupRow, WeeklyKey } from "@/lib/admin/queries";
+import { Activity, Bot, Send, ShieldCheck, Sparkles, Trophy, Users } from "lucide-react";
+import Link from "next/link";
+import type { AdminOverview, ErrorGroupRow, RankingFlagRow, WeeklyKey } from "@/lib/admin/queries";
 import { AreaChart, type ChartTone } from "./area-chart";
 import { ErrorList } from "./error-list";
 import { dayLabel, formatNumber } from "./format";
@@ -16,14 +17,54 @@ function SectionHeader({ id, title, description }: { id: string; title: string; 
   );
 }
 
+const FLAG_REASONS: Record<string, { label: string; className: string }> = {
+  "rapid-solves": { label: "번개 해결", className: "bg-warning text-warning-foreground" },
+  "xp-overflow": { label: "XP 과다", className: "bg-secondary text-secondary-foreground" },
+  "tiny-code": { label: "짧은 정답 코드", className: "bg-info text-info-foreground" },
+};
+
+function FlagList({ flags }: { flags: RankingFlagRow[] }) {
+  if (flags.length === 0) {
+    return (
+      <p className="flex items-center gap-2 rounded-xl border border-dashed border-border bg-card/60 px-5 py-4 text-small text-muted-foreground">
+        <ShieldCheck className="size-5 text-success-text" aria-hidden />
+        이번 주에는 이상한 기록이 없어요. ✨
+      </p>
+    );
+  }
+  return (
+    <ul className="flex flex-col gap-2">
+      {flags.map((flag) => {
+        const reason = FLAG_REASONS[flag.reason] ?? { label: flag.reason, className: "bg-muted text-muted-foreground" };
+        return (
+          <li key={`${flag.userId}-${flag.reason}`}>
+            <Link
+              href={`/admin/users/${flag.userId}`}
+              className="flex flex-wrap items-center gap-3 rounded-2xl border border-border/60 bg-card px-4 py-3 shadow-soft outline-none hover:bg-muted/40 focus-visible:ring-4 focus-visible:ring-ring/40"
+            >
+              <span className={`rounded-full px-2.5 py-0.5 text-caption font-bold ${reason.className}`}>
+                {reason.label}
+              </span>
+              <span className="font-bold text-foreground">{flag.nickname}</span>
+              <span className="text-small text-muted-foreground">{flag.detail}</span>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 /** 운영 현황 화면 (데이터는 페이지가 가져와 넘긴다) */
 export function OverviewView({
   overview,
   errors,
+  flags = [],
   now,
 }: {
   overview: AdminOverview;
   errors: ErrorGroupRow[];
+  flags?: RankingFlagRow[];
   now: number;
 }) {
   const { totals, daily, weekly } = overview;
@@ -128,6 +169,15 @@ export function OverviewView({
             />
           ))}
         </div>
+      </section>
+
+      <section aria-labelledby="flags-title" className="flex flex-col gap-4">
+        <SectionHeader
+          id="flags-title"
+          title="주의가 필요한 기록"
+          description="이번 주 랭킹에서 자동으로 빠진 회원이에요. 계정과 기록은 그대로 있어요. 누르면 회원 상세로 가요."
+        />
+        <FlagList flags={flags} />
       </section>
 
       <section aria-labelledby="errors-title" className="flex flex-col gap-4">

@@ -9,6 +9,8 @@ export interface AccountProfile {
   theme: "light" | "dark" | "system";
   editorFontSize: number;
   preferredLanguage: Language;
+  /** 주간 랭킹에 닉네임을 보일지 */
+  showInRanking: boolean;
   createdAt: IsoDateTime;
 }
 

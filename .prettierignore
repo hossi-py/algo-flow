@@ -6,3 +6,4 @@ tests/fixtures
 tmp-authoring
 test-results
 playwright-report
+public/monaco

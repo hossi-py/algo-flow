@@ -8,8 +8,13 @@ import { Nodi } from "@/components/mascot/nodi";
 import { LANGUAGE_LABELS, type CodeError, type Language } from "@/types";
 import { ALGO_DARK_THEME, ALGO_LIGHT_THEME } from "./editor-theme";
 
-/** CDN에서 받는 Monaco 버전 고정 (devDependency monaco-editor와 같은 버전) */
-loader.config({ paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.55.1/min/vs" } });
+/**
+ * Monaco는 CDN이 아니라 우리 사이트에서 받는다 (scripts/copy-monaco.mjs가 public/monaco/<버전>/vs로 복사).
+ * 같은 출처라 에디터 워커도 바로 만들어지고, CDN 장애·네트워크 끊김에 에디터가 흔들리지 않는다.
+ * 버전은 dependencies의 monaco-editor와 같아야 한다.
+ */
+export const MONACO_VERSION = "0.55.1";
+loader.config({ paths: { vs: `/monaco/${MONACO_VERSION}/vs` } });
 
 type Monaco = Parameters<BeforeMount>[0];
 

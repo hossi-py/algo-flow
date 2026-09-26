@@ -61,6 +61,21 @@ export function SettingsForm() {
 
   const nicknameValue = nickname ?? profile?.nickname ?? "";
 
+  async function saveRanking(show: boolean) {
+    if (!profile || profile.showInRanking === show) return;
+    setSaving(true);
+    setMessage(null);
+    try {
+      const result = await patchProfile({ showInRanking: show });
+      setAccount({ profile: result.profile });
+      setMessage(show ? "랭킹에 닉네임이 보여요" : "랭킹에서 닉네임을 숨겼어요");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "저장하지 못했어요");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   async function saveNickname(event: React.FormEvent) {
     event.preventDefault();
     const value = nicknameValue.trim();
@@ -109,6 +124,17 @@ export function SettingsForm() {
             </PopButton>
           </div>
         </form>
+      )}
+
+      {status === "user" && profile && (
+        <Row label="주간 랭킹에 닉네임 보이기">
+          <Choice active={profile.showInRanking} onClick={() => void saveRanking(true)}>
+            보이기
+          </Choice>
+          <Choice active={!profile.showInRanking} onClick={() => void saveRanking(false)}>
+            숨기기
+          </Choice>
+        </Row>
       )}
 
       <Row label="하루 목표 XP">

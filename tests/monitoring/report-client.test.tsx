@@ -77,3 +77,14 @@ describe("에러 화면", () => {
     expect(body).toMatchObject({ source: "boundary", digest: "4242", message: "Error: 렌더링 실패" });
   });
 });
+
+describe("페이지를 떠나는 중", () => {
+  it("떠나기 시작한 뒤의 에러는 보내지 않고, 뒤로 가기 캐시로 돌아오면 다시 보낸다", async () => {
+    const { setLeaving } = await import("@/lib/monitoring/report-client");
+    setLeaving(true);
+    expect(reportClientError(new Error("NetworkError: importScripts failed"))).toBe(false);
+    expect(beacon).not.toHaveBeenCalled();
+    setLeaving(false);
+    expect(reportClientError(new Error("NetworkError: importScripts failed"))).toBe(true);
+  });
+});

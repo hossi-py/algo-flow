@@ -962,6 +962,8 @@ export type CoachMeta = z.infer<typeof coachMetaSchema>;
 | `error_groups` (view) | — | `error_events`를 지문(fingerprint)별로 묶은 통계 | **접근 불가** (service role 전용) |
 | `admins` | `user_id` | 관리자 계정 목록 (관리자 화면 접근 권한) | **접근 불가** (service role 전용) |
 
+> 주간 랭킹(`20260926000003_weekly_ranking.sql`): `profiles.show_in_ranking`(본인만 수정), `weekly_ranking(user, limit, today)`·`ranking_flags(from, to)` 함수(service role 전용). 서버는 닉네임·XP만 브라우저로 넘긴다.
+
 > 관리자 조회 함수 `admin_list_users`, `admin_user_account`, `admin_overview`(`20260926000001_admin.sql`)도 service role만 실행할 수 있다. 서버가 요청한 사람이 `admins`에 있는지 확인한 뒤에만 부른다 (`src/lib/admin`).
 
 > 쓰기 RPC(`record_submission`, `record_concept_progress`, `record_problem_state`, `merge_guest_progress`, `complete_generated_problem`)는 Step 6에서 `supabase/migrations/20260924000000_progress_rpc.sql`로 작성했다. XP·스트릭·레벨 클리어·배지 **계산은 서버의 TS 규칙**(`lib/progress/actions.ts`)이 하고, RPC는 계산된 행들을 `revision` 확인 뒤 한 트랜잭션으로 기록한다 (service role만 실행 가능).

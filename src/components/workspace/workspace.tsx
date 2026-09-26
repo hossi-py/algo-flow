@@ -168,8 +168,9 @@ function WorkspaceBody({ problem, aiEnabled }: WorkspaceProps) {
   const handleOpenHint = (step: HintStep) => openHint(problem, step, new Date().toISOString());
 
   const editor = (
+    // 언어를 바꿔도 에디터는 그대로 두고 path(언어별 파일)로 모델만 바꾼다. 에디터를 다시 만들면
+    // 받는 중이던 Monaco 워커가 끊겨 가짜 에러가 나고, 언어별 되돌리기 기록도 path 덕분에 따로 유지된다
     <CodeEditor
-      key={language}
       path={fileName(problem, language)}
       language={language}
       defaultValue={draft ?? starter}
@@ -195,6 +196,26 @@ function WorkspaceBody({ problem, aiEnabled }: WorkspaceProps) {
     />
   );
 
+  const problemPanel = <ProblemPanel problem={problem} language={language} lockedReason={lockedReason} />;
+  const hintsPanel = (
+    <HintStack problem={problem} language={language} opened={opened} solved={solved} onOpen={handleOpenHint} />
+  );
+  const coachPanel = (
+    <CoachPanel
+      problem={problem}
+      language={language}
+      hintsOpened={opened}
+      getCode={() => editorApi.current?.getValue() ?? draft ?? starter}
+      lastResult={result}
+      enabled={aiEnabled}
+      onShowHints={() => {
+        setLeftTab("hints");
+        setMobileTab("hints");
+      }}
+    />
+  );
+  const hintsLabel = <>힌트 {opened > 0 && <span className="tabular">{opened}/4</span>}</>;
+
   const leftTabs = (
     <Tabs value={leftTab} onValueChange={setLeftTab} className="flex h-full min-h-0 flex-col gap-0">
       <div className="shrink-0 border-b px-3 py-2.5">
@@ -203,7 +224,7 @@ function WorkspaceBody({ problem, aiEnabled }: WorkspaceProps) {
             문제
           </TabsTrigger>
           <TabsTrigger value="hints" className={SOFT_TABS_TRIGGER}>
-            힌트 {opened > 0 && <span className="tabular">{opened}/4</span>}
+            {hintsLabel}
           </TabsTrigger>
           <TabsTrigger value="coach" className={SOFT_TABS_TRIGGER}>
             AI 코치
@@ -211,21 +232,13 @@ function WorkspaceBody({ problem, aiEnabled }: WorkspaceProps) {
         </TabsList>
       </div>
       <TabsContent value="problem" className="min-h-0 flex-1 overflow-y-auto">
-        <ProblemPanel problem={problem} language={language} lockedReason={lockedReason} />
+        {problemPanel}
       </TabsContent>
       <TabsContent value="hints" className="min-h-0 flex-1 overflow-y-auto">
-        <HintStack problem={problem} language={language} opened={opened} solved={solved} onOpen={handleOpenHint} />
+        {hintsPanel}
       </TabsContent>
       <TabsContent value="coach" className="min-h-0 flex-1">
-        <CoachPanel
-          problem={problem}
-          language={language}
-          hintsOpened={opened}
-          getCode={() => editorApi.current?.getValue() ?? draft ?? starter}
-          lastResult={result}
-          enabled={aiEnabled}
-          onShowHints={() => setLeftTab("hints")}
-        />
+        {coachPanel}
       </TabsContent>
     </Tabs>
   );
@@ -254,20 +267,33 @@ function WorkspaceBody({ problem, aiEnabled }: WorkspaceProps) {
       ) : (
         <Tabs value={mobileTab} onValueChange={setMobileTab} className="flex min-h-0 flex-1 flex-col gap-0">
           <div className="shrink-0 border-b bg-card px-3 py-2">
-            <TabsList className={cn(SOFT_TABS_LIST, "grid grid-cols-3")}>
-              <TabsTrigger value="problem" className={SOFT_TABS_TRIGGER}>
+            {/* 좁은 화면에서는 탭을 한 줄로: 문제 · 힌트 · AI 코치 · 코드 · 시각화 */}
+            <TabsList className={cn(SOFT_TABS_LIST, "grid grid-cols-5 sm:flex")}>
+              <TabsTrigger value="problem" className={MOBILE_TAB}>
                 문제
               </TabsTrigger>
-              <TabsTrigger value="code" className={SOFT_TABS_TRIGGER}>
+              <TabsTrigger value="hints" className={MOBILE_TAB}>
+                {hintsLabel}
+              </TabsTrigger>
+              <TabsTrigger value="coach" className={MOBILE_TAB}>
+                AI 코치
+              </TabsTrigger>
+              <TabsTrigger value="code" className={MOBILE_TAB}>
                 코드
               </TabsTrigger>
-              <TabsTrigger value="visual" className={SOFT_TABS_TRIGGER}>
+              <TabsTrigger value="visual" className={MOBILE_TAB}>
                 시각화
               </TabsTrigger>
             </TabsList>
           </div>
-          <TabsContent value="problem" className="min-h-0 flex-1">
-            {leftTabs}
+          <TabsContent value="problem" className="min-h-0 flex-1 overflow-y-auto">
+            {problemPanel}
+          </TabsContent>
+          <TabsContent value="hints" className="min-h-0 flex-1 overflow-y-auto">
+            {hintsPanel}
+          </TabsContent>
+          <TabsContent value="coach" className="min-h-0 flex-1">
+            {coachPanel}
           </TabsContent>
           <TabsContent value="code" className="flex min-h-0 flex-1 flex-col">
             <div className="min-h-[240px] flex-[3] bg-card">{editor}</div>
@@ -286,6 +312,8 @@ function WorkspaceBody({ problem, aiEnabled }: WorkspaceProps) {
   );
 }
 
+/** 좁은 화면의 탭 5개: 한 줄에 들어가도록 가로 여백을 줄인다 */
+const MOBILE_TAB = cn(SOFT_TABS_TRIGGER, "px-1 sm:px-3.5");
 const PANEL = "h-full min-h-0 overflow-hidden rounded-xl border border-border/70 bg-card shadow-soft";
 const HANDLE =
   "w-2 bg-transparent after:w-2 aria-[orientation=horizontal]:h-2 aria-[orientation=horizontal]:w-full [&>div]:bg-border hover:[&>div]:bg-primary";

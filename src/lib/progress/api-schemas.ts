@@ -129,5 +129,6 @@ export const profilePatchSchema = z
     theme: z.enum(["light", "dark", "system"]),
     editorFontSize: z.number().int().min(12).max(22),
     preferredLanguage: z.enum(LANGUAGES),
+    showInRanking: z.boolean(),
   })
   .partial();

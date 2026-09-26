@@ -2,6 +2,7 @@ import "server-only";
 import { getProblem } from "@/content/problems";
 import { getTopic } from "@/content/topics";
 import { getAdminSupabase } from "@/lib/supabase/admin";
+import { seoulToday, weekRange } from "@/lib/ranking/week";
 import { requireAdmin } from "./auth";
 
 /**
@@ -86,19 +87,52 @@ export interface ErrorGroupRow {
   release: string | null;
 }
 
-export async function getOverview(
-  days = 14,
-): Promise<{ overview: AdminOverview; errors: ErrorGroupRow[]; fetchedAt: number }> {
+/** 이번 주 이상 기록 (랭킹에서 빠진 회원) */
+export interface RankingFlagRow {
+  userId: string;
+  nickname: string;
+  reason: string;
+  detail: string;
+}
+
+export async function getOverview(days = 14): Promise<{
+  overview: AdminOverview;
+  errors: ErrorGroupRow[];
+  flags: RankingFlagRow[];
+  fetchedAt: number;
+}> {
   await requireAdmin();
   const supabase = getAdminSupabase();
-  const [overview, errors] = await Promise.all([
+  const week = weekRange(seoulToday());
+  const [overview, errors, flagRows] = await Promise.all([
     supabase.rpc("admin_overview", { p_days: days }),
     supabase.from("error_groups").select("*").order("last_seen", { ascending: false }).limit(15),
+    supabase.rpc("ranking_flags", { p_from: week.start, p_to: week.end }),
   ]);
   if (overview.error) throw new Error(`운영 현황을 불러오지 못했어요: ${overview.error.message}`);
   // 에러 기록은 없어도 화면은 보여 준다
   if (errors.error) console.warn("[admin] error_groups 조회 실패", errors.error.message);
+  // 이상 기록은 20260926000003 마이그레이션 전에는 없다
+  if (flagRows.error) console.warn("[admin] ranking_flags 조회 실패", flagRows.error.message);
+  const rawFlags = (flagRows.data ?? []) as { user_id: string; reason: string; detail: string }[];
+  const nicknames = new Map<string, string>();
+  if (rawFlags.length > 0) {
+    const { data } = await supabase
+      .from("profiles")
+      .select("id, nickname")
+      .in(
+        "id",
+        rawFlags.map((f) => f.user_id),
+      );
+    for (const row of (data ?? []) as { id: string; nickname: string }[]) nicknames.set(row.id, row.nickname);
+  }
   return {
+    flags: rawFlags.map((f) => ({
+      userId: f.user_id,
+      nickname: nicknames.get(f.user_id) ?? "(알 수 없음)",
+      reason: f.reason,
+      detail: f.detail,
+    })),
     // "3시간 전" 같은 상대 시간을 서버·브라우저가 같은 기준으로 그리도록 조회 시각을 함께 넘긴다
     fetchedAt: Date.now(),
     overview: overview.data as AdminOverview,

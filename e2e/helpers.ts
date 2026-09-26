@@ -22,33 +22,45 @@ export async function openProblem(page: Page, slug: string) {
   await waitForEditor(page);
 }
 
+/** 지금 에디터에 떠 있는 모델 (언어마다 모델이 따로 있어서 getModels()[0]이 아니다) */
+interface MonacoModel {
+  getValue(): string;
+  setValue(value: string): void;
+  getLanguageId(): string;
+}
+interface MonacoWindow {
+  monaco?: { editor: { getEditors(): { getModel(): MonacoModel | null }[] } };
+}
+
 export async function waitForEditor(page: Page) {
   await page.waitForFunction(() => {
-    const monaco = (window as unknown as { monaco?: { editor: { getModels(): unknown[] } } }).monaco;
-    return !!monaco && monaco.editor.getModels().length > 0;
+    const monaco = (window as unknown as MonacoWindow).monaco;
+    return !!monaco && monaco.editor.getEditors()[0]?.getModel() != null;
   });
 }
 
 export async function selectLanguage(page: Page, language: Language) {
   await page.getByRole("group", { name: "풀이 언어" }).getByRole("button", { name: LABEL[language] }).click();
   await expect
-    .poll(() => page.evaluate(() => (window as unknown as MonacoWindow).monaco.editor.getModels()[0]?.getLanguageId()))
+    .poll(() =>
+      page.evaluate(() =>
+        (window as unknown as MonacoWindow).monaco?.editor.getEditors()[0]?.getModel()?.getLanguageId(),
+      ),
+    )
     .toBe(language);
-}
-
-interface MonacoWindow {
-  monaco: { editor: { getModels(): { getValue(): string; setValue(v: string): void; getLanguageId(): string }[] } };
 }
 
 /** 에디터 내용을 바꾼다 (사용자가 입력한 것처럼 onChange가 불린다) */
 export async function setCode(page: Page, code: string) {
   await page.evaluate((value) => {
-    (window as unknown as MonacoWindow).monaco.editor.getModels()[0].setValue(value);
+    (window as unknown as MonacoWindow).monaco?.editor.getEditors()[0]?.getModel()?.setValue(value);
   }, code);
 }
 
 export async function getCode(page: Page): Promise<string> {
-  return page.evaluate(() => (window as unknown as MonacoWindow).monaco.editor.getModels()[0].getValue());
+  return page.evaluate(
+    () => (window as unknown as MonacoWindow).monaco?.editor.getEditors()[0]?.getModel()?.getValue() ?? "",
+  );
 }
 
 export async function runExamples(page: Page) {

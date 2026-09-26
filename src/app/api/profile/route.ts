@@ -20,6 +20,7 @@ export async function PATCH(request: Request) {
       ...(patch.theme !== undefined ? { theme: patch.theme } : {}),
       ...(patch.editorFontSize !== undefined ? { editor_font_size: patch.editorFontSize } : {}),
       ...(patch.preferredLanguage !== undefined ? { preferred_language: patch.preferredLanguage } : {}),
+      ...(patch.showInRanking !== undefined ? { show_in_ranking: patch.showInRanking } : {}),
     })
     .eq("id", account.user.id);
   if (error) return Response.json({ error: "설정을 저장하지 못했어요." }, { status: 500 });

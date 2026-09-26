@@ -19,6 +19,18 @@ import { hasJdk, runJavaBatch } from "./java-tools";
 const ROOT = path.resolve(import.meta.dirname, "..");
 /** 정답 코드는 제한 시간의 1/4 안에 끝나야 한다 (사용자 풀이에 여유를 주기 위해) */
 const SPEED_RATIO = 0.25;
+/**
+ * CI 러너는 작성할 때 쓰는 PC보다 느리고 실행마다 속도가 흔들려서, CI에서는 "제한 시간 안"만 실패로 보고
+ * 1/4을 넘는 건 경고로만 남긴다 (정답 여부는 똑같이 엄격하게 본다).
+ */
+const IN_CI = process.env.CI === "true";
+const FAIL_RATIO = IN_CI ? 1 : SPEED_RATIO;
+/** GitHub Actions에서는 실패·경고를 주석으로 남겨 로그인하지 않아도 PR·실행 화면에서 보이게 한다 */
+const annotate = (level: "error" | "warning", message: string) => {
+  if (process.env.GITHUB_ACTIONS === "true") {
+    console.log(`::${level} title=콘텐츠 검증::${message.replace(/\s+/g, " ")}`);
+  }
+};
 const EXTENSIONS: Record<Language, string> = { python: "py", javascript: "js", java: "java" };
 
 function solutionFile(problem: Problem, language: Language): string {
@@ -92,12 +104,18 @@ async function main() {
         },
       });
 
-      const limit = language === "java" ? Infinity : problem.judge.timeLimitMs * SPEED_RATIO;
+      const limit = language === "java" ? Infinity : problem.judge.timeLimitMs * FAIL_RATIO;
+      const target = language === "java" ? Infinity : problem.judge.timeLimitMs * SPEED_RATIO;
       if (result.verdict !== "accepted") {
         const bad = result.results.find((r) => r.verdict !== "passed");
         failures.push(`${label}: ${result.verdict} (${bad?.testCaseId ?? "?"}) ${bad?.error?.message ?? ""}`.trim());
       } else if (slowest > limit) {
         failures.push(`${label}: 가장 느린 케이스 ${slowest.toFixed(1)}ms > 허용 ${limit}ms`);
+      } else if (slowest > target) {
+        annotate(
+          "warning",
+          `${label}: 가장 느린 케이스 ${slowest.toFixed(1)}ms (작성 기준 ${target}ms 초과, 제한 ${problem.judge.timeLimitMs}ms 안)`,
+        );
       }
       const mark = result.verdict === "accepted" && slowest <= limit ? "✓" : "✗";
       console.log(`${mark} ${label.padEnd(34)} ${result.passed}/${result.total}  최대 ${slowest.toFixed(1)}ms`);
@@ -106,6 +124,7 @@ async function main() {
 
   console.log("");
   if (failures.length > 0) {
+    for (const failure of failures) annotate("error", failure);
     console.error(`검증 실패 ${failures.length}건:\n${failures.map((f) => `  - ${f}`).join("\n")}`);
     process.exit(1);
   }
