@@ -29,6 +29,8 @@ const LABELS: Record<IllustrationKey, string> = {
   "hash-tally": "과일 이름마다 개수 막대가 붙어 있는 표 그림",
   "sorting-bars": "높이가 뒤섞인 막대들이 낮은 것부터 높은 것 순서로 정리되는 그림",
   "sorting-merge": "정렬된 두 줄의 맨 앞끼리 비교해서 한 줄로 합치는 그림",
+  "bsearch-halving": "정렬된 칸들에서 가운데를 보고 절반씩 지워 가며 범위를 좁히는 그림",
+  "bsearch-yes-no": "가능·가능·가능 뒤로 불가능이 이어지는 줄에서 그 경계를 찾는 그림",
 };
 
 /** 강조 면(HOT) 위 글자. 다크 모드에서도 밝은 보라 위에 어두운 글자가 되도록 */
@@ -719,6 +721,80 @@ function SortingMerge() {
   );
 }
 
+function BsearchHalving() {
+  const cells = [3, 8, 15, 21, 27, 34, 42, 56];
+  const rows = [
+    { y: 10, lo: 0, hi: 7, mid: 3 },
+    { y: 38, lo: 4, hi: 7, mid: 5 },
+    { y: 66, lo: 6, hi: 7, mid: 6 },
+  ];
+  return (
+    <>
+      {rows.map((row) =>
+        cells.map((value, i) => {
+          const inside = i >= row.lo && i <= row.hi;
+          const isMid = i === row.mid;
+          return (
+            <g key={`${row.y}-${i}`} opacity={inside ? 1 : 0.3}>
+              <rect
+                x={8 + i * 18}
+                y={row.y}
+                width={16}
+                height={16}
+                rx={3}
+                fill={isMid ? (row.y === 66 ? DONE : HOT) : PAPER}
+                stroke="currentColor"
+                strokeWidth={1.4}
+              />
+              <Label x={16 + i * 18} y={row.y + 11} fill={isMid && row.y !== 66 ? ON_HOT : "currentColor"}>
+                {value}
+              </Label>
+            </g>
+          );
+        }),
+      )}
+      <Label x={80} y={96}>
+        가운데를 보고 절반씩 버려요
+      </Label>
+    </>
+  );
+}
+
+function BsearchYesNo() {
+  const marks = ["O", "O", "O", "O", "X", "X", "X"];
+  return (
+    <>
+      {marks.map((mark, i) => (
+        <g key={i}>
+          <rect
+            x={10 + i * 20}
+            y={34}
+            width={18}
+            height={22}
+            rx={4}
+            fill={mark === "O" ? DONE : BAD}
+            stroke="currentColor"
+            strokeWidth={1.6}
+          />
+          <Label x={19 + i * 20} y={49}>
+            {mark}
+          </Label>
+          <Label x={19 + i * 20} y={70}>
+            {i + 1}
+          </Label>
+        </g>
+      ))}
+      <line x1={89} y1={24} x2={89} y2={62} stroke="currentColor" strokeWidth={2.5} strokeDasharray="3 3" />
+      <Label x={89} y={18}>
+        경계
+      </Label>
+      <Label x={80} y={92}>
+        가능한 가장 큰 값 = 4
+      </Label>
+    </>
+  );
+}
+
 const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "stack-plates": StackPlates,
   "stack-undo": StackUndo,
@@ -735,6 +811,8 @@ const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "hash-tally": HashTally,
   "sorting-bars": SortingBars,
   "sorting-merge": SortingMerge,
+  "bsearch-halving": BsearchHalving,
+  "bsearch-yes-no": BsearchYesNo,
 };
 
 export function ConceptIllustration({

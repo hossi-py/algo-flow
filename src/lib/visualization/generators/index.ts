@@ -52,6 +52,17 @@ import {
   validateFactorial,
   validateFibonacci,
 } from "./recursion";
+import {
+  ANSWER_PSEUDOCODE,
+  EXACT_PSEUDOCODE,
+  LOWER_BOUND_PSEUDOCODE,
+  answerSearch,
+  exactSearch,
+  lowerBound,
+  validateAnswer,
+  validateExact,
+  validateLowerBound,
+} from "./binary-search";
 import { InputError } from "./shared";
 import {
   COUNTING_PSEUDOCODE,
@@ -210,6 +221,27 @@ export const GENERATORS: Record<VisualizationGeneratorKey, GeneratorDefinition> 
     pseudocode: COUNTING_PSEUDOCODE,
     validate: validateCounting,
     generate: countingSort,
+  },
+  "bsearch-exact": {
+    key: "bsearch-exact",
+    inputHint: "[정렬된 수 목록, target] 예: [[3, 8, 15, 21, 27], 21] — 1~99 정수 1 ~ 16개",
+    pseudocode: EXACT_PSEUDOCODE,
+    validate: validateExact,
+    generate: exactSearch,
+  },
+  "bsearch-lower-bound": {
+    key: "bsearch-lower-bound",
+    inputHint: "[정렬된 수 목록, target] 예: [[2, 4, 4, 7], 4] — 1~99 정수 1 ~ 16개",
+    pseudocode: LOWER_BOUND_PSEUDOCODE,
+    validate: validateLowerBound,
+    generate: lowerBound,
+  },
+  "bsearch-answer": {
+    key: "bsearch-answer",
+    inputHint: "[줄 길이 목록, k] 예: [[80, 43, 57, 39], 11] — 1~99 정수 1 ~ 8개, k 1 ~ 50",
+    pseudocode: ANSWER_PSEUDOCODE,
+    validate: validateAnswer,
+    generate: answerSearch,
   },
 };
 

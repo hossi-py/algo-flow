@@ -34,6 +34,8 @@ describe("ConceptIllustration", () => {
     "hash-tally",
     "sorting-bars",
     "sorting-merge",
+    "bsearch-halving",
+    "bsearch-yes-no",
   ];
   it.each(keys)("%s 그림이 설명과 함께 그려진다", (key) => {
     const { container } = render(<ConceptIllustration illustration={key} />);

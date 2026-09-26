@@ -1,6 +1,7 @@
 import type { Topic, TopicSlug, UpcomingTopicSlug } from "@/types";
 import { backtrackingTopic } from "./backtracking";
 import { bfsTopic } from "./bfs";
+import { binarySearchTopic } from "./binary-search";
 import { dfsTopic } from "./dfs";
 import { graphRepresentationTopic } from "./graph-representation";
 import { hashTopic } from "./hash";
@@ -20,6 +21,7 @@ export const TOPICS: readonly Topic[] = [
   backtrackingTopic,
   hashTopic,
   sortingTopic,
+  binarySearchTopic,
 ];
 
 const TOPICS_BY_SLUG = new Map<string, Topic>(TOPICS.map((topic) => [topic.slug, topic]));
@@ -32,7 +34,4 @@ export function isTopicSlug(value: string): value is TopicSlug {
   return TOPICS_BY_SLUG.has(value);
 }
 
-export const UPCOMING_TOPICS: { slug: UpcomingTopicSlug; title: string }[] = [
-  { slug: "binary-search", title: "이분 탐색" },
-  { slug: "dp", title: "DP" },
-];
+export const UPCOMING_TOPICS: { slug: UpcomingTopicSlug; title: string }[] = [{ slug: "dp", title: "DP" }];

@@ -1,5 +1,6 @@
 import {
   ArrowDownUp,
+  Crosshair,
   GitBranch,
   KeyRound,
   Layers,
@@ -25,6 +26,7 @@ const TOPIC_ICONS: Record<TopicIcon, LucideIcon> = {
   maze: Route,
   lockers: KeyRound,
   bars: ArrowDownUp,
+  target: Crosshair,
 };
 
 export function TopicGlyph({ icon, ...props }: { icon: TopicIcon } & LucideProps) {

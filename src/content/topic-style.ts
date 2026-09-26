@@ -77,4 +77,11 @@ export const TOPIC_COLOR_CLASSES: Record<
     stroke: "stroke-topic-slate-foreground",
     fill: "fill-topic-slate",
   },
+  plum: {
+    surface: "bg-topic-plum",
+    text: "text-topic-plum-foreground",
+    ring: "ring-topic-plum-foreground/30",
+    stroke: "stroke-topic-plum-foreground",
+    fill: "fill-topic-plum",
+  },
 };

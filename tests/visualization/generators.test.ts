@@ -142,10 +142,10 @@ describe("generator 등록", () => {
     }
   });
 
-  it("19개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
+  it("22개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
     const used = new Set(TOPIC_PRESETS.map((preset) => preset.generator));
     expect([...used].sort()).toEqual(Object.keys(GENERATORS).sort());
-    expect(used.size).toBe(19);
+    expect(used.size).toBe(22);
   });
 
   it("프리셋 id가 겹치지 않는다", () => {
@@ -242,6 +242,11 @@ describe("입력 검증", () => {
     ["sort-merge", [[]]],
     ["sort-counting", [[10]]],
     ["sort-counting", [[-1]]],
+    ["bsearch-exact", [[3, 1, 2], 1]],
+    ["bsearch-exact", [[1, 2], 100]],
+    ["bsearch-lower-bound", [[], 1]],
+    ["bsearch-answer", [[0, 5], 2]],
+    ["bsearch-answer", [[5], 51]],
   ];
 
   it.each(BAD_INPUTS)("%s %j → 예외 대신 한국어 오류 메시지", (key, input) => {
@@ -334,5 +339,40 @@ describe("정렬 generator", () => {
     const last = steps.at(-1)!.state;
     expect(last.bars!.items.map((item) => item.value)).toEqual([1, 1, 0, 2, 0, 0, 0, 0, 0, 0]);
     expect(last.queue!.items.map((item) => item.value)).toEqual([0, 1, 3, 3]);
+  });
+});
+
+describe("이분 탐색 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+
+  it("정확히 찾기는 log N번 안에 찾고, 없으면 not-found 뒤 done", () => {
+    const nums = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31];
+    for (const target of nums) {
+      const steps = run("bsearch-exact", [nums, target]);
+      expect(steps.filter((s) => s.action === "compare").length).toBeLessThanOrEqual(5);
+      expect(steps.some((s) => s.action === "found")).toBe(true);
+    }
+    const missing = run("bsearch-exact", [nums, 4]);
+    expect(missing.map((s) => s.action).slice(-2)).toEqual(["not-found", "done"]);
+  });
+
+  it("경계 찾기는 같은 값 중 첫 자리, 없으면 끝을 답한다", () => {
+    const answer = (nums: number[], target: number) =>
+      run("bsearch-lower-bound", [nums, target]).at(-1)!.state.variables!.답;
+    expect(answer([2, 4, 4, 4, 7], 4)).toBe(1);
+    expect(answer([2, 4, 4, 4, 7], 5)).toBe(4);
+    expect(answer([2, 4], 9)).toBe(2);
+    expect(answer([2, 4], 1)).toBe(0);
+  });
+
+  it("답을 이분 탐색하면 가능한 가장 큰 길이를 찾는다", () => {
+    const answer = (cables: number[], k: number) => run("bsearch-answer", [cables, k]).at(-1)!.state.variables!.answer;
+    expect(answer([80, 43, 57, 39], 11)).toBe(19);
+    expect(answer([5], 5)).toBe(1);
+    expect(answer([3], 4)).toBe(0);
   });
 });

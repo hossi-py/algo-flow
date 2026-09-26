@@ -51,11 +51,12 @@ export const TOPIC_SLUGS = [
   "backtracking",
   "hash",
   "sorting",
+  "binary-search",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
 /** 이후 확장 예정 주제 (로드맵에 "곧 열려요"로 표시) */
-export type UpcomingTopicSlug = "binary-search" | "dp";
+export type UpcomingTopicSlug = "dp";
 
 export type LevelNumber = 1 | 2 | 3 | 4 | 5;
 
@@ -76,8 +77,8 @@ export const LEVEL_STAGE_LABELS: Record<LevelStage, string> = {
   exam: "코딩테스트 실전",
 };
 
-export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate";
-export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars";
+export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum";
+export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target";
 
 export const PATTERN_TAGS = [
   // 스택
@@ -128,6 +129,11 @@ export const PATTERN_TAGS = [
   "merge-step",
   "counting-sort",
   "interval-sweep",
+  // 이분 탐색
+  "exact-search",
+  "boundary-search",
+  "range-count",
+  "parametric-search",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -183,7 +189,9 @@ export type IllustrationKey =
   | "hash-lockers"
   | "hash-tally"
   | "sorting-bars"
-  | "sorting-merge";
+  | "sorting-merge"
+  | "bsearch-halving"
+  | "bsearch-yes-no";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {
@@ -377,7 +385,10 @@ export type VisualizationGeneratorKey =
   | "hash-two-sum"
   | "sort-insertion"
   | "sort-merge"
-  | "sort-counting";
+  | "sort-counting"
+  | "bsearch-exact"
+  | "bsearch-lower-bound"
+  | "bsearch-answer";
 
 export interface VisualizationPreset {
   id: string;
@@ -430,6 +441,8 @@ export type VizAction =
   | "split"
   | "merge"
   | "place"
+  // 이분 탐색
+  | "narrow"
   // 공통
   | "compare"
   | "init"

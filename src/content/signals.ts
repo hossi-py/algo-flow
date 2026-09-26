@@ -338,6 +338,48 @@ export const SIGNALS: PatternSignal[] = [
     caution: "N이 수천 이하면 이중 반복문으로 세도 괜찮아요.",
     strength: "medium",
   },
+  {
+    id: "sig-sorted-many-queries",
+    phrase: "정렬된 목록 + 질문이 아주 많음",
+    examples: [
+      "정렬된 번호 10만 개에서 질문 10만 개마다 위치를 찾으세요",
+      "점수가 q점 이상인 학생 수를 질문마다 답하세요",
+    ],
+    suspects: ["binary-search"],
+    patterns: ["exact-search", "range-count"],
+    reason: "질문마다 처음부터 훑으면 O(N·Q)예요. 정렬돼 있으면 반씩 버리며 O(log N)에 찾아서 전체 O(Q log N)이에요.",
+    caution: "위치가 필요 없고 '있는지'만 물으면 해시(set)가 더 간단해요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-first-true",
+    phrase: "처음으로 ~ 이상이 되는 위치 / 경계",
+    examples: ["x 이상인 첫 번째 위치를 구하세요", "처음으로 비가 온 날은 며칠째인가요?"],
+    suspects: ["binary-search"],
+    patterns: ["boundary-search"],
+    reason: "앞쪽은 전부 '아니오', 뒤쪽은 전부 '예'로 나뉘면 그 경계는 이분 탐색으로 찾을 수 있어요.",
+    strength: "medium",
+  },
+  {
+    id: "sig-max-min-answer",
+    phrase: "~할 수 있는 최대 / 최소 값 (최대의 최소, 최소의 최대)",
+    examples: ["적어도 K개를 만들 수 있는 최대 길이는?", "가장 큰 묶음의 합을 최소로 하려면?"],
+    suspects: ["binary-search"],
+    patterns: ["parametric-search"],
+    reason:
+      "답을 직접 구하긴 어렵지만 '답이 X일 때 가능한가?'는 쉽게 확인할 수 있고, 가능/불가능이 한 번만 바뀌면 X를 이분 탐색해요.",
+    caution: "X가 커질수록 가능 → 불가능(또는 반대)으로 한 번만 바뀌는지 먼저 확인하세요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-huge-range",
+    phrase: "답의 범위가 엄청 큼 (10억, 10¹⁸)",
+    examples: ["1 ≤ 시간 ≤ 1,000,000,000,000", "길이는 최대 2³¹ − 1이에요"],
+    suspects: ["binary-search"],
+    patterns: ["parametric-search"],
+    reason: "답 후보를 하나씩 다 확인할 수 없을 만큼 크면, 반씩 줄여 약 30~60번만 확인하는 이분 탐색을 떠올려요.",
+    strength: "weak",
+  },
 ];
 
 const SIGNALS_BY_ID = new Map(SIGNALS.map((signal) => [signal.id, signal]));

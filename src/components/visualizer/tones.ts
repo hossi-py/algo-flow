@@ -42,6 +42,7 @@ export const ACTION_LABEL: Record<VizAction, string> = {
   split: "나누기",
   merge: "합치기",
   place: "자리 잡기",
+  narrow: "범위 좁히기",
   compare: "비교",
   init: "시작",
   done: "끝",

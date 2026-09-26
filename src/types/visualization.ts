@@ -19,7 +19,10 @@ export type VisualizationGeneratorKey =
   | "hash-two-sum"
   | "sort-insertion"
   | "sort-merge"
-  | "sort-counting";
+  | "sort-counting"
+  | "bsearch-exact"
+  | "bsearch-lower-bound"
+  | "bsearch-answer";
 
 export interface VisualizationPreset {
   id: string;
@@ -72,6 +75,8 @@ export type VizAction =
   | "split"
   | "merge"
   | "place"
+  // 이분 탐색
+  | "narrow"
   // 공통
   | "compare"
   | "init"

@@ -29,6 +29,21 @@ import { bfsRippleRings } from "./bfs/ripple-rings";
 import { bfsRumorDays } from "./bfs/rumor-days";
 import { bfsSafeDial } from "./bfs/safe-dial";
 import { bfsTwoBuckets } from "./bfs/two-buckets";
+import { binarySearchCutCables } from "./binary-search/cut-cables";
+import { binarySearchCutoffCount } from "./binary-search/cutoff-count";
+import { binarySearchEatingSpeed } from "./binary-search/eating-speed";
+import { binarySearchKthTable } from "./binary-search/kth-table";
+import { binarySearchLanternSpacing } from "./binary-search/lantern-spacing";
+import { binarySearchNearestStation } from "./binary-search/nearest-station";
+import { binarySearchPageFinder } from "./binary-search/page-finder";
+import { binarySearchRangeCount } from "./binary-search/range-count";
+import { binarySearchRisingPath } from "./binary-search/rising-path";
+import { binarySearchRotatedShelf } from "./binary-search/rotated-shelf";
+import { binarySearchSplitBooks } from "./binary-search/split-books";
+import { binarySearchSquareGarden } from "./binary-search/square-garden";
+import { binarySearchToyWorkshop } from "./binary-search/toy-workshop";
+import { binarySearchTreeSaw } from "./binary-search/tree-saw";
+import { binarySearchUpdown } from "./binary-search/updown";
 import { dfsCaveOrder } from "./dfs/cave-order";
 import { dfsClubCount } from "./dfs/club-count";
 import { dfsDownhillRoutes } from "./dfs/downhill-routes";
@@ -167,6 +182,21 @@ export const PROBLEMS: readonly Problem[] = [
   bfsRumorDays,
   bfsSafeDial,
   bfsTwoBuckets,
+  binarySearchCutCables,
+  binarySearchCutoffCount,
+  binarySearchEatingSpeed,
+  binarySearchKthTable,
+  binarySearchLanternSpacing,
+  binarySearchNearestStation,
+  binarySearchPageFinder,
+  binarySearchRangeCount,
+  binarySearchRisingPath,
+  binarySearchRotatedShelf,
+  binarySearchSplitBooks,
+  binarySearchSquareGarden,
+  binarySearchToyWorkshop,
+  binarySearchTreeSaw,
+  binarySearchUpdown,
   dfsCaveOrder,
   dfsClubCount,
   dfsDownhillRoutes,

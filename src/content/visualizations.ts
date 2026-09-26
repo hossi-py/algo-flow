@@ -209,4 +209,27 @@ export const TOPIC_VISUALIZATIONS: Record<TopicSlug, VisualizationPreset[]> = {
       [[3, 1, 4, 1, 5, 9, 2, 6, 5, 3]],
     ),
   ],
+  "binary-search": [
+    preset(
+      "bsearch-exact-11",
+      "bsearch-exact",
+      "정확히 찾기",
+      "가운데를 보고, 찾는 값보다 작으면 왼쪽 절반을, 크면 오른쪽 절반을 통째로 버려요. 11칸이 4번 만에 끝나요.",
+      [[3, 8, 15, 21, 27, 34, 42, 56, 63, 77, 88], 42],
+    ),
+    preset(
+      "bsearch-lower-bound-4",
+      "bsearch-lower-bound",
+      "경계 찾기 (lower bound)",
+      "같은 값이 여러 개일 때 '처음으로 target 이상이 되는 자리'를 찾아요. mid가 조건을 만족해도 버리지 않고 남겨 둬요.",
+      [[2, 4, 4, 4, 7, 9, 12], 4],
+    ),
+    preset(
+      "bsearch-answer-cables",
+      "bsearch-answer",
+      "답을 이분 탐색 (줄 자르기)",
+      "배열이 아니라 '답'의 범위를 반씩 줄여요. 길이 X로 가능한지 확인해서 되면 더 길게, 안 되면 더 짧게.",
+      [[80, 43, 57, 39], 11],
+    ),
+  ],
 };
