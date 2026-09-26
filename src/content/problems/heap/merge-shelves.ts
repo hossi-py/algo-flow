@@ -1,4 +1,68 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [1, 4, 5],
+        [1, 3, 4],
+        [2, 6],
+      ],
+    ],
+    expected: [1, 1, 2, 3, 4, 4, 5, 6],
+    explanation: "[1, 1, 2, 3, 4, 4, 5, 6]이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[[], [2]]],
+    expected: [2],
+    explanation: "빈 책장은 건너뛰어요: [2].",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[]]],
+    expected: [],
+    failureNote: "책이 하나도 없어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[[5, 10, 15]]],
+    expected: [5, 10, 15],
+    failureNote: "책장이 하나면 그대로예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[[9], [1, 2, 3], [4]]],
+    expected: [1, 2, 3, 4, 9],
+    failureNote: "한 책장이 먼저 다 떨어져도 나머지를 계속 합쳐요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 1000 }, (_, r) => Array.from({ length: 100 }, (_, c) => c * 1000 + ((r * 7919) % 1000))),
+    ],
+    expected: Array.from({ length: 1000 }, (_, r) =>
+      Array.from({ length: 100 }, (_, c) => c * 1000 + ((r * 7919) % 1000)),
+    )
+      .flat()
+      .sort((a, b) => a - b),
+    failureNote: "책장 1,000개, 책 10만 권이에요. 매번 모든 책장의 맨 앞을 비교하면 1억 번이에요. 힙이면 N log k예요.",
+  },
+]);
 
 export const heapMergeShelves: Problem = {
   id: "c:heap-merge-shelves",
@@ -42,69 +106,9 @@ export const heapMergeShelves: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [1, 4, 5],
-          [1, 3, 4],
-          [2, 6],
-        ],
-      ],
-      expected: [1, 1, 2, 3, 4, 4, 5, 6],
-      explanation: "[1, 1, 2, 3, 4, 4, 5, 6]이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[[], [2]]],
-      expected: [2],
-      explanation: "빈 책장은 건너뛰어요: [2].",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[]]],
-      expected: [],
-      failureNote: "책이 하나도 없어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[[5, 10, 15]]],
-      expected: [5, 10, 15],
-      failureNote: "책장이 하나면 그대로예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[[9], [1, 2, 3], [4]]],
-      expected: [1, 2, 3, 4, 9],
-      failureNote: "한 책장이 먼저 다 떨어져도 나머지를 계속 합쳐요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 1000 }, (_, r) => Array.from({ length: 100 }, (_, c) => c * 1000 + ((r * 7919) % 1000))),
-      ],
-      expected: Array.from({ length: 1000 }, (_, r) =>
-        Array.from({ length: 100 }, (_, c) => c * 1000 + ((r * 7919) % 1000)),
-      )
-        .flat()
-        .sort((a, b) => a - b),
-      failureNote:
-        "책장 1,000개, 책 10만 권이에요. 매번 모든 책장의 맨 앞을 비교하면 1억 번이에요. 힙이면 N log k예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

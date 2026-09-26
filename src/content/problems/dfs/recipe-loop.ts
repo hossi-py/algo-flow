@@ -1,4 +1,141 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      3,
+      [
+        [0, 1],
+        [1, 2],
+      ],
+    ],
+    expected: true,
+    explanation: "0 → 1 → 2 순서로 하면 돼요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      3,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 0],
+      ],
+    ],
+    expected: false,
+    explanation: "0 → 1 → 2 → 0 순환이라 끝낼 수 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1],
+        [0, 2],
+        [1, 3],
+        [2, 3],
+      ],
+    ],
+    expected: true,
+    failureNote: "3번에 두 갈래로 닿지만 순환은 아니에요. '이미 방문함'만으로 순환이라고 판단하면 틀려요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      2,
+      [
+        [0, 1],
+        [1, 0],
+      ],
+    ],
+    expected: false,
+    failureNote: "두 단계가 서로를 기다려요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, []],
+    expected: true,
+    failureNote: "규칙이 없어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      6,
+      [
+        [0, 1],
+        [1, 2],
+        [3, 4],
+        [4, 5],
+        [5, 3],
+      ],
+    ],
+    expected: false,
+    failureNote: "0번에서 시작한 탐색에는 순환이 없지만, 3–4–5에 순환이 있어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [4, 3],
+        [3, 2],
+        [2, 1],
+        [1, 0],
+        [4, 0],
+      ],
+    ],
+    expected: true,
+    failureNote: "번호가 거꾸로여도 순환이 없어요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      2000,
+      Array.from({ length: 3996 }, (_, k) => {
+        const i = Math.floor(k / 2);
+        return [i, i + 2 - (k % 2)];
+      }).concat([[1998, 1999]]),
+    ],
+    expected: true,
+    failureNote: "2,000단계에 규칙 약 4,000개, 순환은 없어요. 단계마다 처음부터 다시 탐색하면 느려요.",
+  },
+  {
+    id: "hid-7",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      2000,
+      [
+        ...Array.from({ length: 3996 }, (_, k) => {
+          const i = Math.floor(k / 2);
+          return [i, i + 2 - (k % 2)];
+        }),
+        [1998, 1999],
+        [1999, 0],
+      ],
+    ],
+    expected: false,
+    failureNote: "같은 레시피에 마지막 단계 → 첫 단계 규칙 하나가 더해져 긴 순환이 생겼어요.",
+  },
+]);
 
 export const dfsRecipeLoop: Problem = {
   id: "c:dfs-recipe-loop",
@@ -43,141 +180,9 @@ export const dfsRecipeLoop: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        3,
-        [
-          [0, 1],
-          [1, 2],
-        ],
-      ],
-      expected: true,
-      explanation: "0 → 1 → 2 순서로 하면 돼요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        3,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 0],
-        ],
-      ],
-      expected: false,
-      explanation: "0 → 1 → 2 → 0 순환이라 끝낼 수 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1],
-          [0, 2],
-          [1, 3],
-          [2, 3],
-        ],
-      ],
-      expected: true,
-      failureNote: "3번에 두 갈래로 닿지만 순환은 아니에요. '이미 방문함'만으로 순환이라고 판단하면 틀려요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        2,
-        [
-          [0, 1],
-          [1, 0],
-        ],
-      ],
-      expected: false,
-      failureNote: "두 단계가 서로를 기다려요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, []],
-      expected: true,
-      failureNote: "규칙이 없어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        6,
-        [
-          [0, 1],
-          [1, 2],
-          [3, 4],
-          [4, 5],
-          [5, 3],
-        ],
-      ],
-      expected: false,
-      failureNote: "0번에서 시작한 탐색에는 순환이 없지만, 3–4–5에 순환이 있어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [4, 3],
-          [3, 2],
-          [2, 1],
-          [1, 0],
-          [4, 0],
-        ],
-      ],
-      expected: true,
-      failureNote: "번호가 거꾸로여도 순환이 없어요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        2000,
-        Array.from({ length: 3996 }, (_, k) => {
-          const i = Math.floor(k / 2);
-          return [i, i + 2 - (k % 2)];
-        }).concat([[1998, 1999]]),
-      ],
-      expected: true,
-      failureNote: "2,000단계에 규칙 약 4,000개, 순환은 없어요. 단계마다 처음부터 다시 탐색하면 느려요.",
-    },
-    {
-      id: "hid-7",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        2000,
-        [
-          ...Array.from({ length: 3996 }, (_, k) => {
-            const i = Math.floor(k / 2);
-            return [i, i + 2 - (k % 2)];
-          }),
-          [1998, 1999],
-          [1999, 0],
-        ],
-      ],
-      expected: false,
-      failureNote: "같은 레시피에 마지막 단계 → 첫 단계 규칙 하나가 더해져 긴 순환이 생겼어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

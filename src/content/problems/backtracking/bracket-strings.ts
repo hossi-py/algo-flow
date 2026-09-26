@@ -1,4 +1,82 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [2],
+    expected: ["(())", "()()"],
+    explanation: "(()), ()() 두 가지예요. ())(는 중간에 닫는 괄호가 더 많아져서 안 돼요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [3],
+    expected: ["((()))", "(()())", "(())()", "()(())", "()()()"],
+    explanation: "5가지예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1],
+    expected: ["()"],
+    failureNote: "() 하나뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [4],
+    expected: [
+      "(((())))",
+      "((()()))",
+      "((())())",
+      "((()))()",
+      "(()(()))",
+      "(()()())",
+      "(()())()",
+      "(())(())",
+      "(())()()",
+      "()((()))",
+      "()(()())",
+      "()(())()",
+      "()()(())",
+      "()()()()",
+    ],
+    failureNote: "14가지예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [5],
+    // prettier-ignore
+    expected: ["((((()))))","(((()())))","(((())()))","(((()))())","(((())))()","((()(())))","((()()()))","((()())())","((()()))()","((())(()))","((())()())","((())())()","((()))(())","((()))()()","(()((())))","(()(()()))","(()(())())","(()(()))()","(()()(()))","(()()()())","(()()())()","(()())(())","(()())()()","(())((()))","(())(()())","(())(())()","(())()(())","(())()()()","()(((())))","()((()()))","()((())())","()((()))()","()(()(()))","()(()()())","()(()())()","()(())(())","()(())()()","()()((()))","()()(()())","()()(())()","()()()(())","()()()()()"],
+    failureNote: "42가지예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [8],
+    expected: Array.from({ length: 1 << 16 }, (_, m) =>
+      Array.from({ length: 16 }, (_, j) => (((m >> (15 - j)) & 1) === 0 ? "(" : ")")).join(""),
+    ).filter((s) => {
+      let open = 0;
+      for (const ch of s) {
+        open += ch === "(" ? 1 : -1;
+        if (open < 0) return false;
+      }
+      return open === 0;
+    }),
+    failureNote:
+      "8쌍이면 1,430가지예요. 2^16가지 괄호열을 모두 만들고 검사하는 대신, 만드는 도중에 잘못된 가지를 잘라요.",
+  },
+]);
 
 export const backtrackingBracketStrings: Problem = {
   id: "c:backtracking-bracket-strings",
@@ -39,82 +117,9 @@ export const backtrackingBracketStrings: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [2],
-      expected: ["(())", "()()"],
-      explanation: "(()), ()() 두 가지예요. ())(는 중간에 닫는 괄호가 더 많아져서 안 돼요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [3],
-      expected: ["((()))", "(()())", "(())()", "()(())", "()()()"],
-      explanation: "5가지예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1],
-      expected: ["()"],
-      failureNote: "() 하나뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [4],
-      expected: [
-        "(((())))",
-        "((()()))",
-        "((())())",
-        "((()))()",
-        "(()(()))",
-        "(()()())",
-        "(()())()",
-        "(())(())",
-        "(())()()",
-        "()((()))",
-        "()(()())",
-        "()(())()",
-        "()()(())",
-        "()()()()",
-      ],
-      failureNote: "14가지예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [5],
-      // prettier-ignore
-      expected: ["((((()))))","(((()())))","(((())()))","(((()))())","(((())))()","((()(())))","((()()()))","((()())())","((()()))()","((())(()))","((())()())","((())())()","((()))(())","((()))()()","(()((())))","(()(()()))","(()(())())","(()(()))()","(()()(()))","(()()()())","(()()())()","(()())(())","(()())()()","(())((()))","(())(()())","(())(())()","(())()(())","(())()()()","()(((())))","()((()()))","()((())())","()((()))()","()(()(()))","()(()()())","()(()())()","()(())(())","()(())()()","()()((()))","()()(()())","()()(())()","()()()(())","()()()()()"],
-      failureNote: "42가지예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [8],
-      expected: Array.from({ length: 1 << 16 }, (_, m) =>
-        Array.from({ length: 16 }, (_, j) => (((m >> (15 - j)) & 1) === 0 ? "(" : ")")).join(""),
-      ).filter((s) => {
-        let open = 0;
-        for (const ch of s) {
-          open += ch === "(" ? 1 : -1;
-          if (open < 0) return false;
-        }
-        return open === 0;
-      }),
-      failureNote:
-        "8쌍이면 1,430가지예요. 2^16가지 괄호열을 모두 만들고 검사하는 대신, 만드는 도중에 잘못된 가지를 잘라요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

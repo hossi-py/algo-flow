@@ -1,4 +1,65 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 0, 2]],
+    expected: 5,
+    explanation: "2, 1, 2개로 5개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [[1, 2, 2]],
+    expected: 4,
+    explanation: "1, 2, 1개로 4개예요. 점수가 같으면 더 받을 필요가 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[7]],
+    expected: 1,
+    failureNote: "혼자면 1개예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 2, 3, 4]],
+    expected: 10,
+    failureNote: "1, 2, 3, 4개로 10개예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 3, 4, 5, 2]],
+    expected: 11,
+    failureNote: "왼쪽에서만 보면 1, 2, 3, 4, 1인데, 오른쪽에서 보면 5는 2보다 많아야 해요 (이미 4 > 1). 11개예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[5, 4, 3, 2, 1, 2]],
+    expected: 17,
+    failureNote: "내려가는 쪽은 오른쪽에서 훑어야 맞출 수 있어요. 5, 4, 3, 2, 1, 2개로 17개예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i < 60000 ? i : (i * 7919) % 1000))],
+    expected: 1800297268,
+    failureNote:
+      "아이 10만 명이에요. 조건이 맞을 때까지 계속 고치면 느려요. 두 번만 훑으세요. (답이 수십억이라 Java는 long)",
+  },
+]);
 
 export const greedyCandyLine: Problem = {
   id: "c:greedy-candy-line",
@@ -43,65 +104,9 @@ export const greedyCandyLine: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 0, 2]],
-      expected: 5,
-      explanation: "2, 1, 2개로 5개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [[1, 2, 2]],
-      expected: 4,
-      explanation: "1, 2, 1개로 4개예요. 점수가 같으면 더 받을 필요가 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[7]],
-      expected: 1,
-      failureNote: "혼자면 1개예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 2, 3, 4]],
-      expected: 10,
-      failureNote: "1, 2, 3, 4개로 10개예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 3, 4, 5, 2]],
-      expected: 11,
-      failureNote: "왼쪽에서만 보면 1, 2, 3, 4, 1인데, 오른쪽에서 보면 5는 2보다 많아야 해요 (이미 4 > 1). 11개예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[5, 4, 3, 2, 1, 2]],
-      expected: 17,
-      failureNote: "내려가는 쪽은 오른쪽에서 훑어야 맞출 수 있어요. 5, 4, 3, 2, 1, 2개로 17개예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i < 60000 ? i : (i * 7919) % 1000))],
-      expected: 1800297268,
-      failureNote:
-        "아이 10만 명이에요. 조건이 맞을 때까지 계속 고치면 느려요. 두 번만 훑으세요. (답이 수십억이라 Java는 long)",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

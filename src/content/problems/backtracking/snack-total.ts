@@ -1,5 +1,73 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[100, 200, 300, 400], 500],
+    expected: 2,
+    explanation: "{100, 400}, {200, 300} 두 가지예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [[500, 500, 500], 1000],
+    expected: 3,
+    explanation: "가격이 같아도 다른 간식이에요. 세 개 중 두 개를 고르는 3가지예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[300], 300],
+    expected: 1,
+    failureNote: "간식 하나로 딱 맞아요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[300, 400], 500],
+    expected: 0,
+    failureNote: "딱 맞출 수 없어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[100, 100, 200, 300], 400],
+    expected: 3,
+    failureNote: "{100, 300} 두 가지, {100, 100, 200} 한 가지로 3가지예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 2, 3, 4, 5], 15],
+    expected: 1,
+    failureNote: "모두 사야 15예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [[100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100], 800],
+    expected: 12870,
+    failureNote: "16개 중 8개를 고르는 12,870가지예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [[120, 350, 80, 410, 200, 90, 330, 150, 60, 270, 500, 30, 180, 240, 70, 310], 1000],
+    expected: 208,
+    failureNote: "16개 간식의 모든 고르기(65,536가지)를 살펴봐요.",
+  },
+]);
 
 export const backtrackingSnackTotal: Problem = {
   id: "c:backtracking-snack-total",
@@ -42,72 +110,9 @@ export const backtrackingSnackTotal: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[100, 200, 300, 400], 500],
-      expected: 2,
-      explanation: "{100, 400}, {200, 300} 두 가지예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [[500, 500, 500], 1000],
-      expected: 3,
-      explanation: "가격이 같아도 다른 간식이에요. 세 개 중 두 개를 고르는 3가지예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[300], 300],
-      expected: 1,
-      failureNote: "간식 하나로 딱 맞아요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[300, 400], 500],
-      expected: 0,
-      failureNote: "딱 맞출 수 없어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[100, 100, 200, 300], 400],
-      expected: 3,
-      failureNote: "{100, 300} 두 가지, {100, 100, 200} 한 가지로 3가지예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 2, 3, 4, 5], 15],
-      expected: 1,
-      failureNote: "모두 사야 15예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [[100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100], 800],
-      expected: 12870,
-      failureNote: "16개 중 8개를 고르는 12,870가지예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [[120, 350, 80, 410, 200, 90, 330, 150, 60, 270, 500, 30, 180, 240, 70, 310], 1000],
-      expected: 208,
-      failureNote: "16개 간식의 모든 고르기(65,536가지)를 살펴봐요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

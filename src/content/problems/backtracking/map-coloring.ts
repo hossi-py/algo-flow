@@ -1,4 +1,115 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      3,
+      [
+        [0, 1],
+        [1, 2],
+      ],
+      3,
+    ],
+    expected: 12,
+    explanation: "0번 3가지, 1번은 0번과 달라야 해서 2가지, 2번도 1번과 달라야 해서 2가지. 3 × 2 × 2 = 12예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      3,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 0],
+      ],
+      2,
+    ],
+    expected: 0,
+    explanation: "세 구역이 서로 맞닿아 있으면 2가지 색으로는 칠할 수 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, [], 1],
+    expected: 1,
+    failureNote: "구역 하나, 색 하나예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [3, [], 2],
+    expected: 8,
+    failureNote: "맞닿은 곳이 없으면 2 × 2 × 2 = 8가지예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 0],
+      ],
+      3,
+    ],
+    expected: 18,
+    failureNote: "네 구역이 고리 모양이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [0, 2],
+        [0, 3],
+        [1, 2],
+        [2, 3],
+        [3, 1],
+      ],
+      4,
+    ],
+    expected: 24,
+    failureNote: "모든 구역이 서로 맞닿아 있어요. 4 × 3 × 2 × 1 = 24예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      14,
+      [...Array.from({ length: 12 }, (_, i) => [i, i + 2]), ...Array.from({ length: 7 }, (_, i) => [2 * i, 2 * i + 1])],
+      3,
+    ],
+    expected: 4374,
+    failureNote: "구역 14개가 사다리 모양으로 이어져 있어요. 3^14 ≈ 478만 가지를 다 칠해 보고 검사하면 느려요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      14,
+      [...Array.from({ length: 13 }, (_, i) => [i, i + 1]), ...Array.from({ length: 12 }, (_, i) => [i, i + 2])],
+      4,
+    ],
+    expected: 49152,
+    failureNote: "구역 14개가 삼각형 띠 모양이에요. 4^14 ≈ 2.7억 가지예요.",
+  },
+]);
 
 export const backtrackingMapColoring: Problem = {
   id: "c:backtracking-map-coloring",
@@ -44,118 +155,9 @@ export const backtrackingMapColoring: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        3,
-        [
-          [0, 1],
-          [1, 2],
-        ],
-        3,
-      ],
-      expected: 12,
-      explanation: "0번 3가지, 1번은 0번과 달라야 해서 2가지, 2번도 1번과 달라야 해서 2가지. 3 × 2 × 2 = 12예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        3,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 0],
-        ],
-        2,
-      ],
-      expected: 0,
-      explanation: "세 구역이 서로 맞닿아 있으면 2가지 색으로는 칠할 수 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, [], 1],
-      expected: 1,
-      failureNote: "구역 하나, 색 하나예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [3, [], 2],
-      expected: 8,
-      failureNote: "맞닿은 곳이 없으면 2 × 2 × 2 = 8가지예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [3, 0],
-        ],
-        3,
-      ],
-      expected: 18,
-      failureNote: "네 구역이 고리 모양이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [0, 2],
-          [0, 3],
-          [1, 2],
-          [2, 3],
-          [3, 1],
-        ],
-        4,
-      ],
-      expected: 24,
-      failureNote: "모든 구역이 서로 맞닿아 있어요. 4 × 3 × 2 × 1 = 24예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        14,
-        [
-          ...Array.from({ length: 12 }, (_, i) => [i, i + 2]),
-          ...Array.from({ length: 7 }, (_, i) => [2 * i, 2 * i + 1]),
-        ],
-        3,
-      ],
-      expected: 4374,
-      failureNote: "구역 14개가 사다리 모양으로 이어져 있어요. 3^14 ≈ 478만 가지를 다 칠해 보고 검사하면 느려요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        14,
-        [...Array.from({ length: 13 }, (_, i) => [i, i + 1]), ...Array.from({ length: 12 }, (_, i) => [i, i + 2])],
-        4,
-      ],
-      expected: 49152,
-      failureNote: "구역 14개가 삼각형 띠 모양이에요. 4^14 ≈ 2.7억 가지예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

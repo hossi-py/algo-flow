@@ -1,4 +1,102 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1, 1],
+        [0, 2, 1],
+        [1, 3, 1],
+        [2, 3, 1],
+        [1, 2, 5],
+      ],
+    ],
+    expected: 4,
+    explanation: "가장 빠른 길은 0 → 1 → 3과 0 → 2 → 3이에요. 1번과 2번을 잇는 도로만 빼고 4개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      3,
+      [
+        [0, 1, 2],
+        [1, 2, 2],
+        [0, 2, 4],
+      ],
+    ],
+    expected: 3,
+    explanation: "곧장 가도, 1번을 거쳐도 4분이라 도로 3개 모두 쓰여요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      2,
+      [
+        [0, 1, 1],
+        [0, 1, 2],
+      ],
+    ],
+    expected: 1,
+    failureNote: "같은 두 마을 사이라도 느린 도로는 안 쓰여서 1이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [3, [[0, 1, 1]]],
+    expected: 0,
+    failureNote: "2번에 갈 수 없어서 0이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1, 1],
+        [0, 2, 1],
+        [1, 3, 1],
+        [2, 3, 1],
+        [1, 2, 1],
+      ],
+    ],
+    expected: 4,
+    failureNote:
+      "1번과 2번은 모두 가장 빠른 길 위에 있지만, 둘을 잇는 도로는 어느 가장 빠른 길에도 안 쓰여요. 답은 4예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      10000,
+      [
+        ...[
+          ...Array.from({ length: 9900 }, (_, i) => [i, i + 100, 1]),
+          ...Array.from({ length: 10000 }, (_, i) => i)
+            .filter((i) => i % 100 !== 99)
+            .map((i) => [i, i + 1, 1]),
+        ],
+        ...Array.from({ length: 9801 }, (_, i) => i)
+          .filter((i) => i % 100 !== 99)
+          .map((i) => [i, i + 101, 3]),
+      ],
+    ],
+    expected: 19800,
+    failureNote:
+      "100 × 100 격자 모양 도로에 대각선 지름길(3분)을 더했어요. 대각선은 옆·아래 두 번(2분)보다 느려서 안 쓰여요.",
+  },
+]);
 
 export const dijkstraUsefulRoads: Problem = {
   id: "c:dijkstra-useful-roads",
@@ -49,102 +147,9 @@ export const dijkstraUsefulRoads: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1, 1],
-          [0, 2, 1],
-          [1, 3, 1],
-          [2, 3, 1],
-          [1, 2, 5],
-        ],
-      ],
-      expected: 4,
-      explanation: "가장 빠른 길은 0 → 1 → 3과 0 → 2 → 3이에요. 1번과 2번을 잇는 도로만 빼고 4개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        3,
-        [
-          [0, 1, 2],
-          [1, 2, 2],
-          [0, 2, 4],
-        ],
-      ],
-      expected: 3,
-      explanation: "곧장 가도, 1번을 거쳐도 4분이라 도로 3개 모두 쓰여요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        2,
-        [
-          [0, 1, 1],
-          [0, 1, 2],
-        ],
-      ],
-      expected: 1,
-      failureNote: "같은 두 마을 사이라도 느린 도로는 안 쓰여서 1이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [3, [[0, 1, 1]]],
-      expected: 0,
-      failureNote: "2번에 갈 수 없어서 0이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1, 1],
-          [0, 2, 1],
-          [1, 3, 1],
-          [2, 3, 1],
-          [1, 2, 1],
-        ],
-      ],
-      expected: 4,
-      failureNote:
-        "1번과 2번은 모두 가장 빠른 길 위에 있지만, 둘을 잇는 도로는 어느 가장 빠른 길에도 안 쓰여요. 답은 4예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        10000,
-        [
-          ...[
-            ...Array.from({ length: 9900 }, (_, i) => [i, i + 100, 1]),
-            ...Array.from({ length: 10000 }, (_, i) => i)
-              .filter((i) => i % 100 !== 99)
-              .map((i) => [i, i + 1, 1]),
-          ],
-          ...Array.from({ length: 9801 }, (_, i) => i)
-            .filter((i) => i % 100 !== 99)
-            .map((i) => [i, i + 101, 3]),
-        ],
-      ],
-      expected: 19800,
-      failureNote:
-        "100 × 100 격자 모양 도로에 대각선 지름길(3분)을 더했어요. 대각선은 옆·아래 두 번(2분)보다 느려서 안 쓰여요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

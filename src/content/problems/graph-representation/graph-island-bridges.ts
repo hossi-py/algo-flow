@@ -1,5 +1,65 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[[1, 2], [0], [0]]],
+    expected: 2,
+    explanation:
+      "0–1, 0–2 다리 두 개예요. 목록에는 번호가 4번 나오지만, 다리 하나가 양쪽 섬 목록에 한 번씩 적혀서 그래요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[[]]],
+    expected: 0,
+    explanation: "섬이 하나뿐이고 다리가 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[[1], [0]]],
+    expected: 1,
+    failureNote: "다리 하나가 두 번 적혀 있어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 2, 3],
+        [0, 2, 3],
+        [0, 1, 3],
+        [0, 1, 2],
+      ],
+    ],
+    expected: 6,
+    failureNote: "섬 4개가 모두 서로 이어져 있어요. 목록 길이의 합 12를 그대로 쓰면 안 돼요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[], [2], [1], []]],
+    expected: 1,
+    failureNote: "다리가 없는 섬이 섞여 있어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 1000 }, (_, i) => Array.from({ length: 1000 }, (_, j) => j).filter((j) => j !== i))],
+    expected: 499500,
+    failureNote: "섬 1,000개가 모두 서로 이어져 있어요.",
+  },
+]);
 
 export const graphIslandBridges: Problem = {
   id: "c:graph-island-bridges",
@@ -47,64 +107,9 @@ export const graphIslandBridges: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[[1, 2], [0], [0]]],
-      expected: 2,
-      explanation:
-        "0–1, 0–2 다리 두 개예요. 목록에는 번호가 4번 나오지만, 다리 하나가 양쪽 섬 목록에 한 번씩 적혀서 그래요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[[]]],
-      expected: 0,
-      explanation: "섬이 하나뿐이고 다리가 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[[1], [0]]],
-      expected: 1,
-      failureNote: "다리 하나가 두 번 적혀 있어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 2, 3],
-          [0, 2, 3],
-          [0, 1, 3],
-          [0, 1, 2],
-        ],
-      ],
-      expected: 6,
-      failureNote: "섬 4개가 모두 서로 이어져 있어요. 목록 길이의 합 12를 그대로 쓰면 안 돼요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[], [2], [1], []]],
-      expected: 1,
-      failureNote: "다리가 없는 섬이 섞여 있어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 1000 }, (_, i) => Array.from({ length: 1000 }, (_, j) => j).filter((j) => j !== i))],
-      expected: 499500,
-      failureNote: "섬 1,000개가 모두 서로 이어져 있어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

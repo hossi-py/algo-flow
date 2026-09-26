@@ -1,4 +1,83 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [10, 1, 100, 10],
+      [
+        [0, 1],
+        [0, 2],
+        [1, 3],
+        [2, 3],
+      ],
+    ],
+    expected: 120,
+    explanation: "3번은 2번(10 + 100 = 110일째 끝)을 기다려야 해서 110 + 10 = 120이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[5], []],
+    expected: 5,
+    explanation: "작업 하나면 5예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[3, 2, 1], []],
+    expected: 3,
+    failureNote: "조건이 없으면 모두 동시에 해서 가장 긴 3이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [1, 2, 3],
+      [
+        [0, 1],
+        [1, 2],
+      ],
+    ],
+    expected: 6,
+    failureNote: "한 줄로 이어져서 1 + 2 + 3 = 6이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [5, 1, 1, 1],
+      [
+        [1, 2],
+        [2, 3],
+      ],
+    ],
+    expected: 5,
+    failureNote:
+      "1 → 2 → 3은 3일이지만 0번이 혼자 5일 걸려서 5예요. 마지막 작업이 아니라 가장 늦게 끝나는 작업을 봐야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 30000 }, (_, i) => ((i * 7919) % 1000) + 1),
+      Array.from({ length: 90000 }, (_, i) => {
+        const a = (i * 7919) % 29999;
+        return [a, a + 1 + ((i * 104729) % (29999 - a))];
+      }),
+    ],
+    expected: 29097,
+    failureNote: "작업 3만 개, 조건 9만 개예요. 작업마다 가능한 경로를 모두 따라가면 끝나지 않아요.",
+  },
+]);
 
 export const topoBuildTime: Problem = {
   id: "c:topo-build-time",
@@ -47,83 +126,9 @@ export const topoBuildTime: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [10, 1, 100, 10],
-        [
-          [0, 1],
-          [0, 2],
-          [1, 3],
-          [2, 3],
-        ],
-      ],
-      expected: 120,
-      explanation: "3번은 2번(10 + 100 = 110일째 끝)을 기다려야 해서 110 + 10 = 120이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[5], []],
-      expected: 5,
-      explanation: "작업 하나면 5예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[3, 2, 1], []],
-      expected: 3,
-      failureNote: "조건이 없으면 모두 동시에 해서 가장 긴 3이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [1, 2, 3],
-        [
-          [0, 1],
-          [1, 2],
-        ],
-      ],
-      expected: 6,
-      failureNote: "한 줄로 이어져서 1 + 2 + 3 = 6이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [5, 1, 1, 1],
-        [
-          [1, 2],
-          [2, 3],
-        ],
-      ],
-      expected: 5,
-      failureNote:
-        "1 → 2 → 3은 3일이지만 0번이 혼자 5일 걸려서 5예요. 마지막 작업이 아니라 가장 늦게 끝나는 작업을 봐야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 30000 }, (_, i) => ((i * 7919) % 1000) + 1),
-        Array.from({ length: 90000 }, (_, i) => {
-          const a = (i * 7919) % 29999;
-          return [a, a + 1 + ((i * 104729) % (29999 - a))];
-        }),
-      ],
-      expected: 29097,
-      failureNote: "작업 3만 개, 조건 9만 개예요. 작업마다 가능한 경로를 모두 따라가면 끝나지 않아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

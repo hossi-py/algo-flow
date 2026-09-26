@@ -1,5 +1,86 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["######", "#..#.#", "#..###", "######"]],
+    expected: 2,
+    explanation: "왼쪽의 네 칸짜리 물과 오른쪽의 한 칸짜리 물, 호수 2개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["...", ".#.", "..."]],
+    expected: 0,
+    explanation: "물이 모두 가장자리에 닿아서 호수가 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["#"]],
+    expected: 0,
+    failureNote: "땅 한 칸뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["."]],
+    expected: 0,
+    failureNote: "물 한 칸이지만 가장자리예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["#####", "#...#", "###.#", "#...#", "#.###"]],
+    expected: 0,
+    failureNote:
+      "구불구불한 물이 맨 아래 가장자리에 닿아요. 가장자리에 닿았다고 칠하기를 멈추면, 남은 칸을 호수로 잘못 세요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["#####", "#.###", "##.##", "#####"]],
+    expected: 2,
+    failureNote: "대각선으로만 붙은 물은 따로따로예요. 호수 2개예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["#######", "#.#.#.#", "#######", "..#.#.#"]],
+    expected: 3,
+    failureNote: "아래 줄의 물은 가장자리예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 30 }, (_, r) => (r === 0 || r === 29 ? "#".repeat(30) : "#" + ".".repeat(28) + "#"))],
+    expected: 1,
+    failureNote: "가장자리를 뺀 28×28칸이 모두 물인 커다란 호수 하나예요.",
+  },
+  {
+    id: "hid-7",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 30 }, (_, r) =>
+        Array.from({ length: 30 }, (_, c) => (r % 2 === 1 && c % 2 === 1 && r < 29 && c < 29 ? "." : "#")).join(""),
+      ),
+    ],
+    expected: 196,
+    failureNote: "한 칸짜리 호수가 바둑판처럼 흩어져 있어요.",
+  },
+]);
 
 export const dfsForestLakes: Problem = {
   id: "c:dfs-forest-lakes",
@@ -45,85 +126,9 @@ export const dfsForestLakes: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["######", "#..#.#", "#..###", "######"]],
-      expected: 2,
-      explanation: "왼쪽의 네 칸짜리 물과 오른쪽의 한 칸짜리 물, 호수 2개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["...", ".#.", "..."]],
-      expected: 0,
-      explanation: "물이 모두 가장자리에 닿아서 호수가 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["#"]],
-      expected: 0,
-      failureNote: "땅 한 칸뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["."]],
-      expected: 0,
-      failureNote: "물 한 칸이지만 가장자리예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["#####", "#...#", "###.#", "#...#", "#.###"]],
-      expected: 0,
-      failureNote:
-        "구불구불한 물이 맨 아래 가장자리에 닿아요. 가장자리에 닿았다고 칠하기를 멈추면, 남은 칸을 호수로 잘못 세요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["#####", "#.###", "##.##", "#####"]],
-      expected: 2,
-      failureNote: "대각선으로만 붙은 물은 따로따로예요. 호수 2개예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["#######", "#.#.#.#", "#######", "..#.#.#"]],
-      expected: 3,
-      failureNote: "아래 줄의 물은 가장자리예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 30 }, (_, r) => (r === 0 || r === 29 ? "#".repeat(30) : "#" + ".".repeat(28) + "#"))],
-      expected: 1,
-      failureNote: "가장자리를 뺀 28×28칸이 모두 물인 커다란 호수 하나예요.",
-    },
-    {
-      id: "hid-7",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 30 }, (_, r) =>
-          Array.from({ length: 30 }, (_, c) => (r % 2 === 1 && c % 2 === 1 && r < 29 && c < 29 ? "." : "#")).join(""),
-        ),
-      ],
-      expected: 196,
-      failureNote: "한 칸짜리 호수가 바둑판처럼 흩어져 있어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

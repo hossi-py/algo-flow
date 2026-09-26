@@ -1,5 +1,65 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [6],
+    expected: 8,
+    explanation: "1, 1, 2, 3, 5, 8 — 6달째는 8쌍이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1],
+    expected: 1,
+    explanation: "1달째는 1쌍이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2],
+    expected: 1,
+    failureNote: "2달째도 1쌍이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [10],
+    expected: 55,
+    failureNote: "10달째예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [25],
+    expected: 75025,
+    failureNote: "25달째예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [70],
+    expected: 190392490709135,
+    failureNote: "70달째. 같은 달을 반복해서 계산하면 호출이 수조 번이라 끝나지 않아요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [45],
+    expected: 1134903170,
+    failureNote: "45달째예요. 메모 없이 부르면 호출이 10억 번이 넘어요.",
+  },
+]);
 
 export const recursionRabbitFamily: Problem = {
   id: "c:recursion-rabbit-family",
@@ -38,64 +98,9 @@ export const recursionRabbitFamily: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [6],
-      expected: 8,
-      explanation: "1, 1, 2, 3, 5, 8 — 6달째는 8쌍이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1],
-      expected: 1,
-      explanation: "1달째는 1쌍이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2],
-      expected: 1,
-      failureNote: "2달째도 1쌍이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [10],
-      expected: 55,
-      failureNote: "10달째예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [25],
-      expected: 75025,
-      failureNote: "25달째예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [70],
-      expected: 190392490709135,
-      failureNote: "70달째. 같은 달을 반복해서 계산하면 호출이 수조 번이라 끝나지 않아요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [45],
-      expected: 1134903170,
-      failureNote: "45달째예요. 메모 없이 부르면 호출이 10억 번이 넘어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

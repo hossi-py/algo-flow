@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[6, 9, 5, 7, 4]],
+    expected: [0, 0, 2, 2, 4],
+    explanation: "3번(5)의 왼쪽 가장 가까운 큰 것은 2번(9), 4번(7)도 2번(9), 5번(4)은 4번(7)이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[3, 3, 3]],
+    expected: [0, 0, 0],
+    explanation: "키가 같은 해바라기는 크지 않아요. 모두 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[10]],
+    expected: [0],
+    failureNote: "한 송이뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[5, 4, 3, 2, 1]],
+    expected: [0, 1, 2, 3, 4],
+    failureNote: "점점 작아지면 바로 왼쪽이 답이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[8, 2, 3, 4, 1, 9, 5]],
+    expected: [0, 1, 1, 1, 4, 0, 6],
+    failureNote: "4번(4)은 2·3번을 건너뛰어 1번(8)을 찾아요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[2, 5, 5, 3, 5]],
+    expected: [0, 0, 0, 3, 0],
+    failureNote: "5번(5)은 같은 키 5들을 건너뛰어야 하는데, 더 큰 것이 없어서 0이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => i + 1)],
+    expected: Array(100000).fill(0),
+    failureNote: "점점 커지는 10만 송이. 해바라기마다 왼쪽을 끝까지 훑으면 시간 초과예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i % 2 === 0 ? 1000000000 - i : 1))],
+    expected: Array.from({ length: 100000 }, (_, i) => (i === 0 ? 0 : i % 2 === 1 ? i : i - 1)),
+    failureNote: "큰 해바라기와 작은 해바라기가 번갈아 서 있어요.",
+  },
+]);
 
 export const stackTallerNeighbor: Problem = {
   id: "c:stack-taller-neighbor",
@@ -51,72 +119,9 @@ export const stackTallerNeighbor: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[6, 9, 5, 7, 4]],
-      expected: [0, 0, 2, 2, 4],
-      explanation: "3번(5)의 왼쪽 가장 가까운 큰 것은 2번(9), 4번(7)도 2번(9), 5번(4)은 4번(7)이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[3, 3, 3]],
-      expected: [0, 0, 0],
-      explanation: "키가 같은 해바라기는 크지 않아요. 모두 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[10]],
-      expected: [0],
-      failureNote: "한 송이뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[5, 4, 3, 2, 1]],
-      expected: [0, 1, 2, 3, 4],
-      failureNote: "점점 작아지면 바로 왼쪽이 답이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[8, 2, 3, 4, 1, 9, 5]],
-      expected: [0, 1, 1, 1, 4, 0, 6],
-      failureNote: "4번(4)은 2·3번을 건너뛰어 1번(8)을 찾아요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[2, 5, 5, 3, 5]],
-      expected: [0, 0, 0, 3, 0],
-      failureNote: "5번(5)은 같은 키 5들을 건너뛰어야 하는데, 더 큰 것이 없어서 0이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => i + 1)],
-      expected: Array(100000).fill(0),
-      failureNote: "점점 커지는 10만 송이. 해바라기마다 왼쪽을 끝까지 훑으면 시간 초과예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i % 2 === 0 ? 1000000000 - i : 1))],
-      expected: Array.from({ length: 100000 }, (_, i) => (i === 0 ? 0 : i % 2 === 1 ? i : i - 1)),
-      failureNote: "큰 해바라기와 작은 해바라기가 번갈아 서 있어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,65 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "edge",
+    args: [["###", "#.#", "###"], 1, 1, 0],
+    expected: 1,
+    explanation: "빈칸 하나를 청소하고, 뒤가 벽이라 멈춰요: 1.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [["#####", "#...#", "#...#", "#####"], 1, 1, 0],
+    expected: 6,
+    explanation: "빈칸 6칸을 모두 청소해요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["#####", "#...#", "#.#.#", "#...#", "#####"], 2, 1, 0],
+    expected: 8,
+    failureNote: "가운데 벽을 둘러싼 8칸을 모두 청소해요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["######", "#....#", "#.##.#", "#....#", "######"], 1, 4, 2],
+    expected: 10,
+    failureNote: "가운데 벽을 둘러싼 10칸을 모두 청소해요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["#######", "#.....#", "#.....#", "#.....#", "#######"], 2, 3, 1],
+    expected: 13,
+    failureNote: "15칸 중 13칸만 청소해요. 뒤로 물러나다 벽을 만나면, 더러운 칸이 남아 있어도 멈춰요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 50 }, (_, r) =>
+        Array.from({ length: 50 }, (_, c) =>
+          r === 0 || c === 0 || r === 49 || c === 49 || (r * 7 + c * 11) % 17 === 0 ? "#" : ".",
+        ).join(""),
+      ),
+      1,
+      1,
+      1,
+    ],
+    expected: 299,
+    failureNote: "50 × 50 방이에요.",
+  },
+]);
 
 export const simCleaningRobot: Problem = {
   id: "c:sim-cleaning-robot",
@@ -45,65 +106,9 @@ export const simCleaningRobot: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "edge",
-      args: [["###", "#.#", "###"], 1, 1, 0],
-      expected: 1,
-      explanation: "빈칸 하나를 청소하고, 뒤가 벽이라 멈춰요: 1.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [["#####", "#...#", "#...#", "#####"], 1, 1, 0],
-      expected: 6,
-      explanation: "빈칸 6칸을 모두 청소해요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["#####", "#...#", "#.#.#", "#...#", "#####"], 2, 1, 0],
-      expected: 8,
-      failureNote: "가운데 벽을 둘러싼 8칸을 모두 청소해요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["######", "#....#", "#.##.#", "#....#", "######"], 1, 4, 2],
-      expected: 10,
-      failureNote: "가운데 벽을 둘러싼 10칸을 모두 청소해요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["#######", "#.....#", "#.....#", "#.....#", "#######"], 2, 3, 1],
-      expected: 13,
-      failureNote: "15칸 중 13칸만 청소해요. 뒤로 물러나다 벽을 만나면, 더러운 칸이 남아 있어도 멈춰요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 50 }, (_, r) =>
-          Array.from({ length: 50 }, (_, c) =>
-            r === 0 || c === 0 || r === 49 || c === 49 || (r * 7 + c * 11) % 17 === 0 ? "#" : ".",
-          ).join(""),
-        ),
-        1,
-        1,
-        1,
-      ],
-      expected: 299,
-      failureNote: "50 × 50 방이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

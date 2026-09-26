@@ -1,5 +1,69 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [3, 8, 15, 21, 27, 34, 42],
+      [21, 3, 42],
+    ],
+    expected: [3, 0, 6],
+    explanation: "21은 3번, 3은 0번, 42는 6번 칸이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      [5, 10],
+      [7, 0, 11],
+    ],
+    expected: [-1, -1, -1],
+    explanation: "없는 번호는 모두 -1이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[9], [9, 8]],
+    expected: [0, -1],
+    failureNote: "책이 한 권뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [1, 2, 3, 4, 5, 6, 7, 8],
+      [1, 8, 4, 5],
+    ],
+    expected: [0, 7, 3, 4],
+    failureNote: "맨 앞, 맨 끝, 가운데 근처 모두 찾아야 해요. lo·hi의 ±1을 빼먹으면 끝에서 멈추지 않아요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      [0, 1000000000],
+      [1000000000, 0, 500000000],
+    ],
+    expected: [1, 0, -1],
+    failureNote: "가장 작은 번호와 가장 큰 번호예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => i * 3), Array.from({ length: 100000 }, (_, i) => i * 2)],
+    expected: Array.from({ length: 100000 }, (_, i) => ((i * 2) % 3 === 0 ? (i * 2) / 3 : -1)),
+    failureNote: "책 10만 권, 질문 10만 개예요. 질문마다 처음부터 훑으면 약 100억 번이라 시간 초과예요.",
+  },
+]);
 
 export const binarySearchPageFinder: Problem = {
   id: "c:binary-search-page-finder",
@@ -53,68 +117,9 @@ export const binarySearchPageFinder: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [3, 8, 15, 21, 27, 34, 42],
-        [21, 3, 42],
-      ],
-      expected: [3, 0, 6],
-      explanation: "21은 3번, 3은 0번, 42는 6번 칸이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        [5, 10],
-        [7, 0, 11],
-      ],
-      expected: [-1, -1, -1],
-      explanation: "없는 번호는 모두 -1이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[9], [9, 8]],
-      expected: [0, -1],
-      failureNote: "책이 한 권뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [1, 2, 3, 4, 5, 6, 7, 8],
-        [1, 8, 4, 5],
-      ],
-      expected: [0, 7, 3, 4],
-      failureNote: "맨 앞, 맨 끝, 가운데 근처 모두 찾아야 해요. lo·hi의 ±1을 빼먹으면 끝에서 멈추지 않아요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        [0, 1000000000],
-        [1000000000, 0, 500000000],
-      ],
-      expected: [1, 0, -1],
-      failureNote: "가장 작은 번호와 가장 큰 번호예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => i * 3), Array.from({ length: 100000 }, (_, i) => i * 2)],
-      expected: Array.from({ length: 100000 }, (_, i) => ((i * 2) % 3 === 0 ? (i * 2) / 3 : -1)),
-      failureNote: "책 10만 권, 질문 10만 개예요. 질문마다 처음부터 훑으면 약 100억 번이라 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 3000,
     compare: { type: "exact" },

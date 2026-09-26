@@ -1,4 +1,106 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [120, 135, 110, 150, 135, 128],
+      [
+        [120, 135],
+        [140, 200],
+      ],
+    ],
+    expected: [4, 1],
+    explanation: "120~135: 120, 128, 135, 135로 4명. 140~200: 150 한 명이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      [100],
+      [
+        [100, 100],
+        [101, 105],
+        [0, 99],
+      ],
+    ],
+    expected: [1, 0, 0],
+    explanation: "양 끝이 키와 같으면 포함해요. 1명, 0명, 0명이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [5, 5, 5, 7, 7],
+      [
+        [5, 5],
+        [6, 6],
+        [5, 7],
+      ],
+    ],
+    expected: [3, 0, 5],
+    failureNote: "(5 초과 첫 위치) − (5 이상 첫 위치) = 3이에요. 6은 없어서 0, 5~7은 5명이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [1, 2, 3, 4, 5, 6],
+      [
+        [2, 4],
+        [0, 10],
+      ],
+    ],
+    expected: [3, 6],
+    failureNote: "3명, 6명이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [3, 1, 2],
+      [
+        [1, 3],
+        [2, 2],
+      ],
+    ],
+    expected: [3, 1],
+    failureNote: "입력은 정렬돼 있지 않아요. 먼저 정렬해야 이분 탐색을 쓸 수 있어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100000 }, (_, i) => (i * 7919) % 100003),
+      Array.from({ length: 100000 }, (_, i) => [(i * 37) % 100003, ((i * 37) % 100003) + (i % 5000)]),
+    ],
+    expected: (() => {
+      const lb = (a = [0], x = 0) => {
+        let lo = 0,
+          hi = a.length;
+        while (lo < hi) {
+          const m = (lo + hi) >> 1;
+          if (a[m] >= x) hi = m;
+          else lo = m + 1;
+        }
+        return lo;
+      };
+      const a = Array.from({ length: 100000 }, (_, i) => (i * 7919) % 100003).sort((x, y) => x - y);
+      return Array.from({ length: 100000 }, (_, i) => [(i * 37) % 100003, ((i * 37) % 100003) + (i % 5000)]).map(
+        ([l, r]) => lb(a, r + 1) - lb(a, l),
+      );
+    })(),
+    failureNote: "친구 10만 명, 범위 10만 개예요. 범위마다 모두 세면 시간 초과예요.",
+  },
+]);
 
 export const binarySearchRangeCount: Problem = {
   id: "c:binary-search-range-count",
@@ -49,106 +151,9 @@ export const binarySearchRangeCount: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [120, 135, 110, 150, 135, 128],
-        [
-          [120, 135],
-          [140, 200],
-        ],
-      ],
-      expected: [4, 1],
-      explanation: "120~135: 120, 128, 135, 135로 4명. 140~200: 150 한 명이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        [100],
-        [
-          [100, 100],
-          [101, 105],
-          [0, 99],
-        ],
-      ],
-      expected: [1, 0, 0],
-      explanation: "양 끝이 키와 같으면 포함해요. 1명, 0명, 0명이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [5, 5, 5, 7, 7],
-        [
-          [5, 5],
-          [6, 6],
-          [5, 7],
-        ],
-      ],
-      expected: [3, 0, 5],
-      failureNote: "(5 초과 첫 위치) − (5 이상 첫 위치) = 3이에요. 6은 없어서 0, 5~7은 5명이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [1, 2, 3, 4, 5, 6],
-        [
-          [2, 4],
-          [0, 10],
-        ],
-      ],
-      expected: [3, 6],
-      failureNote: "3명, 6명이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [3, 1, 2],
-        [
-          [1, 3],
-          [2, 2],
-        ],
-      ],
-      expected: [3, 1],
-      failureNote: "입력은 정렬돼 있지 않아요. 먼저 정렬해야 이분 탐색을 쓸 수 있어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100000 }, (_, i) => (i * 7919) % 100003),
-        Array.from({ length: 100000 }, (_, i) => [(i * 37) % 100003, ((i * 37) % 100003) + (i % 5000)]),
-      ],
-      expected: (() => {
-        const lb = (a = [0], x = 0) => {
-          let lo = 0,
-            hi = a.length;
-          while (lo < hi) {
-            const m = (lo + hi) >> 1;
-            if (a[m] >= x) hi = m;
-            else lo = m + 1;
-          }
-          return lo;
-        };
-        const a = Array.from({ length: 100000 }, (_, i) => (i * 7919) % 100003).sort((x, y) => x - y);
-        return Array.from({ length: 100000 }, (_, i) => [(i * 37) % 100003, ((i * 37) % 100003) + (i % 5000)]).map(
-          ([l, r]) => lb(a, r + 1) - lb(a, l),
-        );
-      })(),
-      failureNote: "친구 10만 명, 범위 10만 개예요. 범위마다 모두 세면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 3000,
     compare: { type: "exact" },

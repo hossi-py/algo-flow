@@ -1,4 +1,111 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [1, 3],
+        [-2, 2],
+        [5, -1],
+      ],
+      2,
+    ],
+    expected: [
+      [-2, 2],
+      [1, 3],
+    ],
+    explanation: "거리의 제곱이 10, 8, 26이라 [-2, 2], [1, 3] 순서예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      [
+        [3, 0],
+        [0, 3],
+        [-3, 0],
+      ],
+      2,
+    ],
+    expected: [
+      [-3, 0],
+      [0, 3],
+    ],
+    explanation: "셋 다 거리 3이에요. x가 작은 [-3, 0], 그다음 [0, 3]이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[0, 0]], 1],
+    expected: [[0, 0]],
+    failureNote: "집 바로 앞 나무예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [2, 2],
+        [1, 1],
+        [3, 3],
+      ],
+      3,
+    ],
+    expected: [
+      [1, 1],
+      [2, 2],
+      [3, 3],
+    ],
+    failureNote: "모두 고르면 가까운 순서대로예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 2],
+        [1, -2],
+        [2, 1],
+      ],
+      2,
+    ],
+    expected: [
+      [1, -2],
+      [1, 2],
+    ],
+    failureNote: "모두 거리 제곱 5예요. x가 1인 둘 중 y가 작은 [1, -2]가 먼저예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100000 }, (_, i) => [((i * 7919) % 20001) - 10000, ((i * 104729) % 20001) - 10000]),
+      10,
+    ],
+    expected: [
+      [-59, -11],
+      [-59, -11],
+      [-59, -11],
+      [-59, -11],
+      [-59, -11],
+      [60, 12],
+      [60, 12],
+      [60, 12],
+      [60, 12],
+      [60, 12],
+    ],
+    failureNote: "나무 10만 그루예요. 거리는 제곱으로 비교하면 소수점 없이 정확해요.",
+  },
+]);
 
 export const heapClosestTrees: Problem = {
   id: "c:heap-closest-trees",
@@ -44,111 +151,9 @@ export const heapClosestTrees: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [1, 3],
-          [-2, 2],
-          [5, -1],
-        ],
-        2,
-      ],
-      expected: [
-        [-2, 2],
-        [1, 3],
-      ],
-      explanation: "거리의 제곱이 10, 8, 26이라 [-2, 2], [1, 3] 순서예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        [
-          [3, 0],
-          [0, 3],
-          [-3, 0],
-        ],
-        2,
-      ],
-      expected: [
-        [-3, 0],
-        [0, 3],
-      ],
-      explanation: "셋 다 거리 3이에요. x가 작은 [-3, 0], 그다음 [0, 3]이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[0, 0]], 1],
-      expected: [[0, 0]],
-      failureNote: "집 바로 앞 나무예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [2, 2],
-          [1, 1],
-          [3, 3],
-        ],
-        3,
-      ],
-      expected: [
-        [1, 1],
-        [2, 2],
-        [3, 3],
-      ],
-      failureNote: "모두 고르면 가까운 순서대로예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 2],
-          [1, -2],
-          [2, 1],
-        ],
-        2,
-      ],
-      expected: [
-        [1, -2],
-        [1, 2],
-      ],
-      failureNote: "모두 거리 제곱 5예요. x가 1인 둘 중 y가 작은 [1, -2]가 먼저예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100000 }, (_, i) => [((i * 7919) % 20001) - 10000, ((i * 104729) % 20001) - 10000]),
-        10,
-      ],
-      expected: [
-        [-59, -11],
-        [-59, -11],
-        [-59, -11],
-        [-59, -11],
-        [-59, -11],
-        [60, 12],
-        [60, 12],
-        [60, 12],
-        [60, 12],
-        [60, 12],
-      ],
-      failureNote: "나무 10만 그루예요. 거리는 제곱으로 비교하면 소수점 없이 정확해요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

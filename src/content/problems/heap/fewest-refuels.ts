@@ -1,4 +1,80 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [1, 1, []],
+    expected: 0,
+    explanation: "처음 물로 바로 도착해요. 0번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      100,
+      10,
+      [
+        [10, 60],
+        [20, 30],
+        [30, 30],
+        [60, 40],
+      ],
+    ],
+    expected: 2,
+    explanation: "10에서 60을 채우고(물 60), 60에서 40을 채워 100까지 가요. 2번이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [100, 1, [[10, 100]]],
+    expected: -1,
+    failureNote: "첫 샘물까지도 못 가요. −1이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      100,
+      50,
+      [
+        [25, 25],
+        [50, 50],
+      ],
+    ],
+    expected: 1,
+    failureNote: "딱 0이 될 때 50에 닿아 50을 채우면 도착해요. 1번이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      100,
+      25,
+      [
+        [25, 25],
+        [50, 25],
+        [75, 25],
+      ],
+    ],
+    expected: 3,
+    failureNote: "셋 다 들러야 딱 도착해요. 3번이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000000000, 10000, Array.from({ length: 100000 }, (_, i) => [(i + 1) * 10000, ((i * 7919) % 20000) + 1])],
+    expected: -1,
+    failureNote: "샘물 10만 개예요. 들를 곳을 모두 고르는 건 불가능해요. (Java는 물의 합을 long으로)",
+  },
+]);
 
 export const heapFewestRefuels: Problem = {
   id: "c:heap-fewest-refuels",
@@ -50,80 +126,9 @@ export const heapFewestRefuels: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [1, 1, []],
-      expected: 0,
-      explanation: "처음 물로 바로 도착해요. 0번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        100,
-        10,
-        [
-          [10, 60],
-          [20, 30],
-          [30, 30],
-          [60, 40],
-        ],
-      ],
-      expected: 2,
-      explanation: "10에서 60을 채우고(물 60), 60에서 40을 채워 100까지 가요. 2번이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [100, 1, [[10, 100]]],
-      expected: -1,
-      failureNote: "첫 샘물까지도 못 가요. −1이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        100,
-        50,
-        [
-          [25, 25],
-          [50, 50],
-        ],
-      ],
-      expected: 1,
-      failureNote: "딱 0이 될 때 50에 닿아 50을 채우면 도착해요. 1번이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        100,
-        25,
-        [
-          [25, 25],
-          [50, 25],
-          [75, 25],
-        ],
-      ],
-      expected: 3,
-      failureNote: "셋 다 들러야 딱 도착해요. 3번이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000000000, 10000, Array.from({ length: 100000 }, (_, i) => [(i + 1) * 10000, ((i * 7919) % 20000) + 1])],
-      expected: -1,
-      failureNote: "샘물 10만 개예요. 들를 곳을 모두 고르는 건 불가능해요. (Java는 물의 합을 long으로)",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

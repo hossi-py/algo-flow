@@ -1,5 +1,73 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[3, 8, 5, 2, 6], 8],
+    expected: [0, 2],
+    explanation: "3 + 5 = 8이에요. 2 + 6도 8이지만 j가 더 커요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [[4, 4], 8],
+    expected: [0, 1],
+    explanation: "같은 가격의 서로 다른 간식 두 개예요. 짝을 확인한 뒤에 기록해야 자기 자신과 짝이 되지 않아요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[4], 8],
+    expected: [],
+    failureNote: "간식이 하나뿐이면 쌍이 없어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[4, 2], 8],
+    expected: [],
+    failureNote: "4 하나로는 8을 만들 수 없어요. 자기 자신과 짝이 되면 안 돼요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[2, 2, 3, 3], 5],
+    expected: [0, 2],
+    failureNote: "j = 2에서 짝 2가 0번과 1번에 있어요. 먼저 나온 0번을 골라요: [0, 2].",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 2, 3], 100],
+    expected: [],
+    failureNote: "어떤 두 개를 골라도 100이 안 돼요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 7, 2, 6], 8],
+    expected: [0, 1],
+    failureNote: "1 + 7이 가장 먼저 완성돼요: [0, 1].",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [[...Array.from({ length: 99998 }, (_, i) => 2 * i + 2), 1, 1000000], 1000001],
+    expected: [99998, 99999],
+    failureNote: "간식 10만 개, 짝은 맨 끝에 있어요. 모든 쌍을 비교하면 약 50억 번이라 시간 초과예요.",
+  },
+]);
 
 export const hashSnackPair: Problem = {
   id: "c:hash-snack-pair",
@@ -42,72 +110,9 @@ export const hashSnackPair: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[3, 8, 5, 2, 6], 8],
-      expected: [0, 2],
-      explanation: "3 + 5 = 8이에요. 2 + 6도 8이지만 j가 더 커요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [[4, 4], 8],
-      expected: [0, 1],
-      explanation: "같은 가격의 서로 다른 간식 두 개예요. 짝을 확인한 뒤에 기록해야 자기 자신과 짝이 되지 않아요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[4], 8],
-      expected: [],
-      failureNote: "간식이 하나뿐이면 쌍이 없어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[4, 2], 8],
-      expected: [],
-      failureNote: "4 하나로는 8을 만들 수 없어요. 자기 자신과 짝이 되면 안 돼요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[2, 2, 3, 3], 5],
-      expected: [0, 2],
-      failureNote: "j = 2에서 짝 2가 0번과 1번에 있어요. 먼저 나온 0번을 골라요: [0, 2].",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 2, 3], 100],
-      expected: [],
-      failureNote: "어떤 두 개를 골라도 100이 안 돼요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 7, 2, 6], 8],
-      expected: [0, 1],
-      failureNote: "1 + 7이 가장 먼저 완성돼요: [0, 1].",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [[...Array.from({ length: 99998 }, (_, i) => 2 * i + 2), 1, 1000000], 1000001],
-      expected: [99998, 99999],
-      failureNote: "간식 10만 개, 짝은 맨 끝에 있어요. 모든 쌍을 비교하면 약 50억 번이라 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,124 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      3,
+      [
+        [0, 1],
+        [1, 2],
+      ],
+      [
+        [0, 1],
+        [1, 0],
+        [0, 2],
+      ],
+    ],
+    expected: [true, false, false],
+    explanation: "0 → 1은 있어요. 1 → 0은 반대 방향이라 없고, 0 → 2는 경유라서 직항이 아니에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      2,
+      [],
+      [
+        [0, 1],
+        [1, 0],
+      ],
+    ],
+    expected: [false, false],
+    explanation: "항공편이 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 0],
+        [2, 3],
+      ],
+      [
+        [1, 0],
+        [3, 2],
+        [2, 3],
+      ],
+    ],
+    expected: [true, false, true],
+    failureNote: "양방향이 모두 있는 도시와 한쪽만 있는 도시가 섞여 있어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      3,
+      [
+        [0, 2],
+        [0, 2],
+      ],
+      [
+        [0, 2],
+        [2, 0],
+      ],
+    ],
+    expected: [true, false],
+    failureNote: "같은 직항이 두 번 적혀 있어도 괜찮아요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [4, 0],
+        [3, 1],
+        [2, 4],
+      ],
+      [
+        [4, 0],
+        [0, 4],
+        [2, 4],
+        [3, 1],
+        [1, 3],
+      ],
+    ],
+    expected: [true, false, true, true, false],
+    failureNote: "여러 질문이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2, [[1, 0]], [[1, 0]]],
+    expected: [true],
+    failureNote: "질문이 하나뿐이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      500,
+      Array.from({ length: 20000 }, (_, i) => [i % 500, ((i % 500) + 1 + Math.floor(i / 500)) % 500]),
+      Array.from({ length: 100000 }, (_, i) =>
+        i % 2 === 0 ? [i % 500, ((i % 500) + 1) % 500] : [((i % 500) + 1) % 500, i % 500],
+      ),
+    ],
+    expected: Array.from({ length: 100000 }, (_, i) => i % 2 === 0 || false),
+    failureNote: "직항 2만 개, 질문 10만 개예요. 질문마다 직항 목록을 훑으면 20억 번이라 시간 초과예요.",
+  },
+]);
 
 export const graphDirectFlights: Problem = {
   id: "c:graph-direct-flights",
@@ -48,124 +168,9 @@ export const graphDirectFlights: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        3,
-        [
-          [0, 1],
-          [1, 2],
-        ],
-        [
-          [0, 1],
-          [1, 0],
-          [0, 2],
-        ],
-      ],
-      expected: [true, false, false],
-      explanation: "0 → 1은 있어요. 1 → 0은 반대 방향이라 없고, 0 → 2는 경유라서 직항이 아니에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        2,
-        [],
-        [
-          [0, 1],
-          [1, 0],
-        ],
-      ],
-      expected: [false, false],
-      explanation: "항공편이 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 0],
-          [2, 3],
-        ],
-        [
-          [1, 0],
-          [3, 2],
-          [2, 3],
-        ],
-      ],
-      expected: [true, false, true],
-      failureNote: "양방향이 모두 있는 도시와 한쪽만 있는 도시가 섞여 있어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        3,
-        [
-          [0, 2],
-          [0, 2],
-        ],
-        [
-          [0, 2],
-          [2, 0],
-        ],
-      ],
-      expected: [true, false],
-      failureNote: "같은 직항이 두 번 적혀 있어도 괜찮아요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [4, 0],
-          [3, 1],
-          [2, 4],
-        ],
-        [
-          [4, 0],
-          [0, 4],
-          [2, 4],
-          [3, 1],
-          [1, 3],
-        ],
-      ],
-      expected: [true, false, true, true, false],
-      failureNote: "여러 질문이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2, [[1, 0]], [[1, 0]]],
-      expected: [true],
-      failureNote: "질문이 하나뿐이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        500,
-        Array.from({ length: 20000 }, (_, i) => [i % 500, ((i % 500) + 1 + Math.floor(i / 500)) % 500]),
-        Array.from({ length: 100000 }, (_, i) =>
-          i % 2 === 0 ? [i % 500, ((i % 500) + 1) % 500] : [((i % 500) + 1) % 500, i % 500],
-        ),
-      ],
-      expected: Array.from({ length: 100000 }, (_, i) => i % 2 === 0 || false),
-      failureNote: "직항 2만 개, 질문 10만 개예요. 질문마다 직항 목록을 훑으면 20억 번이라 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

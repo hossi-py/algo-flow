@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 8, 6, 2, 5, 4, 8, 3, 7]],
+    expected: 49,
+    explanation: "1번(8)과 8번(7) 사이: 7 × 7 = 49예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[1, 1]],
+    expected: 1,
+    explanation: "1 × 1 = 1이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[4, 3, 2, 1, 4]],
+    expected: 16,
+    failureNote: "양 끝 4와 4: 4 × 4 = 16이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 2, 100, 100, 2, 1]],
+    expected: 100,
+    failureNote: "가운데 두 벽은 가깝지만 높아서 100 × 1 = 100이 가장 커요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[0, 5, 0]],
+    expected: 0,
+    failureNote: "높이 0 벽이 끼면 물이 안 담겨요. 5와 0은 0이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 10000) + 1)],
+    expected: 992540835,
+    failureNote: "벽 10만 개예요. 모든 쌍은 약 50억 개라 시간 초과예요.",
+  },
+]);
 
 export const twoPointersWaterBox: Problem = {
   id: "c:two-pointers-water-box",
@@ -36,56 +88,9 @@ export const twoPointersWaterBox: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 8, 6, 2, 5, 4, 8, 3, 7]],
-      expected: 49,
-      explanation: "1번(8)과 8번(7) 사이: 7 × 7 = 49예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[1, 1]],
-      expected: 1,
-      explanation: "1 × 1 = 1이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[4, 3, 2, 1, 4]],
-      expected: 16,
-      failureNote: "양 끝 4와 4: 4 × 4 = 16이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 2, 100, 100, 2, 1]],
-      expected: 100,
-      failureNote: "가운데 두 벽은 가깝지만 높아서 100 × 1 = 100이 가장 커요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[0, 5, 0]],
-      expected: 0,
-      failureNote: "높이 0 벽이 끼면 물이 안 담겨요. 5와 0은 0이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 10000) + 1)],
-      expected: 992540835,
-      failureNote: "벽 10만 개예요. 모든 쌍은 약 50억 개라 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,5 +1,66 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [3],
+    expected: 5,
+    explanation:
+      "길이 2 복도는 3가지(세로 두 개, 가로 두 개, 2×2 하나)예요. 길이 3은 맨 끝을 세로 타일로 막는 3가지 + 가로 두 개나 2×2로 막는 2가지 = 5가지예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1],
+    expected: 1,
+    explanation: "세로 타일 하나뿐이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [2],
+    expected: 3,
+    failureNote: "3가지예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [4],
+    expected: 11,
+    failureNote: "5 + 2 × 3 = 11가지예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [10],
+    expected: 683,
+    failureNote: "길이 10이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [40],
+    expected: 7746720,
+    failureNote: "메모 없이 두 갈래로 계속 부르면 호출이 수십억 번이라 시간 초과예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000],
+    expected: 458948807,
+    failureNote: "길이 1,000이에요. 나머지 연산을 빼먹으면 값이 너무 커져요.",
+  },
+]);
 
 export const recursionHallwayTiles: Problem = {
   id: "c:recursion-hallway-tiles",
@@ -41,65 +102,9 @@ export const recursionHallwayTiles: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [3],
-      expected: 5,
-      explanation:
-        "길이 2 복도는 3가지(세로 두 개, 가로 두 개, 2×2 하나)예요. 길이 3은 맨 끝을 세로 타일로 막는 3가지 + 가로 두 개나 2×2로 막는 2가지 = 5가지예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1],
-      expected: 1,
-      explanation: "세로 타일 하나뿐이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [2],
-      expected: 3,
-      failureNote: "3가지예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [4],
-      expected: 11,
-      failureNote: "5 + 2 × 3 = 11가지예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [10],
-      expected: 683,
-      failureNote: "길이 10이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [40],
-      expected: 7746720,
-      failureNote: "메모 없이 두 갈래로 계속 부르면 호출이 수십억 번이라 시간 초과예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000],
-      expected: 458948807,
-      failureNote: "길이 1,000이에요. 나머지 연산을 빼먹으면 값이 너무 커져요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

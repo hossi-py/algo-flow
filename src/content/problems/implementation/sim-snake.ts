@@ -1,4 +1,99 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [4, [], [], ""],
+    expected: 4,
+    explanation: "(0, 3)까지 3초 동안 가고, 4초에 판 밖으로 나가요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [2, 3],
+        [1, 4],
+        [4, 2],
+      ],
+      [3, 15, 17],
+      "DLD",
+    ],
+    expected: 9,
+    explanation: "3초 끝에 아래로 돌아 (2, 3) 사과를 먹고, 계속 내려가다 9초에 판 아래로 나가요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      10,
+      [
+        [0, 1],
+        [0, 2],
+        [0, 3],
+        [0, 4],
+      ],
+      [4, 5, 6],
+      "DDD",
+    ],
+    expected: 7,
+    failureNote: "사과 4개를 먹어 길이 5가 된 뒤 오른쪽으로 세 번 돌면, 7초에 자기 몸에 부딪혀요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [5, [[0, 2]], [2, 4], "DL"],
+    expected: 7,
+    failureNote: "2초에 사과를 먹고 아래로, 4초 끝에 왼쪽으로 돌면 다시 오른쪽을 봐요. 7초에 판 밖이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [3, [], [1, 2, 3, 4], "DDDD"],
+    expected: 7,
+    failureNote: "길이 1이라 빙 돌아 처음 칸에 와도 부딪히지 않아요. 7초에 판 밖으로 나가요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [0, 2],
+      ],
+      [2],
+      "L",
+    ],
+    expected: 3,
+    failureNote: "2초 끝에 왼쪽으로 돌면 위쪽이라 3초에 판 밖이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      100,
+      Array.from({ length: 10000 }, (_, i) => i)
+        .filter((i) => i > 0 && i % 7 === 3)
+        .map((i) => [Math.floor(i / 100), i % 100]),
+      Array.from({ length: 99 }, (_, r) => [100 * r + 99, 100 * r + 100]).flat(),
+      Array.from({ length: 99 }, (_, r) => (r % 2 === 0 ? "DD" : "LL")).join(""),
+    ],
+    expected: 10000,
+    failureNote:
+      "100 × 100 판을 지그재그로 끝까지 훑어요. 몸이 1,400칸 넘게 길어져요. 몸에 부딪혔는지 목록을 매번 훑으면 느려요.",
+  },
+]);
 
 export const simSnake: Problem = {
   id: "c:sim-snake",
@@ -59,99 +154,9 @@ export const simSnake: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [4, [], [], ""],
-      expected: 4,
-      explanation: "(0, 3)까지 3초 동안 가고, 4초에 판 밖으로 나가요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [2, 3],
-          [1, 4],
-          [4, 2],
-        ],
-        [3, 15, 17],
-        "DLD",
-      ],
-      expected: 9,
-      explanation: "3초 끝에 아래로 돌아 (2, 3) 사과를 먹고, 계속 내려가다 9초에 판 아래로 나가요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        10,
-        [
-          [0, 1],
-          [0, 2],
-          [0, 3],
-          [0, 4],
-        ],
-        [4, 5, 6],
-        "DDD",
-      ],
-      expected: 7,
-      failureNote: "사과 4개를 먹어 길이 5가 된 뒤 오른쪽으로 세 번 돌면, 7초에 자기 몸에 부딪혀요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [5, [[0, 2]], [2, 4], "DL"],
-      expected: 7,
-      failureNote: "2초에 사과를 먹고 아래로, 4초 끝에 왼쪽으로 돌면 다시 오른쪽을 봐요. 7초에 판 밖이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [3, [], [1, 2, 3, 4], "DDDD"],
-      expected: 7,
-      failureNote: "길이 1이라 빙 돌아 처음 칸에 와도 부딪히지 않아요. 7초에 판 밖으로 나가요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [0, 2],
-        ],
-        [2],
-        "L",
-      ],
-      expected: 3,
-      failureNote: "2초 끝에 왼쪽으로 돌면 위쪽이라 3초에 판 밖이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        100,
-        Array.from({ length: 10000 }, (_, i) => i)
-          .filter((i) => i > 0 && i % 7 === 3)
-          .map((i) => [Math.floor(i / 100), i % 100]),
-        Array.from({ length: 99 }, (_, r) => [100 * r + 99, 100 * r + 100]).flat(),
-        Array.from({ length: 99 }, (_, r) => (r % 2 === 0 ? "DD" : "LL")).join(""),
-      ],
-      expected: 10000,
-      failureNote:
-        "100 × 100 판을 지그재그로 끝까지 훑어요. 몸이 1,400칸 넘게 길어져요. 몸에 부딪혔는지 목록을 매번 훑으면 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

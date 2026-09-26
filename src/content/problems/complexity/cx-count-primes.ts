@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [10],
+    expected: 4,
+    explanation: "2, 3, 5, 7로 4개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1],
+    expected: 0,
+    explanation: "1은 소수가 아니라 0개예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2],
+    expected: 1,
+    failureNote: "2 하나예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [30],
+    expected: 10,
+    failureNote: "2, 3, 5, 7, 11, 13, 17, 19, 23, 29로 10개예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [100],
+    expected: 25,
+    failureNote: "25개예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000000],
+    expected: 78498,
+    failureNote: "100만 이하 소수는 78,498개예요. 수마다 √n까지 나눠 보면 체보다 훨씬 느려요.",
+  },
+]);
 
 export const cxCountPrimes: Problem = {
   id: "c:cx-count-primes",
@@ -30,56 +82,9 @@ export const cxCountPrimes: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [10],
-      expected: 4,
-      explanation: "2, 3, 5, 7로 4개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1],
-      expected: 0,
-      explanation: "1은 소수가 아니라 0개예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2],
-      expected: 1,
-      failureNote: "2 하나예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [30],
-      expected: 10,
-      failureNote: "2, 3, 5, 7, 11, 13, 17, 19, 23, 29로 10개예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [100],
-      expected: 25,
-      failureNote: "25개예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000000],
-      expected: 78498,
-      failureNote: "100만 이하 소수는 78,498개예요. 수마다 √n까지 나눠 보면 체보다 훨씬 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,5 +1,99 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [0, 1],
+        [1, 2],
+        [3, 4],
+      ],
+      0,
+    ],
+    expected: 3,
+    explanation: "0, 1, 2번 집에 전기가 들어와요. 3, 4, 5번은 이어져 있지 않아요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 0],
+        [2, 3],
+      ],
+      1,
+    ],
+    expected: 4,
+    explanation: "전선이 고리 모양이어도 집은 한 번씩만 세요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [3, [], 2],
+    expected: 1,
+    failureNote: "전선이 없으면 발전소 집 한 채뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, [], 0],
+    expected: 1,
+    failureNote: "집이 한 채뿐이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [4, 3],
+        [3, 2],
+        [2, 1],
+        [1, 0],
+      ],
+      2,
+    ],
+    expected: 5,
+    failureNote: "가운데에서 시작해도 양쪽 끝까지 닿아요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1],
+        [0, 1],
+        [2, 3],
+      ],
+      1,
+    ],
+    expected: 2,
+    failureNote: "같은 전선이 두 번 적혀 있어도 집은 한 번만 세요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000, Array.from({ length: 996 }, (_, i) => [i, i + 2]), 0],
+    expected: 499,
+    failureNote: "짝수 번 집끼리, 홀수 번 집끼리 이어져 있어요.",
+  },
+]);
 
 export const dfsPowerRestore: Problem = {
   id: "c:dfs-power-restore",
@@ -43,98 +137,9 @@ export const dfsPowerRestore: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [0, 1],
-          [1, 2],
-          [3, 4],
-        ],
-        0,
-      ],
-      expected: 3,
-      explanation: "0, 1, 2번 집에 전기가 들어와요. 3, 4, 5번은 이어져 있지 않아요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 0],
-          [2, 3],
-        ],
-        1,
-      ],
-      expected: 4,
-      explanation: "전선이 고리 모양이어도 집은 한 번씩만 세요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [3, [], 2],
-      expected: 1,
-      failureNote: "전선이 없으면 발전소 집 한 채뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, [], 0],
-      expected: 1,
-      failureNote: "집이 한 채뿐이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [4, 3],
-          [3, 2],
-          [2, 1],
-          [1, 0],
-        ],
-        2,
-      ],
-      expected: 5,
-      failureNote: "가운데에서 시작해도 양쪽 끝까지 닿아요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1],
-          [0, 1],
-          [2, 3],
-        ],
-        1,
-      ],
-      expected: 2,
-      failureNote: "같은 전선이 두 번 적혀 있어도 집은 한 번만 세요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000, Array.from({ length: 996 }, (_, i) => [i, i + 2]), 0],
-      expected: 499,
-      failureNote: "짝수 번 집끼리, 홀수 번 집끼리 이어져 있어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

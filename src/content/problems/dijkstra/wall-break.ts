@@ -1,4 +1,62 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["011", "111", "110"]],
+    expected: 3,
+    explanation: "어느 길로 가든 바위를 3개는 치워야 해요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["0"]],
+    expected: 0,
+    explanation: "출발 칸이 곧 도착 칸이라 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["00", "00"]],
+    expected: 0,
+    failureNote: "바위가 없어서 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["010", "111", "010"]],
+    expected: 2,
+    failureNote: "어느 쪽으로 돌아도 바위 2개를 치워요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["0000000", "1111110", "0000000", "0111111", "0000000"]],
+    expected: 0,
+    failureNote: "빙 돌아가면 바위를 하나도 안 치워도 돼서 0이에요. 칸 수가 가장 적은 길이 답이 아니에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 200 }, (_, r) =>
+        Array.from({ length: 200 }, (_, c) =>
+          (r === 0 && c === 0) || (r === 199 && c === 199) ? "0" : (r * 7 + c * 13 + r * c) % 5 < 2 ? "1" : "0",
+        ).join(""),
+      ),
+    ],
+    expected: 0,
+    failureNote: "200 × 200 = 40,000칸이에요.",
+  },
+]);
 
 export const dijkstraWallBreak: Problem = {
   id: "c:dijkstra-wall-break",
@@ -42,62 +100,9 @@ export const dijkstraWallBreak: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["011", "111", "110"]],
-      expected: 3,
-      explanation: "어느 길로 가든 바위를 3개는 치워야 해요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["0"]],
-      expected: 0,
-      explanation: "출발 칸이 곧 도착 칸이라 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["00", "00"]],
-      expected: 0,
-      failureNote: "바위가 없어서 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["010", "111", "010"]],
-      expected: 2,
-      failureNote: "어느 쪽으로 돌아도 바위 2개를 치워요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["0000000", "1111110", "0000000", "0111111", "0000000"]],
-      expected: 0,
-      failureNote: "빙 돌아가면 바위를 하나도 안 치워도 돼서 0이에요. 칸 수가 가장 적은 길이 답이 아니에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 200 }, (_, r) =>
-          Array.from({ length: 200 }, (_, c) =>
-            (r === 0 && c === 0) || (r === 199 && c === 199) ? "0" : (r * 7 + c * 13 + r * c) % 5 < 2 ? "1" : "0",
-          ).join(""),
-        ),
-      ],
-      expected: 0,
-      failureNote: "200 × 200 = 40,000칸이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

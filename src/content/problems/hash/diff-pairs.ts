@@ -1,4 +1,73 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 5, 3, 4, 2], 2],
+    expected: 3,
+    explanation: "(1, 3), (5, 3), (4, 2) 세 쌍이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [[3, 3, 3], 0],
+    expected: 3,
+    explanation:
+      "k = 0이면 키가 같은 쌍이에요. 세 명 중 두 명을 고르는 3쌍이에요. x - k와 x + k가 같은 값이라 두 번 세지 않게 조심해요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 2, 3], 5],
+    expected: 0,
+    failureNote: "차이가 5인 쌍이 없어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[7], 0],
+    expected: 0,
+    failureNote: "한 명뿐이면 쌍이 없어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 1, 2, 2], 1],
+    expected: 4,
+    failureNote: "1과 2가 두 명씩이라 2 × 2 = 4쌍이에요. 같은 값이 여러 번 나오면 개수를 세야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[0, 1000000], 1000000],
+    expected: 1,
+    failureNote: "가장 큰 차이예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => i % 1000), 1],
+    expected: 9990000,
+    failureNote: "10만 명이에요. 모든 쌍을 비교하면 약 50억 번이라 시간 초과예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, () => 7), 0],
+    expected: 4999950000,
+    failureNote: "10만 명의 키가 모두 같아요. 답이 약 50억이라 Java는 int로 세면 넘쳐요 (long을 쓰세요).",
+  },
+]);
 
 export const hashDiffPairs: Problem = {
   id: "c:hash-diff-pairs",
@@ -43,73 +112,9 @@ export const hashDiffPairs: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 5, 3, 4, 2], 2],
-      expected: 3,
-      explanation: "(1, 3), (5, 3), (4, 2) 세 쌍이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [[3, 3, 3], 0],
-      expected: 3,
-      explanation:
-        "k = 0이면 키가 같은 쌍이에요. 세 명 중 두 명을 고르는 3쌍이에요. x - k와 x + k가 같은 값이라 두 번 세지 않게 조심해요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 2, 3], 5],
-      expected: 0,
-      failureNote: "차이가 5인 쌍이 없어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[7], 0],
-      expected: 0,
-      failureNote: "한 명뿐이면 쌍이 없어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 1, 2, 2], 1],
-      expected: 4,
-      failureNote: "1과 2가 두 명씩이라 2 × 2 = 4쌍이에요. 같은 값이 여러 번 나오면 개수를 세야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[0, 1000000], 1000000],
-      expected: 1,
-      failureNote: "가장 큰 차이예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => i % 1000), 1],
-      expected: 9990000,
-      failureNote: "10만 명이에요. 모든 쌍을 비교하면 약 50억 번이라 시간 초과예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, () => 7), 0],
-      expected: 4999950000,
-      failureNote: "10만 명의 키가 모두 같아요. 답이 약 50억이라 Java는 int로 세면 넘쳐요 (long을 쓰세요).",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,5 +1,62 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["arrive mina", "arrive jun", "arrive ara", "ride 2", "arrive bo", "ride 2"]],
+    expected: [
+      ["mina", "jun"],
+      ["ara", "bo"],
+    ],
+    explanation: "첫 출발에 mina, jun이 타요. 다음 출발에는 남아 있던 ara와 새로 온 bo가 타요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["ride 3", "arrive kai", "ride 3"]],
+    expected: [[], ["kai"]],
+    explanation: "첫 출발에는 아무도 없어서 빈 리스트예요. 두 번째에는 kai 혼자 타요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["arrive a", "arrive b", "arrive c"]],
+    expected: [],
+    failureNote: "ride가 한 번도 없으면 빈 리스트예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["arrive a", "ride 1", "ride 1", "arrive b", "ride 5"]],
+    expected: [["a"], [], ["b"]],
+    failureNote: "빈 줄에서 출발하면 빈 리스트, 5명 자리에 1명뿐이면 1명만 타요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["arrive x", "arrive y", "arrive z", "ride 1", "ride 1", "ride 1"]],
+    expected: [["x"], ["y"], ["z"]],
+    failureNote: "한 명씩 줄 선 순서대로 타요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 1000 }, (_, i) => (i < 900 ? "arrive p" + i : "ride 10"))],
+    expected: Array.from({ length: 100 }, (_, r) =>
+      r < 90 ? Array.from({ length: 10 }, (_, j) => "p" + (r * 10 + j)) : [],
+    ),
+    failureNote: "900명이 줄을 서고 10명씩 100번 출발해요. 마지막 10번은 빈 회전목마예요.",
+  },
+]);
 
 export const queueCarouselLine: Problem = {
   id: "c:queue-carousel-line",
@@ -55,61 +112,9 @@ export const queueCarouselLine: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["arrive mina", "arrive jun", "arrive ara", "ride 2", "arrive bo", "ride 2"]],
-      expected: [
-        ["mina", "jun"],
-        ["ara", "bo"],
-      ],
-      explanation: "첫 출발에 mina, jun이 타요. 다음 출발에는 남아 있던 ara와 새로 온 bo가 타요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["ride 3", "arrive kai", "ride 3"]],
-      expected: [[], ["kai"]],
-      explanation: "첫 출발에는 아무도 없어서 빈 리스트예요. 두 번째에는 kai 혼자 타요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["arrive a", "arrive b", "arrive c"]],
-      expected: [],
-      failureNote: "ride가 한 번도 없으면 빈 리스트예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["arrive a", "ride 1", "ride 1", "arrive b", "ride 5"]],
-      expected: [["a"], [], ["b"]],
-      failureNote: "빈 줄에서 출발하면 빈 리스트, 5명 자리에 1명뿐이면 1명만 타요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["arrive x", "arrive y", "arrive z", "ride 1", "ride 1", "ride 1"]],
-      expected: [["x"], ["y"], ["z"]],
-      failureNote: "한 명씩 줄 선 순서대로 타요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 1000 }, (_, i) => (i < 900 ? "arrive p" + i : "ride 10"))],
-      expected: Array.from({ length: 100 }, (_, r) =>
-        r < 90 ? Array.from({ length: 10 }, (_, j) => "p" + (r * 10 + j)) : [],
-      ),
-      failureNote: "900명이 줄을 서고 10명씩 100번 출발해요. 마지막 10번은 빈 회전목마예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,63 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[70, 95, 80]],
+    expected: [3, 1, 2],
+    explanation: "95점이 1등, 80점이 2등, 70점이 3등이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [[90, 100, 90, 80]],
+    expected: [2, 1, 2, 4],
+    explanation: "90점 두 명은 둘 다 2등이에요. 80점은 위에 세 명이 있어서 4등이에요 (3등이 아니에요).",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[0]],
+    expected: [1],
+    failureNote: "혼자면 1등이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[50, 50, 50]],
+    expected: [1, 1, 1],
+    failureNote: "모두 같은 점수면 모두 1등이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[0, 100]],
+    expected: [2, 1],
+    failureNote: "가장 낮은 점수와 가장 높은 점수예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i * 37) % 101)],
+    expected: (() => {
+      const s = Array.from({ length: 100000 }, (_, i) => (i * 37) % 101);
+      const cnt = Array(102).fill(0);
+      for (const x of s) cnt[x]++;
+      const higher = Array(102).fill(0);
+      for (let v = 99; v >= 0; v--) higher[v] = higher[v + 1] + cnt[v + 1];
+      return s.map((x) => higher[x] + 1);
+    })(),
+    failureNote: "학생 10만 명이에요. 학생마다 모든 학생과 비교하면 약 100억 번이라 시간 초과예요.",
+  },
+]);
 
 export const sortingScoreRanks: Problem = {
   id: "c:sorting-score-ranks",
@@ -40,63 +99,9 @@ export const sortingScoreRanks: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[70, 95, 80]],
-      expected: [3, 1, 2],
-      explanation: "95점이 1등, 80점이 2등, 70점이 3등이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [[90, 100, 90, 80]],
-      expected: [2, 1, 2, 4],
-      explanation: "90점 두 명은 둘 다 2등이에요. 80점은 위에 세 명이 있어서 4등이에요 (3등이 아니에요).",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[0]],
-      expected: [1],
-      failureNote: "혼자면 1등이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[50, 50, 50]],
-      expected: [1, 1, 1],
-      failureNote: "모두 같은 점수면 모두 1등이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[0, 100]],
-      expected: [2, 1],
-      failureNote: "가장 낮은 점수와 가장 높은 점수예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i * 37) % 101)],
-      expected: (() => {
-        const s = Array.from({ length: 100000 }, (_, i) => (i * 37) % 101);
-        const cnt = Array(102).fill(0);
-        for (const x of s) cnt[x]++;
-        const higher = Array(102).fill(0);
-        for (let v = 99; v >= 0; v--) higher[v] = higher[v + 1] + cnt[v + 1];
-        return s.map((x) => higher[x] + 1);
-      })(),
-      failureNote: "학생 10만 명이에요. 학생마다 모든 학생과 비교하면 약 100억 번이라 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

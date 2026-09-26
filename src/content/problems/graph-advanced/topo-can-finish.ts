@@ -1,5 +1,96 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 1],
+        [0, 3],
+      ],
+    ],
+    expected: 2,
+    explanation: "1·2번은 서로를 기다려서 못 해요. 0·3번만 끝내서 2예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      3,
+      [
+        [0, 1],
+        [1, 2],
+      ],
+    ],
+    expected: 3,
+    explanation: "0 → 1 → 2 순서로 모두 끝내요: 3.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      3,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 0],
+      ],
+    ],
+    expected: 0,
+    failureNote: "셋이 고리라 하나도 못 해요: 0.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      5,
+      [
+        [0, 1],
+        [1, 0],
+        [1, 2],
+        [3, 4],
+      ],
+    ],
+    expected: 2,
+    failureNote: "2번은 고리에 묶인 1번을 기다려서 못 해요. 3·4번만 돼서 2예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2, []],
+    expected: 2,
+    failureNote: "조건이 없으면 모두 돼요: 2.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      50000,
+      [
+        ...Array.from({ length: 49999 }, (_, i) => [i, i + 1]),
+        ...Array.from({ length: 100000 }, (_, i) => {
+          const a = (i * 7919) % 49999;
+          return [a, a + 1 + ((i * 104729) % (49999 - a))];
+        }),
+        [30000, 10000],
+      ],
+    ],
+    expected: 10000,
+    failureNote: "과제 5만 개예요. 10000번부터 고리에 걸려 앞의 1만 개만 끝내요.",
+  },
+]);
 
 export const topoCanFinish: Problem = {
   id: "c:topo-can-finish",
@@ -42,95 +133,9 @@ export const topoCanFinish: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 1],
-          [0, 3],
-        ],
-      ],
-      expected: 2,
-      explanation: "1·2번은 서로를 기다려서 못 해요. 0·3번만 끝내서 2예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        3,
-        [
-          [0, 1],
-          [1, 2],
-        ],
-      ],
-      expected: 3,
-      explanation: "0 → 1 → 2 순서로 모두 끝내요: 3.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        3,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 0],
-        ],
-      ],
-      expected: 0,
-      failureNote: "셋이 고리라 하나도 못 해요: 0.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        5,
-        [
-          [0, 1],
-          [1, 0],
-          [1, 2],
-          [3, 4],
-        ],
-      ],
-      expected: 2,
-      failureNote: "2번은 고리에 묶인 1번을 기다려서 못 해요. 3·4번만 돼서 2예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2, []],
-      expected: 2,
-      failureNote: "조건이 없으면 모두 돼요: 2.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        50000,
-        [
-          ...Array.from({ length: 49999 }, (_, i) => [i, i + 1]),
-          ...Array.from({ length: 100000 }, (_, i) => {
-            const a = (i * 7919) % 49999;
-            return [a, a + 1 + ((i * 104729) % (49999 - a))];
-          }),
-          [30000, 10000],
-        ],
-      ],
-      expected: 10000,
-      failureNote: "과제 5만 개예요. 10000번부터 고리에 걸려 앞의 1만 개만 끝내요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,5 +1,57 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [8],
+    expected: 3,
+    explanation: "8 → 4 → 2 → 1로 3번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [7],
+    expected: 2,
+    explanation: "7 → 3 → 1로 2번이에요. 나머지는 버려요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1],
+    expected: 0,
+    failureNote: "처음부터 1장이라 0번이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [1000],
+    expected: 9,
+    failureNote: "1000 → 500 → 250 → 125 → 62 → 31 → 15 → 7 → 3 → 1로 9번이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1000000000000000],
+    expected: 49,
+    failureNote: "10¹⁵도 49번이면 돼요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [2],
+    expected: 1,
+    failureNote: "1번이에요.",
+  },
+]);
 
 export const cxHalvingSteps: Problem = {
   id: "c:cx-halving-steps",
@@ -35,56 +87,9 @@ export const cxHalvingSteps: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [8],
-      expected: 3,
-      explanation: "8 → 4 → 2 → 1로 3번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [7],
-      expected: 2,
-      explanation: "7 → 3 → 1로 2번이에요. 나머지는 버려요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1],
-      expected: 0,
-      failureNote: "처음부터 1장이라 0번이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [1000],
-      expected: 9,
-      failureNote: "1000 → 500 → 250 → 125 → 62 → 31 → 15 → 7 → 3 → 1로 9번이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1000000000000000],
-      expected: 49,
-      failureNote: "10¹⁵도 49번이면 돼요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [2],
-      expected: 1,
-      failureNote: "1번이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

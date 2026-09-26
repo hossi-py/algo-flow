@@ -1,4 +1,87 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [3],
+    expected: [
+      [1, 1, 1],
+      [1, 2],
+      [2, 1],
+    ],
+    explanation: "1을 먼저 고른 방법부터 나와요. [1, 1, 1], [1, 2], 그다음 [2, 1]이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1],
+    expected: [[1]],
+    explanation: "한 칸이면 방법은 [1] 하나예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [2],
+    expected: [[1, 1], [2]],
+    failureNote: "[1, 1]과 [2]예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [4],
+    expected: [
+      [1, 1, 1, 1],
+      [1, 1, 2],
+      [1, 2, 1],
+      [2, 1, 1],
+      [2, 2],
+    ],
+    failureNote:
+      "고른 칸 수 리스트를 답에 넣을 때 **복사**해서 넣어야 해요. 그대로 넣으면 되돌리기 때문에 나중에 모두 빈 리스트가 돼요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [5],
+    expected: [
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 2],
+      [1, 1, 2, 1],
+      [1, 2, 1, 1],
+      [1, 2, 2],
+      [2, 1, 1, 1],
+      [2, 1, 2],
+      [2, 2, 1],
+    ],
+    failureNote: "모두 8가지예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [15],
+    expected: (() => {
+      const out: number[][] = [];
+      const go = (r: number, p: number[]) => {
+        if (r === 0) {
+          out.push([...p]);
+          return;
+        }
+        for (const s of [1, 2]) if (s <= r) go(r - s, [...p, s]);
+      };
+      go(15, []);
+      return out;
+    })(),
+    failureNote: "15칸이면 987가지예요.",
+  },
+]);
 
 export const backtrackingStairSteps: Problem = {
   id: "c:backtracking-stair-steps",
@@ -41,87 +124,9 @@ export const backtrackingStairSteps: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [3],
-      expected: [
-        [1, 1, 1],
-        [1, 2],
-        [2, 1],
-      ],
-      explanation: "1을 먼저 고른 방법부터 나와요. [1, 1, 1], [1, 2], 그다음 [2, 1]이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1],
-      expected: [[1]],
-      explanation: "한 칸이면 방법은 [1] 하나예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [2],
-      expected: [[1, 1], [2]],
-      failureNote: "[1, 1]과 [2]예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [4],
-      expected: [
-        [1, 1, 1, 1],
-        [1, 1, 2],
-        [1, 2, 1],
-        [2, 1, 1],
-        [2, 2],
-      ],
-      failureNote:
-        "고른 칸 수 리스트를 답에 넣을 때 **복사**해서 넣어야 해요. 그대로 넣으면 되돌리기 때문에 나중에 모두 빈 리스트가 돼요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [5],
-      expected: [
-        [1, 1, 1, 1, 1],
-        [1, 1, 1, 2],
-        [1, 1, 2, 1],
-        [1, 2, 1, 1],
-        [1, 2, 2],
-        [2, 1, 1, 1],
-        [2, 1, 2],
-        [2, 2, 1],
-      ],
-      failureNote: "모두 8가지예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [15],
-      expected: (() => {
-        const out: number[][] = [];
-        const go = (r: number, p: number[]) => {
-          if (r === 0) {
-            out.push([...p]);
-            return;
-          }
-          for (const s of [1, 2]) if (s <= r) go(r - s, [...p, s]);
-        };
-        go(15, []);
-        return out;
-      })(),
-      failureNote: "15칸이면 987가지예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

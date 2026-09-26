@@ -1,4 +1,71 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["1100", "1100", "0011", "0010"]],
+    expected: [3, 4],
+    explanation:
+      "왼쪽 위 1, 오른쪽 위 0, 왼쪽 아래 0은 한 조각씩이고, 오른쪽 아래는 다시 4조각(1, 1, 1, 0)으로 나뉘어요. 0 조각 3개, 1 조각 4개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["11", "11"]],
+    expected: [0, 1],
+    explanation: "전체가 1이라 조각 하나로 끝나요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["0"]],
+    expected: [1, 0],
+    failureNote: "1×1 사진이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["10", "01"]],
+    expected: [2, 2],
+    failureNote: "네 칸이 모두 따로 기록돼요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["11110000", "11110000", "11110000", "11110000", "00001111", "00001111", "00001111", "00001110"]],
+    expected: [3, 7],
+    failureNote: "큰 조각과 아주 작은 조각이 섞여 있어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 128 }, (_, r) => Array.from({ length: 128 }, (_, c) => ((r ^ c) & 1 ? "1" : "0")).join("")),
+    ],
+    expected: [8192, 8192],
+    failureNote: "128×128 체크무늬라 모든 칸이 따로 기록돼요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 128 }, (_, r) =>
+        Array.from({ length: 128 }, (_, c) => (r < 64 || c >= 96 ? "1" : "0")).join(""),
+      ),
+    ],
+    expected: [3, 4],
+    failureNote: "128×128 사진이 큰 조각 몇 개로 압축돼요.",
+  },
+]);
 
 export const recursionQuadGarden: Problem = {
   id: "c:recursion-quad-garden",
@@ -46,73 +113,9 @@ export const recursionQuadGarden: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["1100", "1100", "0011", "0010"]],
-      expected: [3, 4],
-      explanation:
-        "왼쪽 위 1, 오른쪽 위 0, 왼쪽 아래 0은 한 조각씩이고, 오른쪽 아래는 다시 4조각(1, 1, 1, 0)으로 나뉘어요. 0 조각 3개, 1 조각 4개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["11", "11"]],
-      expected: [0, 1],
-      explanation: "전체가 1이라 조각 하나로 끝나요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["0"]],
-      expected: [1, 0],
-      failureNote: "1×1 사진이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["10", "01"]],
-      expected: [2, 2],
-      failureNote: "네 칸이 모두 따로 기록돼요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["11110000", "11110000", "11110000", "11110000", "00001111", "00001111", "00001111", "00001110"]],
-      expected: [3, 7],
-      failureNote: "큰 조각과 아주 작은 조각이 섞여 있어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 128 }, (_, r) =>
-          Array.from({ length: 128 }, (_, c) => ((r ^ c) & 1 ? "1" : "0")).join(""),
-        ),
-      ],
-      expected: [8192, 8192],
-      failureNote: "128×128 체크무늬라 모든 칸이 따로 기록돼요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 128 }, (_, r) =>
-          Array.from({ length: 128 }, (_, c) => (r < 64 || c >= 96 ? "1" : "0")).join(""),
-        ),
-      ],
-      expected: [3, 4],
-      failureNote: "128×128 사진이 큰 조각 몇 개로 압축돼요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

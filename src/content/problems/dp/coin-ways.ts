@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 2, 5], 5],
+    expected: 4,
+    explanation: "5, 2+2+1, 2+1+1+1, 1×5 네 가지예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[2], 3],
+    expected: 0,
+    explanation: "2로는 3을 만들 수 없어서 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[7], 0],
+    expected: 1,
+    failureNote: "금액 0은 아무 동전도 안 쓰는 1가지예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 2], 3],
+    expected: 2,
+    failureNote: "1+1+1, 1+2 두 가지예요. 순서를 따지면(1+2, 2+1) 3이 나와서 틀려요. 동전 반복문을 바깥에 두세요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[10], 10],
+    expected: 1,
+    failureNote: "10 하나로 1가지예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 50 }, (_, i) => i + 1), 10000],
+    expected: 783279696,
+    failureNote: "동전 50종류, 금액 1만이에요. 경우를 하나씩 만들면 끝나지 않아요.",
+  },
+]);
 
 export const dpCoinWays: Problem = {
   id: "c:dp-coin-ways",
@@ -37,56 +89,9 @@ export const dpCoinWays: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 2, 5], 5],
-      expected: 4,
-      explanation: "5, 2+2+1, 2+1+1+1, 1×5 네 가지예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[2], 3],
-      expected: 0,
-      explanation: "2로는 3을 만들 수 없어서 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[7], 0],
-      expected: 1,
-      failureNote: "금액 0은 아무 동전도 안 쓰는 1가지예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 2], 3],
-      expected: 2,
-      failureNote: "1+1+1, 1+2 두 가지예요. 순서를 따지면(1+2, 2+1) 3이 나와서 틀려요. 동전 반복문을 바깥에 두세요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[10], 10],
-      expected: 1,
-      failureNote: "10 하나로 1가지예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 50 }, (_, i) => i + 1), 10000],
-      expected: 783279696,
-      failureNote: "동전 50종류, 금액 1만이에요. 경우를 하나씩 만들면 끝나지 않아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 3000,
     compare: { type: "exact" },

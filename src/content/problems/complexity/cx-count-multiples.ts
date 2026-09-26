@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [10, 3],
+    expected: 3,
+    explanation: "3, 6, 9로 3개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [7, 7],
+    expected: 1,
+    explanation: "7 하나라 1개예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, 1],
+    expected: 1,
+    failureNote: "1은 1의 배수라 1개예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [100, 10],
+    expected: 10,
+    failureNote: "10, 20, …, 100으로 10개예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [999999999999999, 2],
+    expected: 499999999999999,
+    failureNote: "홀수까지라 499,999,999,999,999개예요. 나눗셈 결과를 정수로 버려야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000000000000000, 7],
+    expected: 142857142857142,
+    failureNote: "10¹⁵까지 하나씩 세면 몇 달이 걸려요.",
+  },
+]);
 
 export const cxCountMultiples: Problem = {
   id: "c:cx-count-multiples",
@@ -37,56 +89,9 @@ export const cxCountMultiples: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [10, 3],
-      expected: 3,
-      explanation: "3, 6, 9로 3개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [7, 7],
-      expected: 1,
-      explanation: "7 하나라 1개예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, 1],
-      expected: 1,
-      failureNote: "1은 1의 배수라 1개예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [100, 10],
-      expected: 10,
-      failureNote: "10, 20, …, 100으로 10개예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [999999999999999, 2],
-      expected: 499999999999999,
-      failureNote: "홀수까지라 499,999,999,999,999개예요. 나눗셈 결과를 정수로 버려야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000000000000000, 7],
-      expected: 142857142857142,
-      failureNote: "10¹⁵까지 하나씩 세면 몇 달이 걸려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

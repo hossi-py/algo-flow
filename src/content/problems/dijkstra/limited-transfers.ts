@@ -1,4 +1,131 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1, 100],
+        [1, 2, 100],
+        [2, 0, 100],
+        [1, 3, 600],
+        [2, 3, 200],
+      ],
+      0,
+      3,
+      1,
+    ],
+    expected: 700,
+    explanation: "한 번만 갈아탈 수 있어서 0 → 1 → 3의 700원이에요. 0 → 1 → 2 → 3(400원)은 두 번 갈아타요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1, 100],
+        [1, 2, 100],
+        [2, 0, 100],
+        [1, 3, 600],
+        [2, 3, 200],
+      ],
+      0,
+      3,
+      2,
+    ],
+    expected: 400,
+    explanation: "두 번까지 갈아탈 수 있으면 0 → 1 → 2 → 3의 400원이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      3,
+      [
+        [0, 1, 100],
+        [1, 2, 100],
+        [0, 2, 500],
+      ],
+      0,
+      2,
+      0,
+    ],
+    expected: 500,
+    failureNote: "갈아타기 0번이면 곧장 가는 500원뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2, [[0, 1, 5]], 1, 1, 0],
+    expected: 0,
+    failureNote: "출발과 도착이 같으면 0원이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      4,
+      [
+        [0, 1, 1],
+        [1, 2, 1],
+        [2, 3, 1],
+      ],
+      0,
+      3,
+      1,
+    ],
+    expected: -1,
+    failureNote: "3번까지는 비행기를 세 번 타야 해서 한 번 갈아타기로는 못 가요. -1이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      5,
+      [
+        [0, 1, 1],
+        [1, 2, 1],
+        [2, 3, 1],
+        [0, 2, 5],
+        [3, 4, 1],
+      ],
+      0,
+      4,
+      2,
+    ],
+    expected: 7,
+    failureNote:
+      "싼 길 0 → 1 → 2는 비행기가 많아서 4번까지 못 가요. 2번에 더 비싸게(5원) 오는 길을 버리지 않아야 5 + 1 + 1 = 7원을 찾아요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      300,
+      Array.from({ length: 3000 }, (_, i) => {
+        const a = (i * 7919) % 300;
+        const b = (a + 1 + ((i * 104729) % 299)) % 300;
+        return [a, b, ((i * 31337) % 10000) + 1];
+      }),
+      0,
+      299,
+      20,
+    ],
+    expected: 3392,
+    failureNote: "공항 300개, 비행편 3,000개, 갈아타기 20번까지예요.",
+  },
+]);
 
 export const dijkstraLimitedTransfers: Problem = {
   id: "c:dijkstra-limited-transfers",
@@ -55,131 +182,9 @@ export const dijkstraLimitedTransfers: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1, 100],
-          [1, 2, 100],
-          [2, 0, 100],
-          [1, 3, 600],
-          [2, 3, 200],
-        ],
-        0,
-        3,
-        1,
-      ],
-      expected: 700,
-      explanation: "한 번만 갈아탈 수 있어서 0 → 1 → 3의 700원이에요. 0 → 1 → 2 → 3(400원)은 두 번 갈아타요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1, 100],
-          [1, 2, 100],
-          [2, 0, 100],
-          [1, 3, 600],
-          [2, 3, 200],
-        ],
-        0,
-        3,
-        2,
-      ],
-      expected: 400,
-      explanation: "두 번까지 갈아탈 수 있으면 0 → 1 → 2 → 3의 400원이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        3,
-        [
-          [0, 1, 100],
-          [1, 2, 100],
-          [0, 2, 500],
-        ],
-        0,
-        2,
-        0,
-      ],
-      expected: 500,
-      failureNote: "갈아타기 0번이면 곧장 가는 500원뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2, [[0, 1, 5]], 1, 1, 0],
-      expected: 0,
-      failureNote: "출발과 도착이 같으면 0원이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        4,
-        [
-          [0, 1, 1],
-          [1, 2, 1],
-          [2, 3, 1],
-        ],
-        0,
-        3,
-        1,
-      ],
-      expected: -1,
-      failureNote: "3번까지는 비행기를 세 번 타야 해서 한 번 갈아타기로는 못 가요. -1이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        5,
-        [
-          [0, 1, 1],
-          [1, 2, 1],
-          [2, 3, 1],
-          [0, 2, 5],
-          [3, 4, 1],
-        ],
-        0,
-        4,
-        2,
-      ],
-      expected: 7,
-      failureNote:
-        "싼 길 0 → 1 → 2는 비행기가 많아서 4번까지 못 가요. 2번에 더 비싸게(5원) 오는 길을 버리지 않아야 5 + 1 + 1 = 7원을 찾아요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        300,
-        Array.from({ length: 3000 }, (_, i) => {
-          const a = (i * 7919) % 300;
-          const b = (a + 1 + ((i * 104729) % 299)) % 300;
-          return [a, b, ((i * 31337) % 10000) + 1];
-        }),
-        0,
-        299,
-        20,
-      ],
-      expected: 3392,
-      failureNote: "공항 300개, 비행편 3,000개, 갈아타기 20번까지예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

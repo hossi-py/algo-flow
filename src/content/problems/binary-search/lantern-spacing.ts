@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 2, 8, 4, 9], 3],
+    expected: 3,
+    explanation: "1, 4, 8(또는 9)에 걸면 가장 가까운 거리가 3이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[0, 100], 2],
+    expected: 100,
+    explanation: "양 끝에 걸면 100이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 2, 3, 4, 5], 5],
+    expected: 1,
+    failureNote: "모든 고리에 걸어야 해서 1이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[9, 1, 5], 2],
+    expected: 8,
+    failureNote: "고리 위치가 정렬돼 있지 않아요. 먼저 정렬하세요. 1과 9에 걸어 8이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[0, 3, 4, 7, 10], 3],
+    expected: 4,
+    failureNote: "0, 4, 10에 걸면 가장 가까운 거리가 4예요. 5 이상으로는 3개를 못 걸어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[0, 1000000000, 500000000], 3],
+    expected: 500000000,
+    failureNote: "5억 간격이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 10000 }, (_, i) => ((i * 37) % 10000) * 7919), 100],
+    expected: 799819,
+    failureNote: "고리 1만 개예요. 등불을 거는 방법을 모두 해 보는 건 불가능해요.",
+  },
+]);
 
 export const binarySearchLanternSpacing: Problem = {
   id: "c:binary-search-lantern-spacing",
@@ -37,64 +97,9 @@ export const binarySearchLanternSpacing: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 2, 8, 4, 9], 3],
-      expected: 3,
-      explanation: "1, 4, 8(또는 9)에 걸면 가장 가까운 거리가 3이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[0, 100], 2],
-      expected: 100,
-      explanation: "양 끝에 걸면 100이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 2, 3, 4, 5], 5],
-      expected: 1,
-      failureNote: "모든 고리에 걸어야 해서 1이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[9, 1, 5], 2],
-      expected: 8,
-      failureNote: "고리 위치가 정렬돼 있지 않아요. 먼저 정렬하세요. 1과 9에 걸어 8이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[0, 3, 4, 7, 10], 3],
-      expected: 4,
-      failureNote: "0, 4, 10에 걸면 가장 가까운 거리가 4예요. 5 이상으로는 3개를 못 걸어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[0, 1000000000, 500000000], 3],
-      expected: 500000000,
-      failureNote: "5억 간격이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 10000 }, (_, i) => ((i * 37) % 10000) * 7919), 100],
-      expected: 799819,
-      failureNote: "고리 1만 개예요. 등불을 거는 방법을 모두 해 보는 건 불가능해요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

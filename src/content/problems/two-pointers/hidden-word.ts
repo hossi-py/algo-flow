@@ -1,4 +1,57 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["abc", "ahbgdc"],
+    expected: true,
+    explanation: "a, b, c가 순서대로 있어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: ["axc", "ahbgdc"],
+    expected: false,
+    explanation: "x가 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["", "abc"],
+    expected: true,
+    failureNote: "빈 단어는 언제나 숨어 있어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["ba", "abc"],
+    expected: false,
+    failureNote: "글자는 다 있지만 순서가 달라요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["aa", "ab"],
+    expected: false,
+    failureNote: "a가 두 번 필요한데 한 번뿐이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: ["jihgfedcba".repeat(10), Array.from({ length: 100000 }, (_, i) => "abcdefghij"[(i * 7) % 10]).join("")],
+    expected: true,
+    failureNote:
+      "편지가 10만 글자예요. 단어 글자마다 편지를 처음부터 다시 찾으면 느려요. 두 손가락 모두 앞으로만 가요.",
+  },
+]);
 
 export const twoPointersHiddenWord: Problem = {
   id: "c:two-pointers-hidden-word",
@@ -37,57 +90,9 @@ export const twoPointersHiddenWord: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["abc", "ahbgdc"],
-      expected: true,
-      explanation: "a, b, c가 순서대로 있어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: ["axc", "ahbgdc"],
-      expected: false,
-      explanation: "x가 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["", "abc"],
-      expected: true,
-      failureNote: "빈 단어는 언제나 숨어 있어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["ba", "abc"],
-      expected: false,
-      failureNote: "글자는 다 있지만 순서가 달라요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["aa", "ab"],
-      expected: false,
-      failureNote: "a가 두 번 필요한데 한 번뿐이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: ["jihgfedcba".repeat(10), Array.from({ length: 100000 }, (_, i) => "abcdefghij"[(i * 7) % 10]).join("")],
-      expected: true,
-      failureNote:
-        "편지가 10만 글자예요. 단어 글자마다 편지를 처음부터 다시 찾으면 느려요. 두 손가락 모두 앞으로만 가요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

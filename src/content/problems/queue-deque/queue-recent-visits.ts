@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 100, 3001, 3002]],
+    expected: [1, 2, 3, 3],
+    explanation: "3001ms에는 1~3001 구간이라 3개, 3002ms에는 1이 빠져서 3개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[1000, 5000, 9000]],
+    expected: [1, 1, 1],
+    explanation: "방문 간격이 3초보다 길면 늘 자기 자신 1개예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[42]],
+    expected: [1],
+    failureNote: "방문이 한 번뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 3001]],
+    expected: [1, 2],
+    failureNote: "정확히 3,000ms 전 방문도 포함해요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 3002]],
+    expected: [1, 1],
+    failureNote: "3,001ms 전 방문은 빠져요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[10, 20, 30, 3025, 6030, 6040]],
+    expected: [1, 2, 3, 2, 1, 2],
+    failureNote: "오래된 방문이 여러 개 한꺼번에 빠지기도 해요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => i + 1)],
+    expected: Array.from({ length: 100000 }, (_, i) => Math.min(i + 1, 3001)),
+    failureNote: "1ms마다 방문해서 3초 창에 3,001개씩 들어 있어요. 매번 창 전체를 세면 시간 초과예요.",
+  },
+]);
 
 export const queueRecentVisits: Problem = {
   id: "c:queue-recent-visits",
@@ -47,64 +107,9 @@ export const queueRecentVisits: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 100, 3001, 3002]],
-      expected: [1, 2, 3, 3],
-      explanation: "3001ms에는 1~3001 구간이라 3개, 3002ms에는 1이 빠져서 3개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[1000, 5000, 9000]],
-      expected: [1, 1, 1],
-      explanation: "방문 간격이 3초보다 길면 늘 자기 자신 1개예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[42]],
-      expected: [1],
-      failureNote: "방문이 한 번뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 3001]],
-      expected: [1, 2],
-      failureNote: "정확히 3,000ms 전 방문도 포함해요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 3002]],
-      expected: [1, 1],
-      failureNote: "3,001ms 전 방문은 빠져요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[10, 20, 30, 3025, 6030, 6040]],
-      expected: [1, 2, 3, 2, 1, 2],
-      failureNote: "오래된 방문이 여러 개 한꺼번에 빠지기도 해요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => i + 1)],
-      expected: Array.from({ length: 100000 }, (_, i) => Math.min(i + 1, 3001)),
-      failureNote: "1ms마다 방문해서 3초 창에 3,001개씩 들어 있어요. 매번 창 전체를 세면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

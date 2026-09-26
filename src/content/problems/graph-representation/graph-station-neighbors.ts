@@ -1,5 +1,99 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [0, 1],
+        [1, 2],
+        [1, 3],
+        [3, 4],
+      ],
+      1,
+    ],
+    expected: [0, 2, 3],
+    explanation: "1번 역은 0, 2, 3번 역과 바로 이어져 있어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [2, 0],
+        [3, 1],
+      ],
+      0,
+    ],
+    expected: [2],
+    explanation: "[2, 0]처럼 x가 뒤에 적혀 있어도 이어진 거예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [3, [[0, 1]], 2],
+    expected: [],
+    failureNote: "선로가 없는 역은 이웃이 없어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, [], 0],
+    expected: [],
+    failureNote: "역이 하나뿐이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [5, 0],
+        [0, 3],
+        [2, 0],
+        [0, 1],
+        [4, 0],
+      ],
+      0,
+    ],
+    expected: [1, 2, 3, 4, 5],
+    failureNote: "0번이 모든 역과 이어져 있어요. 오름차순으로 정렬해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+      ],
+      3,
+    ],
+    expected: [2],
+    failureNote: "건너 건너 이어진 역은 이웃이 아니에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000, Array.from({ length: 999 }, (_, i) => [i + 1, (i * 7) % (i + 1)]), 0],
+    expected: [1, 7],
+    failureNote: "역 1,000개, 선로 999개예요.",
+  },
+]);
 
 export const graphStationNeighbors: Problem = {
   id: "c:graph-station-neighbors",
@@ -53,98 +147,9 @@ export const graphStationNeighbors: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [0, 1],
-          [1, 2],
-          [1, 3],
-          [3, 4],
-        ],
-        1,
-      ],
-      expected: [0, 2, 3],
-      explanation: "1번 역은 0, 2, 3번 역과 바로 이어져 있어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [2, 0],
-          [3, 1],
-        ],
-        0,
-      ],
-      expected: [2],
-      explanation: "[2, 0]처럼 x가 뒤에 적혀 있어도 이어진 거예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [3, [[0, 1]], 2],
-      expected: [],
-      failureNote: "선로가 없는 역은 이웃이 없어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, [], 0],
-      expected: [],
-      failureNote: "역이 하나뿐이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [5, 0],
-          [0, 3],
-          [2, 0],
-          [0, 1],
-          [4, 0],
-        ],
-        0,
-      ],
-      expected: [1, 2, 3, 4, 5],
-      failureNote: "0번이 모든 역과 이어져 있어요. 오름차순으로 정렬해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-        ],
-        3,
-      ],
-      expected: [2],
-      failureNote: "건너 건너 이어진 역은 이웃이 아니에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000, Array.from({ length: 999 }, (_, i) => [i + 1, (i * 7) % (i + 1)]), 0],
-      expected: [1, 7],
-      failureNote: "역 1,000개, 선로 999개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

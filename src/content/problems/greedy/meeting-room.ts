@@ -1,5 +1,91 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [1, 4],
+        [3, 5],
+        [0, 6],
+        [5, 7],
+        [3, 9],
+        [5, 9],
+        [6, 10],
+        [8, 11],
+      ],
+    ],
+    expected: 3,
+    explanation: "[1, 4], [5, 7], [8, 11]로 3개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 3],
+        [3, 5],
+        [5, 7],
+      ],
+    ],
+    expected: 3,
+    explanation: "끝나는 시각에 바로 시작해도 돼서 3개 모두 열어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[2, 9]]],
+    expected: 1,
+    failureNote: "하나면 1개예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [0, 10],
+        [1, 2],
+        [3, 4],
+      ],
+    ],
+    expected: 2,
+    failureNote: "가장 먼저 시작하는 [0, 10]을 고르면 1개뿐이에요. 끝나는 시각 순이면 [1, 2], [3, 4]로 2개예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 5],
+        [4, 7],
+        [6, 10],
+      ],
+    ],
+    expected: 2,
+    failureNote: "가장 짧은 [4, 7]을 고르면 1개뿐이에요. [1, 5], [6, 10]으로 2개예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100000 }, (_, i) => {
+        const s = (i * 7919) % 1000000;
+        return [s, s + 1 + ((i * 37) % 500)];
+      }),
+    ],
+    expected: 12643,
+    failureNote: "회의 10만 개예요. 고르는 방법을 모두 해 보는 건 불가능해요.",
+  },
+]);
 
 export const greedyMeetingRoom: Problem = {
   id: "c:greedy-meeting-room",
@@ -41,90 +127,9 @@ export const greedyMeetingRoom: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [1, 4],
-          [3, 5],
-          [0, 6],
-          [5, 7],
-          [3, 9],
-          [5, 9],
-          [6, 10],
-          [8, 11],
-        ],
-      ],
-      expected: 3,
-      explanation: "[1, 4], [5, 7], [8, 11]로 3개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 3],
-          [3, 5],
-          [5, 7],
-        ],
-      ],
-      expected: 3,
-      explanation: "끝나는 시각에 바로 시작해도 돼서 3개 모두 열어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[2, 9]]],
-      expected: 1,
-      failureNote: "하나면 1개예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [0, 10],
-          [1, 2],
-          [3, 4],
-        ],
-      ],
-      expected: 2,
-      failureNote: "가장 먼저 시작하는 [0, 10]을 고르면 1개뿐이에요. 끝나는 시각 순이면 [1, 2], [3, 4]로 2개예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 5],
-          [4, 7],
-          [6, 10],
-        ],
-      ],
-      expected: 2,
-      failureNote: "가장 짧은 [4, 7]을 고르면 1개뿐이에요. [1, 5], [6, 10]으로 2개예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100000 }, (_, i) => {
-          const s = (i * 7919) % 1000000;
-          return [s, s + 1 + ((i * 37) % 500)];
-        }),
-      ],
-      expected: 12643,
-      failureNote: "회의 10만 개예요. 고르는 방법을 모두 해 보는 건 불가능해요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

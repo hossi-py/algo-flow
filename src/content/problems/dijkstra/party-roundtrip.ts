@@ -1,4 +1,107 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1, 4],
+        [0, 2, 2],
+        [0, 3, 7],
+        [1, 0, 1],
+        [1, 2, 5],
+        [2, 0, 1],
+        [2, 3, 4],
+        [3, 1, 3],
+      ],
+      1,
+    ],
+    expected: 10,
+    explanation: "3번 친구가 가는 데 3분, 오는 데 1 → 0 → 2 → 3으로 1 + 2 + 4 = 7분, 합 10분으로 가장 길어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1, [], 0],
+    expected: 0,
+    explanation: "파티 마을 한 곳뿐이면 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      3,
+      [
+        [0, 1, 1],
+        [1, 2, 1],
+        [2, 0, 1],
+      ],
+      0,
+    ],
+    expected: 3,
+    failureNote: "한 방향 고리예요. 1번은 가는 데 2분, 오는 데 1분 → 3분. 2번도 3분이라 3이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      2,
+      [
+        [0, 1, 5],
+        [1, 0, 7],
+      ],
+      1,
+    ],
+    expected: 12,
+    failureNote: "0번 친구가 5분 가고 7분 와서 12예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      3,
+      [
+        [0, 1, 10],
+        [1, 0, 10],
+        [0, 2, 1],
+        [2, 1, 1],
+        [1, 2, 20],
+        [2, 0, 1],
+      ],
+      1,
+    ],
+    expected: 12,
+    failureNote:
+      "0번은 0 → 2 → 1(2분), 1 → 0(10분)으로 12예요. 2번은 1분 가고 1 → 0 → 2로 11분 와서 12예요. 답은 12예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      10000,
+      [
+        ...Array.from({ length: 10000 }, (_, i) => [i, (i + 1) % 10000, 1000]),
+        ...Array.from({ length: 20000 }, (_, i) => {
+          const a = (i * 7907) % 10000;
+          const b = (a + 1 + ((i * 104729) % 9999)) % 10000;
+          return [a, b, ((i * 7919) % 1000) + 1];
+        }),
+      ],
+      123,
+    ],
+    expected: 11962,
+    failureNote: "마을 1만 개예요. 마을마다 다익스트라를 한 번씩 돌리면 1만 번이라 너무 느려요.",
+  },
+]);
 
 export const dijkstraPartyRoundtrip: Problem = {
   id: "c:dijkstra-party-roundtrip",
@@ -50,107 +153,9 @@ export const dijkstraPartyRoundtrip: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1, 4],
-          [0, 2, 2],
-          [0, 3, 7],
-          [1, 0, 1],
-          [1, 2, 5],
-          [2, 0, 1],
-          [2, 3, 4],
-          [3, 1, 3],
-        ],
-        1,
-      ],
-      expected: 10,
-      explanation: "3번 친구가 가는 데 3분, 오는 데 1 → 0 → 2 → 3으로 1 + 2 + 4 = 7분, 합 10분으로 가장 길어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1, [], 0],
-      expected: 0,
-      explanation: "파티 마을 한 곳뿐이면 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        3,
-        [
-          [0, 1, 1],
-          [1, 2, 1],
-          [2, 0, 1],
-        ],
-        0,
-      ],
-      expected: 3,
-      failureNote: "한 방향 고리예요. 1번은 가는 데 2분, 오는 데 1분 → 3분. 2번도 3분이라 3이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        2,
-        [
-          [0, 1, 5],
-          [1, 0, 7],
-        ],
-        1,
-      ],
-      expected: 12,
-      failureNote: "0번 친구가 5분 가고 7분 와서 12예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        3,
-        [
-          [0, 1, 10],
-          [1, 0, 10],
-          [0, 2, 1],
-          [2, 1, 1],
-          [1, 2, 20],
-          [2, 0, 1],
-        ],
-        1,
-      ],
-      expected: 12,
-      failureNote:
-        "0번은 0 → 2 → 1(2분), 1 → 0(10분)으로 12예요. 2번은 1분 가고 1 → 0 → 2로 11분 와서 12예요. 답은 12예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        10000,
-        [
-          ...Array.from({ length: 10000 }, (_, i) => [i, (i + 1) % 10000, 1000]),
-          ...Array.from({ length: 20000 }, (_, i) => {
-            const a = (i * 7907) % 10000;
-            const b = (a + 1 + ((i * 104729) % 9999)) % 10000;
-            return [a, b, ((i * 7919) % 1000) + 1];
-          }),
-        ],
-        123,
-      ],
-      expected: 11962,
-      failureNote: "마을 1만 개예요. 마을마다 다익스트라를 한 번씩 돌리면 1만 번이라 너무 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,81 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [3, 6],
+    expected: "a",
+    explanation:
+      "3단계 주문 abbbbaa의 6번째 글자는 a예요. 뒤쪽 절반 baa는 앞쪽 abb의 a·b를 바꾼 것이라, 앞쪽 2번째 글자 b를 바꾼 a예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1, 1],
+    expected: "a",
+    explanation: "1단계 주문은 a 한 글자예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [2, 2],
+    expected: "b",
+    failureNote: "가운데 글자는 언제나 b예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [3, 4],
+    expected: "b",
+    failureNote: "3단계의 가운데(4번째)예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [4, 15],
+    expected: "b",
+    failureNote: "마지막 글자예요. 뒤쪽 절반으로 갈 때마다 바꾸기가 한 번씩 쌓여요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [5, 20],
+    expected: "a",
+    failureNote: "뒤쪽 → 앞쪽 → 뒤쪽 … 바꾸기를 몇 번 했는지 세야 해요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [50, 562949953421312],
+    expected: "b",
+    failureNote: "50단계의 가운데 글자예요. 주문을 실제로 만들면 메모리가 모자라요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [50, 1125899906842623],
+    expected: "b",
+    failureNote: "50단계의 마지막 글자예요.",
+  },
+  {
+    id: "hid-7",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [50, 123456789012345],
+    expected: "a",
+    failureNote: "50단계의 한가운데쯤 어딘가예요.",
+  },
+]);
 
 export const recursionMagicScroll: Problem = {
   id: "c:recursion-magic-scroll",
@@ -46,81 +123,9 @@ export const recursionMagicScroll: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [3, 6],
-      expected: "a",
-      explanation:
-        "3단계 주문 abbbbaa의 6번째 글자는 a예요. 뒤쪽 절반 baa는 앞쪽 abb의 a·b를 바꾼 것이라, 앞쪽 2번째 글자 b를 바꾼 a예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1, 1],
-      expected: "a",
-      explanation: "1단계 주문은 a 한 글자예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [2, 2],
-      expected: "b",
-      failureNote: "가운데 글자는 언제나 b예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [3, 4],
-      expected: "b",
-      failureNote: "3단계의 가운데(4번째)예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [4, 15],
-      expected: "b",
-      failureNote: "마지막 글자예요. 뒤쪽 절반으로 갈 때마다 바꾸기가 한 번씩 쌓여요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [5, 20],
-      expected: "a",
-      failureNote: "뒤쪽 → 앞쪽 → 뒤쪽 … 바꾸기를 몇 번 했는지 세야 해요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [50, 562949953421312],
-      expected: "b",
-      failureNote: "50단계의 가운데 글자예요. 주문을 실제로 만들면 메모리가 모자라요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [50, 1125899906842623],
-      expected: "b",
-      failureNote: "50단계의 마지막 글자예요.",
-    },
-    {
-      id: "hid-7",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [50, 123456789012345],
-      expected: "a",
-      failureNote: "50단계의 한가운데쯤 어딘가예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

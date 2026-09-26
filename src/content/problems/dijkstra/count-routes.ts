@@ -1,4 +1,108 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1, 1],
+        [0, 2, 1],
+        [1, 3, 1],
+        [2, 3, 1],
+      ],
+    ],
+    expected: 2,
+    explanation: "0 → 1 → 3과 0 → 2 → 3, 둘 다 2분이라 2가지예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [2, [[0, 1, 5]]],
+    expected: 1,
+    explanation: "길이 하나뿐이라 1가지예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 3, 3],
+        [0, 1, 1],
+        [1, 2, 1],
+        [2, 3, 1],
+      ],
+    ],
+    expected: 2,
+    failureNote: "길 하나로 3분, 길 셋으로도 3분이에요. 지나는 길 수가 달라도 시간이 같으면 모두 세서 2가지예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [3, [[0, 1, 1]]],
+    expected: 0,
+    failureNote: "2번 마을에 갈 수 없어서 0이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      2,
+      [
+        [0, 1, 2],
+        [0, 1, 2],
+      ],
+    ],
+    expected: 2,
+    failureNote: "같은 두 마을을 잇는 2분 길이 두 개라 2가지예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      82,
+      [
+        [0, 1, 1],
+        [0, 2, 1],
+        ...Array.from({ length: 39 }, (_, j) => [
+          [1 + 2 * j, 3 + 2 * j, 1],
+          [1 + 2 * j, 4 + 2 * j, 1],
+          [2 + 2 * j, 3 + 2 * j, 1],
+          [2 + 2 * j, 4 + 2 * j, 1],
+        ]).flat(),
+        [79, 81, 1],
+        [80, 81, 1],
+      ],
+    ],
+    expected: 511620083,
+    failureNote: "갈림길이 40번 이어져서 2⁴⁰가지예요. 나머지를 구하지 않으면 수가 너무 커져요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      10000,
+      [
+        ...Array.from({ length: 9900 }, (_, i) => [i, i + 100, 1]),
+        ...Array.from({ length: 10000 }, (_, i) => i)
+          .filter((i) => i % 100 !== 99)
+          .map((i) => [i, i + 1, 1]),
+      ],
+    ],
+    expected: 690285631,
+    failureNote: "100 × 100 격자 모양 길이에요. 오른쪽·아래로만 가는 모든 길이 가장 빨라서 경우의 수가 아주 커요.",
+  },
+]);
 
 export const dijkstraCountRoutes: Problem = {
   id: "c:dijkstra-count-routes",
@@ -49,108 +153,9 @@ export const dijkstraCountRoutes: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1, 1],
-          [0, 2, 1],
-          [1, 3, 1],
-          [2, 3, 1],
-        ],
-      ],
-      expected: 2,
-      explanation: "0 → 1 → 3과 0 → 2 → 3, 둘 다 2분이라 2가지예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [2, [[0, 1, 5]]],
-      expected: 1,
-      explanation: "길이 하나뿐이라 1가지예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 3, 3],
-          [0, 1, 1],
-          [1, 2, 1],
-          [2, 3, 1],
-        ],
-      ],
-      expected: 2,
-      failureNote: "길 하나로 3분, 길 셋으로도 3분이에요. 지나는 길 수가 달라도 시간이 같으면 모두 세서 2가지예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [3, [[0, 1, 1]]],
-      expected: 0,
-      failureNote: "2번 마을에 갈 수 없어서 0이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        2,
-        [
-          [0, 1, 2],
-          [0, 1, 2],
-        ],
-      ],
-      expected: 2,
-      failureNote: "같은 두 마을을 잇는 2분 길이 두 개라 2가지예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        82,
-        [
-          [0, 1, 1],
-          [0, 2, 1],
-          ...Array.from({ length: 39 }, (_, j) => [
-            [1 + 2 * j, 3 + 2 * j, 1],
-            [1 + 2 * j, 4 + 2 * j, 1],
-            [2 + 2 * j, 3 + 2 * j, 1],
-            [2 + 2 * j, 4 + 2 * j, 1],
-          ]).flat(),
-          [79, 81, 1],
-          [80, 81, 1],
-        ],
-      ],
-      expected: 511620083,
-      failureNote: "갈림길이 40번 이어져서 2⁴⁰가지예요. 나머지를 구하지 않으면 수가 너무 커져요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        10000,
-        [
-          ...Array.from({ length: 9900 }, (_, i) => [i, i + 100, 1]),
-          ...Array.from({ length: 10000 }, (_, i) => i)
-            .filter((i) => i % 100 !== 99)
-            .map((i) => [i, i + 1, 1]),
-        ],
-      ],
-      expected: 690285631,
-      failureNote: "100 × 100 격자 모양 길이에요. 오른쪽·아래로만 가는 모든 길이 가장 빨라서 경우의 수가 아주 커요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,5 +1,57 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[2, 3, 1, 2, 4, 3], 7],
+    expected: 2,
+    explanation: "[4, 3]이 7이라 2칸이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[1, 1, 1], 5],
+    expected: 0,
+    explanation: "다 주워도 3개라 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[10], 7],
+    expected: 1,
+    failureNote: "한 칸으로 충분해요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 4, 4], 4],
+    expected: 1,
+    failureNote: "4 한 칸이면 돼요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 2, 3, 4, 5], 11],
+    expected: 3,
+    failureNote: "[3, 4, 5]가 12로 3칸이에요. 조건을 채운 뒤에도 왼쪽을 계속 줄여 봐야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 50) + 1), 1000000],
+    expected: 39214,
+    failureNote: "10만 칸이에요. 시작점마다 끝까지 더하면 시간 초과예요.",
+  },
+]);
 
 export const twoPointersShortestEnough: Problem = {
   id: "c:two-pointers-shortest-enough",
@@ -42,56 +94,9 @@ export const twoPointersShortestEnough: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[2, 3, 1, 2, 4, 3], 7],
-      expected: 2,
-      explanation: "[4, 3]이 7이라 2칸이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[1, 1, 1], 5],
-      expected: 0,
-      explanation: "다 주워도 3개라 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[10], 7],
-      expected: 1,
-      failureNote: "한 칸으로 충분해요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 4, 4], 4],
-      expected: 1,
-      failureNote: "4 한 칸이면 돼요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 2, 3, 4, 5], 11],
-      expected: 3,
-      failureNote: "[3, 4, 5]가 12로 3칸이에요. 조건을 채운 뒤에도 왼쪽을 계속 줄여 봐야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 50) + 1), 1000000],
-      expected: 39214,
-      failureNote: "10만 칸이에요. 시작점마다 끝까지 더하면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

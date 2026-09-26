@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 2, 5], 11],
+    expected: 3,
+    explanation: "5 + 5 + 1로 3개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[2], 3],
+    expected: -1,
+    explanation: "만들 수 없어서 -1이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[1], 0],
+    expected: 0,
+    failureNote: "금액 0은 동전 0개예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 3, 4], 6],
+    expected: 2,
+    failureNote: "큰 동전부터 욕심껏 쓰면 4 + 1 + 1로 3개지만, 3 + 3이면 2개예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[7, 11], 25],
+    expected: 3,
+    failureNote: "7 + 7 + 11로 3개예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 50 }, (_, i) => 2 * i + 37), 9999],
+    expected: 75,
+    failureNote: "동전 50종류, 금액 1만이에요. 모든 조합을 해 보면 끝나지 않아요.",
+  },
+]);
 
 export const dpFewestCoins: Problem = {
   id: "c:dp-fewest-coins",
@@ -37,56 +89,9 @@ export const dpFewestCoins: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 2, 5], 11],
-      expected: 3,
-      explanation: "5 + 5 + 1로 3개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[2], 3],
-      expected: -1,
-      explanation: "만들 수 없어서 -1이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[1], 0],
-      expected: 0,
-      failureNote: "금액 0은 동전 0개예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 3, 4], 6],
-      expected: 2,
-      failureNote: "큰 동전부터 욕심껏 쓰면 4 + 1 + 1로 3개지만, 3 + 3이면 2개예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[7, 11], 25],
-      expected: 3,
-      failureNote: "7 + 7 + 11로 3개예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 50 }, (_, i) => 2 * i + 37), 9999],
-      expected: 75,
-      failureNote: "동전 50종류, 금액 1만이에요. 모든 조합을 해 보면 끝나지 않아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 3000,
     compare: { type: "exact" },

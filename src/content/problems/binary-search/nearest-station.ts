@@ -1,4 +1,87 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [10, 50, 30],
+      [12, 41, 60],
+    ],
+    expected: [2, 9, 10],
+    explanation: "12는 10과 2, 41은 50과 9(30과는 11), 60은 50과 10이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[20], [5, 20, 100]],
+    expected: [15, 0, 80],
+    explanation: "정류장이 하나면 모두 그 정류장이에요. 같은 자리면 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [100, 200],
+      [0, 300],
+    ],
+    expected: [100, 100],
+    failureNote: "모든 정류장보다 앞이거나 뒤인 집이에요. 한쪽 이웃이 없을 때를 조심하세요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[10, 20], [15]],
+    expected: [5],
+    failureNote: "양쪽이 똑같이 5만큼 떨어져 있어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [1, 1000000000],
+      [500000000, 500000001],
+    ],
+    expected: [499999999, 499999999],
+    failureNote: "가운데 근처예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 100000) * 10000),
+      Array.from({ length: 100000 }, (_, i) => (i * 104729) % 1000000000),
+    ],
+    expected: (() => {
+      const lb = (a = [0], x = 0) => {
+        let lo = 0,
+          hi = a.length;
+        while (lo < hi) {
+          const m = (lo + hi) >> 1;
+          if (a[m] >= x) hi = m;
+          else lo = m + 1;
+        }
+        return lo;
+      };
+      const s = Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 100000) * 10000).sort((x, y) => x - y);
+      return Array.from({ length: 100000 }, (_, i) => (i * 104729) % 1000000000).map((h) => {
+        const i = lb(s, h);
+        let best = Infinity;
+        if (i < s.length) best = s[i] - h;
+        if (i > 0) best = Math.min(best, h - s[i - 1]);
+        return best;
+      });
+    })(),
+    failureNote: "정류장 10만 개, 집 10만 채예요. 집마다 모든 정류장을 보면 시간 초과예요.",
+  },
+]);
 
 export const binarySearchNearestStation: Problem = {
   id: "c:binary-search-nearest-station",
@@ -41,87 +124,9 @@ export const binarySearchNearestStation: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [10, 50, 30],
-        [12, 41, 60],
-      ],
-      expected: [2, 9, 10],
-      explanation: "12는 10과 2, 41은 50과 9(30과는 11), 60은 50과 10이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[20], [5, 20, 100]],
-      expected: [15, 0, 80],
-      explanation: "정류장이 하나면 모두 그 정류장이에요. 같은 자리면 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [100, 200],
-        [0, 300],
-      ],
-      expected: [100, 100],
-      failureNote: "모든 정류장보다 앞이거나 뒤인 집이에요. 한쪽 이웃이 없을 때를 조심하세요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[10, 20], [15]],
-      expected: [5],
-      failureNote: "양쪽이 똑같이 5만큼 떨어져 있어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [1, 1000000000],
-        [500000000, 500000001],
-      ],
-      expected: [499999999, 499999999],
-      failureNote: "가운데 근처예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 100000) * 10000),
-        Array.from({ length: 100000 }, (_, i) => (i * 104729) % 1000000000),
-      ],
-      expected: (() => {
-        const lb = (a = [0], x = 0) => {
-          let lo = 0,
-            hi = a.length;
-          while (lo < hi) {
-            const m = (lo + hi) >> 1;
-            if (a[m] >= x) hi = m;
-            else lo = m + 1;
-          }
-          return lo;
-        };
-        const s = Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 100000) * 10000).sort((x, y) => x - y);
-        return Array.from({ length: 100000 }, (_, i) => (i * 104729) % 1000000000).map((h) => {
-          const i = lb(s, h);
-          let best = Infinity;
-          if (i < s.length) best = s[i] - h;
-          if (i > 0) best = Math.min(best, h - s[i - 1]);
-          return best;
-        });
-      })(),
-      failureNote: "정류장 10만 개, 집 10만 채예요. 집마다 모든 정류장을 보면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

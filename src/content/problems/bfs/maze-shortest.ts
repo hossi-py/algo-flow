@@ -1,5 +1,89 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["S.#", "..#", "#.E"]],
+    expected: 4,
+    explanation: "S → 아래 → 오른쪽 → 아래 → 오른쪽으로 4번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [["S...", ".##.", "...E"]],
+    expected: 5,
+    explanation: "위로 돌든 아래로 돌든 5번이에요. 어느 길로 가도 가장 짧은 거리는 같아요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["SE"]],
+    expected: 1,
+    failureNote: "바로 옆이면 1번이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["S#E"]],
+    expected: -1,
+    failureNote: "벽에 막혀 -1이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["S.....", "####..", "E.....", ".#####"]],
+    expected: 10,
+    failureNote: "막다른 길로 새지 않고 가장 짧은 길을 찾아요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["..S..", ".###.", ".#E#.", ".#.#.", "....."]],
+    expected: 10,
+    failureNote: "출구를 한 바퀴 돌아 아래로 들어가요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100 }, (_, r) =>
+        Array.from({ length: 100 }, (_, c) => (r === 0 && c === 0 ? "S" : r === 99 && c === 99 ? "E" : ".")).join(""),
+      ),
+    ],
+    expected: 198,
+    failureNote: "벽 없는 100×100 들판이에요. 모든 길을 하나씩 따라가 보면 끝나지 않아요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: (() => {
+      const g = [];
+      for (let r = 0; r < 100; r += 1) {
+        if (r % 2 === 0) g.push(".".repeat(100));
+        else {
+          const gap = ((r - 1) / 2) % 2 === 0 ? 99 : 0;
+          g.push(Array.from({ length: 100 }, (_, c) => (c === gap ? "." : "#")).join(""));
+        }
+      }
+      g[0] = "S" + g[0].slice(1);
+      g[98] = g[98].slice(0, 50) + "E" + g[98].slice(51);
+      return [g];
+    })(),
+    expected: 4998,
+    failureNote: "100×100 뱀 모양 미로예요.",
+  },
+]);
 
 export const bfsMazeShortest: Problem = {
   id: "c:bfs-maze-shortest",
@@ -41,88 +125,9 @@ export const bfsMazeShortest: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["S.#", "..#", "#.E"]],
-      expected: 4,
-      explanation: "S → 아래 → 오른쪽 → 아래 → 오른쪽으로 4번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [["S...", ".##.", "...E"]],
-      expected: 5,
-      explanation: "위로 돌든 아래로 돌든 5번이에요. 어느 길로 가도 가장 짧은 거리는 같아요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["SE"]],
-      expected: 1,
-      failureNote: "바로 옆이면 1번이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["S#E"]],
-      expected: -1,
-      failureNote: "벽에 막혀 -1이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["S.....", "####..", "E.....", ".#####"]],
-      expected: 10,
-      failureNote: "막다른 길로 새지 않고 가장 짧은 길을 찾아요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["..S..", ".###.", ".#E#.", ".#.#.", "....."]],
-      expected: 10,
-      failureNote: "출구를 한 바퀴 돌아 아래로 들어가요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100 }, (_, r) =>
-          Array.from({ length: 100 }, (_, c) => (r === 0 && c === 0 ? "S" : r === 99 && c === 99 ? "E" : ".")).join(""),
-        ),
-      ],
-      expected: 198,
-      failureNote: "벽 없는 100×100 들판이에요. 모든 길을 하나씩 따라가 보면 끝나지 않아요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: (() => {
-        const g = [];
-        for (let r = 0; r < 100; r += 1) {
-          if (r % 2 === 0) g.push(".".repeat(100));
-          else {
-            const gap = ((r - 1) / 2) % 2 === 0 ? 99 : 0;
-            g.push(Array.from({ length: 100 }, (_, c) => (c === gap ? "." : "#")).join(""));
-          }
-        }
-        g[0] = "S" + g[0].slice(1);
-        g[98] = g[98].slice(0, 50) + "E" + g[98].slice(51);
-        return [g];
-      })(),
-      expected: 4998,
-      failureNote: "100×100 뱀 모양 미로예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Workspace } from "@/components/workspace/workspace";
 import { PROBLEMS, getProblem } from "@/content/problems";
+import { withoutHiddenData } from "@/content/problems/hidden-data";
 import { isAiConfigured } from "@/lib/ai/client";
 
 export function generateStaticParams() {
@@ -20,5 +21,5 @@ export default async function ProblemPage(props: PageProps<"/problems/[slug]">) 
   const { slug } = await props.params;
   const problem = getProblem(slug);
   if (!problem) notFound();
-  return <Workspace problem={problem} aiEnabled={isAiConfigured()} />;
+  return <Workspace problem={withoutHiddenData(problem)} aiEnabled={isAiConfigured()} />;
 }

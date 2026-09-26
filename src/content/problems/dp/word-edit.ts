@@ -1,4 +1,67 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["horse", "ros"],
+    expected: 3,
+    explanation: "h→r 바꾸기, r 빼기, e 빼기로 3번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: ["", "abc"],
+    expected: 3,
+    explanation: "빈 단어에서 세 글자를 넣어 3번이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["same", "same"],
+    expected: 0,
+    failureNote: "이미 같으면 0번이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["abc", ""],
+    expected: 3,
+    failureNote: "모두 빼면 3번이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["intention", "execution"],
+    expected: 5,
+    failureNote: "5번이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["ab", "ba"],
+    expected: 2,
+    failureNote: "바꾸기 두 번이면 2번이에요. 순서 바꾸기는 한 번에 할 수 없어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 500 }, (_, i) => "nodimos"[(i * 13) % 7]).join(""),
+      Array.from({ length: 500 }, (_, i) => "nodimos"[(i * 11 + (i >> 2)) % 7]).join(""),
+    ],
+    expected: 339,
+    failureNote: "두 단어 모두 500글자예요. 고치는 방법을 하나씩 해 보면 끝나지 않아요.",
+  },
+]);
 
 export const dpWordEdit: Problem = {
   id: "c:dp-word-edit",
@@ -41,67 +104,9 @@ export const dpWordEdit: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["horse", "ros"],
-      expected: 3,
-      explanation: "h→r 바꾸기, r 빼기, e 빼기로 3번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: ["", "abc"],
-      expected: 3,
-      explanation: "빈 단어에서 세 글자를 넣어 3번이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["same", "same"],
-      expected: 0,
-      failureNote: "이미 같으면 0번이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["abc", ""],
-      expected: 3,
-      failureNote: "모두 빼면 3번이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["intention", "execution"],
-      expected: 5,
-      failureNote: "5번이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["ab", "ba"],
-      expected: 2,
-      failureNote: "바꾸기 두 번이면 2번이에요. 순서 바꾸기는 한 번에 할 수 없어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 500 }, (_, i) => "nodimos"[(i * 13) % 7]).join(""),
-        Array.from({ length: 500 }, (_, i) => "nodimos"[(i * 11 + (i >> 2)) % 7]).join(""),
-      ],
-      expected: 339,
-      failureNote: "두 단어 모두 500글자예요. 고치는 방법을 하나씩 해 보면 끝나지 않아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 3000,
     compare: { type: "exact" },

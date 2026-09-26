@@ -1,4 +1,123 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [0, 4],
+        [4, 5],
+      ],
+      0,
+      [3, 5],
+    ],
+    expected: 2,
+    explanation: "3번 편의점은 길 3개, 5번 편의점은 길 2개예요. 더 가까운 5번이라 2예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      3,
+      [
+        [0, 1],
+        [1, 2],
+      ],
+      1,
+      [1, 2],
+    ],
+    expected: 0,
+    explanation: "출발한 곳이 편의점이면 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      4,
+      [
+        [0, 1],
+        [2, 3],
+      ],
+      0,
+      [3],
+    ],
+    expected: -1,
+    failureNote: "편의점이 다른 동네에 있어서 갈 수 없어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      5,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [0, 4],
+      ],
+      0,
+      [3],
+    ],
+    expected: 2,
+    failureNote:
+      "먼저 이어진 길(0 → 1 → 2 → 3)은 3개지만, 반대쪽(0 → 4 → 3)은 2개예요. 처음 찾은 길이 가장 짧은 건 BFS일 때만이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      7,
+      [
+        [0, 1],
+        [0, 2],
+        [1, 3],
+        [2, 4],
+        [3, 5],
+        [4, 6],
+      ],
+      0,
+      [5, 6],
+    ],
+    expected: 3,
+    failureNote: "두 편의점이 같은 거리에 있어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000, Array.from({ length: 99999 }, (_, i) => [i, i + 1]), 0, [99999]],
+    expected: 99999,
+    failureNote: "한 줄로 이어진 10만 곳 끝에 편의점이 하나 있어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      100000,
+      [
+        ...Array.from({ length: 99999 }, (_, i) => [i, i + 1]),
+        ...Array.from({ length: 100000 }, (_, i) => [i, (i + 5000) % 100000]).filter(([a, b]) => Math.abs(a - b) !== 1),
+      ],
+      12345,
+      [67890, 99999],
+    ],
+    expected: 554,
+    failureNote: "장소 10만 곳, 길 약 20만 개예요. 편의점마다 따로 BFS를 돌 필요 없이, 출발지에서 한 번이면 돼요.",
+  },
+]);
 
 export const bfsNearestStore: Problem = {
   id: "c:bfs-nearest-store",
@@ -63,125 +182,9 @@ export const bfsNearestStore: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [0, 4],
-          [4, 5],
-        ],
-        0,
-        [3, 5],
-      ],
-      expected: 2,
-      explanation: "3번 편의점은 길 3개, 5번 편의점은 길 2개예요. 더 가까운 5번이라 2예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        3,
-        [
-          [0, 1],
-          [1, 2],
-        ],
-        1,
-        [1, 2],
-      ],
-      expected: 0,
-      explanation: "출발한 곳이 편의점이면 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        4,
-        [
-          [0, 1],
-          [2, 3],
-        ],
-        0,
-        [3],
-      ],
-      expected: -1,
-      failureNote: "편의점이 다른 동네에 있어서 갈 수 없어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        5,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [3, 4],
-          [0, 4],
-        ],
-        0,
-        [3],
-      ],
-      expected: 2,
-      failureNote:
-        "먼저 이어진 길(0 → 1 → 2 → 3)은 3개지만, 반대쪽(0 → 4 → 3)은 2개예요. 처음 찾은 길이 가장 짧은 건 BFS일 때만이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        7,
-        [
-          [0, 1],
-          [0, 2],
-          [1, 3],
-          [2, 4],
-          [3, 5],
-          [4, 6],
-        ],
-        0,
-        [5, 6],
-      ],
-      expected: 3,
-      failureNote: "두 편의점이 같은 거리에 있어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [100000, Array.from({ length: 99999 }, (_, i) => [i, i + 1]), 0, [99999]],
-      expected: 99999,
-      failureNote: "한 줄로 이어진 10만 곳 끝에 편의점이 하나 있어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        100000,
-        [
-          ...Array.from({ length: 99999 }, (_, i) => [i, i + 1]),
-          ...Array.from({ length: 100000 }, (_, i) => [i, (i + 5000) % 100000]).filter(
-            ([a, b]) => Math.abs(a - b) !== 1,
-          ),
-        ],
-        12345,
-        [67890, 99999],
-      ],
-      expected: 554,
-      failureNote: "장소 10만 곳, 길 약 20만 개예요. 편의점마다 따로 BFS를 돌 필요 없이, 출발지에서 한 번이면 돼요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,107 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [0, 1, 1],
+        [1, 2, 2],
+        [0, 2, 4],
+        [2, 3, 1],
+        [3, 4, 5],
+      ],
+      4,
+    ],
+    expected: 4,
+    explanation: "가장 빠른 시간은 0, 1, 3, 4, 9분이에요. 4분 이하는 네 곳이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      3,
+      [
+        [0, 1, 1],
+        [1, 2, 1],
+      ],
+      0,
+    ],
+    expected: 1,
+    explanation: "0분이면 빵집 마을만 돼서 1이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      3,
+      [
+        [0, 2, 10],
+        [0, 1, 3],
+        [1, 2, 3],
+      ],
+      6,
+    ],
+    expected: 3,
+    failureNote: "2번은 곧장 10분이지만 돌아가면 6분이라 들어가요. 답은 3이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      4,
+      [
+        [1, 2, 1],
+        [2, 3, 1],
+      ],
+      100,
+    ],
+    expected: 1,
+    failureNote: "0번에서 나가는 길이 없어서 1이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1, 5],
+        [0, 2, 5],
+        [0, 3, 6],
+      ],
+      5,
+    ],
+    expected: 3,
+    failureNote: "딱 5분인 마을도 들어가요. 0·1·2번 세 곳이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      10000,
+      [
+        ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 1000]),
+        ...Array.from({ length: 20000 }, (_, i) => {
+          const a = (i * 104729) % 10000;
+          const b = (a + 1 + ((i * 7907) % 9999)) % 10000;
+          return [a, b, ((i * 7919) % 1000) + 1];
+        }),
+      ],
+      5000,
+    ],
+    expected: 10000,
+    failureNote: "마을 1만 개, 길 3만 개예요.",
+  },
+]);
 
 export const dijkstraReachableInTime: Problem = {
   id: "c:dijkstra-reachable-in-time",
@@ -48,107 +151,9 @@ export const dijkstraReachableInTime: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [0, 1, 1],
-          [1, 2, 2],
-          [0, 2, 4],
-          [2, 3, 1],
-          [3, 4, 5],
-        ],
-        4,
-      ],
-      expected: 4,
-      explanation: "가장 빠른 시간은 0, 1, 3, 4, 9분이에요. 4분 이하는 네 곳이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        3,
-        [
-          [0, 1, 1],
-          [1, 2, 1],
-        ],
-        0,
-      ],
-      expected: 1,
-      explanation: "0분이면 빵집 마을만 돼서 1이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        3,
-        [
-          [0, 2, 10],
-          [0, 1, 3],
-          [1, 2, 3],
-        ],
-        6,
-      ],
-      expected: 3,
-      failureNote: "2번은 곧장 10분이지만 돌아가면 6분이라 들어가요. 답은 3이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        4,
-        [
-          [1, 2, 1],
-          [2, 3, 1],
-        ],
-        100,
-      ],
-      expected: 1,
-      failureNote: "0번에서 나가는 길이 없어서 1이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1, 5],
-          [0, 2, 5],
-          [0, 3, 6],
-        ],
-        5,
-      ],
-      expected: 3,
-      failureNote: "딱 5분인 마을도 들어가요. 0·1·2번 세 곳이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        10000,
-        [
-          ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 1000]),
-          ...Array.from({ length: 20000 }, (_, i) => {
-            const a = (i * 104729) % 10000;
-            const b = (a + 1 + ((i * 7907) % 9999)) % 10000;
-            return [a, b, ((i * 7919) % 1000) + 1];
-          }),
-        ],
-        5000,
-      ],
-      expected: 10000,
-      failureNote: "마을 1만 개, 길 3만 개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

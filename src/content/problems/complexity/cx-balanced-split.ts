@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 2, 3, 4, 5]],
+    expected: 3,
+    explanation: "[1, 2, 3] | [4, 5]로 6과 9, 차이 3이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[10, 10]],
+    expected: 0,
+    explanation: "딱 반으로 나뉘어 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[5, 1]],
+    expected: 4,
+    failureNote: "4예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, -1, 1, -1]],
+    expected: 0,
+    failureNote: "[1, −1] | [1, −1]이면 0이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[-5, 5, 5]],
+    expected: 5,
+    failureNote: "[−5, 5] | [5]로 0과 5, 차이 5예요. [−5] | [5, 5]는 −5와 10이라 차이가 15예요. 음수에 주의해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 20001) - 10000)],
+    expected: 7,
+    failureNote: "10만 칸이에요. 자를 곳마다 두 합을 새로 더하면 약 100억 번이에요.",
+  },
+]);
 
 export const cxBalancedSplit: Problem = {
   id: "c:cx-balanced-split",
@@ -36,56 +88,9 @@ export const cxBalancedSplit: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 2, 3, 4, 5]],
-      expected: 3,
-      explanation: "[1, 2, 3] | [4, 5]로 6과 9, 차이 3이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[10, 10]],
-      expected: 0,
-      explanation: "딱 반으로 나뉘어 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[5, 1]],
-      expected: 4,
-      failureNote: "4예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, -1, 1, -1]],
-      expected: 0,
-      failureNote: "[1, −1] | [1, −1]이면 0이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[-5, 5, 5]],
-      expected: 5,
-      failureNote: "[−5, 5] | [5]로 0과 5, 차이 5예요. [−5] | [5, 5]는 −5와 10이라 차이가 15예요. 음수에 주의해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 20001) - 10000)],
-      expected: 7,
-      failureNote: "10만 칸이에요. 자를 곳마다 두 합을 새로 더하면 약 100억 번이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

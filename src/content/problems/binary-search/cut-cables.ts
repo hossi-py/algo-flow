@@ -1,5 +1,66 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[80, 43, 57, 39], 11],
+    expected: 19,
+    explanation: "19로 자르면 4 + 2 + 3 + 2 = 11도막, 20이면 9도막이라 19예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[3], 4],
+    expected: 0,
+    explanation: "길이 1로 잘라도 3도막뿐이라 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[10], 1],
+    expected: 10,
+    failureNote: "한 도막이면 줄 전체 길이 10이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[5, 5, 5], 3],
+    expected: 5,
+    failureNote: "5씩 한 도막씩, 5예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 1000000000], 2],
+    expected: 500000000,
+    failureNote: "긴 줄 하나에서 2도막(5억씩)이 나와요. 짧은 줄은 못 써도 괜찮아요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[7, 7, 7, 7], 28],
+    expected: 1,
+    failureNote: "길이 1이면 딱 28도막이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 10000 }, (_, i) => ((i * 7919) % 999999937) + 1), 10000000],
+    expected: 39571,
+    failureNote:
+      "줄 1만 개, 길이 최대 10억이에요. 길이를 1부터 하나씩 해 보면 시간 초과예요. (Java는 도막 수 합을 long으로)",
+  },
+]);
 
 export const binarySearchCutCables: Problem = {
   id: "c:binary-search-cut-cables",
@@ -38,65 +99,9 @@ export const binarySearchCutCables: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[80, 43, 57, 39], 11],
-      expected: 19,
-      explanation: "19로 자르면 4 + 2 + 3 + 2 = 11도막, 20이면 9도막이라 19예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[3], 4],
-      expected: 0,
-      explanation: "길이 1로 잘라도 3도막뿐이라 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[10], 1],
-      expected: 10,
-      failureNote: "한 도막이면 줄 전체 길이 10이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[5, 5, 5], 3],
-      expected: 5,
-      failureNote: "5씩 한 도막씩, 5예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 1000000000], 2],
-      expected: 500000000,
-      failureNote: "긴 줄 하나에서 2도막(5억씩)이 나와요. 짧은 줄은 못 써도 괜찮아요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[7, 7, 7, 7], 28],
-      expected: 1,
-      failureNote: "길이 1이면 딱 28도막이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 10000 }, (_, i) => ((i * 7919) % 999999937) + 1), 10000000],
-      expected: 39571,
-      failureNote:
-        "줄 1만 개, 길이 최대 10억이에요. 길이를 1부터 하나씩 해 보면 시간 초과예요. (Java는 도막 수 합을 long으로)",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

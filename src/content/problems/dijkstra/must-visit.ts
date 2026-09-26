@@ -1,4 +1,115 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1, 3],
+        [1, 2, 3],
+        [2, 3, 1],
+        [0, 2, 5],
+        [1, 3, 5],
+        [0, 3, 4],
+      ],
+      1,
+      2,
+    ],
+    expected: 7,
+    explanation: "0 → 1 → 2 → 3으로 3 + 3 + 1 = 7분이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      4,
+      [
+        [0, 1, 1],
+        [2, 3, 1],
+      ],
+      1,
+      2,
+    ],
+    expected: -1,
+    explanation: "1번과 2번이 이어져 있지 않아 -1이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1, 1],
+        [1, 2, 1],
+        [2, 3, 1],
+      ],
+      2,
+      1,
+    ],
+    expected: 3,
+    failureNote: "a = 2, b = 1이지만 순서는 상관없어요. 1번 먼저 들르면 3분이에요 (2번 먼저면 5분).",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      5,
+      [
+        [0, 1, 1],
+        [1, 2, 5],
+        [1, 3, 2],
+        [1, 4, 1],
+      ],
+      2,
+      3,
+    ],
+    expected: 16,
+    failureNote: "막다른 마을에 들렀다 되돌아와야 해요. 0 → 1 → 2 → 1 → 3 → 1 → 4로 16분이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      3,
+      [
+        [0, 1, 2],
+        [1, 2, 2],
+      ],
+      0,
+      2,
+    ],
+    expected: 4,
+    failureNote: "출발·도착 마을도 들를 마을일 수 있어요. 4분이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      10000,
+      [
+        ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 1000]),
+        ...Array.from({ length: 20000 }, (_, i) => {
+          const a = (i * 7907) % 10000;
+          const b = (a + 1 + ((i * 104729) % 9999)) % 10000;
+          return [a, b, ((i * 7919) % 1000) + 1];
+        }),
+      ],
+      3333,
+      6666,
+    ],
+    expected: 6133,
+    failureNote: "마을 1만 개예요. 다익스트라는 세 번이면 충분해요.",
+  },
+]);
 
 export const dijkstraMustVisit: Problem = {
   id: "c:dijkstra-must-visit",
@@ -45,115 +156,9 @@ export const dijkstraMustVisit: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1, 3],
-          [1, 2, 3],
-          [2, 3, 1],
-          [0, 2, 5],
-          [1, 3, 5],
-          [0, 3, 4],
-        ],
-        1,
-        2,
-      ],
-      expected: 7,
-      explanation: "0 → 1 → 2 → 3으로 3 + 3 + 1 = 7분이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        4,
-        [
-          [0, 1, 1],
-          [2, 3, 1],
-        ],
-        1,
-        2,
-      ],
-      expected: -1,
-      explanation: "1번과 2번이 이어져 있지 않아 -1이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1, 1],
-          [1, 2, 1],
-          [2, 3, 1],
-        ],
-        2,
-        1,
-      ],
-      expected: 3,
-      failureNote: "a = 2, b = 1이지만 순서는 상관없어요. 1번 먼저 들르면 3분이에요 (2번 먼저면 5분).",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        5,
-        [
-          [0, 1, 1],
-          [1, 2, 5],
-          [1, 3, 2],
-          [1, 4, 1],
-        ],
-        2,
-        3,
-      ],
-      expected: 16,
-      failureNote: "막다른 마을에 들렀다 되돌아와야 해요. 0 → 1 → 2 → 1 → 3 → 1 → 4로 16분이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        3,
-        [
-          [0, 1, 2],
-          [1, 2, 2],
-        ],
-        0,
-        2,
-      ],
-      expected: 4,
-      failureNote: "출발·도착 마을도 들를 마을일 수 있어요. 4분이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        10000,
-        [
-          ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 1000]),
-          ...Array.from({ length: 20000 }, (_, i) => {
-            const a = (i * 7907) % 10000;
-            const b = (a + 1 + ((i * 104729) % 9999)) % 10000;
-            return [a, b, ((i * 7919) % 1000) + 1];
-          }),
-        ],
-        3333,
-        6666,
-      ],
-      expected: 6133,
-      failureNote: "마을 1만 개예요. 다익스트라는 세 번이면 충분해요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

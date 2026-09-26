@@ -1,4 +1,66 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[-1, 0, 0, 1]],
+    expected: [0, 1, 1, 2],
+    explanation: "0번이 대표예요. 1, 2번은 0번의 부하라서 1층, 3번은 1번의 부하라서 2층이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[-1]],
+    expected: [0],
+    explanation: "대표 혼자인 회사예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[2, 2, -1, 0]],
+    expected: [1, 1, 0, 2],
+    failureNote: "대표가 0번이 아니에요. 2번이 대표예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 2, 3, -1]],
+    expected: [3, 2, 1, 0],
+    failureNote:
+      "상사 번호가 부하 번호보다 커요. 앞에서부터 한 번 훑으며 `상사의 층 + 1`을 적으면 상사의 층이 아직 정해지지 않았어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[-1, 0, 1, 1, 0, 4, 5]],
+    expected: [0, 1, 2, 2, 1, 2, 3],
+    failureNote: "층이 여러 갈래로 뻗어 있어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i === 99999 ? -1 : i + 1))],
+    expected: Array.from({ length: 100000 }, (_, i) => 99999 - i),
+    failureNote:
+      "10만 명이 한 줄로 이어진 조직이에요. 직원마다 대표까지 따라 올라가면 시간 초과이고, 재귀로 올라가면 너무 깊어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i === 0 ? -1 : 0))],
+    expected: Array.from({ length: 100000 }, (_, i) => (i === 0 ? 0 : 1)),
+    failureNote: "대표 한 명에 부하가 99,999명이에요.",
+  },
+]);
 
 export const graphOrgLevels: Problem = {
   id: "c:graph-org-levels",
@@ -53,66 +115,9 @@ export const graphOrgLevels: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[-1, 0, 0, 1]],
-      expected: [0, 1, 1, 2],
-      explanation: "0번이 대표예요. 1, 2번은 0번의 부하라서 1층, 3번은 1번의 부하라서 2층이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[-1]],
-      expected: [0],
-      explanation: "대표 혼자인 회사예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[2, 2, -1, 0]],
-      expected: [1, 1, 0, 2],
-      failureNote: "대표가 0번이 아니에요. 2번이 대표예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 2, 3, -1]],
-      expected: [3, 2, 1, 0],
-      failureNote:
-        "상사 번호가 부하 번호보다 커요. 앞에서부터 한 번 훑으며 `상사의 층 + 1`을 적으면 상사의 층이 아직 정해지지 않았어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[-1, 0, 1, 1, 0, 4, 5]],
-      expected: [0, 1, 2, 2, 1, 2, 3],
-      failureNote: "층이 여러 갈래로 뻗어 있어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i === 99999 ? -1 : i + 1))],
-      expected: Array.from({ length: 100000 }, (_, i) => 99999 - i),
-      failureNote:
-        "10만 명이 한 줄로 이어진 조직이에요. 직원마다 대표까지 따라 올라가면 시간 초과이고, 재귀로 올라가면 너무 깊어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i === 0 ? -1 : 0))],
-      expected: Array.from({ length: 100000 }, (_, i) => (i === 0 ? 0 : 1)),
-      failureNote: "대표 한 명에 부하가 99,999명이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

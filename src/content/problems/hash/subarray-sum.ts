@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 2, 3, -2, 2], 3],
+    expected: 4,
+    explanation: "[1, 2], [3], [2, 3, −2], [3, −2, 2] 네 구간이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [[0, 0, 0], 0],
+    expected: 6,
+    explanation: "0으로 된 구간은 길이 1이 3개, 길이 2가 2개, 길이 3이 1개라 6이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5], 5],
+    expected: 1,
+    failureNote: "하루짜리 구간 하나예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5], 3],
+    expected: 0,
+    failureNote: "구간이 없어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, -1, 1, -1], 0],
+    expected: 4,
+    failureNote: "음수가 있어서 구간을 늘릴수록 합이 커지지 않아요. 두 포인터로는 못 풀어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[3, 4, 7, 2, -3, 1, 4, 2], 7],
+    expected: 4,
+    failureNote: "누적 합이 같은 값으로 여러 번 돌아와요. 개수를 세어 둬야 모두 셀 수 있어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 50000 }, () => 0), 0],
+    expected: 1250025000,
+    failureNote: "5만 일이 모두 0이면 구간이 약 12억 개예요. 구간을 하나씩 세면 시간 초과예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 50000 }, (_, i) => ((i * 37) % 21) - 10), 5],
+    expected: 22681406,
+    failureNote: "5만 일, 음수와 양수가 섞여 있어요.",
+  },
+]);
 
 export const hashSubarraySum: Problem = {
   id: "c:hash-subarray-sum",
@@ -41,72 +109,9 @@ export const hashSubarraySum: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 2, 3, -2, 2], 3],
-      expected: 4,
-      explanation: "[1, 2], [3], [2, 3, −2], [3, −2, 2] 네 구간이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [[0, 0, 0], 0],
-      expected: 6,
-      explanation: "0으로 된 구간은 길이 1이 3개, 길이 2가 2개, 길이 3이 1개라 6이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5], 5],
-      expected: 1,
-      failureNote: "하루짜리 구간 하나예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5], 3],
-      expected: 0,
-      failureNote: "구간이 없어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, -1, 1, -1], 0],
-      expected: 4,
-      failureNote: "음수가 있어서 구간을 늘릴수록 합이 커지지 않아요. 두 포인터로는 못 풀어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[3, 4, 7, 2, -3, 1, 4, 2], 7],
-      expected: 4,
-      failureNote: "누적 합이 같은 값으로 여러 번 돌아와요. 개수를 세어 둬야 모두 셀 수 있어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 50000 }, () => 0), 0],
-      expected: 1250025000,
-      failureNote: "5만 일이 모두 0이면 구간이 약 12억 개예요. 구간을 하나씩 세면 시간 초과예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 50000 }, (_, i) => ((i * 37) % 21) - 10), 5],
-      expected: 22681406,
-      failureNote: "5만 일, 음수와 양수가 섞여 있어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

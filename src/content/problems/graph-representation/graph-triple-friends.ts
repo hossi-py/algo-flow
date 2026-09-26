@@ -1,4 +1,125 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [0, 2],
+        [2, 3],
+      ],
+    ],
+    expected: 1,
+    explanation: "0, 1, 2번이 모두 서로 친구라서 한 팀이에요. 3번은 2번하고만 친구예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      3,
+      [
+        [0, 1],
+        [1, 2],
+      ],
+    ],
+    expected: 0,
+    explanation: "0과 2가 친구가 아니라서 삼총사가 아니에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, []],
+    expected: 0,
+    failureNote: "학생이 한 명뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1],
+        [0, 2],
+        [0, 3],
+        [1, 2],
+        [1, 3],
+        [2, 3],
+      ],
+    ],
+    expected: 4,
+    failureNote: "넷이 모두 친구면 세 명을 고르는 방법 4가지가 모두 삼총사예요. 같은 팀을 여러 번 세지 않게 조심해요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [0, 1],
+        [1, 2],
+        [0, 2],
+        [1, 3],
+        [2, 3],
+      ],
+    ],
+    expected: 2,
+    failureNote: "1–2 친구 관계를 두 팀이 함께 써요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 0],
+        [3, 4],
+        [4, 5],
+        [5, 3],
+      ],
+    ],
+    expected: 2,
+    failureNote: "서로 떨어진 삼총사 두 팀이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      200,
+      Array.from({ length: 200 }, (_, a) => Array.from({ length: 200 - a - 1 }, (_, t) => [a, a + t + 1])).flat(),
+    ],
+    expected: 1313400,
+    failureNote:
+      "200명이 모두 서로 친구예요 (관계 19,900개). 세 명을 모두 골라 보거나, 관계마다 학생 전체를 훑으면 느려요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      2000,
+      [
+        ...Array.from({ length: 1999 }, (_, i) => [0, i + 1]),
+        ...Array.from({ length: 1999 }, (_, i) => [i + 1, ((i + 1) % 1999) + 1]),
+      ],
+    ],
+    expected: 1999,
+    failureNote: "학생 2,000명이 바퀴 모양으로 이어져 있어요. 세 명을 모두 골라 보면 13억 가지라 시간 초과예요.",
+  },
+]);
 
 export const graphTripleFriends: Problem = {
   id: "c:graph-triple-friends",
@@ -48,126 +169,9 @@ export const graphTripleFriends: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [0, 2],
-          [2, 3],
-        ],
-      ],
-      expected: 1,
-      explanation: "0, 1, 2번이 모두 서로 친구라서 한 팀이에요. 3번은 2번하고만 친구예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        3,
-        [
-          [0, 1],
-          [1, 2],
-        ],
-      ],
-      expected: 0,
-      explanation: "0과 2가 친구가 아니라서 삼총사가 아니에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, []],
-      expected: 0,
-      failureNote: "학생이 한 명뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1],
-          [0, 2],
-          [0, 3],
-          [1, 2],
-          [1, 3],
-          [2, 3],
-        ],
-      ],
-      expected: 4,
-      failureNote:
-        "넷이 모두 친구면 세 명을 고르는 방법 4가지가 모두 삼총사예요. 같은 팀을 여러 번 세지 않게 조심해요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [0, 1],
-          [1, 2],
-          [0, 2],
-          [1, 3],
-          [2, 3],
-        ],
-      ],
-      expected: 2,
-      failureNote: "1–2 친구 관계를 두 팀이 함께 써요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 0],
-          [3, 4],
-          [4, 5],
-          [5, 3],
-        ],
-      ],
-      expected: 2,
-      failureNote: "서로 떨어진 삼총사 두 팀이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        200,
-        Array.from({ length: 200 }, (_, a) => Array.from({ length: 200 - a - 1 }, (_, t) => [a, a + t + 1])).flat(),
-      ],
-      expected: 1313400,
-      failureNote:
-        "200명이 모두 서로 친구예요 (관계 19,900개). 세 명을 모두 골라 보거나, 관계마다 학생 전체를 훑으면 느려요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        2000,
-        [
-          ...Array.from({ length: 1999 }, (_, i) => [0, i + 1]),
-          ...Array.from({ length: 1999 }, (_, i) => [i + 1, ((i + 1) % 1999) + 1]),
-        ],
-      ],
-      expected: 1999,
-      failureNote: "학생 2,000명이 바퀴 모양으로 이어져 있어요. 세 명을 모두 골라 보면 13억 가지라 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

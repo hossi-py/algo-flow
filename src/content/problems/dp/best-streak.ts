@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[-2, 1, -3, 4, -1, 2, 1, -5, 4]],
+    expected: 6,
+    explanation: "4, −1, 2, 1 기간이 6이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[-3, -1, -2]],
+    expected: -1,
+    explanation: "모두 손해여도 하루는 골라야 해요. −1이에요 (0이 아니에요).",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5]],
+    expected: 5,
+    failureNote: "하루뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 2, 3]],
+    expected: 6,
+    failureNote: "전부 더해 6이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[5, -9, 6]],
+    expected: 6,
+    failureNote: "앞의 5를 이어 가면 오히려 손해예요. 전날까지의 합이 음수면 버리고 새로 시작해요. 6이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 20001) - 10000)],
+    expected: 77468,
+    failureNote: "10만 일이에요. 모든 기간을 더해 보면(O(N²)) 시간 초과예요.",
+  },
+]);
 
 export const dpBestStreak: Problem = {
   id: "c:dp-best-streak",
@@ -40,56 +92,9 @@ export const dpBestStreak: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[-2, 1, -3, 4, -1, 2, 1, -5, 4]],
-      expected: 6,
-      explanation: "4, −1, 2, 1 기간이 6이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[-3, -1, -2]],
-      expected: -1,
-      explanation: "모두 손해여도 하루는 골라야 해요. −1이에요 (0이 아니에요).",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5]],
-      expected: 5,
-      failureNote: "하루뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 2, 3]],
-      expected: 6,
-      failureNote: "전부 더해 6이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[5, -9, 6]],
-      expected: 6,
-      failureNote: "앞의 5를 이어 가면 오히려 손해예요. 전날까지의 합이 음수면 버리고 새로 시작해요. 6이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 20001) - 10000)],
-      expected: 77468,
-      failureNote: "10만 일이에요. 모든 기간을 더해 보면(O(N²)) 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

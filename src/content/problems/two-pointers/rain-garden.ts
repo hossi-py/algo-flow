@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]],
+    expected: 6,
+    explanation: "모두 6만큼 고여요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [[4, 2, 0, 3, 2, 5]],
+    expected: 9,
+    explanation: "9만큼 고여요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5]],
+    expected: 0,
+    failureNote: "기둥 하나면 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[1, 2, 3, 4]],
+    expected: 0,
+    failureNote: "계속 높아지면 물이 흘러가서 0이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[5, 0, 0, 0, 1]],
+    expected: 3,
+    failureNote: "왼쪽이 5여도 오른쪽이 1이라 물은 1까지만 고여요. 3이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i * 7919) % 1000)],
+    expected: 49936140,
+    failureNote: "기둥 10만 개예요. 칸마다 양쪽 최댓값을 새로 찾으면 시간 초과예요.",
+  },
+]);
 
 export const twoPointersRainGarden: Problem = {
   id: "c:two-pointers-rain-garden",
@@ -40,56 +92,9 @@ export const twoPointersRainGarden: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]],
-      expected: 6,
-      explanation: "모두 6만큼 고여요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [[4, 2, 0, 3, 2, 5]],
-      expected: 9,
-      explanation: "9만큼 고여요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5]],
-      expected: 0,
-      failureNote: "기둥 하나면 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[1, 2, 3, 4]],
-      expected: 0,
-      failureNote: "계속 높아지면 물이 흘러가서 0이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[5, 0, 0, 0, 1]],
-      expected: 3,
-      failureNote: "왼쪽이 5여도 오른쪽이 1이라 물은 1까지만 고여요. 3이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i * 7919) % 1000)],
-      expected: 49936140,
-      failureNote: "기둥 10만 개예요. 칸마다 양쪽 최댓값을 새로 찾으면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

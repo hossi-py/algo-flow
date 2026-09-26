@@ -1,5 +1,58 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[7, 2, 9, 4, 1], 3],
+    expected: [1, 2, 4],
+    explanation: "1, 2, 4예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[5], 1],
+    expected: [5],
+    explanation: "하나뿐이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[3, 3, 1, 3], 3],
+    expected: [1, 3, 3],
+    failureNote: "같은 무게도 따로 세요: [1, 3, 3].",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[10, -2, 5], 3],
+    expected: [-2, 5, 10],
+    failureNote: "전부면 정렬한 것과 같아요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[8, 6, 7], 1],
+    expected: [6],
+    failureNote: "가장 가벼운 6 하나예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 1000003) - 500000), 20],
+    // prettier-ignore
+    expected: [-500000,-499968,-499965,-499962,-499959,-499927,-499924,-499921,-499918,-499886,-499883,-499880,-499877,-499845,-499842,-499839,-499836,-499804,-499801,-499798],
+    failureNote: "10만 개 중 20개예요. 가장 작은 값을 매번 처음부터 찾아 지우면 느려요.",
+  },
+]);
 
 export const heapSmallestK: Problem = {
   id: "c:heap-smallest-k",
@@ -40,57 +93,9 @@ export const heapSmallestK: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[7, 2, 9, 4, 1], 3],
-      expected: [1, 2, 4],
-      explanation: "1, 2, 4예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[5], 1],
-      expected: [5],
-      explanation: "하나뿐이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[3, 3, 1, 3], 3],
-      expected: [1, 3, 3],
-      failureNote: "같은 무게도 따로 세요: [1, 3, 3].",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[10, -2, 5], 3],
-      expected: [-2, 5, 10],
-      failureNote: "전부면 정렬한 것과 같아요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[8, 6, 7], 1],
-      expected: [6],
-      failureNote: "가장 가벼운 6 하나예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 1000003) - 500000), 20],
-      // prettier-ignore
-      expected: [-500000,-499968,-499965,-499962,-499959,-499927,-499924,-499921,-499918,-499886,-499883,-499880,-499877,-499845,-499842,-499839,-499836,-499804,-499801,-499798],
-      failureNote: "10만 개 중 20개예요. 가장 작은 값을 매번 처음부터 찾아 지우면 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

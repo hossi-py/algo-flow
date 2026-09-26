@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[2, 7, 9, 3, 1]],
+    expected: 12,
+    explanation: "0번(2) + 2번(9) + 4번(1) = 12예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [[2, 1, 1, 2]],
+    expected: 4,
+    explanation: "0번과 3번(2 + 2 = 4)이 가장 많아요. 짝수 번째만, 홀수 번째만 고르는 건 답이 아니에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5]],
+    expected: 5,
+    failureNote: "집이 하나면 그 집이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[3, 8]],
+    expected: 8,
+    failureNote: "둘 중 큰 쪽 8이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[5, 10, 6]],
+    expected: 11,
+    failureNote: "가장 큰 10을 먼저 고르면 10이지만, 5 + 6 = 11이 더 많아요. 욕심껏 고르면 틀려요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[0, 0, 0]],
+    expected: 0,
+    failureNote: "모두 0이면 0이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i * 104729) % 10000)],
+    expected: 361059150,
+    failureNote: "집 10만 채예요. 고르는 방법을 모두 해 보면 2^100000가지라 불가능해요.",
+  },
+]);
 
 export const dpAcornHouses: Problem = {
   id: "c:dp-acorn-houses",
@@ -40,64 +100,9 @@ export const dpAcornHouses: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[2, 7, 9, 3, 1]],
-      expected: 12,
-      explanation: "0번(2) + 2번(9) + 4번(1) = 12예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [[2, 1, 1, 2]],
-      expected: 4,
-      explanation: "0번과 3번(2 + 2 = 4)이 가장 많아요. 짝수 번째만, 홀수 번째만 고르는 건 답이 아니에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5]],
-      expected: 5,
-      failureNote: "집이 하나면 그 집이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[3, 8]],
-      expected: 8,
-      failureNote: "둘 중 큰 쪽 8이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[5, 10, 6]],
-      expected: 11,
-      failureNote: "가장 큰 10을 먼저 고르면 10이지만, 5 + 6 = 11이 더 많아요. 욕심껏 고르면 틀려요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[0, 0, 0]],
-      expected: 0,
-      failureNote: "모두 0이면 0이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i * 104729) % 10000)],
-      expected: 361059150,
-      failureNote: "집 10만 채예요. 고르는 방법을 모두 해 보면 2^100000가지라 불가능해요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },
