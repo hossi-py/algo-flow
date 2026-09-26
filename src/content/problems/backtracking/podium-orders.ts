@@ -1,5 +1,101 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["mina", "jun", "ara"], 2],
+    expected: [
+      ["mina", "jun"],
+      ["mina", "ara"],
+      ["jun", "mina"],
+      ["jun", "ara"],
+      ["ara", "mina"],
+      ["ara", "jun"],
+    ],
+    explanation: "1등이 mina일 때 2등은 jun, ara 순서로 세워 봐요. 그다음 1등이 jun, ara인 경우예요. 모두 6가지예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["bo"], 1],
+    expected: [["bo"]],
+    explanation: "후보가 한 명이면 한 가지예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["a", "b", "c"], 3],
+    expected: [
+      ["a", "b", "c"],
+      ["a", "c", "b"],
+      ["b", "a", "c"],
+      ["b", "c", "a"],
+      ["c", "a", "b"],
+      ["c", "b", "a"],
+    ],
+    failureNote: "셋 모두 서는 순서는 6가지예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["zed", "amy", "kai"], 2],
+    expected: [
+      ["zed", "amy"],
+      ["zed", "kai"],
+      ["amy", "zed"],
+      ["amy", "kai"],
+      ["kai", "zed"],
+      ["kai", "amy"],
+    ],
+    failureNote: "이름을 가나다(알파벳)순으로 정렬하지 말고 주어진 순서대로 세워 봐요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["x", "y", "z", "w"], 1],
+    expected: [["x"], ["y"], ["z"], ["w"]],
+    failureNote: "한 자리면 한 명씩이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["a", "b", "c", "d"], 3],
+    // prettier-ignore
+    expected: [["a","b","c"],["a","b","d"],["a","c","b"],["a","c","d"],["a","d","b"],["a","d","c"],["b","a","c"],["b","a","d"],["b","c","a"],["b","c","d"],["b","d","a"],["b","d","c"],["c","a","b"],["c","a","d"],["c","b","a"],["c","b","d"],["c","d","a"],["c","d","b"],["d","a","b"],["d","a","c"],["d","b","a"],["d","b","c"],["d","c","a"],["d","c","b"]],
+    failureNote: "한 사람을 세웠다 내린 뒤에는 '사용 안 함'으로 되돌려야 다음 순서에서 다시 세울 수 있어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 7 }, (_, i) => "p" + i), 4],
+    expected: (() => {
+      const names = Array.from({ length: 7 }, (_, i) => "p" + i);
+      const out: string[][] = [];
+      const go = (p: string[], used: Set<number>) => {
+        if (p.length === 4) {
+          out.push([...p]);
+          return;
+        }
+        names.forEach((nm, i) => {
+          if (!used.has(i)) go([...p, nm], new Set([...used, i]));
+        });
+      };
+      go([], new Set());
+      return out;
+    })(),
+    failureNote: "7명 중 4명을 세우는 순서, 840가지예요.",
+  },
+]);
 
 export const backtrackingPodiumOrders: Problem = {
   id: "c:backtracking-podium-orders",
@@ -49,100 +145,9 @@ export const backtrackingPodiumOrders: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["mina", "jun", "ara"], 2],
-      expected: [
-        ["mina", "jun"],
-        ["mina", "ara"],
-        ["jun", "mina"],
-        ["jun", "ara"],
-        ["ara", "mina"],
-        ["ara", "jun"],
-      ],
-      explanation: "1등이 mina일 때 2등은 jun, ara 순서로 세워 봐요. 그다음 1등이 jun, ara인 경우예요. 모두 6가지예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["bo"], 1],
-      expected: [["bo"]],
-      explanation: "후보가 한 명이면 한 가지예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["a", "b", "c"], 3],
-      expected: [
-        ["a", "b", "c"],
-        ["a", "c", "b"],
-        ["b", "a", "c"],
-        ["b", "c", "a"],
-        ["c", "a", "b"],
-        ["c", "b", "a"],
-      ],
-      failureNote: "셋 모두 서는 순서는 6가지예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["zed", "amy", "kai"], 2],
-      expected: [
-        ["zed", "amy"],
-        ["zed", "kai"],
-        ["amy", "zed"],
-        ["amy", "kai"],
-        ["kai", "zed"],
-        ["kai", "amy"],
-      ],
-      failureNote: "이름을 가나다(알파벳)순으로 정렬하지 말고 주어진 순서대로 세워 봐요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["x", "y", "z", "w"], 1],
-      expected: [["x"], ["y"], ["z"], ["w"]],
-      failureNote: "한 자리면 한 명씩이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["a", "b", "c", "d"], 3],
-      // prettier-ignore
-      expected: [["a","b","c"],["a","b","d"],["a","c","b"],["a","c","d"],["a","d","b"],["a","d","c"],["b","a","c"],["b","a","d"],["b","c","a"],["b","c","d"],["b","d","a"],["b","d","c"],["c","a","b"],["c","a","d"],["c","b","a"],["c","b","d"],["c","d","a"],["c","d","b"],["d","a","b"],["d","a","c"],["d","b","a"],["d","b","c"],["d","c","a"],["d","c","b"]],
-      failureNote: "한 사람을 세웠다 내린 뒤에는 '사용 안 함'으로 되돌려야 다음 순서에서 다시 세울 수 있어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 7 }, (_, i) => "p" + i), 4],
-      expected: (() => {
-        const names = Array.from({ length: 7 }, (_, i) => "p" + i);
-        const out: string[][] = [];
-        const go = (p: string[], used: Set<number>) => {
-          if (p.length === 4) {
-            out.push([...p]);
-            return;
-          }
-          names.forEach((nm, i) => {
-            if (!used.has(i)) go([...p, nm], new Set([...used, i]));
-          });
-        };
-        go([], new Set());
-        return out;
-      })(),
-      failureNote: "7명 중 4명을 세우는 순서, 840가지예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

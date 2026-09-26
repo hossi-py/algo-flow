@@ -1,4 +1,111 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [3, 1, 4, 1, 5],
+      [
+        [0, 1],
+        [0, 2],
+        [2, 3],
+        [2, 4],
+      ],
+    ],
+    expected: 4,
+    explanation:
+      "사과는 모두 14개예요. 2–4 길을 끊으면 4번 과수원(5개)과 나머지(9개)로 나뉘어 차이가 4예요. 이게 가장 작아요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[5, 5], [[0, 1]]],
+    expected: 0,
+    explanation: "길이 하나뿐이에요. 5와 5로 나뉘어 차이 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[1, 10], [[1, 0]]],
+    expected: 9,
+    failureNote: "끊을 수 있는 길이 하나뿐이면 그게 답이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [1, 2, 3, 4],
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+      ],
+    ],
+    expected: 2,
+    failureNote: "한 줄로 이어진 과수원이에요. 2–3을 끊으면 6과 4로 차이 2예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [2, 7, 1, 8, 2, 8],
+      [
+        [3, 0],
+        [5, 3],
+        [1, 3],
+        [4, 1],
+        [2, 4],
+      ],
+    ],
+    expected: 8,
+    failureNote: "길이 번호 순서로 주어지지 않고, 0번이 가운데 있지도 않아요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [10, 1, 1, 1, 1],
+      [
+        [0, 1],
+        [0, 2],
+        [0, 3],
+        [0, 4],
+      ],
+    ],
+    expected: 12,
+    failureNote: "사과가 한 과수원에 몰려 있어요. 어디를 끊어도 차이가 커요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100000 }, (_, i) => ((i * 37) % 10000) + 1),
+      Array.from({ length: 99999 }, (_, k) => {
+        const i = k + 1;
+        return [i, i < 1000 ? i - 1 : i % 1000];
+      }),
+    ],
+    expected: 200000,
+    failureNote: "과수원 10만 개예요. 길마다 끊어 보고 사과를 다시 세면 시간 초과예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, () => 1), Array.from({ length: 99999 }, (_, k) => [0, k + 1])],
+    expected: 99998,
+    failureNote: "0번 과수원에 나머지가 모두 이어진 별 모양이에요.",
+  },
+]);
 
 export const dfsOrchardSplit: Problem = {
   id: "c:dfs-orchard-split",
@@ -53,111 +160,9 @@ export const dfsOrchardSplit: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [3, 1, 4, 1, 5],
-        [
-          [0, 1],
-          [0, 2],
-          [2, 3],
-          [2, 4],
-        ],
-      ],
-      expected: 4,
-      explanation:
-        "사과는 모두 14개예요. 2–4 길을 끊으면 4번 과수원(5개)과 나머지(9개)로 나뉘어 차이가 4예요. 이게 가장 작아요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[5, 5], [[0, 1]]],
-      expected: 0,
-      explanation: "길이 하나뿐이에요. 5와 5로 나뉘어 차이 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[1, 10], [[1, 0]]],
-      expected: 9,
-      failureNote: "끊을 수 있는 길이 하나뿐이면 그게 답이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [1, 2, 3, 4],
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-        ],
-      ],
-      expected: 2,
-      failureNote: "한 줄로 이어진 과수원이에요. 2–3을 끊으면 6과 4로 차이 2예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [2, 7, 1, 8, 2, 8],
-        [
-          [3, 0],
-          [5, 3],
-          [1, 3],
-          [4, 1],
-          [2, 4],
-        ],
-      ],
-      expected: 8,
-      failureNote: "길이 번호 순서로 주어지지 않고, 0번이 가운데 있지도 않아요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [10, 1, 1, 1, 1],
-        [
-          [0, 1],
-          [0, 2],
-          [0, 3],
-          [0, 4],
-        ],
-      ],
-      expected: 12,
-      failureNote: "사과가 한 과수원에 몰려 있어요. 어디를 끊어도 차이가 커요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100000 }, (_, i) => ((i * 37) % 10000) + 1),
-        Array.from({ length: 99999 }, (_, k) => {
-          const i = k + 1;
-          return [i, i < 1000 ? i - 1 : i % 1000];
-        }),
-      ],
-      expected: 200000,
-      failureNote: "과수원 10만 개예요. 길마다 끊어 보고 사과를 다시 세면 시간 초과예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, () => 1), Array.from({ length: 99999 }, (_, k) => [0, k + 1])],
-      expected: 99998,
-      failureNote: "0번 과수원에 나머지가 모두 이어진 별 모양이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

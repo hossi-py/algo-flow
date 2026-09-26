@@ -1,5 +1,84 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [3, 3],
+    expected: [
+      [1, 2, 3],
+      [8, 9, 4],
+      [7, 6, 5],
+    ],
+    explanation: "바깥을 한 바퀴 돌고 가운데 9로 끝나요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1, 4],
+    expected: [[1, 2, 3, 4]],
+    explanation: "한 줄이면 [[1, 2, 3, 4]]예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [4, 1],
+    expected: [[1], [2], [3], [4]],
+    failureNote: "한 칸짜리 세로줄이면 아래로만 가요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [2, 3],
+    expected: [
+      [1, 2, 3],
+      [6, 5, 4],
+    ],
+    failureNote: "[[1, 2, 3], [6, 5, 4]]예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [3, 4],
+    expected: [
+      [1, 2, 3, 4],
+      [10, 11, 12, 5],
+      [9, 8, 7, 6],
+    ],
+    failureNote: "가로가 더 긴 판도 같은 규칙이에요. 가운데 줄이 [10, 11, 12, 5]예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [200, 150],
+    expected: (() => {
+      const b = Array.from({ length: 200 }, () => new Array(150).fill(0));
+      const dr = [0, 1, 0, -1];
+      const dc = [1, 0, -1, 0];
+      let r = 0,
+        c = 0,
+        d = 0;
+      for (let k = 1; k <= 30000; k++) {
+        b[r][c] = k;
+        const nr = r + dr[d],
+          nc = c + dc[d];
+        if (nr < 0 || nr >= 200 || nc < 0 || nc >= 150 || b[nr][nc] !== 0) d = (d + 1) % 4;
+        r += dr[d];
+        c += dc[d];
+      }
+      return b;
+    })(),
+    failureNote: "200 × 150 = 3만 칸이에요.",
+  },
+]);
 
 export const simSpiralFill: Problem = {
   id: "c:sim-spiral-fill",
@@ -40,83 +119,9 @@ export const simSpiralFill: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [3, 3],
-      expected: [
-        [1, 2, 3],
-        [8, 9, 4],
-        [7, 6, 5],
-      ],
-      explanation: "바깥을 한 바퀴 돌고 가운데 9로 끝나요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1, 4],
-      expected: [[1, 2, 3, 4]],
-      explanation: "한 줄이면 [[1, 2, 3, 4]]예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [4, 1],
-      expected: [[1], [2], [3], [4]],
-      failureNote: "한 칸짜리 세로줄이면 아래로만 가요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [2, 3],
-      expected: [
-        [1, 2, 3],
-        [6, 5, 4],
-      ],
-      failureNote: "[[1, 2, 3], [6, 5, 4]]예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [3, 4],
-      expected: [
-        [1, 2, 3, 4],
-        [10, 11, 12, 5],
-        [9, 8, 7, 6],
-      ],
-      failureNote: "가로가 더 긴 판도 같은 규칙이에요. 가운데 줄이 [10, 11, 12, 5]예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [200, 150],
-      expected: (() => {
-        const b = Array.from({ length: 200 }, () => new Array(150).fill(0));
-        const dr = [0, 1, 0, -1];
-        const dc = [1, 0, -1, 0];
-        let r = 0,
-          c = 0,
-          d = 0;
-        for (let k = 1; k <= 30000; k++) {
-          b[r][c] = k;
-          const nr = r + dr[d],
-            nc = c + dc[d];
-          if (nr < 0 || nr >= 200 || nc < 0 || nc >= 150 || b[nr][nc] !== 0) d = (d + 1) % 4;
-          r += dr[d];
-          c += dc[d];
-        }
-        return b;
-      })(),
-      failureNote: "200 × 150 = 3만 칸이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

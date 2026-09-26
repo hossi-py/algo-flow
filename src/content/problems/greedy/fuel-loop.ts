@@ -1,4 +1,71 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [1, 2, 3, 4, 5],
+      [3, 4, 5, 1, 2],
+    ],
+    expected: 3,
+    explanation: "3번에서 출발하면 연료가 한 번도 모자라지 않아요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      [2, 3, 4],
+      [3, 4, 3],
+    ],
+    expected: -1,
+    explanation: "연료 합(9)이 필요한 연료 합(10)보다 적어서 -1이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5], [4]],
+    expected: 0,
+    failureNote: "주유소 하나면 0번이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [3, 1, 1],
+      [1, 2, 2],
+    ],
+    expected: 0,
+    failureNote: "0번에서 출발하면 3 → 2 → 1 → 0으로 딱 돌아와요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [0, 0, 5],
+      [1, 1, 3],
+    ],
+    expected: 2,
+    failureNote: "2번에서 출발해야 해요. 모자라는 곳 다음부터 다시 시작하면 한 번 훑어서 찾아요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 100) + 1 + (i === 77777 ? 1 : 0)),
+      Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 100) + 1 + (i === 77776 ? 1 : 0)),
+    ],
+    expected: 77777,
+    failureNote: "주유소 10만 개예요. 출발점마다 한 바퀴씩 돌아 보면 100억 번이라 시간 초과예요.",
+  },
+]);
 
 export const greedyFuelLoop: Problem = {
   id: "c:greedy-fuel-loop",
@@ -45,71 +112,9 @@ export const greedyFuelLoop: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [1, 2, 3, 4, 5],
-        [3, 4, 5, 1, 2],
-      ],
-      expected: 3,
-      explanation: "3번에서 출발하면 연료가 한 번도 모자라지 않아요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        [2, 3, 4],
-        [3, 4, 3],
-      ],
-      expected: -1,
-      explanation: "연료 합(9)이 필요한 연료 합(10)보다 적어서 -1이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5], [4]],
-      expected: 0,
-      failureNote: "주유소 하나면 0번이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [3, 1, 1],
-        [1, 2, 2],
-      ],
-      expected: 0,
-      failureNote: "0번에서 출발하면 3 → 2 → 1 → 0으로 딱 돌아와요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [0, 0, 5],
-        [1, 1, 3],
-      ],
-      expected: 2,
-      failureNote: "2번에서 출발해야 해요. 모자라는 곳 다음부터 다시 시작하면 한 번 훑어서 찾아요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 100) + 1 + (i === 77777 ? 1 : 0)),
-        Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 100) + 1 + (i === 77776 ? 1 : 0)),
-      ],
-      expected: 77777,
-      failureNote: "주유소 10만 개예요. 출발점마다 한 바퀴씩 돌아 보면 100억 번이라 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

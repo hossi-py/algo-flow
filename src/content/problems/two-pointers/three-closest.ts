@@ -1,4 +1,57 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[-1, 2, 1, -4], 1],
+    expected: 2,
+    explanation: "−1 + 2 + 1 = 2가 가장 가까워요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[0, 0, 0], 1],
+    expected: 0,
+    explanation: "고를 수 있는 건 0뿐이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 1, 1, 1], 3],
+    expected: 3,
+    failureNote: "딱 3이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 2, 5, 8], 11],
+    expected: 11,
+    failureNote: "1 + 2 + 8 = 11로 딱 맞아요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[-3, 0, 2, 4], 0],
+    expected: -1,
+    failureNote: "거리 1인 합이 −1(−3 + 0 + 2)과 1(−3 + 0 + 4)이에요. 작은 쪽 −1이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 500 }, (_, i) => ((i * 7919) % 2001) - 1000), 9999],
+    expected: 2973,
+    failureNote:
+      "500개예요. 목표가 너무 커서 끝까지 찾아야 해요. 세 개를 모두 고르면 약 2천만 가지라 느려요. 정렬 + 두 포인터로 O(N²)이에요.",
+  },
+]);
 
 export const twoPointersThreeClosest: Problem = {
   id: "c:two-pointers-three-closest",
@@ -37,57 +90,9 @@ export const twoPointersThreeClosest: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[-1, 2, 1, -4], 1],
-      expected: 2,
-      explanation: "−1 + 2 + 1 = 2가 가장 가까워요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[0, 0, 0], 1],
-      expected: 0,
-      explanation: "고를 수 있는 건 0뿐이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 1, 1, 1], 3],
-      expected: 3,
-      failureNote: "딱 3이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 2, 5, 8], 11],
-      expected: 11,
-      failureNote: "1 + 2 + 8 = 11로 딱 맞아요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[-3, 0, 2, 4], 0],
-      expected: -1,
-      failureNote: "거리 1인 합이 −1(−3 + 0 + 2)과 1(−3 + 0 + 4)이에요. 작은 쪽 −1이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 500 }, (_, i) => ((i * 7919) % 2001) - 1000), 9999],
-      expected: 2973,
-      failureNote:
-        "500개예요. 목표가 너무 커서 끝까지 찾아야 해요. 세 개를 모두 고르면 약 2천만 가지라 느려요. 정렬 + 두 포인터로 O(N²)이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

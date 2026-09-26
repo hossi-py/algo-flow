@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [4096],
+    expected: 19,
+    explanation: "4 + 0 + 9 + 6 = 19예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [0],
+    expected: 0,
+    explanation: "0의 자릿수 합은 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [7],
+    expected: 7,
+    failureNote: "한 자리 수는 자기 자신이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [1000000],
+    expected: 1,
+    failureNote: "0이 많은 수예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [987654321],
+    expected: 45,
+    failureNote: "9부터 1까지 더해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [999999999999999],
+    expected: 135,
+    failureNote: "15자리 수예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1000000000000000],
+    expected: 1,
+    failureNote: "10의 15제곱이에요.",
+  },
+]);
 
 export const recursionDigitSum: Problem = {
   id: "c:recursion-digit-sum",
@@ -36,64 +96,9 @@ export const recursionDigitSum: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [4096],
-      expected: 19,
-      explanation: "4 + 0 + 9 + 6 = 19예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [0],
-      expected: 0,
-      explanation: "0의 자릿수 합은 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [7],
-      expected: 7,
-      failureNote: "한 자리 수는 자기 자신이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [1000000],
-      expected: 1,
-      failureNote: "0이 많은 수예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [987654321],
-      expected: 45,
-      failureNote: "9부터 1까지 더해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [999999999999999],
-      expected: 135,
-      failureNote: "15자리 수예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1000000000000000],
-      expected: 1,
-      failureNote: "10의 15제곱이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [6],
+    expected: 8,
+    explanation: "6 → 3 → 10 → 5 → 16 → 8 → 4 → 2 → 1, 8걸음이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1],
+    expected: 0,
+    explanation: "이미 1이면 0걸음이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2],
+    expected: 1,
+    failureNote: "한 번 나누면 끝나요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [7],
+    expected: 16,
+    failureNote: "홀수에서 출발해요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [27],
+    expected: 111,
+    failureNote: "작은 수지만 아주 멀리 돌아가요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [1024],
+    expected: 10,
+    failureNote: "2의 거듭제곱은 나누기만 해요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [837799],
+    expected: 524,
+    failureNote: "100만 이하에서 가장 긴 여행이에요. 재귀가 500번 넘게 깊어져요.",
+  },
+]);
 
 export const recursionHailstoneTrip: Problem = {
   id: "c:recursion-hailstone-trip",
@@ -37,64 +97,9 @@ export const recursionHailstoneTrip: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [6],
-      expected: 8,
-      explanation: "6 → 3 → 10 → 5 → 16 → 8 → 4 → 2 → 1, 8걸음이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1],
-      expected: 0,
-      explanation: "이미 1이면 0걸음이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2],
-      expected: 1,
-      failureNote: "한 번 나누면 끝나요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [7],
-      expected: 16,
-      failureNote: "홀수에서 출발해요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [27],
-      expected: 111,
-      failureNote: "작은 수지만 아주 멀리 돌아가요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [1024],
-      expected: 10,
-      failureNote: "2의 거듭제곱은 나누기만 해요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [837799],
-      expected: 524,
-      failureNote: "100만 이하에서 가장 긴 여행이에요. 재귀가 500번 넘게 깊어져요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,5 +1,85 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["노디", "보리", "새싹"]],
+    expected: [
+      ["노디", "보리", "새싹"],
+      ["노디", "새싹", "보리"],
+      ["보리", "노디", "새싹"],
+      ["보리", "새싹", "노디"],
+      ["새싹", "노디", "보리"],
+      ["새싹", "보리", "노디"],
+    ],
+    explanation: "3 × 2 × 1 = 6가지예요. 첫 자리에 노디가 앉는 두 가지가 먼저 나와요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["노디"]],
+    expected: [["노디"]],
+    explanation: "혼자면 한 가지예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["b", "a"]],
+    expected: [
+      ["b", "a"],
+      ["a", "b"],
+    ],
+    failureNote: "이름의 가나다순이 아니라 names에 적힌 순서를 따라요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["A", "B", "C", "D"]],
+    // prettier-ignore
+    expected: [["A","B","C","D"],["A","B","D","C"],["A","C","B","D"],["A","C","D","B"],["A","D","B","C"],["A","D","C","B"],["B","A","C","D"],["B","A","D","C"],["B","C","A","D"],["B","C","D","A"],["B","D","A","C"],["B","D","C","A"],["C","A","B","D"],["C","A","D","B"],["C","B","A","D"],["C","B","D","A"],["C","D","A","B"],["C","D","B","A"],["D","A","B","C"],["D","A","C","B"],["D","B","A","C"],["D","B","C","A"],["D","C","A","B"],["D","C","B","A"]],
+    failureNote: "4명이면 24가지예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["해", "달", "별"]],
+    expected: [
+      ["해", "달", "별"],
+      ["해", "별", "달"],
+      ["달", "해", "별"],
+      ["달", "별", "해"],
+      ["별", "해", "달"],
+      ["별", "달", "해"],
+    ],
+    failureNote: "names 순서대로 해, 달, 별을 먼저 앉혀 봐요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [["가", "나", "다", "라", "마", "바"]],
+    expected: Array.from({ length: 720 }, (_, i) => {
+      const pool = ["가", "나", "다", "라", "마", "바"];
+      const fact = [120, 24, 6, 2, 1, 1];
+      const out = [];
+      let rest = i;
+      for (const f of fact) {
+        out.push(pool.splice(Math.floor(rest / f), 1)[0]);
+        rest %= f;
+      }
+      return out;
+    }),
+    failureNote: "6명이면 720가지예요.",
+  },
+]);
 
 export const backtrackingSeatOrders: Problem = {
   id: "c:backtracking-seat-orders",
@@ -46,84 +126,9 @@ export const backtrackingSeatOrders: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["노디", "보리", "새싹"]],
-      expected: [
-        ["노디", "보리", "새싹"],
-        ["노디", "새싹", "보리"],
-        ["보리", "노디", "새싹"],
-        ["보리", "새싹", "노디"],
-        ["새싹", "노디", "보리"],
-        ["새싹", "보리", "노디"],
-      ],
-      explanation: "3 × 2 × 1 = 6가지예요. 첫 자리에 노디가 앉는 두 가지가 먼저 나와요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["노디"]],
-      expected: [["노디"]],
-      explanation: "혼자면 한 가지예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["b", "a"]],
-      expected: [
-        ["b", "a"],
-        ["a", "b"],
-      ],
-      failureNote: "이름의 가나다순이 아니라 names에 적힌 순서를 따라요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["A", "B", "C", "D"]],
-      // prettier-ignore
-      expected: [["A","B","C","D"],["A","B","D","C"],["A","C","B","D"],["A","C","D","B"],["A","D","B","C"],["A","D","C","B"],["B","A","C","D"],["B","A","D","C"],["B","C","A","D"],["B","C","D","A"],["B","D","A","C"],["B","D","C","A"],["C","A","B","D"],["C","A","D","B"],["C","B","A","D"],["C","B","D","A"],["C","D","A","B"],["C","D","B","A"],["D","A","B","C"],["D","A","C","B"],["D","B","A","C"],["D","B","C","A"],["D","C","A","B"],["D","C","B","A"]],
-      failureNote: "4명이면 24가지예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["해", "달", "별"]],
-      expected: [
-        ["해", "달", "별"],
-        ["해", "별", "달"],
-        ["달", "해", "별"],
-        ["달", "별", "해"],
-        ["별", "해", "달"],
-        ["별", "달", "해"],
-      ],
-      failureNote: "names 순서대로 해, 달, 별을 먼저 앉혀 봐요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [["가", "나", "다", "라", "마", "바"]],
-      expected: Array.from({ length: 720 }, (_, i) => {
-        const pool = ["가", "나", "다", "라", "마", "바"];
-        const fact = [120, 24, 6, 2, 1, 1];
-        const out = [];
-        let rest = i;
-        for (const f of fact) {
-          out.push(pool.splice(Math.floor(rest / f), 1)[0]);
-          rest %= f;
-        }
-        return out;
-      }),
-      failureNote: "6명이면 720가지예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

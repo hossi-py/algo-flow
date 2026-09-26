@@ -1,4 +1,91 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["listen", "silent", "google", "enlist", "gogole", "cat"]],
+    expected: [["listen", "silent", "enlist"], ["google", "gogole"], ["cat"]],
+    explanation: "listen 묶음이 가장 먼저, 그다음 google 묶음, 마지막이 cat이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["a"]],
+    expected: [["a"]],
+    explanation: "단어가 하나면 묶음도 하나예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["ab", "ba", "ab"]],
+    expected: [["ab", "ba", "ab"]],
+    failureNote: "같은 단어가 두 번 나와도 둘 다 넣어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["aab", "abb", "bab", "aba"]],
+    expected: [
+      ["aab", "aba"],
+      ["abb", "bab"],
+    ],
+    failureNote: "글자 종류가 같아도 개수가 다르면 다른 묶음이에요: aab·aba와 abb·bab.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["abc", "xyz", "bca", "zyx", "cab"]],
+    expected: [
+      ["abc", "bca", "cab"],
+      ["xyz", "zyx"],
+    ],
+    failureNote: "묶음 안에서는 입력 순서를 지켜요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["ab", "abc", "ba", "cba"]],
+    expected: [
+      ["ab", "ba"],
+      ["abc", "cba"],
+    ],
+    failureNote: "길이가 다르면 다른 묶음이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 10000 }, (_, i) => {
+        const s = "abcdefghij".slice(0, 3 + (i % 5));
+        const r = i % s.length;
+        return s.slice(r) + s.slice(0, r);
+      }),
+    ],
+    expected: (() => {
+      const m = new Map();
+      for (const x of Array.from({ length: 10000 }, (_, i) => {
+        const s = "abcdefghij".slice(0, 3 + (i % 5));
+        const r = i % s.length;
+        return s.slice(r) + s.slice(0, r);
+      })) {
+        const k = [...x].sort().join("");
+        if (!m.has(k)) m.set(k, []);
+        m.get(k).push(x);
+      }
+      return [...m.values()];
+    })(),
+    failureNote: "단어 1만 개예요. 단어마다 모든 묶음과 하나씩 비교하지 말고, 정렬한 글자를 키로 dict에 모으세요.",
+  },
+]);
 
 export const hashAnagramGroups: Problem = {
   id: "c:hash-anagram-groups",
@@ -44,91 +131,9 @@ export const hashAnagramGroups: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["listen", "silent", "google", "enlist", "gogole", "cat"]],
-      expected: [["listen", "silent", "enlist"], ["google", "gogole"], ["cat"]],
-      explanation: "listen 묶음이 가장 먼저, 그다음 google 묶음, 마지막이 cat이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["a"]],
-      expected: [["a"]],
-      explanation: "단어가 하나면 묶음도 하나예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["ab", "ba", "ab"]],
-      expected: [["ab", "ba", "ab"]],
-      failureNote: "같은 단어가 두 번 나와도 둘 다 넣어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["aab", "abb", "bab", "aba"]],
-      expected: [
-        ["aab", "aba"],
-        ["abb", "bab"],
-      ],
-      failureNote: "글자 종류가 같아도 개수가 다르면 다른 묶음이에요: aab·aba와 abb·bab.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["abc", "xyz", "bca", "zyx", "cab"]],
-      expected: [
-        ["abc", "bca", "cab"],
-        ["xyz", "zyx"],
-      ],
-      failureNote: "묶음 안에서는 입력 순서를 지켜요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["ab", "abc", "ba", "cba"]],
-      expected: [
-        ["ab", "ba"],
-        ["abc", "cba"],
-      ],
-      failureNote: "길이가 다르면 다른 묶음이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 10000 }, (_, i) => {
-          const s = "abcdefghij".slice(0, 3 + (i % 5));
-          const r = i % s.length;
-          return s.slice(r) + s.slice(0, r);
-        }),
-      ],
-      expected: (() => {
-        const m = new Map();
-        for (const x of Array.from({ length: 10000 }, (_, i) => {
-          const s = "abcdefghij".slice(0, 3 + (i % 5));
-          const r = i % s.length;
-          return s.slice(r) + s.slice(0, r);
-        })) {
-          const k = [...x].sort().join("");
-          if (!m.has(k)) m.set(k, []);
-          m.get(k).push(x);
-        }
-        return [...m.values()];
-      })(),
-      failureNote: "단어 1만 개예요. 단어마다 모든 묶음과 하나씩 비교하지 말고, 정렬한 글자를 키로 dict에 모으세요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

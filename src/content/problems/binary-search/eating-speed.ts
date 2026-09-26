@@ -1,4 +1,57 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[3, 6, 7, 11], 8],
+    expected: 4,
+    explanation: "k = 4면 1 + 2 + 2 + 3 = 8시간이에요. 3이면 10시간이라 늦어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[30, 11, 23, 4, 20], 5],
+    expected: 30,
+    explanation: "더미 수와 시간이 같으면 가장 큰 더미를 한 시간에 먹어야 해서 30이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[1], 1000],
+    expected: 1,
+    failureNote: "시간이 넉넉하면 1이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[30, 11, 23, 4, 20], 6],
+    expected: 23,
+    failureNote: "k = 23이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[10], 3],
+    expected: 4,
+    failureNote:
+      "한 시간에 4개씩이면 4 + 4 + 2로 3시간이에요. 10 ÷ 3을 내림하면(3) 4시간이 걸려요. 올림으로 세야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 10000 }, (_, i) => ((i * 104729) % 1000000000) + 1), 1000000],
+    expected: 4808985,
+    failureNote: "더미 1만 개, 최대 10억 개예요. 속도를 1부터 하나씩 올리면 시간 초과예요.",
+  },
+]);
 
 export const binarySearchEatingSpeed: Problem = {
   id: "c:binary-search-eating-speed",
@@ -41,57 +94,9 @@ export const binarySearchEatingSpeed: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[3, 6, 7, 11], 8],
-      expected: 4,
-      explanation: "k = 4면 1 + 2 + 2 + 3 = 8시간이에요. 3이면 10시간이라 늦어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[30, 11, 23, 4, 20], 5],
-      expected: 30,
-      explanation: "더미 수와 시간이 같으면 가장 큰 더미를 한 시간에 먹어야 해서 30이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[1], 1000],
-      expected: 1,
-      failureNote: "시간이 넉넉하면 1이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[30, 11, 23, 4, 20], 6],
-      expected: 23,
-      failureNote: "k = 23이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[10], 3],
-      expected: 4,
-      failureNote:
-        "한 시간에 4개씩이면 4 + 4 + 2로 3시간이에요. 10 ÷ 3을 내림하면(3) 4시간이 걸려요. 올림으로 세야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 10000 }, (_, i) => ((i * 104729) % 1000000000) + 1), 1000000],
-      expected: 4808985,
-      failureNote: "더미 1만 개, 최대 10억 개예요. 속도를 1부터 하나씩 올리면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

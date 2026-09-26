@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[[7], [3, 8], [8, 1, 0], [2, 7, 4, 4], [4, 5, 2, 6, 5]]],
+    expected: 30,
+    explanation: "7 → 3 → 8 → 7 → 5로 30이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[[9]]],
+    expected: 9,
+    explanation: "한 줄이면 그 과일 하나예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[[1], [2, 3]]],
+    expected: 4,
+    failureNote: "아래 줄에서 큰 3을 골라 4예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[[1], [9, 1], [1, 1, 100]]],
+    expected: 102,
+    failureNote: "처음에 큰 9로 내려가면 100에 닿을 수 없어요. 1 → 1 → 100이 102예요. 매번 큰 쪽만 고르면 틀려요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[0], [0, 0], [0, 0, 0]]],
+    expected: 0,
+    failureNote: "모두 0이면 0이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 500 }, (_, r) => Array.from({ length: r + 1 }, (_, c) => (r * 37 + c * 11) % 100))],
+    expected: 31981,
+    failureNote: "500줄이에요. 내려가는 길은 2^499가지라 모두 볼 수 없어요.",
+  },
+]);
 
 export const dpFruitPyramid: Problem = {
   id: "c:dp-fruit-pyramid",
@@ -42,56 +94,9 @@ export const dpFruitPyramid: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[[7], [3, 8], [8, 1, 0], [2, 7, 4, 4], [4, 5, 2, 6, 5]]],
-      expected: 30,
-      explanation: "7 → 3 → 8 → 7 → 5로 30이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[[9]]],
-      expected: 9,
-      explanation: "한 줄이면 그 과일 하나예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[[1], [2, 3]]],
-      expected: 4,
-      failureNote: "아래 줄에서 큰 3을 골라 4예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[[1], [9, 1], [1, 1, 100]]],
-      expected: 102,
-      failureNote: "처음에 큰 9로 내려가면 100에 닿을 수 없어요. 1 → 1 → 100이 102예요. 매번 큰 쪽만 고르면 틀려요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[0], [0, 0], [0, 0, 0]]],
-      expected: 0,
-      failureNote: "모두 0이면 0이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 500 }, (_, r) => Array.from({ length: r + 1 }, (_, c) => (r * 37 + c * 11) % 100))],
-      expected: 31981,
-      failureNote: "500줄이에요. 내려가는 길은 2^499가지라 모두 볼 수 없어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

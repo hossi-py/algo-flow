@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [4],
+    expected: 2,
+    explanation: "4×4에는 2가지 방법이 있어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3],
+    expected: 0,
+    explanation: "3×3에서는 어떻게 놓아도 겹쳐서 0가지예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1],
+    expected: 1,
+    failureNote: "한 칸에 한 대, 1가지예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2],
+    expected: 0,
+    failureNote: "0가지예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [5],
+    expected: 10,
+    failureNote: "10가지예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [6],
+    expected: 4,
+    failureNote: "4가지예요. n이 커진다고 늘기만 하는 건 아니에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [9],
+    expected: 352,
+    failureNote: "9×9 전시장이에요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [10],
+    expected: 724,
+    failureNote: "10×10 전시장이에요. 100칸 중 10칸을 고르는 모든 경우(약 17조)를 보면 끝나지 않아요.",
+  },
+]);
 
 export const backtrackingGuardRobots: Problem = {
   id: "c:backtracking-guard-robots",
@@ -38,72 +106,9 @@ export const backtrackingGuardRobots: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [4],
-      expected: 2,
-      explanation: "4×4에는 2가지 방법이 있어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3],
-      expected: 0,
-      explanation: "3×3에서는 어떻게 놓아도 겹쳐서 0가지예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1],
-      expected: 1,
-      failureNote: "한 칸에 한 대, 1가지예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2],
-      expected: 0,
-      failureNote: "0가지예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [5],
-      expected: 10,
-      failureNote: "10가지예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [6],
-      expected: 4,
-      failureNote: "4가지예요. n이 커진다고 늘기만 하는 건 아니에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [9],
-      expected: 352,
-      failureNote: "9×9 전시장이에요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [10],
-      expected: 724,
-      failureNote: "10×10 전시장이에요. 100칸 중 10칸을 고르는 모든 경우(약 17조)를 보면 끝나지 않아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

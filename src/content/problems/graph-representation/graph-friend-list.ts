@@ -1,5 +1,95 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [2, 0],
+        [1, 2],
+        [3, 1],
+      ],
+    ],
+    expected: [[1, 2], [0, 2, 3], [0, 1], [1]],
+    explanation: "0번의 친구는 1, 2번, 1번의 친구는 0, 2, 3번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3, []],
+    expected: [[], [], []],
+    explanation: "관계가 없으면 모두 빈 리스트예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, []],
+    expected: [[]],
+    failureNote: "학생이 한 명뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [4, 3],
+        [3, 2],
+        [2, 1],
+        [1, 0],
+      ],
+    ],
+    expected: [[1], [0, 2], [1, 3], [2, 4], [3]],
+    failureNote: "한 줄로 이어진 친구 관계예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [3, 0],
+        [2, 0],
+        [1, 0],
+      ],
+    ],
+    expected: [[1, 2, 3], [0], [0], [0]],
+    failureNote: "관계가 역순으로 주어져도 목록은 오름차순이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [0, 5],
+        [1, 4],
+        [2, 3],
+      ],
+    ],
+    expected: [[5], [4], [3], [2], [1], [0]],
+    failureNote: "짝꿍끼리만 친구예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000, Array.from({ length: 99999 }, (_, i) => [i + 1, i])],
+    expected: Array.from({ length: 100000 }, (_, i) => (i === 0 ? [1] : i === 99999 ? [99998] : [i - 1, i + 1])),
+    failureNote: "학생 10만 명이 한 줄로 친구예요. 학생마다 관계 목록 전체를 훑으면 시간 초과예요.",
+  },
+]);
 
 export const graphFriendList: Problem = {
   id: "c:graph-friend-list",
@@ -52,94 +142,9 @@ export const graphFriendList: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [2, 0],
-          [1, 2],
-          [3, 1],
-        ],
-      ],
-      expected: [[1, 2], [0, 2, 3], [0, 1], [1]],
-      explanation: "0번의 친구는 1, 2번, 1번의 친구는 0, 2, 3번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3, []],
-      expected: [[], [], []],
-      explanation: "관계가 없으면 모두 빈 리스트예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, []],
-      expected: [[]],
-      failureNote: "학생이 한 명뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [4, 3],
-          [3, 2],
-          [2, 1],
-          [1, 0],
-        ],
-      ],
-      expected: [[1], [0, 2], [1, 3], [2, 4], [3]],
-      failureNote: "한 줄로 이어진 친구 관계예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [3, 0],
-          [2, 0],
-          [1, 0],
-        ],
-      ],
-      expected: [[1, 2, 3], [0], [0], [0]],
-      failureNote: "관계가 역순으로 주어져도 목록은 오름차순이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [0, 5],
-          [1, 4],
-          [2, 3],
-        ],
-      ],
-      expected: [[5], [4], [3], [2], [1], [0]],
-      failureNote: "짝꿍끼리만 친구예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [100000, Array.from({ length: 99999 }, (_, i) => [i + 1, i])],
-      expected: Array.from({ length: 100000 }, (_, i) => (i === 0 ? [1] : i === 99999 ? [99998] : [i - 1, i + 1])),
-      failureNote: "학생 10만 명이 한 줄로 친구예요. 학생마다 관계 목록 전체를 훑으면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

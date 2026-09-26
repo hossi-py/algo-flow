@@ -1,4 +1,61 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[40, 10, 30, 10]],
+    expected: [2, 0, 1, 0],
+    explanation: "서로 다른 번호는 10, 30, 40이라 차례로 0, 1, 2예요. 답은 [2, 0, 1, 0]이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[7]],
+    expected: [0],
+    explanation: "하나면 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[5, 5, 5, 9]],
+    expected: [0, 0, 0, 1],
+    failureNote: "5는 셋 다 0, 9는 1이에요. 작은 번호의 '개수'를 세면 9가 3이 되어 틀려요. 서로 다른 번호만 세요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[-3, 1000000000, -1000000000]],
+    expected: [1, 2, 0],
+    failureNote: "음수와 아주 큰 수도 순서만 봐요: [1, 2, 0].",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 2, 3]],
+    expected: [0, 1, 2],
+    failureNote: "이미 촘촘하면 [0, 1, 2]예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * i) % 100003) - 50000)],
+    expected: (() => {
+      const a = Array.from({ length: 100000 }, (_, i) => ((i * i) % 100003) - 50000);
+      const u = [...new Set(a)].sort((x, y) => x - y);
+      const m = new Map(u.map((v, i) => [v, i]));
+      return a.map((v) => m.get(v) ?? 0);
+    })(),
+    failureNote: "번호 10만 개예요. 번호마다 다른 번호를 모두 비교하면 시간 초과예요.",
+  },
+]);
 
 export const sortingRankCompress: Problem = {
   id: "c:sorting-rank-compress",
@@ -36,61 +93,9 @@ export const sortingRankCompress: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[40, 10, 30, 10]],
-      expected: [2, 0, 1, 0],
-      explanation: "서로 다른 번호는 10, 30, 40이라 차례로 0, 1, 2예요. 답은 [2, 0, 1, 0]이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[7]],
-      expected: [0],
-      explanation: "하나면 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[5, 5, 5, 9]],
-      expected: [0, 0, 0, 1],
-      failureNote: "5는 셋 다 0, 9는 1이에요. 작은 번호의 '개수'를 세면 9가 3이 되어 틀려요. 서로 다른 번호만 세요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[-3, 1000000000, -1000000000]],
-      expected: [1, 2, 0],
-      failureNote: "음수와 아주 큰 수도 순서만 봐요: [1, 2, 0].",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 2, 3]],
-      expected: [0, 1, 2],
-      failureNote: "이미 촘촘하면 [0, 1, 2]예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * i) % 100003) - 50000)],
-      expected: (() => {
-        const a = Array.from({ length: 100000 }, (_, i) => ((i * i) % 100003) - 50000);
-        const u = [...new Set(a)].sort((x, y) => x - y);
-        const m = new Map(u.map((v, i) => [v, i]));
-        return a.map((v) => m.get(v) ?? 0);
-      })(),
-      failureNote: "번호 10만 개예요. 번호마다 다른 번호를 모두 비교하면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

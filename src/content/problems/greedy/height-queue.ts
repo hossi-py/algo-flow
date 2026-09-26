@@ -1,4 +1,117 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [7, 0],
+        [4, 4],
+        [7, 1],
+        [5, 0],
+        [6, 1],
+        [5, 2],
+      ],
+    ],
+    expected: [
+      [5, 0],
+      [7, 0],
+      [5, 2],
+      [6, 1],
+      [4, 4],
+      [7, 1],
+    ],
+    explanation: "[5, 0], [7, 0], [5, 2], [6, 1], [4, 4], [7, 1] 순서예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[[3, 0]]],
+    expected: [[3, 0]],
+    explanation: "혼자면 그대로예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [5, 0],
+        [5, 1],
+        [5, 2],
+      ],
+    ],
+    expected: [
+      [5, 0],
+      [5, 1],
+      [5, 2],
+    ],
+    failureNote: "키가 같은 사람도 '이상'이라 앞사람 수에 들어가요. 앞사람 수 순서대로예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [6, 0],
+        [5, 0],
+        [4, 0],
+        [3, 2],
+        [2, 2],
+        [1, 4],
+      ],
+    ],
+    expected: [
+      [4, 0],
+      [5, 0],
+      [2, 2],
+      [3, 2],
+      [1, 4],
+      [6, 0],
+    ],
+    failureNote: "[4, 0], [5, 0], [2, 2], [3, 2], [1, 4], [6, 0]이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      [
+        [1, 1],
+        [2, 0],
+      ],
+    ],
+    expected: [
+      [2, 0],
+      [1, 1],
+    ],
+    failureNote: "작은 사람(1) 앞에 큰 사람(2)이 한 명 있어야 해요. [2, 0], [1, 1]이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      (() => {
+        const hs = Array.from({ length: 1000 }, (_, i) => 150 + ((i * 7919) % 100));
+        return hs.map((h, i) => [h, hs.slice(0, i).filter((x) => x >= h).length]);
+      })()
+        .map((p, i) => ({ p, key: (i * 7919) % 1000 }))
+        .sort((a, b) => a.key - b.key)
+        .map((x) => x.p),
+    ],
+    expected: (() => {
+      const hs = Array.from({ length: 1000 }, (_, i) => 150 + ((i * 7919) % 100));
+      return hs.map((h, i) => [h, hs.slice(0, i).filter((x) => x >= h).length]);
+    })(),
+    failureNote: "1,000명이에요. 가능한 줄을 모두 만들어 보는 건 불가능해요.",
+  },
+]);
 
 export const greedyHeightQueue: Problem = {
   id: "c:greedy-height-queue",
@@ -43,117 +156,9 @@ export const greedyHeightQueue: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [7, 0],
-          [4, 4],
-          [7, 1],
-          [5, 0],
-          [6, 1],
-          [5, 2],
-        ],
-      ],
-      expected: [
-        [5, 0],
-        [7, 0],
-        [5, 2],
-        [6, 1],
-        [4, 4],
-        [7, 1],
-      ],
-      explanation: "[5, 0], [7, 0], [5, 2], [6, 1], [4, 4], [7, 1] 순서예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[[3, 0]]],
-      expected: [[3, 0]],
-      explanation: "혼자면 그대로예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [5, 0],
-          [5, 1],
-          [5, 2],
-        ],
-      ],
-      expected: [
-        [5, 0],
-        [5, 1],
-        [5, 2],
-      ],
-      failureNote: "키가 같은 사람도 '이상'이라 앞사람 수에 들어가요. 앞사람 수 순서대로예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [6, 0],
-          [5, 0],
-          [4, 0],
-          [3, 2],
-          [2, 2],
-          [1, 4],
-        ],
-      ],
-      expected: [
-        [4, 0],
-        [5, 0],
-        [2, 2],
-        [3, 2],
-        [1, 4],
-        [6, 0],
-      ],
-      failureNote: "[4, 0], [5, 0], [2, 2], [3, 2], [1, 4], [6, 0]이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        [
-          [1, 1],
-          [2, 0],
-        ],
-      ],
-      expected: [
-        [2, 0],
-        [1, 1],
-      ],
-      failureNote: "작은 사람(1) 앞에 큰 사람(2)이 한 명 있어야 해요. [2, 0], [1, 1]이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        (() => {
-          const hs = Array.from({ length: 1000 }, (_, i) => 150 + ((i * 7919) % 100));
-          return hs.map((h, i) => [h, hs.slice(0, i).filter((x) => x >= h).length]);
-        })()
-          .map((p, i) => ({ p, key: (i * 7919) % 1000 }))
-          .sort((a, b) => a.key - b.key)
-          .map((x) => x.p),
-      ],
-      expected: (() => {
-        const hs = Array.from({ length: 1000 }, (_, i) => 150 + ((i * 7919) % 100));
-        return hs.map((h, i) => [h, hs.slice(0, i).filter((x) => x >= h).length]);
-      })(),
-      failureNote: "1,000명이에요. 가능한 줄을 모두 만들어 보는 건 불가능해요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

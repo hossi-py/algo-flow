@@ -1,4 +1,98 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        ["셔츠", "후드"],
+        ["청바지", "치마"],
+      ],
+    ],
+    expected: [
+      ["셔츠", "청바지"],
+      ["셔츠", "치마"],
+      ["후드", "청바지"],
+      ["후드", "치마"],
+    ],
+    explanation: "윗옷 2 × 아래옷 2 = 4가지예요. 셔츠를 고정하고 아래옷을 바꾼 뒤, 후드로 넘어가요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [[["모자"], ["셔츠", "후드"], ["운동화"]]],
+    expected: [
+      ["모자", "셔츠", "운동화"],
+      ["모자", "후드", "운동화"],
+    ],
+    explanation: "하나뿐인 종류는 늘 그 옷이에요. 2가지예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[["원피스"]]],
+    expected: [["원피스"]],
+    failureNote: "종류도 옷도 하나뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[["빨강", "파랑", "노랑"]]],
+    expected: [["빨강"], ["파랑"], ["노랑"]],
+    failureNote: "종류가 하나면 옷 수만큼이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        ["a1", "a2"],
+        ["b1", "b2"],
+        ["c1", "c2"],
+      ],
+    ],
+    expected: [
+      ["a1", "b1", "c1"],
+      ["a1", "b1", "c2"],
+      ["a1", "b2", "c1"],
+      ["a1", "b2", "c2"],
+      ["a2", "b1", "c1"],
+      ["a2", "b1", "c2"],
+      ["a2", "b2", "c1"],
+      ["a2", "b2", "c2"],
+    ],
+    failureNote: "2 × 2 × 2 = 8가지예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[["상의"], ["하의1", "하의2", "하의3"]]],
+    expected: [
+      ["상의", "하의1"],
+      ["상의", "하의2"],
+      ["상의", "하의3"],
+    ],
+    failureNote: "3가지예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 5 }, (_, g) => ["a", "b", "c", "d"].map((x) => x + g))],
+    expected: Array.from({ length: 1024 }, (_, i) =>
+      Array.from({ length: 5 }, (_, g) => ["a", "b", "c", "d"][Math.floor(i / 4 ** (4 - g)) % 4] + g),
+    ),
+    failureNote: "5종류 × 4벌이라 1,024가지예요.",
+  },
+]);
 
 export const backtrackingOutfitPicker: Problem = {
   id: "c:backtracking-outfit-picker",
@@ -47,98 +141,9 @@ export const backtrackingOutfitPicker: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          ["셔츠", "후드"],
-          ["청바지", "치마"],
-        ],
-      ],
-      expected: [
-        ["셔츠", "청바지"],
-        ["셔츠", "치마"],
-        ["후드", "청바지"],
-        ["후드", "치마"],
-      ],
-      explanation: "윗옷 2 × 아래옷 2 = 4가지예요. 셔츠를 고정하고 아래옷을 바꾼 뒤, 후드로 넘어가요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [[["모자"], ["셔츠", "후드"], ["운동화"]]],
-      expected: [
-        ["모자", "셔츠", "운동화"],
-        ["모자", "후드", "운동화"],
-      ],
-      explanation: "하나뿐인 종류는 늘 그 옷이에요. 2가지예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[["원피스"]]],
-      expected: [["원피스"]],
-      failureNote: "종류도 옷도 하나뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[["빨강", "파랑", "노랑"]]],
-      expected: [["빨강"], ["파랑"], ["노랑"]],
-      failureNote: "종류가 하나면 옷 수만큼이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          ["a1", "a2"],
-          ["b1", "b2"],
-          ["c1", "c2"],
-        ],
-      ],
-      expected: [
-        ["a1", "b1", "c1"],
-        ["a1", "b1", "c2"],
-        ["a1", "b2", "c1"],
-        ["a1", "b2", "c2"],
-        ["a2", "b1", "c1"],
-        ["a2", "b1", "c2"],
-        ["a2", "b2", "c1"],
-        ["a2", "b2", "c2"],
-      ],
-      failureNote: "2 × 2 × 2 = 8가지예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[["상의"], ["하의1", "하의2", "하의3"]]],
-      expected: [
-        ["상의", "하의1"],
-        ["상의", "하의2"],
-        ["상의", "하의3"],
-      ],
-      failureNote: "3가지예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 5 }, (_, g) => ["a", "b", "c", "d"].map((x) => x + g))],
-      expected: Array.from({ length: 1024 }, (_, i) =>
-        Array.from({ length: 5 }, (_, g) => ["a", "b", "c", "d"][Math.floor(i / 4 ** (4 - g)) % 4] + g),
-      ),
-      failureNote: "5종류 × 4벌이라 1,024가지예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

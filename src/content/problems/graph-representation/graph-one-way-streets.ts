@@ -1,4 +1,126 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      3,
+      [
+        [0, 1],
+        [0, 2],
+        [2, 1],
+      ],
+    ],
+    expected: [
+      [2, 0],
+      [0, 2],
+      [1, 1],
+    ],
+    explanation: "0번은 나가는 길 2개, 1번은 들어오는 길 2개, 2번은 하나씩이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [2, []],
+    expected: [
+      [0, 0],
+      [0, 0],
+    ],
+    explanation: "길이 없으면 모두 [0, 0]이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      2,
+      [
+        [0, 1],
+        [1, 0],
+      ],
+    ],
+    expected: [
+      [1, 1],
+      [1, 1],
+    ],
+    failureNote: "서로 반대 방향 길 두 개는 다른 길이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 0],
+      ],
+    ],
+    expected: [
+      [1, 1],
+      [1, 1],
+      [1, 1],
+      [1, 1],
+    ],
+    failureNote: "한 바퀴 도는 골목이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      3,
+      [
+        [0, 1],
+        [0, 1],
+        [0, 1],
+      ],
+    ],
+    expected: [
+      [3, 0],
+      [0, 3],
+      [0, 0],
+    ],
+    failureNote: "같은 방향 길이 여러 개일 수 있어요. 모두 세요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, []],
+    expected: [[0, 0]],
+    failureNote: "교차로가 하나뿐이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      1000,
+      Array.from({ length: 10000 }, (_, i) => [
+        i % 1000,
+        (i * 7 + 1) % 1000 === i % 1000 ? (i + 1) % 1000 : (i * 7 + 1) % 1000,
+      ]),
+    ],
+    expected: (() => {
+      const r = Array.from({ length: 1000 }, () => [0, 0]);
+      for (let i = 0; i < 10000; i += 1) {
+        const a = i % 1000;
+        const b = (i * 7 + 1) % 1000 === a ? (i + 1) % 1000 : (i * 7 + 1) % 1000;
+        r[a][0] += 1;
+        r[b][1] += 1;
+      }
+      return r;
+    })(),
+    failureNote: "길이 1만 개예요.",
+  },
+]);
 
 export const graphOneWayStreets: Problem = {
   id: "c:graph-one-way-streets",
@@ -44,126 +166,9 @@ export const graphOneWayStreets: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        3,
-        [
-          [0, 1],
-          [0, 2],
-          [2, 1],
-        ],
-      ],
-      expected: [
-        [2, 0],
-        [0, 2],
-        [1, 1],
-      ],
-      explanation: "0번은 나가는 길 2개, 1번은 들어오는 길 2개, 2번은 하나씩이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [2, []],
-      expected: [
-        [0, 0],
-        [0, 0],
-      ],
-      explanation: "길이 없으면 모두 [0, 0]이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        2,
-        [
-          [0, 1],
-          [1, 0],
-        ],
-      ],
-      expected: [
-        [1, 1],
-        [1, 1],
-      ],
-      failureNote: "서로 반대 방향 길 두 개는 다른 길이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [3, 0],
-        ],
-      ],
-      expected: [
-        [1, 1],
-        [1, 1],
-        [1, 1],
-        [1, 1],
-      ],
-      failureNote: "한 바퀴 도는 골목이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        3,
-        [
-          [0, 1],
-          [0, 1],
-          [0, 1],
-        ],
-      ],
-      expected: [
-        [3, 0],
-        [0, 3],
-        [0, 0],
-      ],
-      failureNote: "같은 방향 길이 여러 개일 수 있어요. 모두 세요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, []],
-      expected: [[0, 0]],
-      failureNote: "교차로가 하나뿐이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        1000,
-        Array.from({ length: 10000 }, (_, i) => [
-          i % 1000,
-          (i * 7 + 1) % 1000 === i % 1000 ? (i + 1) % 1000 : (i * 7 + 1) % 1000,
-        ]),
-      ],
-      expected: (() => {
-        const r = Array.from({ length: 1000 }, () => [0, 0]);
-        for (let i = 0; i < 10000; i += 1) {
-          const a = i % 1000;
-          const b = (i * 7 + 1) % 1000 === a ? (i + 1) % 1000 : (i * 7 + 1) % 1000;
-          r[a][0] += 1;
-          r[b][1] += 1;
-        }
-        return r;
-      })(),
-      failureNote: "길이 1만 개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

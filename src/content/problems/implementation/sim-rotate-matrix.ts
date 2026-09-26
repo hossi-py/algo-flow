@@ -1,5 +1,121 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [1, 2],
+        [3, 4],
+      ],
+      1,
+    ],
+    expected: [
+      [3, 1],
+      [4, 2],
+    ],
+    explanation: "[[3, 1], [4, 2]]예요. 맨 위 줄이 맨 오른쪽 열이 돼요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [1, 2, 3],
+        [4, 5, 6],
+      ],
+      1,
+    ],
+    expected: [
+      [4, 1],
+      [5, 2],
+      [6, 3],
+    ],
+    explanation: "2 × 3 판이 3 × 2 판 [[4, 1], [5, 2], [6, 3]]이 돼요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      [
+        [1, 2, 3],
+        [4, 5, 6],
+      ],
+      0,
+    ],
+    expected: [
+      [1, 2, 3],
+      [4, 5, 6],
+    ],
+    failureNote: "돌리지 않으면 그대로예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [1, 2, 3],
+        [4, 5, 6],
+      ],
+      2,
+    ],
+    expected: [
+      [6, 5, 4],
+      [3, 2, 1],
+    ],
+    failureNote: "180도면 [[6, 5, 4], [3, 2, 1]]이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 2],
+        [3, 4],
+      ],
+      1000000000,
+    ],
+    expected: [
+      [1, 2],
+      [3, 4],
+    ],
+    failureNote: "10억은 4의 배수라 제자리예요. 한 번씩 10억 번 돌리면 끝나지 않아요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[[7]], 3],
+    expected: [[7]],
+    failureNote: "한 칸은 돌려도 [[7]]이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 200 }, (_, r) => Array.from({ length: 150 }, (_, c) => ((r * 31 + c * 17) % 199) - 99)),
+      999999999,
+    ],
+    expected: (() => {
+      const a = Array.from({ length: 200 }, (_, r) =>
+        Array.from({ length: 150 }, (_, c) => ((r * 31 + c * 17) % 199) - 99),
+      );
+      const n = a.length,
+        m = a[0].length;
+      return Array.from({ length: m }, (_, i) => Array.from({ length: n }, (_, j) => a[j][m - 1 - i]));
+    })(),
+    failureNote: "200 × 150 판을 999,999,999번(= 반시계 90도 한 번) 돌려요.",
+  },
+]);
 
 export const simRotateMatrix: Problem = {
   id: "c:sim-rotate-matrix",
@@ -42,120 +158,9 @@ export const simRotateMatrix: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [1, 2],
-          [3, 4],
-        ],
-        1,
-      ],
-      expected: [
-        [3, 1],
-        [4, 2],
-      ],
-      explanation: "[[3, 1], [4, 2]]예요. 맨 위 줄이 맨 오른쪽 열이 돼요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [1, 2, 3],
-          [4, 5, 6],
-        ],
-        1,
-      ],
-      expected: [
-        [4, 1],
-        [5, 2],
-        [6, 3],
-      ],
-      explanation: "2 × 3 판이 3 × 2 판 [[4, 1], [5, 2], [6, 3]]이 돼요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        [
-          [1, 2, 3],
-          [4, 5, 6],
-        ],
-        0,
-      ],
-      expected: [
-        [1, 2, 3],
-        [4, 5, 6],
-      ],
-      failureNote: "돌리지 않으면 그대로예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [1, 2, 3],
-          [4, 5, 6],
-        ],
-        2,
-      ],
-      expected: [
-        [6, 5, 4],
-        [3, 2, 1],
-      ],
-      failureNote: "180도면 [[6, 5, 4], [3, 2, 1]]이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 2],
-          [3, 4],
-        ],
-        1000000000,
-      ],
-      expected: [
-        [1, 2],
-        [3, 4],
-      ],
-      failureNote: "10억은 4의 배수라 제자리예요. 한 번씩 10억 번 돌리면 끝나지 않아요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[[7]], 3],
-      expected: [[7]],
-      failureNote: "한 칸은 돌려도 [[7]]이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 200 }, (_, r) => Array.from({ length: 150 }, (_, c) => ((r * 31 + c * 17) % 199) - 99)),
-        999999999,
-      ],
-      expected: (() => {
-        const a = Array.from({ length: 200 }, (_, r) =>
-          Array.from({ length: 150 }, (_, c) => ((r * 31 + c * 17) % 199) - 99),
-        );
-        const n = a.length,
-          m = a[0].length;
-        return Array.from({ length: m }, (_, i) => Array.from({ length: n }, (_, j) => a[j][m - 1 - i]));
-      })(),
-      failureNote: "200 × 150 판을 999,999,999번(= 반시계 90도 한 번) 돌려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

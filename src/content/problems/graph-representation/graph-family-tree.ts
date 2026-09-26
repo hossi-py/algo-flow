@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[-1, 0, 0, 1, 1, 2]],
+    expected: [[1, 2], [3, 4], [5], [], [], []],
+    explanation: "0번의 자녀는 1, 2번, 1번의 자녀는 3, 4번, 2번의 자녀는 5번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[-1]],
+    expected: [[]],
+    explanation: "조상 혼자예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[2, 2, -1]],
+    expected: [[], [], [0, 1]],
+    failureNote: "조상이 0번이 아닐 수도 있어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[-1, 0, 1, 2, 3]],
+    expected: [[1], [2], [3], [4], []],
+    failureNote: "한 줄로 이어진 가계도예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[3, 3, 3, -1, 2]],
+    expected: [[], [], [4], [0, 1, 2], []],
+    failureNote: "자녀 번호는 오름차순으로 정리해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[-1, 0, 0, 0, 0]],
+    expected: [[1, 2, 3, 4], [], [], [], []],
+    failureNote: "조상에게 자녀가 넷이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i === 0 ? -1 : Math.floor((i - 1) / 2)))],
+    expected: Array.from({ length: 100000 }, (_, i) => [2 * i + 1, 2 * i + 2].filter((c) => c < 100000)),
+    failureNote: "10만 명의 가계도예요. 사람마다 배열 전체를 훑어 자녀를 찾으면 시간 초과예요.",
+  },
+]);
 
 export const graphFamilyTree: Problem = {
   id: "c:graph-family-tree",
@@ -45,64 +105,9 @@ export const graphFamilyTree: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[-1, 0, 0, 1, 1, 2]],
-      expected: [[1, 2], [3, 4], [5], [], [], []],
-      explanation: "0번의 자녀는 1, 2번, 1번의 자녀는 3, 4번, 2번의 자녀는 5번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[-1]],
-      expected: [[]],
-      explanation: "조상 혼자예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[2, 2, -1]],
-      expected: [[], [], [0, 1]],
-      failureNote: "조상이 0번이 아닐 수도 있어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[-1, 0, 1, 2, 3]],
-      expected: [[1], [2], [3], [4], []],
-      failureNote: "한 줄로 이어진 가계도예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[3, 3, 3, -1, 2]],
-      expected: [[], [], [4], [0, 1, 2], []],
-      failureNote: "자녀 번호는 오름차순으로 정리해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[-1, 0, 0, 0, 0]],
-      expected: [[1, 2, 3, 4], [], [], [], []],
-      failureNote: "조상에게 자녀가 넷이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i === 0 ? -1 : Math.floor((i - 1) / 2)))],
-      expected: Array.from({ length: 100000 }, (_, i) => [2 * i + 1, 2 * i + 2].filter((c) => c < 100000)),
-      failureNote: "10만 명의 가계도예요. 사람마다 배열 전체를 훑어 자녀를 찾으면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -356,6 +356,8 @@ export interface TestCase {
   explanation?: string;
   /** 틀렸을 때 보여줄 짧은 설명. 예: "대각선은 연결이 아니에요" */
   failureNote?: string;
+  /** 입력·정답을 빼고 보낸 숨은 테스트. 채점 직전에 원래 문제에서 채운다 */
+  deferred?: boolean;
 }
 
 export type CompareMode = { type: "exact" } | { type: "unordered" } | { type: "float"; tolerance: number };

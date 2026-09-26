@@ -1,4 +1,65 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[70, 50, 80, 50], 100],
+    expected: 3,
+    explanation: "50+50이 한 척, 70과 80은 각자 한 척씩이라 3척이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [[30, 70, 50, 50], 100],
+    expected: 2,
+    explanation: "30+70, 50+50으로 2척이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[40], 50],
+    expected: 1,
+    failureNote: "혼자면 1척이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[100, 100, 100], 100],
+    expected: 3,
+    failureNote: "모두 혼자 타야 해서 3척이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[10, 20, 30, 40], 50],
+    expected: 2,
+    failureNote:
+      "가장 가벼운 10과 가장 무거운 40, 20과 30을 짝지으면 2척이에요. 10+20처럼 가벼운 친구끼리 먼저 태우면 손해예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[60, 20, 90, 40], 100],
+    expected: 3,
+    failureNote: "90은 가장 가벼운 20과도 못 타서 혼자 한 척이에요. 남은 20, 40, 60은 두 척이 필요해서 모두 3척이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => 40 + ((i * 7) % 61)), 100],
+    expected: 82786,
+    failureNote: "친구 10만 명이에요. 친구마다 짝을 처음부터 찾으면 시간 초과예요.",
+  },
+]);
 
 export const sortingRaftPairs: Problem = {
   id: "c:sorting-raft-pairs",
@@ -41,66 +102,9 @@ export const sortingRaftPairs: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[70, 50, 80, 50], 100],
-      expected: 3,
-      explanation: "50+50이 한 척, 70과 80은 각자 한 척씩이라 3척이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [[30, 70, 50, 50], 100],
-      expected: 2,
-      explanation: "30+70, 50+50으로 2척이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[40], 50],
-      expected: 1,
-      failureNote: "혼자면 1척이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[100, 100, 100], 100],
-      expected: 3,
-      failureNote: "모두 혼자 타야 해서 3척이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[10, 20, 30, 40], 50],
-      expected: 2,
-      failureNote:
-        "가장 가벼운 10과 가장 무거운 40, 20과 30을 짝지으면 2척이에요. 10+20처럼 가벼운 친구끼리 먼저 태우면 손해예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[60, 20, 90, 40], 100],
-      expected: 3,
-      failureNote:
-        "90은 가장 가벼운 20과도 못 타서 혼자 한 척이에요. 남은 20, 40, 60은 두 척이 필요해서 모두 3척이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => 40 + ((i * 7) % 61)), 100],
-      expected: 82786,
-      failureNote: "친구 10만 명이에요. 친구마다 짝을 처음부터 찾으면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

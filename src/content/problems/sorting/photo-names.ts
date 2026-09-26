@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["leaf10", "leaf9", "moss1", "leaf2"]],
+    expected: ["leaf2", "leaf9", "leaf10", "moss1"],
+    explanation: "leaf 묶음이 먼저(2, 9, 10 순), 그다음 moss예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [["Leaf3", "leaf03", "LEAF1"]],
+    expected: ["LEAF1", "Leaf3", "leaf03"],
+    explanation: "대소문자는 무시해서 모두 leaf예요. LEAF1이 먼저, Leaf3과 leaf03은 둘 다 3이라 원래 순서를 지켜요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["solo42"]],
+    expected: ["solo42"],
+    failureNote: "하나면 그대로예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["b1", "a100", "a20", "B0"]],
+    expected: ["a20", "a100", "B0", "b1"],
+    failureNote: "a20 < a100 (수의 크기), 그다음 b 묶음: B0, b1이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["ab1", "a2", "abc0"]],
+    expected: ["a2", "ab1", "abc0"],
+    failureNote: "글자 부분 a < ab < abc 순이에요. 숫자보다 글자 부분을 먼저 비교해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["x00010", "x9", "x010", "x10"]],
+    expected: ["x9", "x00010", "x010", "x10"],
+    failureNote: "앞의 0은 무시해서 x9 다음 10이 세 개예요. 셋은 원래 순서 그대로예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["Zoo5", "apple5", "Mango5"]],
+    expected: ["apple5", "Mango5", "Zoo5"],
+    failureNote: "숫자가 같으면 글자 순: apple, Mango, Zoo예요 (대소문자 무시).",
+  },
+]);
 
 export const sortingPhotoNames: Problem = {
   id: "c:sorting-photo-names",
@@ -49,64 +109,9 @@ export const sortingPhotoNames: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["leaf10", "leaf9", "moss1", "leaf2"]],
-      expected: ["leaf2", "leaf9", "leaf10", "moss1"],
-      explanation: "leaf 묶음이 먼저(2, 9, 10 순), 그다음 moss예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [["Leaf3", "leaf03", "LEAF1"]],
-      expected: ["LEAF1", "Leaf3", "leaf03"],
-      explanation: "대소문자는 무시해서 모두 leaf예요. LEAF1이 먼저, Leaf3과 leaf03은 둘 다 3이라 원래 순서를 지켜요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["solo42"]],
-      expected: ["solo42"],
-      failureNote: "하나면 그대로예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["b1", "a100", "a20", "B0"]],
-      expected: ["a20", "a100", "B0", "b1"],
-      failureNote: "a20 < a100 (수의 크기), 그다음 b 묶음: B0, b1이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["ab1", "a2", "abc0"]],
-      expected: ["a2", "ab1", "abc0"],
-      failureNote: "글자 부분 a < ab < abc 순이에요. 숫자보다 글자 부분을 먼저 비교해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["x00010", "x9", "x010", "x10"]],
-      expected: ["x9", "x00010", "x010", "x10"],
-      failureNote: "앞의 0은 무시해서 x9 다음 10이 세 개예요. 셋은 원래 순서 그대로예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["Zoo5", "apple5", "Mango5"]],
-      expected: ["apple5", "Mango5", "Zoo5"],
-      failureNote: "숫자가 같으면 글자 순: apple, Mango, Zoo예요 (대소문자 무시).",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

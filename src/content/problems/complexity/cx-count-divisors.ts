@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [12],
+    expected: 6,
+    explanation: "1, 2, 3, 4, 6, 12로 6개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1],
+    expected: 1,
+    explanation: "1의 약수는 1 하나예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [16],
+    expected: 5,
+    failureNote: "4 × 4처럼 짝이 자기 자신이면 한 번만 세요: 1, 2, 4, 8, 16으로 5개.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [13],
+    expected: 2,
+    failureNote: "소수라 1과 13, 2개예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [10000000000],
+    expected: 121,
+    failureNote: "2¹⁰ × 5¹⁰이라 11 × 11 = 121개예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [9999999999],
+    expected: 48,
+    failureNote: "3² × 11 × 41 × 271 × 9091이라 48개예요. 1부터 n까지 나눠 보면 100억 번이에요.",
+  },
+]);
 
 export const cxCountDivisors: Problem = {
   id: "c:cx-count-divisors",
@@ -30,56 +82,9 @@ export const cxCountDivisors: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [12],
-      expected: 6,
-      explanation: "1, 2, 3, 4, 6, 12로 6개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1],
-      expected: 1,
-      explanation: "1의 약수는 1 하나예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [16],
-      expected: 5,
-      failureNote: "4 × 4처럼 짝이 자기 자신이면 한 번만 세요: 1, 2, 4, 8, 16으로 5개.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [13],
-      expected: 2,
-      failureNote: "소수라 1과 13, 2개예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [10000000000],
-      expected: 121,
-      failureNote: "2¹⁰ × 5¹⁰이라 11 × 11 = 121개예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [9999999999],
-      expected: 48,
-      failureNote: "3² × 11 × 41 × 271 × 9091이라 48개예요. 1부터 n까지 나눠 보면 100억 번이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

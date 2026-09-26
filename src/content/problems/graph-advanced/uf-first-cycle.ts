@@ -1,4 +1,97 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      6,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [5, 4],
+        [0, 4],
+      ],
+    ],
+    expected: 0,
+    explanation: "다리 5개를 놓아도 고리가 없어서 0이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [0, 1],
+        [1, 2],
+        [1, 3],
+        [0, 3],
+        [4, 5],
+      ],
+    ],
+    expected: 4,
+    explanation: "4번째 다리 0-3을 놓으면 0 → 1 → 3 → 0 고리가 생겨요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      2,
+      [
+        [0, 1],
+        [1, 0],
+      ],
+    ],
+    expected: 2,
+    failureNote: "같은 두 섬 사이 다리 두 개도 고리예요. 2번째에서 생겨요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      3,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 0],
+      ],
+    ],
+    expected: 3,
+    failureNote: "세 번째 다리로 삼각형 고리가 생겨요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [2, 3],
+        [1, 2],
+        [3, 0],
+        [0, 2],
+      ],
+    ],
+    expected: 4,
+    failureNote: "4번째 다리 3-0에서 네 섬 고리가 생겨요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000, [...Array.from({ length: 99999 }, (_, i) => [i + 1, i]), [0, 99999]]],
+    expected: 100000,
+    failureNote:
+      "섬 10만 개가 한 줄로 이어진 뒤 마지막 다리에서 고리가 생겨요. find를 재귀로 짜고 크기로 합치기를 빼면 줄이 10만까지 길어져 재귀 깊이를 넘어요.",
+  },
+]);
 
 export const ufFirstCycle: Problem = {
   id: "c:uf-first-cycle",
@@ -46,97 +139,9 @@ export const ufFirstCycle: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        6,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [5, 4],
-          [0, 4],
-        ],
-      ],
-      expected: 0,
-      explanation: "다리 5개를 놓아도 고리가 없어서 0이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [0, 1],
-          [1, 2],
-          [1, 3],
-          [0, 3],
-          [4, 5],
-        ],
-      ],
-      expected: 4,
-      explanation: "4번째 다리 0-3을 놓으면 0 → 1 → 3 → 0 고리가 생겨요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        2,
-        [
-          [0, 1],
-          [1, 0],
-        ],
-      ],
-      expected: 2,
-      failureNote: "같은 두 섬 사이 다리 두 개도 고리예요. 2번째에서 생겨요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        3,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 0],
-        ],
-      ],
-      expected: 3,
-      failureNote: "세 번째 다리로 삼각형 고리가 생겨요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [2, 3],
-          [1, 2],
-          [3, 0],
-          [0, 2],
-        ],
-      ],
-      expected: 4,
-      failureNote: "4번째 다리 3-0에서 네 섬 고리가 생겨요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [100000, [...Array.from({ length: 99999 }, (_, i) => [i + 1, i]), [0, 99999]]],
-      expected: 100000,
-      failureNote:
-        "섬 10만 개가 한 줄로 이어진 뒤 마지막 다리에서 고리가 생겨요. find를 재귀로 짜고 크기로 합치기를 빼면 줄이 10만까지 길어져 재귀 깊이를 넘어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

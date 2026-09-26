@@ -1,4 +1,80 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [1, 2, 2],
+        [3, 8, 2],
+        [5, 3, 5],
+      ],
+    ],
+    expected: 2,
+    explanation: "1 → 3 → 5 → 3 → 5로 가면 가장 큰 차이가 2예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[[7]]],
+    expected: 0,
+    explanation: "움직이지 않으니 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [1, 2, 3],
+        [3, 8, 4],
+        [5, 3, 5],
+      ],
+    ],
+    expected: 1,
+    failureNote: "1 → 2 → 3 → 4 → 5로 가면 모든 차이가 1이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[1, 10, 6, 7, 9, 10, 4, 9]]],
+    expected: 9,
+    failureNote: "한 줄이면 피할 수 없어요. 가장 큰 차이 9예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 2, 1, 1, 1],
+        [1, 2, 1, 2, 1],
+        [1, 2, 1, 2, 1],
+        [1, 2, 1, 2, 1],
+        [1, 1, 1, 2, 1],
+      ],
+    ],
+    expected: 0,
+    failureNote: "1만 밟는 구불구불한 길이 있어서 0이에요. 합이 가장 작은 길(칸 수가 적은 길)과 달라요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100 }, (_, r) =>
+        Array.from({ length: 100 }, (_, c) => ((r * 7919 + c * 104729 + r * c * 31) % 1000000) + 1),
+      ),
+    ],
+    expected: 892202,
+    failureNote: "100 × 100 칸이에요. 가능한 모든 길을 살펴보면 끝나지 않아요.",
+  },
+]);
 
 export const dijkstraGentleHike: Problem = {
   id: "c:dijkstra-gentle-hike",
@@ -42,80 +118,9 @@ export const dijkstraGentleHike: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [1, 2, 2],
-          [3, 8, 2],
-          [5, 3, 5],
-        ],
-      ],
-      expected: 2,
-      explanation: "1 → 3 → 5 → 3 → 5로 가면 가장 큰 차이가 2예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[[7]]],
-      expected: 0,
-      explanation: "움직이지 않으니 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [1, 2, 3],
-          [3, 8, 4],
-          [5, 3, 5],
-        ],
-      ],
-      expected: 1,
-      failureNote: "1 → 2 → 3 → 4 → 5로 가면 모든 차이가 1이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[1, 10, 6, 7, 9, 10, 4, 9]]],
-      expected: 9,
-      failureNote: "한 줄이면 피할 수 없어요. 가장 큰 차이 9예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 2, 1, 1, 1],
-          [1, 2, 1, 2, 1],
-          [1, 2, 1, 2, 1],
-          [1, 2, 1, 2, 1],
-          [1, 1, 1, 2, 1],
-        ],
-      ],
-      expected: 0,
-      failureNote: "1만 밟는 구불구불한 길이 있어서 0이에요. 합이 가장 작은 길(칸 수가 적은 길)과 달라요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100 }, (_, r) =>
-          Array.from({ length: 100 }, (_, c) => ((r * 7919 + c * 104729 + r * c * 31) % 1000000) + 1),
-        ),
-      ],
-      expected: 892202,
-      failureNote: "100 × 100 칸이에요. 가능한 모든 길을 살펴보면 끝나지 않아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

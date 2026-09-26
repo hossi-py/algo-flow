@@ -1,5 +1,57 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [3],
+    expected: [3, 2, 1, 1, 2, 3],
+    explanation: "3, 2, 1을 외치며 내려가고, 바닥에서 돌아오며 1, 2, 3의 메아리를 들어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1],
+    expected: [1, 1],
+    explanation: "1층에서 외치고, 0층(바닥)에 갔다 바로 돌아와 메아리를 들어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [2],
+    expected: [2, 1, 1, 2],
+    failureNote: "2, 1, 1, 2예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [5],
+    expected: [5, 4, 3, 2, 1, 1, 2, 3, 4, 5],
+    failureNote: "메아리는 가장 깊은 층부터 들려요. 호출 스택이 위에서부터 풀리는 순서예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [10],
+    expected: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    failureNote: "10층 계곡이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000],
+    expected: [...Array.from({ length: 1000 }, (_, i) => 1000 - i), ...Array.from({ length: 1000 }, (_, i) => i + 1)],
+    failureNote: "1,000층이에요. 재귀 깊이도 1,000이에요.",
+  },
+]);
 
 export const recursionEchoValley: Problem = {
   id: "c:recursion-echo-valley",
@@ -45,56 +97,9 @@ export const recursionEchoValley: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [3],
-      expected: [3, 2, 1, 1, 2, 3],
-      explanation: "3, 2, 1을 외치며 내려가고, 바닥에서 돌아오며 1, 2, 3의 메아리를 들어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1],
-      expected: [1, 1],
-      explanation: "1층에서 외치고, 0층(바닥)에 갔다 바로 돌아와 메아리를 들어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [2],
-      expected: [2, 1, 1, 2],
-      failureNote: "2, 1, 1, 2예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [5],
-      expected: [5, 4, 3, 2, 1, 1, 2, 3, 4, 5],
-      failureNote: "메아리는 가장 깊은 층부터 들려요. 호출 스택이 위에서부터 풀리는 순서예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [10],
-      expected: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-      failureNote: "10층 계곡이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000],
-      expected: [...Array.from({ length: 1000 }, (_, i) => 1000 - i), ...Array.from({ length: 1000 }, (_, i) => i + 1)],
-      failureNote: "1,000층이에요. 재귀 깊이도 1,000이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

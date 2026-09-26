@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["hellowood", "hello"],
+    expected: true,
+    explanation: "h, e, l 두 개, o가 모두 있어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: ["helo", "hello"],
+    expected: false,
+    explanation: "l이 두 번 필요한데 잡지에는 하나뿐이에요. 글자가 있는지가 아니라 개수를 비교해야 해요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["a", "a"],
+    expected: true,
+    failureNote: "딱 맞게 한 글자예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["abc", "d"],
+    expected: false,
+    failureNote: "잡지에 없는 글자예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["aab", "aaab"],
+    expected: false,
+    failureNote: "a가 세 번 필요하지만 두 개뿐이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["zyxwvutsrqponmlkjihgfedcba", "nodi"],
+    expected: true,
+    failureNote: "순서는 상관없어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: ["abcdefghijklmnopqrstuvwxyz".repeat(3846), "z".repeat(3846) + "a"],
+    expected: true,
+    failureNote: "잡지 약 10만 글자예요. 편지 글자마다 잡지에서 찾아 지우면(list.remove) 시간 초과예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: ["abcdefghijklmnopqrstuvwxyz".repeat(3846), "q".repeat(3847)],
+    expected: false,
+    failureNote: "q가 딱 하나 모자라요.",
+  },
+]);
 
 export const hashMagazineLetter: Problem = {
   id: "c:hash-magazine-letter",
@@ -39,72 +107,9 @@ export const hashMagazineLetter: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["hellowood", "hello"],
-      expected: true,
-      explanation: "h, e, l 두 개, o가 모두 있어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: ["helo", "hello"],
-      expected: false,
-      explanation: "l이 두 번 필요한데 잡지에는 하나뿐이에요. 글자가 있는지가 아니라 개수를 비교해야 해요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["a", "a"],
-      expected: true,
-      failureNote: "딱 맞게 한 글자예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["abc", "d"],
-      expected: false,
-      failureNote: "잡지에 없는 글자예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["aab", "aaab"],
-      expected: false,
-      failureNote: "a가 세 번 필요하지만 두 개뿐이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["zyxwvutsrqponmlkjihgfedcba", "nodi"],
-      expected: true,
-      failureNote: "순서는 상관없어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: ["abcdefghijklmnopqrstuvwxyz".repeat(3846), "z".repeat(3846) + "a"],
-      expected: true,
-      failureNote: "잡지 약 10만 글자예요. 편지 글자마다 잡지에서 찾아 지우면(list.remove) 시간 초과예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: ["abcdefghijklmnopqrstuvwxyz".repeat(3846), "q".repeat(3847)],
-      expected: false,
-      failureNote: "q가 딱 하나 모자라요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

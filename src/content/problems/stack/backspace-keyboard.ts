@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["abc<d"],
+    expected: "abd",
+    explanation: 'c를 지우고 d를 쳐서 "abd"예요.',
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: ["<<a<b"],
+    expected: "b",
+    explanation: '지울 글자가 없을 때의 <는 무시돼요. 남는 건 "b"예요.',
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["ab<<<"],
+    expected: "",
+    failureNote: "모두 지우면 빈 문자열이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["hello<<<<<world"],
+    expected: "world",
+    failureNote: "hello를 모두 지우고 world만 남아요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["ab<c<<d"],
+    expected: "d",
+    failureNote: "b, c, a 순서로 지워져요. 지우는 건 항상 가장 최근 글자예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["nodi"],
+    expected: "nodi",
+    failureNote: "지우개를 한 번도 안 눌렀어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: ["x".repeat(50000) + "<".repeat(49999)],
+    expected: "x",
+    failureNote: "10만 번 눌러요. 문자열을 매번 잘라 새로 만들면 느려요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: ["ab<".repeat(33333)],
+    expected: "a".repeat(33333),
+    failureNote: "쓰고 지우기를 3만 번 넘게 반복해요.",
+  },
+]);
 
 export const stackBackspaceKeyboard: Problem = {
   id: "c:stack-backspace-keyboard",
@@ -36,72 +104,9 @@ export const stackBackspaceKeyboard: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["abc<d"],
-      expected: "abd",
-      explanation: 'c를 지우고 d를 쳐서 "abd"예요.',
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: ["<<a<b"],
-      expected: "b",
-      explanation: '지울 글자가 없을 때의 <는 무시돼요. 남는 건 "b"예요.',
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["ab<<<"],
-      expected: "",
-      failureNote: "모두 지우면 빈 문자열이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["hello<<<<<world"],
-      expected: "world",
-      failureNote: "hello를 모두 지우고 world만 남아요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["ab<c<<d"],
-      expected: "d",
-      failureNote: "b, c, a 순서로 지워져요. 지우는 건 항상 가장 최근 글자예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["nodi"],
-      expected: "nodi",
-      failureNote: "지우개를 한 번도 안 눌렀어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: ["x".repeat(50000) + "<".repeat(49999)],
-      expected: "x",
-      failureNote: "10만 번 눌러요. 문자열을 매번 잘라 새로 만들면 느려요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: ["ab<".repeat(33333)],
-      expected: "a".repeat(33333),
-      failureNote: "쓰고 지우기를 3만 번 넘게 반복해요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

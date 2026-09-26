@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [4],
+    expected: 7,
+    explanation: "1+1+1+1, 1+1+2, 1+2+1, 2+1+1, 2+2, 1+3, 3+1 — 7가지예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1],
+    expected: 1,
+    explanation: "1칸 한 번뿐이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2],
+    expected: 2,
+    failureNote: "1+1, 2 — 2가지예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [3],
+    expected: 4,
+    failureNote: "3칸을 한 번에 뛰는 방법도 있어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [10],
+    expected: 274,
+    failureNote: "돌 10개예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [50],
+    expected: 10562230626642,
+    failureNote: "돌 50개. 메모 없이 부르면 호출이 너무 많아요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [35],
+    expected: 1132436852,
+    failureNote: "돌 35개예요.",
+  },
+]);
 
 export const recursionSteppingStones: Problem = {
   id: "c:recursion-stepping-stones",
@@ -34,64 +94,9 @@ export const recursionSteppingStones: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [4],
-      expected: 7,
-      explanation: "1+1+1+1, 1+1+2, 1+2+1, 2+1+1, 2+2, 1+3, 3+1 — 7가지예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1],
-      expected: 1,
-      explanation: "1칸 한 번뿐이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2],
-      expected: 2,
-      failureNote: "1+1, 2 — 2가지예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [3],
-      expected: 4,
-      failureNote: "3칸을 한 번에 뛰는 방법도 있어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [10],
-      expected: 274,
-      failureNote: "돌 10개예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [50],
-      expected: 10562230626642,
-      failureNote: "돌 50개. 메모 없이 부르면 호출이 너무 많아요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [35],
-      expected: 1132436852,
-      failureNote: "돌 35개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,67 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[100, 4, 200, 1, 3, 2]],
+    expected: 4,
+    explanation: "1, 2, 3, 4가 이어져서 4예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[5, 5, 5]],
+    expected: 1,
+    explanation: "같은 번호는 한 번만 셉니다. 길이 1이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[0, -1, 1, 2, -2, 10]],
+    expected: 5,
+    failureNote: "음수도 이어져요: −2부터 2까지 5개.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[7]],
+    expected: 1,
+    failureNote: "하나뿐이면 1이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 3, 5, 7]],
+    expected: 1,
+    failureNote: "이어지는 번호가 없어서 1이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[3, 2, 1, 2, 3, 4, 0]],
+    expected: 5,
+    failureNote: "중복을 빼면 0~4, 5개예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      [...Array.from({ length: 50000 }, (_, i) => i * 2), ...Array.from({ length: 50000 }, (_, i) => 1049999 - i)],
+    ],
+    expected: 50000,
+    failureNote:
+      "5만 개짜리 연속 번호가 거꾸로 들어 있어요. 번호마다 이어지는 번호를 세면(시작점 확인 없이) 약 12억 번이라 시간 초과예요.",
+  },
+]);
 
 export const hashLongestRun: Problem = {
   id: "c:hash-longest-run",
@@ -36,67 +99,9 @@ export const hashLongestRun: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[100, 4, 200, 1, 3, 2]],
-      expected: 4,
-      explanation: "1, 2, 3, 4가 이어져서 4예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[5, 5, 5]],
-      expected: 1,
-      explanation: "같은 번호는 한 번만 셉니다. 길이 1이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[0, -1, 1, 2, -2, 10]],
-      expected: 5,
-      failureNote: "음수도 이어져요: −2부터 2까지 5개.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[7]],
-      expected: 1,
-      failureNote: "하나뿐이면 1이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 3, 5, 7]],
-      expected: 1,
-      failureNote: "이어지는 번호가 없어서 1이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[3, 2, 1, 2, 3, 4, 0]],
-      expected: 5,
-      failureNote: "중복을 빼면 0~4, 5개예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        [...Array.from({ length: 50000 }, (_, i) => i * 2), ...Array.from({ length: 50000 }, (_, i) => 1049999 - i)],
-      ],
-      expected: 50000,
-      failureNote:
-        "5만 개짜리 연속 번호가 거꾸로 들어 있어요. 번호마다 이어지는 번호를 세면(시작점 확인 없이) 약 12억 번이라 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

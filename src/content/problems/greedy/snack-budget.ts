@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[5, 1, 3, 7, 2], 10],
+    expected: 3,
+    explanation: "1 + 2 + 3 = 6, 여기에 5를 더하면 11이라 3개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[4, 5], 3],
+    expected: 0,
+    explanation: "가장 싼 간식도 못 사서 0개예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[2, 2, 2], 6],
+    expected: 3,
+    failureNote: "딱 맞게 모두 살 수 있어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[9], 0],
+    expected: 0,
+    failureNote: "용돈이 0이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[8, 1, 1, 1, 1], 9],
+    expected: 4,
+    failureNote: "비싼 8을 먼저 사면 1개 더 사서 2개지만, 싼 것부터면 1 × 4 = 4개예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 10000) + 1), 123456789],
+    expected: 49685,
+    failureNote: "간식 10만 개예요. 매번 가장 싼 간식을 처음부터 찾으면(O(N²)) 시간 초과예요. 한 번 정렬하세요.",
+  },
+]);
 
 export const greedySnackBudget: Problem = {
   id: "c:greedy-snack-budget",
@@ -41,56 +93,9 @@ export const greedySnackBudget: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[5, 1, 3, 7, 2], 10],
-      expected: 3,
-      explanation: "1 + 2 + 3 = 6, 여기에 5를 더하면 11이라 3개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[4, 5], 3],
-      expected: 0,
-      explanation: "가장 싼 간식도 못 사서 0개예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[2, 2, 2], 6],
-      expected: 3,
-      failureNote: "딱 맞게 모두 살 수 있어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[9], 0],
-      expected: 0,
-      failureNote: "용돈이 0이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[8, 1, 1, 1, 1], 9],
-      expected: 4,
-      failureNote: "비싼 8을 먼저 사면 1개 더 사서 2개지만, 싼 것부터면 1 × 4 = 4개예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 10000) + 1), 123456789],
-      expected: 49685,
-      failureNote: "간식 10만 개예요. 매번 가장 싼 간식을 처음부터 찾으면(O(N²)) 시간 초과예요. 한 번 정렬하세요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

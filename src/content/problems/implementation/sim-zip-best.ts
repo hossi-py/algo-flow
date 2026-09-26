@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["aaaabbb"],
+    expected: 4,
+    explanation: 'k = 1이면 "4a3b"로 4예요.',
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: ["abcabcabc"],
+    expected: 4,
+    explanation: 'k = 3이면 "3abc"로 4예요.',
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["a"],
+    expected: 1,
+    failureNote: "줄일 게 없어 1이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["xxxxxxxxxx"],
+    expected: 3,
+    failureNote: '"10x"라 3이에요. 개수가 두 자리면 두 글자를 차지해요.',
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["abcabcdede"],
+    expected: 8,
+    failureNote: 'k = 2는 "abcabc2de"(9), k = 3은 "2abcdede"(8)라 8이에요. 앞에서부터만 잘라요.',
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["abcd"],
+    expected: 4,
+    failureNote: "반복이 없어 4예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: ["abc".repeat(200) + "xy".repeat(150) + "q".repeat(100)],
+    expected: 29,
+    failureNote: "길이 1,000이에요. k마다 한 번 훑어도 100만 번 정도예요.",
+  },
+]);
 
 export const simZipBest: Problem = {
   id: "c:sim-zip-best",
@@ -36,64 +96,9 @@ export const simZipBest: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["aaaabbb"],
-      expected: 4,
-      explanation: 'k = 1이면 "4a3b"로 4예요.',
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: ["abcabcabc"],
-      expected: 4,
-      explanation: 'k = 3이면 "3abc"로 4예요.',
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["a"],
-      expected: 1,
-      failureNote: "줄일 게 없어 1이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["xxxxxxxxxx"],
-      expected: 3,
-      failureNote: '"10x"라 3이에요. 개수가 두 자리면 두 글자를 차지해요.',
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["abcabcdede"],
-      expected: 8,
-      failureNote: 'k = 2는 "abcabc2de"(9), k = 3은 "2abcdede"(8)라 8이에요. 앞에서부터만 잘라요.',
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["abcd"],
-      expected: 4,
-      failureNote: "반복이 없어 4예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: ["abc".repeat(200) + "xy".repeat(150) + "q".repeat(100)],
-      expected: 29,
-      failureNote: "길이 1,000이에요. k마다 한 번 훑어도 100만 번 정도예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

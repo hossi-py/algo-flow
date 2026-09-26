@@ -1,4 +1,65 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [20],
+    expected: 4,
+    explanation: "4 × 4 = 16 ≤ 20, 5 × 5 = 25 > 20이라 4예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [36],
+    expected: 6,
+    explanation: "딱 맞으면 6이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [0],
+    expected: 0,
+    failureNote: "모종이 없으면 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1],
+    expected: 1,
+    failureNote: "1 × 1이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [99],
+    expected: 9,
+    failureNote: "10 × 10 = 100은 넘어서 9예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000000000000],
+    expected: 1000000,
+    failureNote:
+      "1조면 답은 100만이에요. 1부터 하나씩 늘려 보면 느리고, 반씩 줄이면 약 40번이에요. (Java는 x × x를 long으로 계산하세요)",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [999999999999],
+    expected: 999999,
+    failureNote: "100만² − 1이라 999,999예요.",
+  },
+]);
 
 export const binarySearchSquareGarden: Problem = {
   id: "c:binary-search-square-garden",
@@ -36,65 +97,9 @@ export const binarySearchSquareGarden: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [20],
-      expected: 4,
-      explanation: "4 × 4 = 16 ≤ 20, 5 × 5 = 25 > 20이라 4예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [36],
-      expected: 6,
-      explanation: "딱 맞으면 6이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [0],
-      expected: 0,
-      failureNote: "모종이 없으면 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1],
-      expected: 1,
-      failureNote: "1 × 1이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [99],
-      expected: 9,
-      failureNote: "10 × 10 = 100은 넘어서 9예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000000000000],
-      expected: 1000000,
-      failureNote:
-        "1조면 답은 100만이에요. 1부터 하나씩 늘려 보면 느리고, 반씩 줄이면 약 40번이에요. (Java는 x × x를 long으로 계산하세요)",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [999999999999],
-      expected: 999999,
-      failureNote: "100만² − 1이라 999,999예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

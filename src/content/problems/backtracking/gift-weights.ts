@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[2, 3, 5, 7], 10],
+    expected: 2,
+    explanation: "{3, 7}, {2, 3, 5} 두 가지예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [[9, 4, 6, 1], 10],
+    expected: 2,
+    explanation: "{9, 1}, {4, 6} 두 가지예요. 무게가 섞여 있어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5], 5],
+    expected: 1,
+    failureNote: "상자 하나로 딱 맞아요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[20, 30], 10],
+    expected: 0,
+    failureNote: "모든 상자가 너무 무거워요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 2, 3, 4, 5, 6], 6],
+    expected: 4,
+    failureNote: "{6}, {1, 5}, {2, 4}, {1, 2, 3}으로 4가지예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 30 }, (_, i) => 30 - i), 30],
+    expected: 296,
+    failureNote: "상자 30개예요. 싣기/안 싣기를 모두 따지면 2^30 ≈ 10억 가지라, 넘치는 가지를 잘라야 해요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 30 }, (_, i) => 2 * i + 3), 100],
+    expected: 1221,
+    failureNote: "3, 5, 7, … 61kg 상자 30개로 100kg을 맞춰요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 30 }, (_, i) => 1000 - i * 7), 999],
+    expected: 0,
+    failureNote: "무거운 상자 30개예요. 두 개만 실어도 넘쳐요.",
+  },
+]);
 
 export const backtrackingGiftWeights: Problem = {
   id: "c:backtracking-gift-weights",
@@ -41,72 +109,9 @@ export const backtrackingGiftWeights: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[2, 3, 5, 7], 10],
-      expected: 2,
-      explanation: "{3, 7}, {2, 3, 5} 두 가지예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [[9, 4, 6, 1], 10],
-      expected: 2,
-      explanation: "{9, 1}, {4, 6} 두 가지예요. 무게가 섞여 있어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5], 5],
-      expected: 1,
-      failureNote: "상자 하나로 딱 맞아요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[20, 30], 10],
-      expected: 0,
-      failureNote: "모든 상자가 너무 무거워요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 2, 3, 4, 5, 6], 6],
-      expected: 4,
-      failureNote: "{6}, {1, 5}, {2, 4}, {1, 2, 3}으로 4가지예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 30 }, (_, i) => 30 - i), 30],
-      expected: 296,
-      failureNote: "상자 30개예요. 싣기/안 싣기를 모두 따지면 2^30 ≈ 10억 가지라, 넘치는 가지를 잘라야 해요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 30 }, (_, i) => 2 * i + 3), 100],
-      expected: 1221,
-      failureNote: "3, 5, 7, … 61kg 상자 30개로 100kg을 맞춰요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 30 }, (_, i) => 1000 - i * 7), 999],
-      expected: 0,
-      failureNote: "무거운 상자 30개예요. 두 개만 실어도 넘쳐요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

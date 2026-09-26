@@ -1,5 +1,105 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [0, 1],
+        [0, 2],
+        [1, 3],
+        [2, 3],
+        [3, 4],
+      ],
+      0,
+    ],
+    expected: [[0], [1, 2], [3], [4]],
+    explanation: "1초에 1, 2번, 2초에 3번, 3초에 4번에 닿아요. 5번은 이어진 물길이 없어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1, [], 0],
+    expected: [[0]],
+    explanation: "연잎 하나뿐이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [4, 0],
+      ],
+      2,
+    ],
+    expected: [[2], [1, 3], [0, 4]],
+    failureNote: "고리 모양 연못이에요. 물결이 양쪽으로 퍼져요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [0, 2],
+        [2, 3],
+      ],
+      0,
+    ],
+    expected: [[0], [1, 2], [3]],
+    failureNote:
+      "2번은 1번을 거쳐서도 닿지만, 0번에서 바로 이어져 있어서 1초에 닿아요. 깊이 우선으로 돌면 2초로 잘못 적어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      6,
+      [
+        [5, 3],
+        [3, 1],
+        [5, 4],
+        [4, 0],
+        [2, 5],
+      ],
+      5,
+    ],
+    expected: [[5], [2, 3, 4], [0, 1]],
+    failureNote: "물길이 번호 순서로 주어지지 않아요. 묶음마다 오름차순으로 정렬해야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000, Array.from({ length: 999 }, (_, i) => [i, i + 1]), 0],
+    expected: Array.from({ length: 1000 }, (_, i) => [i]),
+    failureNote: "연잎 1,000개가 한 줄로 이어져 있어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000, Array.from({ length: 999 }, (_, i) => [999 - i, 0]), 0],
+    expected: [[0], Array.from({ length: 999 }, (_, i) => i + 1)],
+    failureNote: "0번에 나머지가 모두 바로 이어져 있어요.",
+  },
+]);
 
 export const bfsRippleRings: Problem = {
   id: "c:bfs-ripple-rings",
@@ -55,104 +155,9 @@ export const bfsRippleRings: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [0, 1],
-          [0, 2],
-          [1, 3],
-          [2, 3],
-          [3, 4],
-        ],
-        0,
-      ],
-      expected: [[0], [1, 2], [3], [4]],
-      explanation: "1초에 1, 2번, 2초에 3번, 3초에 4번에 닿아요. 5번은 이어진 물길이 없어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1, [], 0],
-      expected: [[0]],
-      explanation: "연잎 하나뿐이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [3, 4],
-          [4, 0],
-        ],
-        2,
-      ],
-      expected: [[2], [1, 3], [0, 4]],
-      failureNote: "고리 모양 연못이에요. 물결이 양쪽으로 퍼져요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [0, 2],
-          [2, 3],
-        ],
-        0,
-      ],
-      expected: [[0], [1, 2], [3]],
-      failureNote:
-        "2번은 1번을 거쳐서도 닿지만, 0번에서 바로 이어져 있어서 1초에 닿아요. 깊이 우선으로 돌면 2초로 잘못 적어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        6,
-        [
-          [5, 3],
-          [3, 1],
-          [5, 4],
-          [4, 0],
-          [2, 5],
-        ],
-        5,
-      ],
-      expected: [[5], [2, 3, 4], [0, 1]],
-      failureNote: "물길이 번호 순서로 주어지지 않아요. 묶음마다 오름차순으로 정렬해야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000, Array.from({ length: 999 }, (_, i) => [i, i + 1]), 0],
-      expected: Array.from({ length: 1000 }, (_, i) => [i]),
-      failureNote: "연잎 1,000개가 한 줄로 이어져 있어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000, Array.from({ length: 999 }, (_, i) => [999 - i, 0]), 0],
-      expected: [[0], Array.from({ length: 999 }, (_, i) => i + 1)],
-      failureNote: "0번에 나머지가 모두 바로 이어져 있어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

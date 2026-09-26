@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["tree", "sun", "moss", "sun", "leaf"]],
+    expected: ["sun", "leaf", "moss", "tree"],
+    explanation: "sun(3글자) 다음 4글자 leaf, moss, tree가 사전 순이에요. sun은 한 번만 적어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["a"]],
+    expected: ["a"],
+    explanation: "하나면 그대로예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["abc", "b", "ab", "a"]],
+    expected: ["a", "b", "ab", "abc"],
+    failureNote: "사전 순만 쓰면 a, ab, abc, b가 되지만, 길이가 먼저라 a, b, ab, abc예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["zz", "zz", "zz"]],
+    expected: ["zz"],
+    failureNote: "모두 같은 단어면 하나만 남아요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["dog", "cat", "bee", "ant"]],
+    expected: ["ant", "bee", "cat", "dog"],
+    failureNote: "모두 3글자라 사전 순: ant, bee, cat, dog예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 20000 }, (_, i) => "ab".repeat(1 + (i % 5)))],
+    expected: ["ab", "abab", "ababab", "abababab", "ababababab"],
+    failureNote: "단어 2만 개지만 종류는 5개예요. 중복을 먼저 없애면 정렬할 것이 적어요.",
+  },
+]);
 
 export const sortingWordDictionary: Problem = {
   id: "c:sorting-word-dictionary",
@@ -42,56 +94,9 @@ export const sortingWordDictionary: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["tree", "sun", "moss", "sun", "leaf"]],
-      expected: ["sun", "leaf", "moss", "tree"],
-      explanation: "sun(3글자) 다음 4글자 leaf, moss, tree가 사전 순이에요. sun은 한 번만 적어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["a"]],
-      expected: ["a"],
-      explanation: "하나면 그대로예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["abc", "b", "ab", "a"]],
-      expected: ["a", "b", "ab", "abc"],
-      failureNote: "사전 순만 쓰면 a, ab, abc, b가 되지만, 길이가 먼저라 a, b, ab, abc예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["zz", "zz", "zz"]],
-      expected: ["zz"],
-      failureNote: "모두 같은 단어면 하나만 남아요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["dog", "cat", "bee", "ant"]],
-      expected: ["ant", "bee", "cat", "dog"],
-      failureNote: "모두 3글자라 사전 순: ant, bee, cat, dog예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 20000 }, (_, i) => "ab".repeat(1 + (i % 5)))],
-      expected: ["ab", "abab", "ababab", "abababab", "ababababab"],
-      failureNote: "단어 2만 개지만 종류는 5개예요. 중복을 먼저 없애면 정렬할 것이 적어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

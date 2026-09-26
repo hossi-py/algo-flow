@@ -1,4 +1,90 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [0, 1],
+        [1, 2],
+        [3, 4],
+      ],
+    ],
+    expected: 2,
+    explanation: "{0, 1, 2}와 {3, 4}로 동아리가 2개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [4, [[0, 1]]],
+    expected: 3,
+    explanation: "{0, 1}, {2}, {3}이라 3개예요. 혼자인 학생도 동아리예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, []],
+    expected: 1,
+    failureNote: "학생 한 명이면 동아리 하나예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [3, []],
+    expected: 3,
+    failureNote: "모두 혼자예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [0, 5],
+        [5, 1],
+        [1, 4],
+        [4, 2],
+        [2, 3],
+      ],
+    ],
+    expected: 1,
+    failureNote: "모두 한 줄로 이어져 동아리 하나예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      6,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 0],
+        [3, 4],
+        [4, 5],
+        [5, 3],
+      ],
+    ],
+    expected: 2,
+    failureNote: "삼각형 두 개예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [2000, Array.from({ length: 2000 }, (_, i) => [i, i + 1]).filter(([a]) => a % 10 !== 9)],
+    expected: 200,
+    failureNote: "10명씩 이어진 동아리가 200개예요.",
+  },
+]);
 
 export const dfsClubCount: Problem = {
   id: "c:dfs-club-count",
@@ -43,90 +129,9 @@ export const dfsClubCount: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [0, 1],
-          [1, 2],
-          [3, 4],
-        ],
-      ],
-      expected: 2,
-      explanation: "{0, 1, 2}와 {3, 4}로 동아리가 2개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [4, [[0, 1]]],
-      expected: 3,
-      explanation: "{0, 1}, {2}, {3}이라 3개예요. 혼자인 학생도 동아리예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, []],
-      expected: 1,
-      failureNote: "학생 한 명이면 동아리 하나예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [3, []],
-      expected: 3,
-      failureNote: "모두 혼자예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [0, 5],
-          [5, 1],
-          [1, 4],
-          [4, 2],
-          [2, 3],
-        ],
-      ],
-      expected: 1,
-      failureNote: "모두 한 줄로 이어져 동아리 하나예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        6,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 0],
-          [3, 4],
-          [4, 5],
-          [5, 3],
-        ],
-      ],
-      expected: 2,
-      failureNote: "삼각형 두 개예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [2000, Array.from({ length: 2000 }, (_, i) => [i, i + 1]).filter(([a]) => a % 10 !== 9)],
-      expected: 200,
-      failureNote: "10명씩 이어진 동아리가 200개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

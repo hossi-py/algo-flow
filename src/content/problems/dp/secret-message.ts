@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["226"],
+    expected: 3,
+    explanation: "BZ(2, 26), VF(22, 6), BBF(2, 2, 6) 세 가지예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: ["06"],
+    expected: 0,
+    explanation: "0으로 시작해서 읽을 수 없어요. 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["12"],
+    expected: 2,
+    failureNote: "AB, L 두 가지예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["10"],
+    expected: 1,
+    failureNote: "0은 혼자 글자가 될 수 없어서 J(10) 한 가지예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["100"],
+    expected: 0,
+    failureNote: "10 다음 0이 혼자 남아 읽을 수 없어요. 0이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["27"],
+    expected: 1,
+    failureNote: "27은 Z(26)보다 커서 BG 한 가지예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["1"],
+    expected: 1,
+    failureNote: "A 한 가지예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => "1226103"[(i * 7) % 7]).join("")],
+    expected: 967618232,
+    failureNote: "10만 자리예요. 읽는 방법을 하나씩 만들면 끝나지 않아요.",
+  },
+]);
 
 export const dpSecretMessage: Problem = {
   id: "c:dp-secret-message",
@@ -34,72 +102,9 @@ export const dpSecretMessage: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["226"],
-      expected: 3,
-      explanation: "BZ(2, 26), VF(22, 6), BBF(2, 2, 6) 세 가지예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: ["06"],
-      expected: 0,
-      explanation: "0으로 시작해서 읽을 수 없어요. 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["12"],
-      expected: 2,
-      failureNote: "AB, L 두 가지예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["10"],
-      expected: 1,
-      failureNote: "0은 혼자 글자가 될 수 없어서 J(10) 한 가지예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["100"],
-      expected: 0,
-      failureNote: "10 다음 0이 혼자 남아 읽을 수 없어요. 0이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["27"],
-      expected: 1,
-      failureNote: "27은 Z(26)보다 커서 BG 한 가지예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["1"],
-      expected: 1,
-      failureNote: "A 한 가지예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => "1226103"[(i * 7) % 7]).join("")],
-      expected: 967618232,
-      failureNote: "10만 자리예요. 읽는 방법을 하나씩 만들면 끝나지 않아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

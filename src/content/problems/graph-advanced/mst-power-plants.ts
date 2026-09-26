@@ -1,4 +1,109 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      5,
+      [0, 4],
+      [
+        [0, 1, 3],
+        [1, 2, 1],
+        [2, 3, 2],
+        [3, 4, 5],
+        [1, 4, 10],
+      ],
+    ],
+    expected: 6,
+    explanation: "1-2(1), 2-3(2), 0-1(3)로 1·2·3번이 0번 발전소에 이어져 6이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      3,
+      [0, 1, 2],
+      [
+        [0, 1, 4],
+        [1, 2, 4],
+      ],
+    ],
+    expected: 0,
+    explanation: "모든 도시에 발전소가 있어서 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [0, 3],
+      [
+        [0, 1, 1],
+        [1, 2, 5],
+        [2, 3, 1],
+        [0, 3, 1],
+      ],
+    ],
+    expected: 2,
+    failureNote: "0-1과 2-3만 이으면 돼서 2예요. 발전소끼리 잇는 0-3까지 고르는 보통 최소 신장 트리(3)는 비싸요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      3,
+      [1],
+      [
+        [0, 1, 2],
+        [1, 2, 3],
+        [0, 2, 1],
+      ],
+    ],
+    expected: 3,
+    failureNote: "발전소가 하나면 보통 최소 신장 트리와 같아요: 1 + 2 = 3.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      4,
+      [0, 3],
+      [
+        [0, 1, 5],
+        [1, 2, 5],
+        [2, 3, 5],
+      ],
+    ],
+    expected: 10,
+    failureNote: "1번은 0번에, 2번은 3번에 이어 10이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      10000,
+      Array.from({ length: 10 }, (_, i) => i * 1000),
+      [
+        ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 10000]),
+        ...Array.from({ length: 40000 }, (_, i) => {
+          const a = (i * 7907) % 10000;
+          const b = (a + 1 + ((i * 104729) % 9999)) % 10000;
+          return [a, b, ((i * 7919) % 10000) + 1];
+        }),
+      ],
+    ],
+    expected: 14315551,
+    failureNote: "도시 1만 개, 발전소 10곳, 후보 5만 개예요.",
+  },
+]);
 
 export const mstPowerPlants: Problem = {
   id: "c:mst-power-plants",
@@ -48,109 +153,9 @@ export const mstPowerPlants: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        5,
-        [0, 4],
-        [
-          [0, 1, 3],
-          [1, 2, 1],
-          [2, 3, 2],
-          [3, 4, 5],
-          [1, 4, 10],
-        ],
-      ],
-      expected: 6,
-      explanation: "1-2(1), 2-3(2), 0-1(3)로 1·2·3번이 0번 발전소에 이어져 6이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        3,
-        [0, 1, 2],
-        [
-          [0, 1, 4],
-          [1, 2, 4],
-        ],
-      ],
-      expected: 0,
-      explanation: "모든 도시에 발전소가 있어서 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [0, 3],
-        [
-          [0, 1, 1],
-          [1, 2, 5],
-          [2, 3, 1],
-          [0, 3, 1],
-        ],
-      ],
-      expected: 2,
-      failureNote: "0-1과 2-3만 이으면 돼서 2예요. 발전소끼리 잇는 0-3까지 고르는 보통 최소 신장 트리(3)는 비싸요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        3,
-        [1],
-        [
-          [0, 1, 2],
-          [1, 2, 3],
-          [0, 2, 1],
-        ],
-      ],
-      expected: 3,
-      failureNote: "발전소가 하나면 보통 최소 신장 트리와 같아요: 1 + 2 = 3.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        4,
-        [0, 3],
-        [
-          [0, 1, 5],
-          [1, 2, 5],
-          [2, 3, 5],
-        ],
-      ],
-      expected: 10,
-      failureNote: "1번은 0번에, 2번은 3번에 이어 10이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        10000,
-        Array.from({ length: 10 }, (_, i) => i * 1000),
-        [
-          ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 10000]),
-          ...Array.from({ length: 40000 }, (_, i) => {
-            const a = (i * 7907) % 10000;
-            const b = (a + 1 + ((i * 104729) % 9999)) % 10000;
-            return [a, b, ((i * 7919) % 10000) + 1];
-          }),
-        ],
-      ],
-      expected: 14315551,
-      failureNote: "도시 1만 개, 발전소 10곳, 후보 5만 개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,5 +1,58 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [3],
+    expected: 3,
+    explanation: "[1, 1, 1], [1, 2], [2, 1] 세 가지예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [5],
+    expected: 8,
+    explanation: "1, 1, 2, 3, 5, 8 순서로 늘어서 8가지예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1],
+    expected: 1,
+    failureNote: "한 칸이면 1가지예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2],
+    expected: 2,
+    failureNote: "[1, 1]과 [2], 2가지예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [45],
+    expected: 836311896,
+    failureNote:
+      "1,836,311,903가지라 나머지를 구하면 836,311,896이에요. 더할 때마다 나머지를 구해야 수가 넘치지 않아요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000],
+    expected: 967618232,
+    failureNote: "10만 칸이에요. 재귀로 그대로 풀면 같은 계산을 끝없이 반복해요. 표에 적어 두면 10만 번이면 돼요.",
+  },
+]);
 
 export const dpStairWays: Problem = {
   id: "c:dp-stair-ways",
@@ -35,57 +88,9 @@ export const dpStairWays: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [3],
-      expected: 3,
-      explanation: "[1, 1, 1], [1, 2], [2, 1] 세 가지예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [5],
-      expected: 8,
-      explanation: "1, 1, 2, 3, 5, 8 순서로 늘어서 8가지예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1],
-      expected: 1,
-      failureNote: "한 칸이면 1가지예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2],
-      expected: 2,
-      failureNote: "[1, 1]과 [2], 2가지예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [45],
-      expected: 836311896,
-      failureNote:
-        "1,836,311,903가지라 나머지를 구하면 836,311,896이에요. 더할 때마다 나머지를 구해야 수가 넘치지 않아요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [100000],
-      expected: 967618232,
-      failureNote: "10만 칸이에요. 재귀로 그대로 풀면 같은 계산을 끝없이 반복해요. 표에 적어 두면 10만 번이면 돼요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

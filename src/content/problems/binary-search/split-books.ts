@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[7, 2, 5, 10, 8], 2],
+    expected: 18,
+    explanation: "[7, 2, 5] / [10, 8]로 나누면 14와 18, 18이 가장 작아요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[1, 2, 3], 3],
+    expected: 3,
+    explanation: "한 권씩 맡으면 가장 두꺼운 3이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5, 5, 5], 1],
+    expected: 15,
+    failureNote: "혼자 다 읽으면 합 15예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 4, 4], 3],
+    expected: 4,
+    failureNote: "답은 가장 두꺼운 책(4)보다 작을 수 없어요. 범위의 시작은 max(pages)예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 2, 3, 4, 5], 2],
+    expected: 9,
+    failureNote: "[1, 2, 3] / [4, 5]로 9예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[10, 20, 30, 40], 2],
+    expected: 60,
+    failureNote: "[10, 20, 30] / [40]으로 60이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 10000 }, (_, i) => ((i * 37) % 10000) + 1), 37],
+    expected: 1353916,
+    failureNote: "책 1만 권이에요. 나누는 방법을 모두 해 보는 건 불가능해요.",
+  },
+]);
 
 export const binarySearchSplitBooks: Problem = {
   id: "c:binary-search-split-books",
@@ -37,64 +97,9 @@ export const binarySearchSplitBooks: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[7, 2, 5, 10, 8], 2],
-      expected: 18,
-      explanation: "[7, 2, 5] / [10, 8]로 나누면 14와 18, 18이 가장 작아요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[1, 2, 3], 3],
-      expected: 3,
-      explanation: "한 권씩 맡으면 가장 두꺼운 3이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5, 5, 5], 1],
-      expected: 15,
-      failureNote: "혼자 다 읽으면 합 15예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 4, 4], 3],
-      expected: 4,
-      failureNote: "답은 가장 두꺼운 책(4)보다 작을 수 없어요. 범위의 시작은 max(pages)예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 2, 3, 4, 5], 2],
-      expected: 9,
-      failureNote: "[1, 2, 3] / [4, 5]로 9예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[10, 20, 30, 40], 2],
-      expected: 60,
-      failureNote: "[10, 20, 30] / [40]으로 60이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 10000 }, (_, i) => ((i * 37) % 10000) + 1), 37],
-      expected: 1353916,
-      failureNote: "책 1만 권이에요. 나누는 방법을 모두 해 보는 건 불가능해요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

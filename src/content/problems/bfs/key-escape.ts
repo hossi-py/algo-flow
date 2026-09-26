@@ -1,4 +1,102 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["S.#E", "..D.", "K.#."]],
+    expected: 7,
+    explanation:
+      "문을 지나야 출구로 가요. 아래로 두 칸 가서 열쇠를 줍고, 왔던 칸으로 돌아와 문을 지나면 모두 7번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["S.D.E"]],
+    expected: -1,
+    explanation: "열쇠가 없어서 문을 지날 수 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["S..E"]],
+    expected: 3,
+    failureNote: "문이 없으면 그냥 걸어가요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["SD.KE"]],
+    expected: -1,
+    failureNote: "열쇠가 문 너머에 있어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["K.S..", "####D", "E...."]],
+    expected: 12,
+    failureNote:
+      "열쇠를 주우러 왼쪽으로 갔다가, 이미 지나온 칸을 다시 지나 오른쪽 문으로 가요. 칸만 방문 표시하면 되돌아갈 수 없어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["S.K", "#D#", "E.."]],
+    expected: 6,
+    failureNote: "열쇠가 가까이 있어서 한 번 들렀다 가요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["S.#..", ".D#.E", "..D..", "K#..."]],
+    expected: 9,
+    failureNote: "문이 여러 개예요. 열쇠 하나로 모두 열려요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 50 }, (_, r) =>
+        Array.from({ length: 50 }, (_, c) =>
+          r === 0 && c === 0 ? "S" : r === 0 && c === 49 ? "E" : r === 49 && c === 0 ? "K" : c === 25 ? "D" : ".",
+        ).join(""),
+      ),
+    ],
+    expected: 147,
+    failureNote: "가운데 세로줄이 모두 문이고, 열쇠는 출발 칸에서 가장 먼 아래 구석에 있어요.",
+  },
+  {
+    id: "hid-7",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 50 }, (_, r) =>
+        Array.from({ length: 50 }, (_, c) =>
+          r === 0 && c === 0
+            ? "S"
+            : r === 49 && c === 49
+              ? "E"
+              : r % 4 === 1 && c !== 49
+                ? "#"
+                : r % 4 === 3 && c !== 0
+                  ? "#"
+                  : ".",
+        ).join(""),
+      ),
+    ],
+    expected: 1274,
+    failureNote: "문 없이 뱀처럼 구불구불한 50×50 미로예요.",
+  },
+]);
 
 export const bfsKeyEscape: Problem = {
   id: "c:bfs-key-escape",
@@ -44,102 +142,9 @@ export const bfsKeyEscape: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["S.#E", "..D.", "K.#."]],
-      expected: 7,
-      explanation:
-        "문을 지나야 출구로 가요. 아래로 두 칸 가서 열쇠를 줍고, 왔던 칸으로 돌아와 문을 지나면 모두 7번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["S.D.E"]],
-      expected: -1,
-      explanation: "열쇠가 없어서 문을 지날 수 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["S..E"]],
-      expected: 3,
-      failureNote: "문이 없으면 그냥 걸어가요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["SD.KE"]],
-      expected: -1,
-      failureNote: "열쇠가 문 너머에 있어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["K.S..", "####D", "E...."]],
-      expected: 12,
-      failureNote:
-        "열쇠를 주우러 왼쪽으로 갔다가, 이미 지나온 칸을 다시 지나 오른쪽 문으로 가요. 칸만 방문 표시하면 되돌아갈 수 없어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["S.K", "#D#", "E.."]],
-      expected: 6,
-      failureNote: "열쇠가 가까이 있어서 한 번 들렀다 가요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["S.#..", ".D#.E", "..D..", "K#..."]],
-      expected: 9,
-      failureNote: "문이 여러 개예요. 열쇠 하나로 모두 열려요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 50 }, (_, r) =>
-          Array.from({ length: 50 }, (_, c) =>
-            r === 0 && c === 0 ? "S" : r === 0 && c === 49 ? "E" : r === 49 && c === 0 ? "K" : c === 25 ? "D" : ".",
-          ).join(""),
-        ),
-      ],
-      expected: 147,
-      failureNote: "가운데 세로줄이 모두 문이고, 열쇠는 출발 칸에서 가장 먼 아래 구석에 있어요.",
-    },
-    {
-      id: "hid-7",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 50 }, (_, r) =>
-          Array.from({ length: 50 }, (_, c) =>
-            r === 0 && c === 0
-              ? "S"
-              : r === 49 && c === 49
-                ? "E"
-                : r % 4 === 1 && c !== 49
-                  ? "#"
-                  : r % 4 === 3 && c !== 0
-                    ? "#"
-                    : ".",
-          ).join(""),
-        ),
-      ],
-      expected: 1274,
-      failureNote: "문 없이 뱀처럼 구불구불한 50×50 미로예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

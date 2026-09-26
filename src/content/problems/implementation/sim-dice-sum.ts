@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["EEN"],
+    expected: 15,
+    explanation: "윗면이 4, 6, 5가 돼서 15예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: ["E"],
+    expected: 4,
+    explanation: "서쪽 면 4가 위로 와서 4예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["NNNN"],
+    expected: 14,
+    failureNote: "북쪽으로 네 번이면 윗면이 5, 6, 2, 1이라 14예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["EW"],
+    expected: 5,
+    failureNote: "동쪽으로 굴렸다 서쪽으로 되돌리면 윗면이 4, 1이라 5예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["S"],
+    expected: 2,
+    failureNote: "남쪽으로 굴리면 북쪽 면 2가 위로 와요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => "NSEWENWS"[(i * 7919 + (i >> 4)) % 8]).join("")],
+    expected: 346980,
+    failureNote: "10만 번 굴려요.",
+  },
+]);
 
 export const simDiceSum: Problem = {
   id: "c:sim-dice-sum",
@@ -38,56 +90,9 @@ export const simDiceSum: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["EEN"],
-      expected: 15,
-      explanation: "윗면이 4, 6, 5가 돼서 15예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: ["E"],
-      expected: 4,
-      explanation: "서쪽 면 4가 위로 와서 4예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["NNNN"],
-      expected: 14,
-      failureNote: "북쪽으로 네 번이면 윗면이 5, 6, 2, 1이라 14예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["EW"],
-      expected: 5,
-      failureNote: "동쪽으로 굴렸다 서쪽으로 되돌리면 윗면이 4, 1이라 5예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["S"],
-      expected: 2,
-      failureNote: "남쪽으로 굴리면 북쪽 면 2가 위로 와요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => "NSEWENWS"[(i * 7919 + (i >> 4)) % 8]).join("")],
-      expected: 346980,
-      failureNote: "10만 번 굴려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

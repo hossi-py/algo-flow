@@ -1,4 +1,80 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [100, 200],
+        [200, 1300],
+        [1000, 1250],
+        [2000, 3200],
+      ],
+    ],
+    expected: 3,
+    explanation: "100일, 1000일, 200일 수업을 들으면 1300일에 끝나서 3개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[[1, 2]]],
+    expected: 1,
+    explanation: "하나를 들을 수 있어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      [
+        [3, 2],
+        [4, 3],
+      ],
+    ],
+    expected: 0,
+    failureNote: "둘 다 마감 전에 못 끝내요. 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [5, 5],
+        [4, 6],
+        [2, 6],
+      ],
+    ],
+    expected: 2,
+    failureNote:
+      "5일 수업 대신 4일·2일 수업 두 개를 들으면 6일에 끝나요. 2개예요. 긴 수업을 빼고 짧은 수업으로 바꿔야 해요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [1, 2],
+        [2, 3],
+      ],
+    ],
+    expected: 2,
+    failureNote: "1 + 2 = 3일에 끝나서 2개예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => [((i * 7919) % 100) + 1, ((i * 104729) % 1000000) + 1])],
+    expected: 44222,
+    failureNote: "수업 10만 개예요. 고르는 방법을 모두 해 보면 불가능해요.",
+  },
+]);
 
 export const heapCoursePlan: Problem = {
   id: "c:heap-course-plan",
@@ -40,80 +116,9 @@ export const heapCoursePlan: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [100, 200],
-          [200, 1300],
-          [1000, 1250],
-          [2000, 3200],
-        ],
-      ],
-      expected: 3,
-      explanation: "100일, 1000일, 200일 수업을 들으면 1300일에 끝나서 3개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[[1, 2]]],
-      expected: 1,
-      explanation: "하나를 들을 수 있어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        [
-          [3, 2],
-          [4, 3],
-        ],
-      ],
-      expected: 0,
-      failureNote: "둘 다 마감 전에 못 끝내요. 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [5, 5],
-          [4, 6],
-          [2, 6],
-        ],
-      ],
-      expected: 2,
-      failureNote:
-        "5일 수업 대신 4일·2일 수업 두 개를 들으면 6일에 끝나요. 2개예요. 긴 수업을 빼고 짧은 수업으로 바꿔야 해요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [1, 2],
-          [2, 3],
-        ],
-      ],
-      expected: 2,
-      failureNote: "1 + 2 = 3일에 끝나서 2개예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => [((i * 7919) % 100) + 1, ((i * 104729) % 1000000) + 1])],
-      expected: 44222,
-      failureNote: "수업 10만 개예요. 고르는 방법을 모두 해 보면 불가능해요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

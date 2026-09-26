@@ -1,5 +1,57 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [5],
+    expected: [5, 4, 3, 2, 1],
+    explanation: "5, 4, 3, 2, 1을 차례로 세요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1],
+    expected: [1],
+    explanation: "1부터 세면 [1] 하나뿐이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [2],
+    expected: [2, 1],
+    failureNote: "두 번 세요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [10],
+    expected: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
+    failureNote: "10부터 세요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [3],
+    expected: [3, 2, 1],
+    failureNote: "3부터 세요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [500],
+    expected: Array.from({ length: 500 }, (_, i) => 500 - i),
+    failureNote: "500부터 세면 재귀가 500번 깊어져요.",
+  },
+]);
 
 export const recursionRocketCountdown: Problem = {
   id: "c:recursion-rocket-countdown",
@@ -42,56 +94,9 @@ export const recursionRocketCountdown: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [5],
-      expected: [5, 4, 3, 2, 1],
-      explanation: "5, 4, 3, 2, 1을 차례로 세요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1],
-      expected: [1],
-      explanation: "1부터 세면 [1] 하나뿐이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [2],
-      expected: [2, 1],
-      failureNote: "두 번 세요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [10],
-      expected: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
-      failureNote: "10부터 세요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [3],
-      expected: [3, 2, 1],
-      failureNote: "3부터 세요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [500],
-      expected: Array.from({ length: 500 }, (_, i) => 500 - i),
-      failureNote: "500부터 세면 재귀가 500번 깊어져요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

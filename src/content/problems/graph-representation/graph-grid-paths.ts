@@ -1,4 +1,74 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["..#", "...", "#.."]],
+    expected: [
+      [2, 2, -1],
+      [2, 4, 2],
+      [-1, 2, 2],
+    ],
+    explanation: "가운데 칸은 위·아래·왼쪽·오른쪽이 모두 길이라 4예요. 벽 칸은 -1이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["."]],
+    expected: [[0]],
+    explanation: "길 한 칸뿐이면 이웃이 없어서 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["#"]],
+    expected: [[-1]],
+    failureNote: "벽 한 칸이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["....."]],
+    expected: [[1, 2, 2, 2, 1]],
+    failureNote: "한 줄짜리 길이에요. 양 끝은 이웃이 하나예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[".#.", "#.#", ".#."]],
+    expected: [
+      [0, -1, 0],
+      [-1, 0, -1],
+      [0, -1, 0],
+    ],
+    failureNote: "대각선은 이어진 게 아니에요. 모든 길 칸이 0이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[".", ".", "#", "."]],
+    expected: [[1], [1], [-1], [0]],
+    failureNote: "한 열짜리 지도예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array(100).fill(".".repeat(100))],
+    expected: Array.from({ length: 100 }, (_, r) =>
+      Array.from({ length: 100 }, (_, c) => Number(r > 0) + Number(r < 99) + Number(c > 0) + Number(c < 99)),
+    ),
+    failureNote: "100×100 전체가 길이에요.",
+  },
+]);
 
 export const graphGridPaths: Problem = {
   id: "c:graph-grid-paths",
@@ -39,74 +109,9 @@ export const graphGridPaths: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["..#", "...", "#.."]],
-      expected: [
-        [2, 2, -1],
-        [2, 4, 2],
-        [-1, 2, 2],
-      ],
-      explanation: "가운데 칸은 위·아래·왼쪽·오른쪽이 모두 길이라 4예요. 벽 칸은 -1이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["."]],
-      expected: [[0]],
-      explanation: "길 한 칸뿐이면 이웃이 없어서 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["#"]],
-      expected: [[-1]],
-      failureNote: "벽 한 칸이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["....."]],
-      expected: [[1, 2, 2, 2, 1]],
-      failureNote: "한 줄짜리 길이에요. 양 끝은 이웃이 하나예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[".#.", "#.#", ".#."]],
-      expected: [
-        [0, -1, 0],
-        [-1, 0, -1],
-        [0, -1, 0],
-      ],
-      failureNote: "대각선은 이어진 게 아니에요. 모든 길 칸이 0이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[".", ".", "#", "."]],
-      expected: [[1], [1], [-1], [0]],
-      failureNote: "한 열짜리 지도예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array(100).fill(".".repeat(100))],
-      expected: Array.from({ length: 100 }, (_, r) =>
-        Array.from({ length: 100 }, (_, c) => Number(r > 0) + Number(r < 99) + Number(c > 0) + Number(c < 99)),
-      ),
-      failureNote: "100×100 전체가 길이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

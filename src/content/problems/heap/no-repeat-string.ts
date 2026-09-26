@@ -1,4 +1,71 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["aab"],
+    expected: "aba",
+    explanation: "a(2) → b → a로 aba예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: ["aaab"],
+    expected: "",
+    explanation: "a가 너무 많아 어떻게 해도 붙어요. 빈 문자열이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["z"],
+    expected: "z",
+    failureNote: "한 글자면 그대로예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["aabbcc"],
+    expected: "abcabc",
+    failureNote: "모두 2개라 사전 순으로 a, 그다음 a를 피해 b, … abcabc예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["vvvlo"],
+    expected: "vlvov",
+    failureNote: "v를 사이사이에: vlvov예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => "aabbbcdde"[(i * 7) % 9]).join("")],
+    expected: (() => {
+      const s = Array.from({ length: 100000 }, (_, i) => "aabbbcdde"[(i * 7) % 9]).join("");
+      const cnt = Array(26).fill(0);
+      for (const c of s) cnt[c.charCodeAt(0) - 97]++;
+      let prev = -1;
+      let out = "";
+      for (let n = 0; n < s.length; n++) {
+        let best = -1;
+        for (let j = 0; j < 26; j++) if (j !== prev && cnt[j] > 0 && (best < 0 || cnt[j] > cnt[best])) best = j;
+        if (best < 0) return "";
+        out += String.fromCharCode(97 + best);
+        cnt[best]--;
+        prev = best;
+      }
+      return out;
+    })(),
+    failureNote: "10만 글자예요. 가능한 순서를 모두 시도하는 건 불가능해요.",
+  },
+]);
 
 export const heapNoRepeatString: Problem = {
   id: "c:heap-no-repeat-string",
@@ -37,71 +104,9 @@ export const heapNoRepeatString: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["aab"],
-      expected: "aba",
-      explanation: "a(2) → b → a로 aba예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: ["aaab"],
-      expected: "",
-      explanation: "a가 너무 많아 어떻게 해도 붙어요. 빈 문자열이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["z"],
-      expected: "z",
-      failureNote: "한 글자면 그대로예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["aabbcc"],
-      expected: "abcabc",
-      failureNote: "모두 2개라 사전 순으로 a, 그다음 a를 피해 b, … abcabc예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["vvvlo"],
-      expected: "vlvov",
-      failureNote: "v를 사이사이에: vlvov예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => "aabbbcdde"[(i * 7) % 9]).join("")],
-      expected: (() => {
-        const s = Array.from({ length: 100000 }, (_, i) => "aabbbcdde"[(i * 7) % 9]).join("");
-        const cnt = Array(26).fill(0);
-        for (const c of s) cnt[c.charCodeAt(0) - 97]++;
-        let prev = -1;
-        let out = "";
-        for (let n = 0; n < s.length; n++) {
-          let best = -1;
-          for (let j = 0; j < 26; j++) if (j !== prev && cnt[j] > 0 && (best < 0 || cnt[j] > cnt[best])) best = j;
-          if (best < 0) return "";
-          out += String.fromCharCode(97 + best);
-          cnt[best]--;
-          prev = best;
-        }
-        return out;
-      })(),
-      failureNote: "10만 글자예요. 가능한 순서를 모두 시도하는 건 불가능해요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

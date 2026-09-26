@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [3, 5],
+    expected: 3,
+    explanation: "1, 2, 2, 3, 3, …에서 5번째는 3이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3, 9],
+    expected: 9,
+    explanation: "가장 큰 수 9예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, 1],
+    expected: 1,
+    failureNote: "1 × 1 표예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [2, 3],
+    expected: 2,
+    failureNote: "1, 2, 2, 4에서 3번째도 2예요. 같은 수를 따로 세요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [10, 50],
+    expected: 24,
+    failureNote: "10 × 10 표의 50번째예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [20000, 123456789],
+    expected: 36328286,
+    failureNote: "4억 개의 수를 다 만들어 정렬할 수는 없어요. X 이하인 개수는 줄마다 min(n, X // i)로 세요.",
+  },
+]);
 
 export const binarySearchKthTable: Problem = {
   id: "c:binary-search-kth-table",
@@ -37,56 +89,9 @@ export const binarySearchKthTable: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [3, 5],
-      expected: 3,
-      explanation: "1, 2, 2, 3, 3, …에서 5번째는 3이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3, 9],
-      expected: 9,
-      explanation: "가장 큰 수 9예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, 1],
-      expected: 1,
-      failureNote: "1 × 1 표예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [2, 3],
-      expected: 2,
-      failureNote: "1, 2, 2, 4에서 3번째도 2예요. 같은 수를 따로 세요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [10, 50],
-      expected: 24,
-      failureNote: "10 × 10 표의 50번째예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [20000, 123456789],
-      expected: 36328286,
-      failureNote: "4억 개의 수를 다 만들어 정렬할 수는 없어요. X 이하인 개수는 줄마다 min(n, X // i)로 세요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 3000,
     compare: { type: "exact" },

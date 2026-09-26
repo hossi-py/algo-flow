@@ -1,4 +1,74 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      ["nodi", "mimi", "toto"],
+      ["toto", "nodi"],
+    ],
+    expected: "mimi",
+    explanation: "돌아온 명단에 mimi가 없어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      ["kiki", "lulu", "kiki"],
+      ["kiki", "lulu"],
+    ],
+    expected: "kiki",
+    explanation: "kiki가 두 명 출발했는데 한 명만 돌아왔어요. 이름이 있는지만 보면 틀려요. 개수를 비교하세요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["solo"], []],
+    expected: "solo",
+    failureNote: "혼자 출발해서 아무도 돌아오지 않았어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      ["a", "a", "a", "b"],
+      ["a", "b", "a"],
+    ],
+    expected: "a",
+    failureNote: "a가 세 명 중 두 명만 돌아왔어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      ["mo", "ko", "jo", "po"],
+      ["po", "jo", "mo"],
+    ],
+    expected: "ko",
+    failureNote: "ko가 돌아오지 않았어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100000 }, (_, i) => "k" + (i % 50000).toString(36)),
+      Array.from({ length: 100000 }, (_, i) => "k" + (i % 50000).toString(36))
+        .filter((_, i) => i !== 76543)
+        .reverse(),
+    ],
+    expected: "kkhb",
+    failureNote:
+      "10만 명, 이름마다 두 명씩 있어요. 돌아온 사람을 출발 명단에서 하나씩 지우면(list.remove) 시간 초과예요.",
+  },
+]);
 
 export const hashLostCamper: Problem = {
   id: "c:hash-lost-camper",
@@ -53,74 +123,9 @@ export const hashLostCamper: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        ["nodi", "mimi", "toto"],
-        ["toto", "nodi"],
-      ],
-      expected: "mimi",
-      explanation: "돌아온 명단에 mimi가 없어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        ["kiki", "lulu", "kiki"],
-        ["kiki", "lulu"],
-      ],
-      expected: "kiki",
-      explanation: "kiki가 두 명 출발했는데 한 명만 돌아왔어요. 이름이 있는지만 보면 틀려요. 개수를 비교하세요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["solo"], []],
-      expected: "solo",
-      failureNote: "혼자 출발해서 아무도 돌아오지 않았어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        ["a", "a", "a", "b"],
-        ["a", "b", "a"],
-      ],
-      expected: "a",
-      failureNote: "a가 세 명 중 두 명만 돌아왔어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        ["mo", "ko", "jo", "po"],
-        ["po", "jo", "mo"],
-      ],
-      expected: "ko",
-      failureNote: "ko가 돌아오지 않았어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100000 }, (_, i) => "k" + (i % 50000).toString(36)),
-        Array.from({ length: 100000 }, (_, i) => "k" + (i % 50000).toString(36))
-          .filter((_, i) => i !== 76543)
-          .reverse(),
-      ],
-      expected: "kkhb",
-      failureNote:
-        "10만 명, 이름마다 두 명씩 있어요. 돌아온 사람을 출발 명단에서 하나씩 지우면(list.remove) 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

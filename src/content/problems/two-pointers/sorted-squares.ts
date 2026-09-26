@@ -1,4 +1,58 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[-4, -1, 0, 3, 10]],
+    expected: [0, 1, 9, 16, 100],
+    explanation: "[0, 1, 9, 16, 100]이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [[-7, -3, 2, 3, 11]],
+    expected: [4, 9, 9, 49, 121],
+    explanation: "−7의 제곱 49가 3의 제곱 9보다 커요: [4, 9, 9, 49, 121].",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5]],
+    expected: [25],
+    failureNote: "하나면 [25]예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[-5, -3, -1]],
+    expected: [1, 9, 25],
+    failureNote: "모두 음수면 거꾸로 돼요: [1, 9, 25].",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[0, 2, 4]],
+    expected: [0, 4, 16],
+    failureNote: "모두 0 이상이면 순서 그대로예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => Math.floor((i - 50000) / 5))],
+    expected: Array.from({ length: 100000 }, (_, i) => Math.floor((i - 50000) / 5))
+      .map((x) => x * x)
+      .sort((a, b) => a - b),
+    failureNote: "10만 개예요. 제곱해서 다시 정렬해도 되지만, 양 끝에서 채우면 O(N)이에요.",
+  },
+]);
 
 export const twoPointersSortedSquares: Problem = {
   id: "c:two-pointers-sorted-squares",
@@ -40,58 +94,9 @@ export const twoPointersSortedSquares: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[-4, -1, 0, 3, 10]],
-      expected: [0, 1, 9, 16, 100],
-      explanation: "[0, 1, 9, 16, 100]이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [[-7, -3, 2, 3, 11]],
-      expected: [4, 9, 9, 49, 121],
-      explanation: "−7의 제곱 49가 3의 제곱 9보다 커요: [4, 9, 9, 49, 121].",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5]],
-      expected: [25],
-      failureNote: "하나면 [25]예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[-5, -3, -1]],
-      expected: [1, 9, 25],
-      failureNote: "모두 음수면 거꾸로 돼요: [1, 9, 25].",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[0, 2, 4]],
-      expected: [0, 4, 16],
-      failureNote: "모두 0 이상이면 순서 그대로예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => Math.floor((i - 50000) / 5))],
-      expected: Array.from({ length: 100000 }, (_, i) => Math.floor((i - 50000) / 5))
-        .map((x) => x * x)
-        .sort((a, b) => a - b),
-      failureNote: "10만 개예요. 제곱해서 다시 정렬해도 되지만, 양 끝에서 채우면 O(N)이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

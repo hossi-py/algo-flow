@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["leaf", "sun", "leaf", "moss", "sun", "leaf"], 2],
+    expected: ["leaf", "sun"],
+    explanation: "leaf 3번, sun 2번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [["b", "a", "c", "b", "a"], 2],
+    expected: ["a", "b"],
+    explanation: "a와 b가 2번씩 같아서 사전 순으로 a, b예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["solo"], 1],
+    expected: ["solo"],
+    failureNote: "하나뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["z", "y", "x"], 3],
+    expected: ["x", "y", "z"],
+    failureNote: "모두 1번이면 사전 순: x, y, z예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["a", "b", "b", "c", "c", "c"], 1],
+    expected: ["c"],
+    failureNote: "c 하나예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => "w" + ((i * i) % 97).toString(36)), 10],
+    expected: ["w17", "w18", "w1b", "w1c", "w1e", "w1h", "w1i", "w1p", "w1q", "w1s"],
+    failureNote: "단어 10만 개예요. 단어마다 count()로 세면 느려요. dict로 세고 힙으로 골라요.",
+  },
+]);
 
 export const heapTopWords: Problem = {
   id: "c:heap-top-words",
@@ -43,56 +95,9 @@ export const heapTopWords: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["leaf", "sun", "leaf", "moss", "sun", "leaf"], 2],
-      expected: ["leaf", "sun"],
-      explanation: "leaf 3번, sun 2번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [["b", "a", "c", "b", "a"], 2],
-      expected: ["a", "b"],
-      explanation: "a와 b가 2번씩 같아서 사전 순으로 a, b예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["solo"], 1],
-      expected: ["solo"],
-      failureNote: "하나뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["z", "y", "x"], 3],
-      expected: ["x", "y", "z"],
-      failureNote: "모두 1번이면 사전 순: x, y, z예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["a", "b", "b", "c", "c", "c"], 1],
-      expected: ["c"],
-      failureNote: "c 하나예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => "w" + ((i * i) % 97).toString(36)), 10],
-      expected: ["w17", "w18", "w1b", "w1c", "w1e", "w1h", "w1i", "w1p", "w1q", "w1s"],
-      failureNote: "단어 10만 개예요. 단어마다 count()로 세면 느려요. dict로 세고 힙으로 골라요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

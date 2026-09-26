@@ -1,5 +1,78 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [0, 1],
+        [1, 2],
+        [3, 4],
+      ],
+    ],
+    expected: 2,
+    explanation: "{0, 1, 2}와 {3, 4}로 2개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3, []],
+    expected: 3,
+    explanation: "관계가 없으면 모두 혼자라 3개예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, []],
+    expected: 1,
+    failureNote: "한 명이면 1개예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 0],
+        [0, 1],
+      ],
+    ],
+    expected: 3,
+    failureNote: "같은 관계가 여러 번 나와도 한 번만 합쳐져요. {0, 1}, {2}, {3}으로 3개예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [2, 3],
+        [1, 2],
+      ],
+    ],
+    expected: 1,
+    failureNote: "두 모임이 1-2 관계로 합쳐져 1개예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000, Array.from({ length: 99999 }, (_, i) => [99999 - i, 99998 - i])],
+    expected: 1,
+    failureNote: "10만 명이 한 줄로 이어져 1개예요. 관계마다 DFS로 다시 세면 너무 느려요.",
+  },
+]);
 
 export const ufFriendGroups: Problem = {
   id: "c:uf-friend-groups",
@@ -47,77 +120,9 @@ export const ufFriendGroups: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [0, 1],
-          [1, 2],
-          [3, 4],
-        ],
-      ],
-      expected: 2,
-      explanation: "{0, 1, 2}와 {3, 4}로 2개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3, []],
-      expected: 3,
-      explanation: "관계가 없으면 모두 혼자라 3개예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, []],
-      expected: 1,
-      failureNote: "한 명이면 1개예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 0],
-          [0, 1],
-        ],
-      ],
-      expected: 3,
-      failureNote: "같은 관계가 여러 번 나와도 한 번만 합쳐져요. {0, 1}, {2}, {3}으로 3개예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [2, 3],
-          [1, 2],
-        ],
-      ],
-      expected: 1,
-      failureNote: "두 모임이 1-2 관계로 합쳐져 1개예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [100000, Array.from({ length: 99999 }, (_, i) => [99999 - i, 99998 - i])],
-      expected: 1,
-      failureNote: "10만 명이 한 줄로 이어져 1개예요. 관계마다 DFS로 다시 세면 너무 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },
