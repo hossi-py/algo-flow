@@ -163,4 +163,27 @@ export const TOPIC_VISUALIZATIONS: Record<TopicSlug, VisualizationPreset[]> = {
       [[1, 2, 3]],
     ),
   ],
+  hash: [
+    preset(
+      "hash-buckets-intro",
+      "hash-buckets",
+      "해시 테이블과 충돌",
+      "키마다 해시 함수로 칸 번호를 정해요. cat과 act는 글자가 같아 같은 칸에 들어가요(충돌). 찾을 때는 그 한 칸만 봐요.",
+      [["add cat", "add dog", "add act", "find act", "find cow"], 5],
+    ),
+    preset(
+      "hash-count-fruits",
+      "hash-count",
+      "개수 세기",
+      "한 번 훑으면서 count[x] += 1. 처음 보는 키는 1부터 시작해요.",
+      [["apple", "kiwi", "apple", "plum", "kiwi", "apple"]],
+    ),
+    preset(
+      "hash-two-sum-7",
+      "hash-two-sum",
+      "두 수의 합 짝 찾기",
+      "지금 수의 짝(target - x)이 이미 지나온 수 중에 있는지 seen에 물어봐요. 모든 쌍을 비교하지 않아요.",
+      [[4, 9, 1, 6, 3], 7],
+    ),
+  ],
 };

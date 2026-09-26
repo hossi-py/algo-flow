@@ -59,6 +59,21 @@ import { graphStationNeighbors } from "./graph-representation/graph-station-neig
 import { graphTripleFriends } from "./graph-representation/graph-triple-friends";
 import { graphTrustedShop } from "./graph-representation/graph-trusted-shop";
 import { graphTwoTransfers } from "./graph-representation/graph-two-transfers";
+import { hashAnagramGroups } from "./hash/anagram-groups";
+import { hashBalancedDays } from "./hash/balanced-days";
+import { hashCampingGear } from "./hash/camping-gear";
+import { hashClassVote } from "./hash/class-vote";
+import { hashDiffPairs } from "./hash/diff-pairs";
+import { hashFirstRepeat } from "./hash/first-repeat";
+import { hashGuestList } from "./hash/guest-list";
+import { hashLongestRun } from "./hash/longest-run";
+import { hashLostCamper } from "./hash/lost-camper";
+import { hashMagazineLetter } from "./hash/magazine-letter";
+import { hashSecretPattern } from "./hash/secret-pattern";
+import { hashSnackLine } from "./hash/snack-line";
+import { hashSnackPair } from "./hash/snack-pair";
+import { hashStickerAlbum } from "./hash/sticker-album";
+import { hashSubarraySum } from "./hash/subarray-sum";
 import { dequeEndCards } from "./queue-deque/deque-end-cards";
 import { dequeSteadySignal } from "./queue-deque/deque-steady-signal";
 import { dequeSteppingScore } from "./queue-deque/deque-stepping-score";
@@ -167,6 +182,21 @@ export const PROBLEMS: readonly Problem[] = [
   graphTripleFriends,
   graphTrustedShop,
   graphTwoTransfers,
+  hashAnagramGroups,
+  hashBalancedDays,
+  hashCampingGear,
+  hashClassVote,
+  hashDiffPairs,
+  hashFirstRepeat,
+  hashGuestList,
+  hashLongestRun,
+  hashLostCamper,
+  hashMagazineLetter,
+  hashSecretPattern,
+  hashSnackLine,
+  hashSnackPair,
+  hashStickerAlbum,
+  hashSubarraySum,
   dequeEndCards,
   dequeSteadySignal,
   dequeSteppingScore,

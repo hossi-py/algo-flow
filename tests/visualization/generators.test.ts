@@ -77,6 +77,21 @@ function summarize(state: VizState): string {
       out += ` dist=${g.distance.map((row) => row.map((d) => (d === null ? "-" : d)).join(",")).join("/")}`;
     parts.push(out);
   }
+  if (state.hash) {
+    const h = state.hash;
+    const entry = (e: { id: string; key: JsonValue; value: JsonValue }) =>
+      text(e.key) +
+      (e.value === null ? "" : `:${text(e.value)}`) +
+      marks(
+        h.highlights.map((x) => ({ itemId: x.entryId, tone: x.tone })),
+        e.id,
+      );
+    let out = h.buckets
+      ? `${h.title}{${h.buckets.map((b, i) => `${i}${h.activeBucket === i ? "*" : ""}[${b.map(entry).join(",")}]`).join(" ")}}`
+      : `${h.title}{${(h.entries ?? []).map(entry).join(" ")}}`;
+    if (h.hashing) out += ` hash(${h.hashing.key})=${h.hashing.bucket}`;
+    parts.push(out);
+  }
   if (state.callStack) {
     const frames = state.callStack.map(
       (f) => `${f.label}${f.status === "active" ? "*" : ""}${JSON.stringify(f.locals)}`,
@@ -116,10 +131,10 @@ describe("generator 등록", () => {
     }
   });
 
-  it("13개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
+  it("16개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
     const used = new Set(TOPIC_PRESETS.map((preset) => preset.generator));
     expect([...used].sort()).toEqual(Object.keys(GENERATORS).sort());
-    expect(used.size).toBe(13);
+    expect(used.size).toBe(16);
   });
 
   it("프리셋 id가 겹치지 않는다", () => {
@@ -202,6 +217,14 @@ describe("입력 검증", () => {
     ["backtracking-permutation", [[1, 2, 3, 4, 5]]],
     ["backtracking-permutation", [[]]],
     ["backtracking-subset", [[1, 2, 3, 4]]],
+    ["hash-buckets", [["add Cat"], 5]],
+    ["hash-buckets", [["put cat"], 5]],
+    ["hash-buckets", [["add cat"], 9]],
+    ["hash-buckets", [[], 5]],
+    ["hash-count", [["apple", "banana-split"]]],
+    ["hash-count", [Array.from({ length: 13 }, () => "a")]],
+    ["hash-two-sum", [[1], 2]],
+    ["hash-two-sum", [[1, 2], 1.5]],
   ];
 
   it.each(BAD_INPUTS)("%s %j → 예외 대신 한국어 오류 메시지", (key, input) => {
@@ -216,5 +239,46 @@ describe("입력 검증", () => {
     expect(runGenerator("backtracking-permutation", [[1, 2, 3, 4]]).ok).toBe(true);
     expect(runGenerator("grid-dfs", [Array.from({ length: 8 }, () => "10101010")]).ok).toBe(true);
     expect(runGenerator("stack-bracket", ["()".repeat(8)]).ok).toBe(true);
+  });
+});
+
+describe("해시 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+
+  it("글자가 같은 키는 같은 칸에 들어가 충돌하고, 찾을 때는 그 칸만 본다", () => {
+    const result = run("hash-buckets", [["add cat", "add act", "find act", "find tac"], 5]);
+    const last = result.at(-1)!.state.hash!;
+    expect(last.buckets![2]!.map((e) => e.key)).toEqual(["cat", "act"]);
+    expect(result.some((s) => s.action === "insert" && s.message.includes("충돌"))).toBe(true);
+    expect(result.filter((s) => s.action === "found")).toHaveLength(1);
+    expect(result.filter((s) => s.action === "not-found")).toHaveLength(1);
+  });
+
+  it("같은 키를 두 번 넣지 않는다", () => {
+    const result = run("hash-buckets", [["add cat", "add cat"], 3]);
+    const buckets = result.at(-1)!.state.hash!.buckets!;
+    expect(buckets.flat()).toHaveLength(1);
+  });
+
+  it("개수를 세고 가장 많이 나온 단어를 알려 준다", () => {
+    const result = run("hash-count", [["b", "a", "b"]]);
+    const entries = result.at(-1)!.state.hash!.entries!;
+    expect(entries.map((e) => [e.key, e.value])).toEqual([
+      ["b", 2],
+      ["a", 1],
+    ]);
+    expect(result.at(-1)!.message).toContain("b (2번)");
+  });
+
+  it("짝을 찾으면 멈추고, 없으면 빈 리스트로 끝난다", () => {
+    const found = run("hash-two-sum", [[3, 3], 6]);
+    expect(found.find((s) => s.action === "found")?.message).toContain("[0, 1]");
+    const none = run("hash-two-sum", [[1, 2, 4], 100]);
+    expect(none.at(-1)!.action).toBe("done");
+    expect(none.at(-1)!.state.hash!.entries).toHaveLength(3);
   });
 });

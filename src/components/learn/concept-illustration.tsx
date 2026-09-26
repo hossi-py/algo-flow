@@ -25,6 +25,8 @@ const LABELS: Record<IllustrationKey, string> = {
   "dfs-maze-dive": "한 갈래로 끝까지 내려갔다가 되돌아오는 탐색 경로 그림",
   "bfs-ripple": "가운데서 물결이 한 겹씩 퍼지며 노드를 만나는 그림",
   "backtracking-tree": "갈림길 트리에서 막힌 가지를 잘라 내는 그림",
+  "hash-lockers": "이름표가 해시 함수를 거쳐 번호가 붙은 사물함 한 칸으로 바로 들어가는 그림",
+  "hash-tally": "과일 이름마다 개수 막대가 붙어 있는 표 그림",
 };
 
 /** 강조 면(HOT) 위 글자. 다크 모드에서도 밝은 보라 위에 어두운 글자가 되도록 */
@@ -562,6 +564,100 @@ function BacktrackingTree() {
   );
 }
 
+function HashLockers() {
+  const lockers = [0, 1, 2, 3, 4];
+  return (
+    <>
+      <rect x={6} y={38} width={34} height={20} rx={10} fill={PAPER} stroke="currentColor" strokeWidth={1.8} />
+      <Label x={23} y={51}>
+        {'"cat"'}
+      </Label>
+      <Arrow d="M42 48 L56 48" />
+      <rect x={58} y={36} width={30} height={24} rx={6} fill={HOT} stroke="currentColor" strokeWidth={1.8} />
+      <Label x={73} y={51} fill={ON_HOT}>
+        hash
+      </Label>
+      <Arrow d="M90 48 Q104 48 110 36" />
+      {lockers.map((i) => (
+        <g key={i}>
+          <rect
+            x={106}
+            y={8 + i * 17}
+            width={46}
+            height={15}
+            rx={3}
+            fill={i === 2 ? DONE : PAPER}
+            stroke="currentColor"
+            strokeWidth={1.6}
+          />
+          <Label x={114} y={18.5 + i * 17}>
+            {i}
+          </Label>
+          <circle cx={145} cy={15.5 + i * 17} r={1.6} fill="currentColor" />
+        </g>
+      ))}
+      <Label x={132} y={18.5 + 2 * 17}>
+        cat
+      </Label>
+      <Label x={48} y={80}>
+        번호를 계산해서
+      </Label>
+      <Label x={48} y={92}>
+        한 칸으로 바로!
+      </Label>
+    </>
+  );
+}
+
+function HashTally() {
+  const rows = [
+    { name: "apple", count: 3 },
+    { name: "kiwi", count: 2 },
+    { name: "plum", count: 1 },
+  ];
+  return (
+    <>
+      {rows.map((row, i) => (
+        <g key={row.name}>
+          <rect
+            x={14}
+            y={14 + i * 24}
+            width={48}
+            height={18}
+            rx={5}
+            fill={PAPER}
+            stroke="currentColor"
+            strokeWidth={1.6}
+          />
+          <Label x={38} y={26 + i * 24}>
+            {row.name}
+          </Label>
+          <Arrow d={`M64 ${23 + i * 24} L76 ${23 + i * 24}`} />
+          {Array.from({ length: row.count }, (_, k) => (
+            <rect
+              key={k}
+              x={80 + k * 20}
+              y={15 + i * 24}
+              width={16}
+              height={16}
+              rx={4}
+              fill={i === 0 ? HOT : WAIT}
+              stroke="currentColor"
+              strokeWidth={1.4}
+            />
+          ))}
+          <Label x={152} y={27 + i * 24} anchor="end">
+            {row.count}
+          </Label>
+        </g>
+      ))}
+      <Label x={80} y={94}>
+        count[x] += 1
+      </Label>
+    </>
+  );
+}
+
 const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "stack-plates": StackPlates,
   "stack-undo": StackUndo,
@@ -574,6 +670,8 @@ const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "dfs-maze-dive": DfsMazeDive,
   "bfs-ripple": BfsRipple,
   "backtracking-tree": BacktrackingTree,
+  "hash-lockers": HashLockers,
+  "hash-tally": HashTally,
 };
 
 export function ConceptIllustration({

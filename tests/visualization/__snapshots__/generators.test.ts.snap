@@ -1266,6 +1266,174 @@ exports[`프리셋 hallway-tiles-repeat > 스텝 흐름 스냅샷 1`] = `
     graph{5✓(fib(5)=5) 4✓(fib(4)=3) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 3✓(fib(3)=2) 2✓(fib(2)=1) 1✓(fib(1)=1) 0✓(fib(0)=0) 1✓(fib(1)=1)} edges{t0-t1= t1-t2= t2-t3= t3-t4= t3-t5= t2-t6= t1-t7= t7-t8= t7-t9= t0-t10= t10-t11= t11-t12= t11-t13= t10-t14=} | calls[] | vars{"총 호출":15,"같은 계산 반복":9}"
 `;
 
+exports[`프리셋 hash-buckets-intro > 스텝 흐름 스냅샷 1`] = `
+"#0 init L1 칸이 5개인 해시 테이블을 준비해요. 키를 넣을 칸은 해시 함수가 정해 줘요.
+    명령=<add cat add dog add act find act find cow> cur=- done=0 | table (칸 5개){0[] 1[] 2[] 3[] 4[]} | vars{"find 결과":"(아직 없음)"}
+#1 hash L4 cat의 글자 번호를 더해 칸 수로 나눈 나머지는 2 → 2번 칸만 보면 돼요.
+    명령=<add cat* add dog add act find act find cow> cur=0 done=0 | table (칸 5개){0[] 1[] 2*[] 3[] 4[]} hash(cat)=2 | vars{"find 결과":"(아직 없음)"}
+#2 insert L5 비어 있는 2번 칸에 cat 넣기
+    명령=<add cat* add dog add act find act find cow> cur=0 done=0 | table (칸 5개){0[] 1[] 2*[cat*] 3[] 4[]} hash(cat)=2 | vars{"find 결과":"(아직 없음)"}
+#3 hash L4 dog의 글자 번호를 더해 칸 수로 나눈 나머지는 4 → 4번 칸만 보면 돼요.
+    명령=<add cat add dog* add act find act find cow> cur=1 done=1 | table (칸 5개){0[] 1[] 2[cat] 3[] 4*[]} hash(dog)=4 | vars{"find 결과":"(아직 없음)"}
+#4 insert L5 비어 있는 4번 칸에 dog 넣기
+    명령=<add cat add dog* add act find act find cow> cur=1 done=1 | table (칸 5개){0[] 1[] 2[cat] 3[] 4*[dog*]} hash(dog)=4 | vars{"find 결과":"(아직 없음)"}
+#5 hash L4 act의 글자 번호를 더해 칸 수로 나눈 나머지는 2 → 2번 칸만 보면 돼요.
+    명령=<add cat add dog add act* find act find cow> cur=2 done=2 | table (칸 5개){0[] 1[] 2*[cat] 3[] 4[dog]} hash(act)=2 | vars{"find 결과":"(아직 없음)"}
+#6 insert L5 2번 칸이 이미 차 있어요 (cat) → 충돌! 같은 칸 줄 끝에 act 이어 붙이기
+    명령=<add cat add dog add act* find act find cow> cur=2 done=2 | table (칸 5개){0[] 1[] 2*[cat,act*] 3[] 4[dog]} hash(act)=2 | vars{"find 결과":"(아직 없음)"}
+#7 hash L7 act의 글자 번호를 더해 칸 수로 나눈 나머지는 2 → 2번 칸만 보면 돼요.
+    명령=<add cat add dog add act find act* find cow> cur=3 done=3 | table (칸 5개){0[] 1[] 2*[cat,act] 3[] 4[dog]} hash(act)=2 | vars{"find 결과":"(아직 없음)"}
+#8 compare L8 2번 칸에서 cat 확인 → 찾는 키가 아니에요. 같은 칸의 다음 항목을 봐요.
+    명령=<add cat add dog add act find act* find cow> cur=3 done=3 | table (칸 5개){0[] 1[] 2*[cat✗,act] 3[] 4[dog]} hash(act)=2 | vars{"find 결과":"(아직 없음)"}
+#9 found L8 2번 칸에서 찾았어요: act. 다른 칸은 하나도 보지 않았어요!
+    명령=<add cat add dog add act find act* find cow> cur=3 done=3 | table (칸 5개){0[] 1[] 2*[cat,act!] 3[] 4[dog]} hash(act)=2 | vars{"find 결과":["act: 있음"]}
+#10 hash L7 cow의 글자 번호를 더해 칸 수로 나눈 나머지는 4 → 4번 칸만 보면 돼요.
+    명령=<add cat add dog add act find act find cow*> cur=4 done=4 | table (칸 5개){0[] 1[] 2[cat,act] 3[] 4*[dog]} hash(cow)=4 | vars{"find 결과":["act: 있음"]}
+#11 compare L8 4번 칸에서 dog 확인 → 찾는 키가 아니에요. 같은 칸의 다음 항목을 봐요.
+    명령=<add cat add dog add act find act find cow*> cur=4 done=4 | table (칸 5개){0[] 1[] 2[cat,act] 3[] 4*[dog✗]} hash(cow)=4 | vars{"find 결과":["act: 있음"]}
+#12 not-found L8 4번 칸을 끝까지 봤지만 찾는 키가 없어요. 다른 칸에 있을 수는 없으니 여기서 끝!
+    명령=<add cat add dog add act find act find cow*> cur=4 done=4 | table (칸 5개){0[] 1[] 2[cat,act] 3[] 4*[dog]} hash(cow)=4 | vars{"find 결과":["act: 있음","cow: 없음"]}
+#13 done L- 명령을 모두 처리했어요. 가장 긴 칸에 2개가 들어 있어요. 칸이 고르게 나뉠수록 찾기가 빨라요.
+    명령=<add cat add dog add act find act find cow> cur=- done=0 | table (칸 5개){0[] 1[] 2[cat,act] 3[] 4[dog]} | vars{"find 결과":["act: 있음","cow: 없음"]}"
+`;
+
+exports[`프리셋 hash-class-vote-ex1 > 스텝 흐름 스냅샷 1`] = `
+"#0 init L1 빈 dict count를 만들어요. 키는 단어, 값은 지금까지 나온 횟수예요.
+    items=<nodi mimi nodi toto mimi nodi> cur=- done=0 | count{}
+#1 check L3 count에 nodi 있나요? → 처음 봐요
+    items=<nodi* mimi nodi toto mimi nodi> cur=0 done=0 | count{}
+#2 insert L6 count[nodi] = 1 로 새 키 만들기
+    items=<nodi* mimi nodi toto mimi nodi> cur=0 done=1 | count{nodi:1*}
+#3 check L3 count에 mimi 있나요? → 처음 봐요
+    items=<nodi mimi* nodi toto mimi nodi> cur=1 done=1 | count{nodi:1}
+#4 insert L6 count[mimi] = 1 로 새 키 만들기
+    items=<nodi mimi* nodi toto mimi nodi> cur=1 done=2 | count{nodi:1 mimi:1*}
+#5 check L3 count에 nodi 있나요? → 있어요 (지금 1번)
+    items=<nodi mimi nodi* toto mimi nodi> cur=2 done=2 | count{nodi:1* mimi:1}
+#6 count L4 count[nodi] 1 늘리기 → 2번
+    items=<nodi mimi nodi* toto mimi nodi> cur=2 done=3 | count{nodi:2* mimi:1}
+#7 check L3 count에 toto 있나요? → 처음 봐요
+    items=<nodi mimi nodi toto* mimi nodi> cur=3 done=3 | count{nodi:2 mimi:1}
+#8 insert L6 count[toto] = 1 로 새 키 만들기
+    items=<nodi mimi nodi toto* mimi nodi> cur=3 done=4 | count{nodi:2 mimi:1 toto:1*}
+#9 check L3 count에 mimi 있나요? → 있어요 (지금 1번)
+    items=<nodi mimi nodi toto mimi* nodi> cur=4 done=4 | count{nodi:2 mimi:1* toto:1}
+#10 count L4 count[mimi] 1 늘리기 → 2번
+    items=<nodi mimi nodi toto mimi* nodi> cur=4 done=5 | count{nodi:2 mimi:2* toto:1}
+#11 check L3 count에 nodi 있나요? → 있어요 (지금 2번)
+    items=<nodi mimi nodi toto mimi nodi*> cur=5 done=5 | count{nodi:2* mimi:2 toto:1}
+#12 count L4 count[nodi] 1 늘리기 → 3번
+    items=<nodi mimi nodi toto mimi nodi*> cur=5 done=6 | count{nodi:3* mimi:2 toto:1}
+#13 done L7 한 번 훑었을 뿐인데 모든 개수가 나왔어요. 가장 많이 나온 단어는 nodi (3번)이에요.
+    items=<nodi mimi nodi toto mimi nodi> cur=- done=6 | count{nodi:3! mimi:2 toto:1}"
+`;
+
+exports[`프리셋 hash-count-fruits > 스텝 흐름 스냅샷 1`] = `
+"#0 init L1 빈 dict count를 만들어요. 키는 단어, 값은 지금까지 나온 횟수예요.
+    items=<apple kiwi apple plum kiwi apple> cur=- done=0 | count{}
+#1 check L3 count에 apple 있나요? → 처음 봐요
+    items=<apple* kiwi apple plum kiwi apple> cur=0 done=0 | count{}
+#2 insert L6 count[apple] = 1 로 새 키 만들기
+    items=<apple* kiwi apple plum kiwi apple> cur=0 done=1 | count{apple:1*}
+#3 check L3 count에 kiwi 있나요? → 처음 봐요
+    items=<apple kiwi* apple plum kiwi apple> cur=1 done=1 | count{apple:1}
+#4 insert L6 count[kiwi] = 1 로 새 키 만들기
+    items=<apple kiwi* apple plum kiwi apple> cur=1 done=2 | count{apple:1 kiwi:1*}
+#5 check L3 count에 apple 있나요? → 있어요 (지금 1번)
+    items=<apple kiwi apple* plum kiwi apple> cur=2 done=2 | count{apple:1* kiwi:1}
+#6 count L4 count[apple] 1 늘리기 → 2번
+    items=<apple kiwi apple* plum kiwi apple> cur=2 done=3 | count{apple:2* kiwi:1}
+#7 check L3 count에 plum 있나요? → 처음 봐요
+    items=<apple kiwi apple plum* kiwi apple> cur=3 done=3 | count{apple:2 kiwi:1}
+#8 insert L6 count[plum] = 1 로 새 키 만들기
+    items=<apple kiwi apple plum* kiwi apple> cur=3 done=4 | count{apple:2 kiwi:1 plum:1*}
+#9 check L3 count에 kiwi 있나요? → 있어요 (지금 1번)
+    items=<apple kiwi apple plum kiwi* apple> cur=4 done=4 | count{apple:2 kiwi:1* plum:1}
+#10 count L4 count[kiwi] 1 늘리기 → 2번
+    items=<apple kiwi apple plum kiwi* apple> cur=4 done=5 | count{apple:2 kiwi:2* plum:1}
+#11 check L3 count에 apple 있나요? → 있어요 (지금 2번)
+    items=<apple kiwi apple plum kiwi apple*> cur=5 done=5 | count{apple:2* kiwi:2 plum:1}
+#12 count L4 count[apple] 1 늘리기 → 3번
+    items=<apple kiwi apple plum kiwi apple*> cur=5 done=6 | count{apple:3* kiwi:2 plum:1}
+#13 done L7 한 번 훑었을 뿐인데 모든 개수가 나왔어요. 가장 많이 나온 단어는 apple (3번)이에요.
+    items=<apple kiwi apple plum kiwi apple> cur=- done=6 | count{apple:3! kiwi:2 plum:1}"
+`;
+
+exports[`프리셋 hash-guest-list-ex1 > 스텝 흐름 스냅샷 1`] = `
+"#0 init L1 칸이 5개인 해시 테이블을 준비해요. 키를 넣을 칸은 해시 함수가 정해 줘요.
+    명령=<add nodi add mimi add toto find mimi find bobo find nodi> cur=- done=0 | table (칸 5개){0[] 1[] 2[] 3[] 4[]} | vars{"find 결과":"(아직 없음)"}
+#1 hash L4 nodi의 글자 번호를 더해 칸 수로 나눈 나머지는 1 → 1번 칸만 보면 돼요.
+    명령=<add nodi* add mimi add toto find mimi find bobo find nodi> cur=0 done=0 | table (칸 5개){0[] 1*[] 2[] 3[] 4[]} hash(nodi)=1 | vars{"find 결과":"(아직 없음)"}
+#2 insert L5 비어 있는 1번 칸에 nodi 넣기
+    명령=<add nodi* add mimi add toto find mimi find bobo find nodi> cur=0 done=0 | table (칸 5개){0[] 1*[nodi*] 2[] 3[] 4[]} hash(nodi)=1 | vars{"find 결과":"(아직 없음)"}
+#3 hash L4 mimi의 글자 번호를 더해 칸 수로 나눈 나머지는 3 → 3번 칸만 보면 돼요.
+    명령=<add nodi add mimi* add toto find mimi find bobo find nodi> cur=1 done=1 | table (칸 5개){0[] 1[nodi] 2[] 3*[] 4[]} hash(mimi)=3 | vars{"find 결과":"(아직 없음)"}
+#4 insert L5 비어 있는 3번 칸에 mimi 넣기
+    명령=<add nodi add mimi* add toto find mimi find bobo find nodi> cur=1 done=1 | table (칸 5개){0[] 1[nodi] 2[] 3*[mimi*] 4[]} hash(mimi)=3 | vars{"find 결과":"(아직 없음)"}
+#5 hash L4 toto의 글자 번호를 더해 칸 수로 나눈 나머지는 4 → 4번 칸만 보면 돼요.
+    명령=<add nodi add mimi add toto* find mimi find bobo find nodi> cur=2 done=2 | table (칸 5개){0[] 1[nodi] 2[] 3[mimi] 4*[]} hash(toto)=4 | vars{"find 결과":"(아직 없음)"}
+#6 insert L5 비어 있는 4번 칸에 toto 넣기
+    명령=<add nodi add mimi add toto* find mimi find bobo find nodi> cur=2 done=2 | table (칸 5개){0[] 1[nodi] 2[] 3[mimi] 4*[toto*]} hash(toto)=4 | vars{"find 결과":"(아직 없음)"}
+#7 hash L7 mimi의 글자 번호를 더해 칸 수로 나눈 나머지는 3 → 3번 칸만 보면 돼요.
+    명령=<add nodi add mimi add toto find mimi* find bobo find nodi> cur=3 done=3 | table (칸 5개){0[] 1[nodi] 2[] 3*[mimi] 4[toto]} hash(mimi)=3 | vars{"find 결과":"(아직 없음)"}
+#8 found L8 3번 칸에서 찾았어요: mimi. 다른 칸은 하나도 보지 않았어요!
+    명령=<add nodi add mimi add toto find mimi* find bobo find nodi> cur=3 done=3 | table (칸 5개){0[] 1[nodi] 2[] 3*[mimi!] 4[toto]} hash(mimi)=3 | vars{"find 결과":["mimi: 있음"]}
+#9 hash L7 bobo의 글자 번호를 더해 칸 수로 나눈 나머지는 3 → 3번 칸만 보면 돼요.
+    명령=<add nodi add mimi add toto find mimi find bobo* find nodi> cur=4 done=4 | table (칸 5개){0[] 1[nodi] 2[] 3*[mimi] 4[toto]} hash(bobo)=3 | vars{"find 결과":["mimi: 있음"]}
+#10 compare L8 3번 칸에서 mimi 확인 → 찾는 키가 아니에요. 같은 칸의 다음 항목을 봐요.
+    명령=<add nodi add mimi add toto find mimi find bobo* find nodi> cur=4 done=4 | table (칸 5개){0[] 1[nodi] 2[] 3*[mimi✗] 4[toto]} hash(bobo)=3 | vars{"find 결과":["mimi: 있음"]}
+#11 not-found L8 3번 칸을 끝까지 봤지만 찾는 키가 없어요. 다른 칸에 있을 수는 없으니 여기서 끝!
+    명령=<add nodi add mimi add toto find mimi find bobo* find nodi> cur=4 done=4 | table (칸 5개){0[] 1[nodi] 2[] 3*[mimi] 4[toto]} hash(bobo)=3 | vars{"find 결과":["mimi: 있음","bobo: 없음"]}
+#12 hash L7 nodi의 글자 번호를 더해 칸 수로 나눈 나머지는 1 → 1번 칸만 보면 돼요.
+    명령=<add nodi add mimi add toto find mimi find bobo find nodi*> cur=5 done=5 | table (칸 5개){0[] 1*[nodi] 2[] 3[mimi] 4[toto]} hash(nodi)=1 | vars{"find 결과":["mimi: 있음","bobo: 없음"]}
+#13 found L8 1번 칸에서 찾았어요: nodi. 다른 칸은 하나도 보지 않았어요!
+    명령=<add nodi add mimi add toto find mimi find bobo find nodi*> cur=5 done=5 | table (칸 5개){0[] 1*[nodi!] 2[] 3[mimi] 4[toto]} hash(nodi)=1 | vars{"find 결과":["mimi: 있음","bobo: 없음","nodi: 있음"]}
+#14 done L- 명령을 모두 처리했어요. 가장 긴 칸에 1개가 들어 있어요. 칸이 고르게 나뉠수록 찾기가 빨라요.
+    명령=<add nodi add mimi add toto find mimi find bobo find nodi> cur=- done=0 | table (칸 5개){0[] 1[nodi] 2[] 3[mimi] 4[toto]} | vars{"find 결과":["mimi: 있음","bobo: 없음","nodi: 있음"]}"
+`;
+
+exports[`프리셋 hash-snack-pair-ex1 > 스텝 흐름 스냅샷 1`] = `
+"#0 init L1 합이 8인 두 수를 찾아요. 지금까지 본 수를 seen에 적어 둘 거예요.
+    nums=<3 8 5 2 6> cur=- done=0 | seen (값 → 위치){} | vars{"target":8}
+#1 check L4 3의 짝은 8 - 3 = 5. seen에 5 있나요? → 없어요
+    nums=<3* 8 5 2 6> cur=0 done=0 | seen (값 → 위치){} | vars{"target":8,"need":5}
+#2 insert L6 seen[3] = 0. 뒤에 오는 수가 짝으로 찾을 수 있게 적어 둬요.
+    nums=<3* 8 5 2 6> cur=0 done=0 | seen (값 → 위치){3:0*} | vars{"target":8,"need":5}
+#3 check L4 8의 짝은 8 - 8 = 0. seen에 0 있나요? → 없어요
+    nums=<3 8* 5 2 6> cur=1 done=1 | seen (값 → 위치){3:0} | vars{"target":8,"need":0}
+#4 insert L6 seen[8] = 1. 뒤에 오는 수가 짝으로 찾을 수 있게 적어 둬요.
+    nums=<3 8* 5 2 6> cur=1 done=1 | seen (값 → 위치){3:0 8:1*} | vars{"target":8,"need":0}
+#5 check L4 5의 짝은 8 - 5 = 3. seen에 3 있나요? → 있어요!
+    nums=<3 8 5* 2 6> cur=2 done=2 | seen (값 → 위치){3:0* 8:1} | vars{"target":8,"need":3}
+#6 found L5 짝 3: 0번 자리에 있었어요. 3 + 5 = 8 → 답은 [0, 2]
+    nums=<3! 8 5! 2 6> cur=2 done=2 | seen (값 → 위치){3:0! 8:1} | vars{"target":8,"need":3}
+#7 done L- 모든 쌍을 비교하지 않고, 한 번 훑으면서 짝을 찾았어요.
+    nums=<3! 8 5! 2 6> cur=- done=0 | seen (값 → 위치){3:0 8:1} | vars{"target":8}"
+`;
+
+exports[`프리셋 hash-two-sum-7 > 스텝 흐름 스냅샷 1`] = `
+"#0 init L1 합이 7인 두 수를 찾아요. 지금까지 본 수를 seen에 적어 둘 거예요.
+    nums=<4 9 1 6 3> cur=- done=0 | seen (값 → 위치){} | vars{"target":7}
+#1 check L4 4의 짝은 7 - 4 = 3. seen에 3 있나요? → 없어요
+    nums=<4* 9 1 6 3> cur=0 done=0 | seen (값 → 위치){} | vars{"target":7,"need":3}
+#2 insert L6 seen[4] = 0. 뒤에 오는 수가 짝으로 찾을 수 있게 적어 둬요.
+    nums=<4* 9 1 6 3> cur=0 done=0 | seen (값 → 위치){4:0*} | vars{"target":7,"need":3}
+#3 check L4 9의 짝은 7 - 9 = -2. seen에 -2 있나요? → 없어요
+    nums=<4 9* 1 6 3> cur=1 done=1 | seen (값 → 위치){4:0} | vars{"target":7,"need":-2}
+#4 insert L6 seen[9] = 1. 뒤에 오는 수가 짝으로 찾을 수 있게 적어 둬요.
+    nums=<4 9* 1 6 3> cur=1 done=1 | seen (값 → 위치){4:0 9:1*} | vars{"target":7,"need":-2}
+#5 check L4 1의 짝은 7 - 1 = 6. seen에 6 있나요? → 없어요
+    nums=<4 9 1* 6 3> cur=2 done=2 | seen (값 → 위치){4:0 9:1} | vars{"target":7,"need":6}
+#6 insert L6 seen[1] = 2. 뒤에 오는 수가 짝으로 찾을 수 있게 적어 둬요.
+    nums=<4 9 1* 6 3> cur=2 done=2 | seen (값 → 위치){4:0 9:1 1:2*} | vars{"target":7,"need":6}
+#7 check L4 6의 짝은 7 - 6 = 1. seen에 1 있나요? → 있어요!
+    nums=<4 9 1 6* 3> cur=3 done=3 | seen (값 → 위치){4:0 9:1 1:2*} | vars{"target":7,"need":1}
+#8 found L5 짝 1: 2번 자리에 있었어요. 1 + 6 = 7 → 답은 [2, 3]
+    nums=<4 9 1! 6! 3> cur=3 done=3 | seen (값 → 위치){4:0 9:1 1:2!} | vars{"target":7,"need":1}
+#9 done L- 모든 쌍을 비교하지 않고, 한 번 훑으면서 짝을 찾았어요.
+    nums=<4 9 1! 6! 3> cur=- done=0 | seen (값 → 위치){4:0 9:1 1:2} | vars{"target":7}"
+`;
+
 exports[`프리셋 island-bridges-ex1 > 스텝 흐름 스냅샷 1`] = `
 "#0 init L1 노드 3개, 간선 2개. 노드마다 이웃을 적을 빈 리스트를 준비해요.
     graph{0. 1. 2.} | vars{"graph[0]":[],"graph[1]":[],"graph[2]":[]}

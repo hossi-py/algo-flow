@@ -8,6 +8,17 @@ import {
   validateSubset,
 } from "./backtracking";
 import {
+  HASH_BUCKETS_PSEUDOCODE,
+  HASH_COUNT_PSEUDOCODE,
+  HASH_TWO_SUM_PSEUDOCODE,
+  hashBuckets,
+  hashCount,
+  hashTwoSum,
+  validateHashBuckets,
+  validateHashCount,
+  validateHashTwoSum,
+} from "./hash";
+import {
   DEQUE_BASIC_PSEUDOCODE,
   QUEUE_BASIC_PSEUDOCODE,
   STACK_BASIC_PSEUDOCODE,
@@ -145,6 +156,28 @@ export const GENERATORS: Record<VisualizationGeneratorKey, GeneratorDefinition> 
     pseudocode: SUBSET_PSEUDOCODE,
     validate: validateSubset,
     generate: subset,
+  },
+  "hash-buckets": {
+    key: "hash-buckets",
+    inputHint:
+      '[명령 목록, 칸 수] 예: [["add cat", "add dog", "find cat"], 5] — add 단어 / find 단어 (영어 소문자), 최대 12개, 칸 2 ~ 8',
+    pseudocode: HASH_BUCKETS_PSEUDOCODE,
+    validate: validateHashBuckets,
+    generate: hashBuckets,
+  },
+  "hash-count": {
+    key: "hash-count",
+    inputHint: '[단어 목록] 예: [["apple", "kiwi", "apple"]] — 영어 소문자 1~8글자, 최대 12개',
+    pseudocode: HASH_COUNT_PSEUDOCODE,
+    validate: validateHashCount,
+    generate: hashCount,
+  },
+  "hash-two-sum": {
+    key: "hash-two-sum",
+    inputHint: "[수 목록, target] 예: [[4, 9, 1, 6], 7] — 정수 2 ~ 10개",
+    pseudocode: HASH_TWO_SUM_PSEUDOCODE,
+    validate: validateHashTwoSum,
+    generate: hashTwoSum,
   },
 };
 

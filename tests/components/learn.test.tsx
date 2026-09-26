@@ -30,6 +30,8 @@ describe("ConceptIllustration", () => {
     "dfs-maze-dive",
     "bfs-ripple",
     "backtracking-tree",
+    "hash-lockers",
+    "hash-tally",
   ];
   it.each(keys)("%s 그림이 설명과 함께 그려진다", (key) => {
     const { container } = render(<ConceptIllustration illustration={key} />);

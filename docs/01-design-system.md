@@ -68,6 +68,7 @@ shadcn/ui 변수명 체계를 그대로 따르고, 값만 전부 교체한다. (
 | DFS | blossom 벚꽃 | `#FFC9DE` / `#6A1B3F` (7.96) | `#462A3C` / `#FFC9DE` (8.85) |
 | BFS | lemon 레몬 | `#FFEBA8` / `#5C4200` (7.92) | `#423A22` / `#FFEBA8` (9.52) |
 | 백트래킹 | sage 세이지 | `#D6E8B8` / `#36501A` (6.94) | `#2F3A25` / `#D6E8B8` (9.18) |
+| 해시 | sand 모래 | `#EEDCC4` / `#4F3418` (8.53) | `#40342A` / `#EEDCC4` (8.99) |
 
 토큰 명명: `--topic-{name}`, `--topic-{name}-foreground`. Tailwind에서는 `bg-topic-peach text-topic-peach-foreground`.
 

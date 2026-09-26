@@ -230,6 +230,58 @@ export const SIGNALS: PatternSignal[] = [
     reason: "N이 작으면 모든 경우를 다 만들어 봐도 시간 안에 끝나요. 완전 탐색을 허락한다는 힌트예요.",
     strength: "weak",
   },
+  {
+    id: "sig-seen-before",
+    phrase: "이미 나온 적 있는지 / 중복인지 확인",
+    examples: ["같은 이름이 두 번 이상 나오는지 확인하세요", "처음 보는 단어일 때만 기록하세요"],
+    suspects: ["hash"],
+    patterns: ["existence-check"],
+    reason:
+      "리스트에서 있는지 찾으면 매번 처음부터 훑어야 해서 O(N)이에요. 본 것을 해시(set·dict)에 넣어 두면 있는지 확인이 평균 O(1)이에요.",
+    caution: "N이 수십 개뿐이면 리스트로 찾아도 충분해요. N이 수만 이상이면 꼭 해시를 쓰세요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-count-each",
+    phrase: "각각 몇 번 나왔는지 / 가장 많이 나온 것",
+    examples: ["투표에서 가장 많은 표를 받은 후보는 누구인가요?", "각 과일이 몇 개씩 있는지 세어 주세요"],
+    suspects: ["hash"],
+    patterns: ["frequency-count"],
+    reason: "이름(키)마다 개수(값)를 붙여 두는 dict가 딱 맞아요. 한 번 훑으면서 count[x] += 1만 하면 돼요.",
+    caution: "키가 0~100 같은 작은 정수라면 길이 101짜리 배열로 세도 돼요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-pair-target",
+    phrase: "합(차)이 K가 되는 두 수 / 짝이 되는 것 찾기",
+    examples: ["더해서 target이 되는 두 수의 위치를 구하세요", "차이가 정확히 K인 쌍은 몇 개인가요?"],
+    suspects: ["hash"],
+    patterns: ["complement-lookup"],
+    reason:
+      "모든 쌍을 보면 O(N²)이에요. 지금 수 x에게 필요한 짝은 K - x로 정해져 있으니, 지금까지 본 수를 해시에 넣어 두고 짝이 있는지 O(1)에 물어봐요.",
+    caution: "배열이 이미 정렬돼 있으면 양쪽 끝에서 좁혀 오는 두 포인터로도 풀 수 있어요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-group-same",
+    phrase: "같은 종류끼리 묶기 / 글자 구성이 같은 단어",
+    examples: ["애너그램끼리 묶어 주세요", "같은 반 학생끼리 이름을 모아 주세요"],
+    suspects: ["hash"],
+    patterns: ["group-by-key"],
+    reason: "묶는 기준을 키로 만들고(예: 글자를 정렬한 문자열), dict[키]에 리스트로 모으면 한 번에 묶여요.",
+    strength: "medium",
+  },
+  {
+    id: "sig-subarray-sum",
+    phrase: "연속 구간의 합이 정확히 K인 개수",
+    examples: ["합이 K인 연속 구간은 몇 개인가요?", "연속한 날들의 합이 0이 되는 구간을 세세요"],
+    suspects: ["hash"],
+    patterns: ["prefix-sum-hash"],
+    reason:
+      "구간 합 = 지금까지의 누적 합 − 앞의 어떤 누적 합이에요. 지금까지 나온 누적 합의 개수를 dict에 세어 두면 필요한 앞쪽 누적 합이 몇 번 있었는지 바로 알 수 있어요.",
+    caution: "음수가 없고 '합이 K 이상' 같은 조건이면 두 포인터(슬라이딩 윈도우)가 더 간단할 수 있어요.",
+    strength: "medium",
+  },
 ];
 
 const SIGNALS_BY_ID = new Map(SIGNALS.map((signal) => [signal.id, signal]));

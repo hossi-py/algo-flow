@@ -68,6 +68,8 @@
   --color-topic-lemon-foreground: var(--topic-lemon-foreground);
   --color-topic-sage: var(--topic-sage);
   --color-topic-sage-foreground: var(--topic-sage-foreground);
+  --color-topic-sand: var(--topic-sand);
+  --color-topic-sand-foreground: var(--topic-sand-foreground);
 
   --color-nodi-body: var(--nodi-body);
   --color-nodi-line: var(--nodi-line);
@@ -194,6 +196,8 @@
   --topic-lemon-foreground: #5c4200;
   --topic-sage: #d6e8b8;
   --topic-sage-foreground: #36501a;
+  --topic-sand: #eedcc4;
+  --topic-sand-foreground: #4f3418;
 
   --nodi-body: #d9ccff;
   --nodi-line: #4a36a8;
@@ -274,6 +278,8 @@
   --topic-lemon-foreground: #ffeba8;
   --topic-sage: #2f3a25;
   --topic-sage-foreground: #d6e8b8;
+  --topic-sand: #40342a;
+  --topic-sand-foreground: #eedcc4;
 
   --nodi-body: #c9b8ff;
   --nodi-line: #2b1d5c;

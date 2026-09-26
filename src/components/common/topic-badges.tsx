@@ -1,5 +1,6 @@
 import {
   GitBranch,
+  KeyRound,
   Layers,
   Radar,
   Repeat,
@@ -21,6 +22,7 @@ const TOPIC_ICONS: Record<TopicIcon, LucideIcon> = {
   dive: GitBranch,
   ripple: Radar,
   maze: Route,
+  lockers: KeyRound,
 };
 
 export function TopicGlyph({ icon, ...props }: { icon: TopicIcon } & LucideProps) {

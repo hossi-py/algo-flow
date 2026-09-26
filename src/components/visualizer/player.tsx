@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import type { MascotMood, VisualizationStep, VizAction, VizState } from "@/types";
 import { GraphView } from "./graph-view";
 import { GridView } from "./grid-view";
+import { HashView } from "./hash-view";
 import { LineView, SequenceView, StackView } from "./linear-views";
 import { PlayerControls } from "./player-controls";
 import { CallStackView, PseudocodeView, VariablesView } from "./state-views";
@@ -15,6 +16,8 @@ import { ACTION_LABEL } from "./tones";
 const MOOD_BY_ACTION: Partial<Record<VizAction, MascotMood>> = {
   done: "cheer",
   record: "happy",
+  found: "happy",
+  "not-found": "thinking",
   "zone-complete": "happy",
   discover: "curious",
   "zone-start": "curious",
@@ -23,12 +26,14 @@ const MOOD_BY_ACTION: Partial<Record<VizAction, MascotMood>> = {
   unchoose: "thinking",
 };
 
-/** 스텝에 들어 있는 레이어만 그린다: 큰 그림(그래프·격자) → 줄 모양 자료구조 → 호출 스택·변수 */
+/** 스텝에 들어 있는 레이어만 그린다: 큰 그림(그래프·격자·해시 테이블) → 줄 모양 자료구조 → 호출 스택·변수 */
 export function Stage({ state, wide }: { state: VizState; wide: boolean }) {
   const main = state.graph ? (
     <GraphView snapshot={state.graph} />
   ) : state.grid ? (
     <GridView snapshot={state.grid} />
+  ) : state.hash ? (
+    <HashView snapshot={state.hash} />
   ) : null;
   const linear = [
     state.sequence && <SequenceView key="sequence" snapshot={state.sequence} />,

@@ -63,4 +63,11 @@ export const TOPIC_COLOR_CLASSES: Record<
     stroke: "stroke-topic-sage-foreground",
     fill: "fill-topic-sage",
   },
+  sand: {
+    surface: "bg-topic-sand",
+    text: "text-topic-sand-foreground",
+    ring: "ring-topic-sand-foreground/30",
+    stroke: "stroke-topic-sand-foreground",
+    fill: "fill-topic-sand",
+  },
 };
