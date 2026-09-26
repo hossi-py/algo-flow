@@ -19,8 +19,9 @@ describe("Java 표기", () => {
   });
 });
 
-// 진짜 JDK가 있을 때만: 브라우저와 같은 Java 하네스(public/java/algoflow-runner.jar)의 동작을 확인한다
-describe.skipIf(!hasJdk())("Java 하네스 (JDK)", () => {
+// 진짜 JDK가 있을 때만: 브라우저와 같은 Java 하네스(public/java/algoflow-runner.jar)의 동작을 확인한다.
+// 케이스마다 JVM을 새로 띄우고 컴파일러를 준비해서, 느린 CI 러너에서는 기본 제한(5초)을 넘는다
+describe.skipIf(!hasJdk())("Java 하네스 (JDK)", { timeout: 60_000 }, () => {
   it("인자를 매개변수 타입대로 바꾸고, 반환값을 JSON으로 돌려준다", () => {
     const code = [
       "import java.util.*;",
