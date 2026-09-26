@@ -17,6 +17,7 @@ export const TOPIC_SLUGS = [
   "two-pointers",
   "heap",
   "dijkstra",
+  "graph-advanced",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
@@ -71,7 +72,8 @@ export type TopicIcon =
   | "coins"
   | "pointers"
   | "heap"
-  | "route";
+  | "route"
+  | "network";
 
 export const PATTERN_TAGS = [
   // 스택
@@ -155,6 +157,12 @@ export const PATTERN_TAGS = [
   "reverse-or-multi-source",
   "state-dijkstra",
   "minimax-path",
+  // 그래프 심화
+  "union-find",
+  "reverse-union",
+  "minimum-spanning-tree",
+  "topological-sort",
+  "dag-dp",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -220,7 +228,9 @@ export type IllustrationKey =
   | "heap-tree"
   | "heap-emergency"
   | "dijkstra-map"
-  | "dijkstra-settle";
+  | "dijkstra-settle"
+  | "uf-groups"
+  | "topo-order";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {

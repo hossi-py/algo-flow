@@ -76,6 +76,7 @@ shadcn/ui 변수명 체계를 그대로 따르고, 값만 전부 교체한다. (
 | 두 포인터 | indigo 남색 | `#D6D9F7` / `#28307A` (8.43) | `#2B2E4A` / `#D6D9F7` (9.50) |
 | 힙 | lemon 레몬 (BFS와 공유, 로드맵에서 멀리 떨어져 있음) | `#FFEBA8` / `#5C4200` (7.92) | `#423A22` / `#FFEBA8` (9.52) |
 | 다익스트라 | sky 하늘 (그래프 표현과 공유, 로드맵에서 멀리 떨어져 있음) | `#BFE3FF` / `#0F3F66` (8.14) | `#22384F` / `#BFE3FF` (8.96) |
+| 그래프 심화 | mint 민트 (큐/덱과 공유, 로드맵에서 멀리 떨어져 있음) | `#BDEBD9` / `#154A38` (7.76) | `#233D37` / `#BDEBD9` (8.95) |
 
 토큰 명명: `--topic-{name}`, `--topic-{name}-foreground`. Tailwind에서는 `bg-topic-peach text-topic-peach-foreground`.
 

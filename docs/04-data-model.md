@@ -57,6 +57,7 @@ export const TOPIC_SLUGS = [
   "two-pointers",
   "heap",
   "dijkstra",
+  "graph-advanced",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
@@ -83,7 +84,7 @@ export const LEVEL_STAGE_LABELS: Record<LevelStage, string> = {
 };
 
 export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum" | "teal" | "coral" | "indigo";
-export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table" | "coins" | "pointers" | "heap" | "route";
+export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table" | "coins" | "pointers" | "heap" | "route" | "network";
 
 export const PATTERN_TAGS = [
   // 스택
@@ -167,6 +168,12 @@ export const PATTERN_TAGS = [
   "reverse-or-multi-source",
   "state-dijkstra",
   "minimax-path",
+  // 그래프 심화
+  "union-find",
+  "reverse-union",
+  "minimum-spanning-tree",
+  "topological-sort",
+  "dag-dp",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -234,7 +241,9 @@ export type IllustrationKey =
   | "heap-tree"
   | "heap-emergency"
   | "dijkstra-map"
-  | "dijkstra-settle";
+  | "dijkstra-settle"
+  | "uf-groups"
+  | "topo-order";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {
@@ -446,7 +455,10 @@ export type VisualizationGeneratorKey =
   | "heap-top-k"
   | "dijkstra-basic"
   | "dijkstra-path"
-  | "dijkstra-grid";
+  | "dijkstra-grid"
+  | "uf-union"
+  | "mst-kruskal"
+  | "topo-kahn";
 
 export interface VisualizationPreset {
   id: string;
@@ -515,6 +527,10 @@ export type VizAction =
   // 다익스트라
   | "relax"
   | "settle"
+  // 유니온 파인드
+  | "find"
+  | "union"
+  | "compress"
   // 공통
   | "compare"
   | "init"

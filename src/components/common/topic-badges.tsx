@@ -8,6 +8,7 @@ import {
   GitBranch,
   KeyRound,
   Layers,
+  Network,
   Radar,
   Repeat,
   Route,
@@ -37,6 +38,7 @@ const TOPIC_ICONS: Record<TopicIcon, LucideIcon> = {
   pointers: ArrowLeftRight,
   heap: Pyramid,
   route: Signpost,
+  network: Network,
 };
 
 export function TopicGlyph({ icon, ...props }: { icon: TopicIcon } & LucideProps) {

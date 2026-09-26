@@ -555,6 +555,41 @@ export const SIGNALS: PatternSignal[] = [
     caution: "답의 범위로 이분 탐색하고 BFS로 갈 수 있는지 확인하는 방법도 있어요.",
     strength: "medium",
   },
+  {
+    id: "sig-merge-groups",
+    phrase: "관계가 하나씩 더해지면서 '같은 그룹인가?'를 계속 물어요",
+    examples: [
+      "두 사람이 친구가 될 때마다, 두 사람이 같은 모임인지 알려 주세요",
+      "길을 하나씩 놓다가 처음으로 고리가 생기는 순간은?",
+    ],
+    suspects: ["graph-advanced"],
+    patterns: ["union-find", "reverse-union"],
+    reason:
+      "그룹을 합치고(union) 대표를 찾는(find) 일이 거의 O(1)이에요. 관계가 늘 때마다 DFS를 다시 하지 않아도 돼요.",
+    caution:
+      "관계가 다 주어진 뒤 그룹 수를 한 번만 세면 DFS·BFS로도 충분해요. 관계가 끊기는 문제는 거꾸로 합치기를 떠올려요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-connect-all-cheap",
+    phrase: "모든 곳을 잇는 데 드는 비용의 최솟값",
+    examples: ["모든 집에 인터넷이 닿게 케이블을 깔 때 드는 최소 비용은?"],
+    suspects: ["graph-advanced"],
+    patterns: ["minimum-spanning-tree"],
+    reason: "싼 간선부터 보며, 아직 다른 그룹인 두 곳만 이으면(크루스칼) 모두를 잇는 가장 싼 방법이 돼요.",
+    caution: "두 곳 사이의 가장 싼 길은 최단 경로(다익스트라)예요. '모두를 잇는' 비용인지 확인해요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-prerequisites",
+    phrase: "먼저 끝내야 하는 일 / 선수 과목 / 순서 조건",
+    examples: ["A 과목을 들어야 B 과목을 들을 수 있어요", "작업마다 먼저 끝나야 하는 작업이 있어요"],
+    suspects: ["graph-advanced"],
+    patterns: ["topological-sort", "dag-dp"],
+    reason: "먼저 할 일이 모두 끝난(들어오는 화살표가 없는) 일부터 하나씩 꺼내면 모든 조건을 지키는 순서가 나와요.",
+    caution: "끝까지 꺼내지 못한 일이 남으면 조건이 고리를 이루고 있다는 뜻이에요.",
+    strength: "strong",
+  },
 ];
 
 const SIGNALS_BY_ID = new Map(SIGNALS.map((signal) => [signal.id, signal]));

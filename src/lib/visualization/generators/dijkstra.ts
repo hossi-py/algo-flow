@@ -21,7 +21,7 @@ interface WeightedGraphInput {
   target: number;
 }
 
-function asWeightedEdges(value: JsonValue | undefined, n: number, maxEdges: number): [number, number, number][] {
+export function asWeightedEdges(value: JsonValue | undefined, n: number, maxEdges: number): [number, number, number][] {
   if (!Array.isArray(value)) fail("간선 목록은 [[a, b, 비용], ...] 형태여야 해요");
   if (value.length > maxEdges) fail(`간선은 ${maxEdges}개 이하여야 해요`);
   const seen = new Set<string>();

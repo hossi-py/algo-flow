@@ -37,7 +37,10 @@ export type VisualizationGeneratorKey =
   | "heap-top-k"
   | "dijkstra-basic"
   | "dijkstra-path"
-  | "dijkstra-grid";
+  | "dijkstra-grid"
+  | "uf-union"
+  | "mst-kruskal"
+  | "topo-kahn";
 
 export interface VisualizationPreset {
   id: string;
@@ -106,6 +109,10 @@ export type VizAction =
   // 다익스트라
   | "relax"
   | "settle"
+  // 유니온 파인드
+  | "find"
+  | "union"
+  | "compress"
   // 공통
   | "compare"
   | "init"

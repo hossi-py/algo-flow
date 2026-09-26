@@ -68,6 +68,11 @@ export const PATTERN_LABELS: Record<PatternTag, string> = {
   "reverse-or-multi-source": "거꾸로 · 여러 곳에서 출발",
   "state-dijkstra": "상태를 더한 다익스트라",
   "minimax-path": "가장 험한 구간 최소화",
+  "union-find": "그룹 합치고 찾기",
+  "reverse-union": "거꾸로 합치기",
+  "minimum-spanning-tree": "모두 잇는 가장 싼 방법",
+  "topological-sort": "먼저 할 일부터 줄 세우기",
+  "dag-dp": "순서를 따라 채우는 DP",
 };
 
 /** 토픽별 대표 패턴 (AI 문제 생성의 집중 패턴 후보) */
@@ -87,6 +92,7 @@ export const TOPIC_PATTERNS: Record<TopicSlug, PatternTag[]> = {
   "two-pointers": ["opposite-ends", "same-direction", "fixed-window", "variable-window"],
   heap: ["top-k", "repeated-min", "k-way-merge", "two-heaps", "heap-scheduling"],
   dijkstra: ["weighted-shortest-path", "path-restore", "reverse-or-multi-source", "state-dijkstra", "minimax-path"],
+  "graph-advanced": ["union-find", "reverse-union", "minimum-spanning-tree", "topological-sort", "dag-dp"],
 };
 
 /** 패턴이 속한 토픽 */

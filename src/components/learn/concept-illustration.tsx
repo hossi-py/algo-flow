@@ -41,6 +41,8 @@ const LABELS: Record<IllustrationKey, string> = {
   "heap-emergency": "응급실에서 급한 환자가 먼저 들어가는 대기 줄 그림",
   "dijkstra-map": "곧장 가는 길은 10분, 한 마을을 거쳐 돌아가는 길은 2 + 3 = 5분이라 돌아가는 길이 더 빠른 지도 그림",
   "dijkstra-settle": "출발점에서 가까운 마을부터 거리가 확정되고, 다음 후보가 기다리는 그림",
+  "uf-groups": "두 그룹이 각자 대표를 가리키고 있고, 한 대표를 다른 대표 밑에 붙여 한 그룹으로 합치는 그림",
+  "topo-order": "양말·속옷을 먼저, 그다음 바지, 마지막에 신발을 신는 순서를 화살표로 이은 그림",
 };
 
 /** 강조 면(HOT) 위 글자. 다크 모드에서도 밝은 보라 위에 어두운 글자가 되도록 */
@@ -1211,6 +1213,77 @@ function DijkstraSettle() {
   );
 }
 
+function UfGroups() {
+  const nodes = [
+    { x: 38, y: 22, fill: HOT, label: "A" },
+    { x: 18, y: 62, fill: PAPER, label: "" },
+    { x: 58, y: 62, fill: PAPER, label: "" },
+    { x: 122, y: 22, fill: DONE, label: "B" },
+    { x: 122, y: 62, fill: PAPER, label: "" },
+  ];
+  const parent = [-1, 0, 0, -1, 3];
+  return (
+    <>
+      {nodes.map((n, i) =>
+        parent[i]! >= 0 ? (
+          <Arrow key={`e${i}`} d={`M${n.x} ${n.y - 9} L${nodes[parent[i]!]!.x} ${nodes[parent[i]!]!.y + 11}`} />
+        ) : null,
+      )}
+      <path
+        d="M112 22 L50 22"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeDasharray="4 3"
+        markerEnd="url(#ci-arrow)"
+      />
+      {nodes.map((n, i) => (
+        <g key={i}>
+          <circle cx={n.x} cy={n.y} r={8} fill={n.fill} stroke="currentColor" strokeWidth={1.8} />
+          {n.label && (
+            <Label x={n.x} y={n.y + 3} fill={n.fill === HOT ? ON_HOT : "currentColor"}>
+              {n.label}
+            </Label>
+          )}
+        </g>
+      ))}
+      <Label x={80} y={14}>
+        합치기
+      </Label>
+      <Label x={80} y={92}>
+        대표끼리만 이으면 한 그룹
+      </Label>
+    </>
+  );
+}
+
+function TopoOrder() {
+  const boxes = [
+    { x: 6, y: 16, label: "양말", fill: DONE },
+    { x: 6, y: 58, label: "속옷", fill: DONE },
+    { x: 60, y: 58, label: "바지", fill: HOT },
+    { x: 114, y: 36, label: "신발", fill: PAPER },
+  ];
+  return (
+    <>
+      <Arrow d="M46 66 L58 66" />
+      <Arrow d="M46 24 L112 42" />
+      <Arrow d="M100 64 L112 52" />
+      {boxes.map((b) => (
+        <g key={b.label}>
+          <rect x={b.x} y={b.y} width={40} height={16} rx={4} fill={b.fill} stroke="currentColor" strokeWidth={1.6} />
+          <Label x={b.x + 20} y={b.y + 11} fill={b.fill === HOT ? ON_HOT : "currentColor"}>
+            {b.label}
+          </Label>
+        </g>
+      ))}
+      <Label x={80} y={94}>
+        먼저 할 일이 끝난 것부터
+      </Label>
+    </>
+  );
+}
+
 const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "stack-plates": StackPlates,
   "stack-undo": StackUndo,
@@ -1239,6 +1312,8 @@ const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "heap-emergency": HeapEmergency,
   "dijkstra-map": DijkstraMap,
   "dijkstra-settle": DijkstraSettle,
+  "uf-groups": UfGroups,
+  "topo-order": TopoOrder,
 };
 
 export function ConceptIllustration({

@@ -5,6 +5,7 @@ import { binarySearchTopic } from "./binary-search";
 import { dfsTopic } from "./dfs";
 import { dijkstraTopic } from "./dijkstra";
 import { dpTopic } from "./dp";
+import { graphAdvancedTopic } from "./graph-advanced";
 import { graphRepresentationTopic } from "./graph-representation";
 import { greedyTopic } from "./greedy";
 import { hashTopic } from "./hash";
@@ -32,6 +33,7 @@ export const TOPICS: readonly Topic[] = [
   twoPointersTopic,
   heapTopic,
   dijkstraTopic,
+  graphAdvancedTopic,
 ];
 
 const TOPICS_BY_SLUG = new Map<string, Topic>(TOPICS.map((topic) => [topic.slug, topic]));

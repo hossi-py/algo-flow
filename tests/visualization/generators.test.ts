@@ -154,10 +154,10 @@ describe("generator 등록", () => {
     }
   });
 
-  it("37개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
+  it("40개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
     const used = new Set(TOPIC_PRESETS.map((preset) => preset.generator));
     expect([...used].sort()).toEqual(Object.keys(GENERATORS).sort());
-    expect(used.size).toBe(37);
+    expect(used.size).toBe(40);
   });
 
   it("프리셋 id가 겹치지 않는다", () => {
@@ -306,6 +306,20 @@ describe("입력 검증", () => {
         ],
       ],
     ],
+    ["uf-union", [3, []]],
+    ["uf-union", [3, [[0, 0]]]],
+    ["mst-kruskal", [3, []]],
+    [
+      "topo-kahn",
+      [
+        3,
+        [
+          [0, 1],
+          [0, 1],
+        ],
+      ],
+    ],
+    ["topo-kahn", [3, [[0, 5]]]],
   ];
 
   it.each(BAD_INPUTS)("%s %j → 예외 대신 한국어 오류 메시지", (key, input) => {
@@ -621,5 +635,74 @@ describe("다익스트라 generator", () => {
       ],
     ]);
     expect(steps.at(-1)!.message).toContain("최소 비용 = 7");
+  });
+});
+
+describe("그래프 심화 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+
+  it("작은 그룹을 큰 그룹 밑에 붙이고, 지나온 노드는 대표에 바로 붙인다", () => {
+    const steps = run("uf-union", [
+      6,
+      [
+        [0, 1],
+        [2, 3],
+        [1, 3],
+        [4, 5],
+        [5, 3],
+        [0, 2],
+      ],
+    ]);
+    expect(steps.some((s) => s.action === "compress")).toBe(true);
+    expect(steps.filter((s) => s.action === "skip")).toHaveLength(1);
+    expect(steps.at(-1)!.message).toBe("그룹 1개: {0, 1, 2, 3, 4, 5}");
+  });
+
+  it("크루스칼은 고리가 생기는 간선을 건너뛰고 최소 비용을 구한다", () => {
+    const steps = run("mst-kruskal", [
+      5,
+      [
+        [0, 1, 4],
+        [0, 2, 1],
+        [1, 2, 2],
+        [1, 3, 5],
+        [2, 3, 8],
+        [3, 4, 3],
+        [2, 4, 9],
+      ],
+    ]);
+    expect(steps.at(-1)!.state.variables!["총 비용"]).toBe(11);
+    expect(steps.filter((s) => s.action === "pick")).toHaveLength(4);
+    expect(run("mst-kruskal", [4, [[0, 1, 1]]]).at(-1)!.message).toContain("모두 잇지 못했어요");
+  });
+
+  it("위상 정렬은 진입 차수가 0인 노드부터 꺼내고, 고리는 남긴다", () => {
+    const steps = run("topo-kahn", [
+      6,
+      [
+        [0, 2],
+        [1, 2],
+        [1, 3],
+        [2, 4],
+        [3, 4],
+        [4, 5],
+      ],
+    ]);
+    expect(steps.at(-1)!.message).toBe("모든 노드를 꺼냈어요. 순서: 0 → 1 → 2 → 3 → 4 → 5");
+    expect(steps.at(-1)!.state.graph!.directed).toBe(true);
+    expect(
+      run("topo-kahn", [
+        3,
+        [
+          [0, 1],
+          [1, 2],
+          [2, 0],
+        ],
+      ]).at(-1)!.message,
+    ).toContain("3개 노드가 고리에");
   });
 });

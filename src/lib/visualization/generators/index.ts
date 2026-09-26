@@ -97,6 +97,17 @@ import {
   validateDijkstraPath,
 } from "./dijkstra";
 import {
+  MST_KRUSKAL_PSEUDOCODE,
+  TOPO_KAHN_PSEUDOCODE,
+  UF_UNION_PSEUDOCODE,
+  mstKruskal,
+  topoKahn,
+  ufUnion,
+  validateMstKruskal,
+  validateTopoKahn,
+  validateUfUnion,
+} from "./graph-advanced";
+import {
   HEAP_MERGE_PSEUDOCODE,
   HEAP_OPS_PSEUDOCODE,
   HEAP_TOP_K_PSEUDOCODE,
@@ -404,6 +415,28 @@ export const GENERATORS: Record<VisualizationGeneratorKey, GeneratorDefinition> 
     pseudocode: DIJKSTRA_GRID_PSEUDOCODE,
     validate: validateDijkstraGrid,
     generate: dijkstraGrid,
+  },
+  "uf-union": {
+    key: "uf-union",
+    inputHint: "[노드 수, 합치기 [[a, b], ...]] 예: [4, [[0, 1], [2, 3], [1, 3]]] — 노드 2~8개, 합치기 10번까지",
+    pseudocode: UF_UNION_PSEUDOCODE,
+    validate: validateUfUnion,
+    generate: ufUnion,
+  },
+  "mst-kruskal": {
+    key: "mst-kruskal",
+    inputHint:
+      "[노드 수, 간선 [[a, b, 비용]]] 예: [4, [[0, 1, 3], [1, 2, 1], [2, 3, 2], [0, 3, 4]]] — 노드 2~8개, 간선 12개까지",
+    pseudocode: MST_KRUSKAL_PSEUDOCODE,
+    validate: validateMstKruskal,
+    generate: mstKruskal,
+  },
+  "topo-kahn": {
+    key: "topo-kahn",
+    inputHint: "[노드 수, 화살표 [[먼저, 나중], ...]] 예: [4, [[0, 1], [0, 2], [2, 3]]] — 노드 2~8개, 화살표 12개까지",
+    pseudocode: TOPO_KAHN_PSEUDOCODE,
+    validate: validateTopoKahn,
+    generate: topoKahn,
   },
 };
 

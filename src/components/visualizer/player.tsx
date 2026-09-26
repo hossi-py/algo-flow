@@ -27,6 +27,8 @@ const MOOD_BY_ACTION: Partial<Record<VizAction, MascotMood>> = {
   "zone-complete": "happy",
   settle: "happy",
   relax: "curious",
+  union: "happy",
+  find: "curious",
   discover: "curious",
   "zone-start": "curious",
   check: "thinking",

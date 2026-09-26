@@ -89,6 +89,21 @@ import { dpSecretMessage } from "./dp/secret-message";
 import { dpStairWays } from "./dp/stair-ways";
 import { dpSteppingStones } from "./dp/stepping-stones";
 import { dpWordEdit } from "./dp/word-edit";
+import { mstManhattan } from "./graph-advanced/mst-manhattan";
+import { mstMinCable } from "./graph-advanced/mst-min-cable";
+import { mstPowerPlants } from "./graph-advanced/mst-power-plants";
+import { mstSplitVillages } from "./graph-advanced/mst-split-villages";
+import { topoBuildTime } from "./graph-advanced/topo-build-time";
+import { topoCanFinish } from "./graph-advanced/topo-can-finish";
+import { topoCourseOrder } from "./graph-advanced/topo-course-order";
+import { topoSemester } from "./graph-advanced/topo-semester";
+import { ufEquations } from "./graph-advanced/uf-equations";
+import { ufFirstCycle } from "./graph-advanced/uf-first-cycle";
+import { ufFriendGroups } from "./graph-advanced/uf-friend-groups";
+import { ufGroupSizes } from "./graph-advanced/uf-group-sizes";
+import { ufOnlineIslands } from "./graph-advanced/uf-online-islands";
+import { ufReverseCuts } from "./graph-advanced/uf-reverse-cuts";
+import { ufSameGroup } from "./graph-advanced/uf-same-group";
 import { graphCommonFriends } from "./graph-representation/graph-common-friends";
 import { graphDirectFlights } from "./graph-representation/graph-direct-flights";
 import { graphFamilyTree } from "./graph-representation/graph-family-tree";
@@ -317,6 +332,21 @@ export const PROBLEMS: readonly Problem[] = [
   dpStairWays,
   dpSteppingStones,
   dpWordEdit,
+  mstManhattan,
+  mstMinCable,
+  mstPowerPlants,
+  mstSplitVillages,
+  topoBuildTime,
+  topoCanFinish,
+  topoCourseOrder,
+  topoSemester,
+  ufEquations,
+  ufFirstCycle,
+  ufFriendGroups,
+  ufGroupSizes,
+  ufOnlineIslands,
+  ufReverseCuts,
+  ufSameGroup,
   graphCommonFriends,
   graphDirectFlights,
   graphFamilyTree,

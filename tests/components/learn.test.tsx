@@ -46,6 +46,8 @@ describe("ConceptIllustration", () => {
     "heap-emergency",
     "dijkstra-map",
     "dijkstra-settle",
+    "uf-groups",
+    "topo-order",
   ];
   it.each(keys)("%s 그림이 설명과 함께 그려진다", (key) => {
     const { container } = render(<ConceptIllustration illustration={key} />);
