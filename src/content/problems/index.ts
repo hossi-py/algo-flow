@@ -104,6 +104,21 @@ import { recursionRocketCountdown } from "./recursion/rocket-countdown";
 import { recursionSnowflakeKnit } from "./recursion/snowflake-knit";
 import { recursionSteppingStones } from "./recursion/stepping-stones";
 import { recursionSwappedPairs } from "./recursion/swapped-pairs";
+import { sortingAdjacentSwaps } from "./sorting/adjacent-swaps";
+import { sortingBiggestNumber } from "./sorting/biggest-number";
+import { sortingClosestGap } from "./sorting/closest-gap";
+import { sortingHeightOrder } from "./sorting/height-order";
+import { sortingInversions } from "./sorting/inversions";
+import { sortingKthHeaviest } from "./sorting/kth-heaviest";
+import { sortingLeaderboard } from "./sorting/leaderboard";
+import { sortingMeetingRooms } from "./sorting/meeting-rooms";
+import { sortingMergeBookings } from "./sorting/merge-bookings";
+import { sortingMergeShelves } from "./sorting/merge-shelves";
+import { sortingPhotoNames } from "./sorting/photo-names";
+import { sortingRaftPairs } from "./sorting/raft-pairs";
+import { sortingRankCompress } from "./sorting/rank-compress";
+import { sortingScoreRanks } from "./sorting/score-ranks";
+import { sortingWordDictionary } from "./sorting/word-dictionary";
 import { stackBackspaceKeyboard } from "./stack/backspace-keyboard";
 import { stackBracketPartner } from "./stack/bracket-partner";
 import { stackDeadEndParking } from "./stack/dead-end-parking";
@@ -227,6 +242,21 @@ export const PROBLEMS: readonly Problem[] = [
   recursionSnowflakeKnit,
   recursionSteppingStones,
   recursionSwappedPairs,
+  sortingAdjacentSwaps,
+  sortingBiggestNumber,
+  sortingClosestGap,
+  sortingHeightOrder,
+  sortingInversions,
+  sortingKthHeaviest,
+  sortingLeaderboard,
+  sortingMeetingRooms,
+  sortingMergeBookings,
+  sortingMergeShelves,
+  sortingPhotoNames,
+  sortingRaftPairs,
+  sortingRankCompress,
+  sortingScoreRanks,
+  sortingWordDictionary,
   stackBackspaceKeyboard,
   stackBracketPartner,
   stackDeadEndParking,

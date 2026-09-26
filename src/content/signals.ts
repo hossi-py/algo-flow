@@ -282,6 +282,62 @@ export const SIGNALS: PatternSignal[] = [
     caution: "음수가 없고 '합이 K 이상' 같은 조건이면 두 포인터(슬라이딩 윈도우)가 더 간단할 수 있어요.",
     strength: "medium",
   },
+  {
+    id: "sig-order-rule",
+    phrase: "~순으로, 같으면 ~순으로 나열",
+    examples: [
+      "점수가 높은 순으로, 점수가 같으면 이름 순으로 출력하세요",
+      "길이가 짧은 단어부터, 길이가 같으면 사전 순으로",
+    ],
+    suspects: ["sorting"],
+    patterns: ["custom-order"],
+    reason:
+      "기준을 차례로 비교하는 정렬 키를 만들면 한 번의 정렬로 끝나요. 직접 정렬을 짤 필요 없이 기준만 정확히 적으면 돼요.",
+    caution: "내림차순 기준은 숫자에 −를 붙이거나 비교 함수의 순서를 바꿔요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-neighbor-after-sort",
+    phrase: "가장 가까운 두 값 / K번째로 큰 값 / 중앙값",
+    examples: ["차이가 가장 작은 두 수를 구하세요", "세 번째로 무거운 도토리는 몇 g인가요?"],
+    suspects: ["sorting"],
+    patterns: ["sort-then-scan"],
+    reason: "정렬하면 크기가 비슷한 값이 옆에 붙고, K번째 값은 K번째 자리에 와요. 모든 쌍을 볼 필요가 없어져요.",
+    caution: "정렬은 O(N log N)이에요. 딱 한 번만 필요한 최댓값·최솟값은 한 번 훑는 O(N)으로 충분해요.",
+    strength: "medium",
+  },
+  {
+    id: "sig-intervals",
+    phrase: "시작과 끝이 있는 구간이 겹치는지",
+    examples: ["겹치는 예약을 하나로 합쳐 주세요", "동시에 진행 중인 회의가 가장 많을 때는 몇 개인가요?"],
+    suspects: ["sorting"],
+    patterns: ["interval-sweep"],
+    reason: "구간을 시작 시각 순으로 정렬하면, 겹치는 구간은 반드시 이웃해요. 한 번 훑으면서 합치거나 셀 수 있어요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-small-value-range",
+    phrase: "값의 범위가 작음 (0~100 점수, 알파벳 등)",
+    examples: ["점수는 0점부터 100점 사이예요", "나이는 1살부터 120살까지예요"],
+    suspects: ["sorting"],
+    patterns: ["counting-sort"],
+    reason: "값의 종류가 적으면 값마다 개수를 세어 두는 계수 정렬로 O(N + 값의 범위)에 정렬할 수 있어요.",
+    strength: "weak",
+  },
+  {
+    id: "sig-inversions",
+    phrase: "순서가 뒤바뀐 쌍의 수 / 옆끼리 바꾸는 횟수",
+    examples: [
+      "i < j인데 a[i] > a[j]인 쌍은 몇 개인가요?",
+      "옆 사람끼리 자리를 바꿔 키 순서로 서려면 몇 번 바꿔야 하나요?",
+    ],
+    suspects: ["sorting"],
+    patterns: ["merge-step"],
+    reason:
+      "병합 정렬로 두 절반을 합칠 때, 오른쪽 값이 먼저 나가면 왼쪽에 남은 값의 수만큼 뒤바뀐 쌍이 생겨요. O(N log N)에 셀 수 있어요.",
+    caution: "N이 수천 이하면 이중 반복문으로 세도 괜찮아요.",
+    strength: "medium",
+  },
 ];
 
 const SIGNALS_BY_ID = new Map(SIGNALS.map((signal) => [signal.id, signal]));

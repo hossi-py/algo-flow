@@ -5,6 +5,7 @@ import { Nodi } from "@/components/mascot/nodi";
 import { usePlayer } from "@/hooks/use-player";
 import { cn } from "@/lib/utils";
 import type { MascotMood, VisualizationStep, VizAction, VizState } from "@/types";
+import { BarsView } from "./bars-view";
 import { GraphView } from "./graph-view";
 import { GridView } from "./grid-view";
 import { HashView } from "./hash-view";
@@ -18,6 +19,7 @@ const MOOD_BY_ACTION: Partial<Record<VizAction, MascotMood>> = {
   record: "happy",
   found: "happy",
   "not-found": "thinking",
+  merge: "happy",
   "zone-complete": "happy",
   discover: "curious",
   "zone-start": "curious",
@@ -26,7 +28,7 @@ const MOOD_BY_ACTION: Partial<Record<VizAction, MascotMood>> = {
   unchoose: "thinking",
 };
 
-/** 스텝에 들어 있는 레이어만 그린다: 큰 그림(그래프·격자·해시 테이블) → 줄 모양 자료구조 → 호출 스택·변수 */
+/** 스텝에 들어 있는 레이어만 그린다: 큰 그림(그래프·격자·해시 테이블·막대) → 줄 모양 자료구조 → 호출 스택·변수 */
 export function Stage({ state, wide }: { state: VizState; wide: boolean }) {
   const main = state.graph ? (
     <GraphView snapshot={state.graph} />
@@ -34,6 +36,8 @@ export function Stage({ state, wide }: { state: VizState; wide: boolean }) {
     <GridView snapshot={state.grid} />
   ) : state.hash ? (
     <HashView snapshot={state.hash} />
+  ) : state.bars ? (
+    <BarsView snapshot={state.bars} />
   ) : null;
   const linear = [
     state.sequence && <SequenceView key="sequence" snapshot={state.sequence} />,

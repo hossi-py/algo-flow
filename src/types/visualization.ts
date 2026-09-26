@@ -16,7 +16,10 @@ export type VisualizationGeneratorKey =
   | "backtracking-subset"
   | "hash-buckets"
   | "hash-count"
-  | "hash-two-sum";
+  | "hash-two-sum"
+  | "sort-insertion"
+  | "sort-merge"
+  | "sort-counting";
 
 export interface VisualizationPreset {
   id: string;
@@ -64,6 +67,11 @@ export type VizAction =
   | "found"
   | "not-found"
   | "count"
+  // 정렬
+  | "shift"
+  | "split"
+  | "merge"
+  | "place"
   // 공통
   | "compare"
   | "init"
@@ -166,6 +174,20 @@ export interface HashSnapshot {
   hashing?: { key: string; formula: string; bucket: number } | null;
 }
 
+/** 값의 크기를 막대 높이로 보여 준다 (정렬) */
+export interface BarsSnapshot {
+  title?: string;
+  /** 막대 값 (0 이상). 같은 id는 자리를 옮겨도 같은 막대로 움직인다 */
+  items: VizItem[];
+  highlights: { itemId: string; tone: HighlightTone }[];
+  /** 자리가 확정된 막대 */
+  sorted: string[];
+  /** 지금 다루는 범위 [시작, 끝] (포함) */
+  range?: [number, number] | null;
+  /** 막대 아래에 붙는 표시. 예: "i", "j" */
+  pointers: { index: number; label: string }[];
+}
+
 export interface CallFrame {
   id: string;
   /** 예: "dfs(0, 1)" */
@@ -182,6 +204,7 @@ export interface VizState {
   graph?: GraphSnapshot;
   grid?: GridSnapshot;
   hash?: HashSnapshot;
+  bars?: BarsSnapshot;
   callStack?: CallFrame[];
   variables?: Record<string, JsonValue>;
 }

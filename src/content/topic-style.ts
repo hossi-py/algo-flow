@@ -70,4 +70,11 @@ export const TOPIC_COLOR_CLASSES: Record<
     stroke: "stroke-topic-sand-foreground",
     fill: "fill-topic-sand",
   },
+  slate: {
+    surface: "bg-topic-slate",
+    text: "text-topic-slate-foreground",
+    ring: "ring-topic-slate-foreground/30",
+    stroke: "stroke-topic-slate-foreground",
+    fill: "fill-topic-slate",
+  },
 };

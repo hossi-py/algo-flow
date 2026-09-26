@@ -50,11 +50,12 @@ export const TOPIC_SLUGS = [
   "bfs",
   "backtracking",
   "hash",
+  "sorting",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
 /** 이후 확장 예정 주제 (로드맵에 "곧 열려요"로 표시) */
-export type UpcomingTopicSlug = "sorting" | "binary-search" | "dp";
+export type UpcomingTopicSlug = "binary-search" | "dp";
 
 export type LevelNumber = 1 | 2 | 3 | 4 | 5;
 
@@ -75,8 +76,8 @@ export const LEVEL_STAGE_LABELS: Record<LevelStage, string> = {
   exam: "코딩테스트 실전",
 };
 
-export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand";
-export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers";
+export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate";
+export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars";
 
 export const PATTERN_TAGS = [
   // 스택
@@ -121,6 +122,12 @@ export const PATTERN_TAGS = [
   "complement-lookup",
   "group-by-key",
   "prefix-sum-hash",
+  // 정렬
+  "sort-then-scan",
+  "custom-order",
+  "merge-step",
+  "counting-sort",
+  "interval-sweep",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -174,7 +181,9 @@ export type IllustrationKey =
   | "bfs-ripple"
   | "backtracking-tree"
   | "hash-lockers"
-  | "hash-tally";
+  | "hash-tally"
+  | "sorting-bars"
+  | "sorting-merge";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {
@@ -365,7 +374,10 @@ export type VisualizationGeneratorKey =
   | "backtracking-subset"
   | "hash-buckets"
   | "hash-count"
-  | "hash-two-sum";
+  | "hash-two-sum"
+  | "sort-insertion"
+  | "sort-merge"
+  | "sort-counting";
 
 export interface VisualizationPreset {
   id: string;
@@ -413,6 +425,11 @@ export type VizAction =
   | "found"
   | "not-found"
   | "count"
+  // 정렬
+  | "shift"
+  | "split"
+  | "merge"
+  | "place"
   // 공통
   | "compare"
   | "init"
@@ -515,6 +532,20 @@ export interface HashSnapshot {
   hashing?: { key: string; formula: string; bucket: number } | null;
 }
 
+/** 값의 크기를 막대 높이로 보여 준다 (정렬) */
+export interface BarsSnapshot {
+  title?: string;
+  /** 막대 값 (0 이상). 같은 id는 자리를 옮겨도 같은 막대로 움직인다 */
+  items: VizItem[];
+  highlights: { itemId: string; tone: HighlightTone }[];
+  /** 자리가 확정된 막대 */
+  sorted: string[];
+  /** 지금 다루는 범위 [시작, 끝] (포함) */
+  range?: [number, number] | null;
+  /** 막대 아래에 붙는 표시. 예: "i", "j" */
+  pointers: { index: number; label: string }[];
+}
+
 export interface CallFrame {
   id: string;
   /** 예: "dfs(0, 1)" */
@@ -531,6 +562,7 @@ export interface VizState {
   graph?: GraphSnapshot;
   grid?: GridSnapshot;
   hash?: HashSnapshot;
+  bars?: BarsSnapshot;
   callStack?: CallFrame[];
   variables?: Record<string, JsonValue>;
 }

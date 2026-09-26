@@ -70,6 +70,8 @@
   --color-topic-sage-foreground: var(--topic-sage-foreground);
   --color-topic-sand: var(--topic-sand);
   --color-topic-sand-foreground: var(--topic-sand-foreground);
+  --color-topic-slate: var(--topic-slate);
+  --color-topic-slate-foreground: var(--topic-slate-foreground);
 
   --color-nodi-body: var(--nodi-body);
   --color-nodi-line: var(--nodi-line);
@@ -198,6 +200,8 @@
   --topic-sage-foreground: #36501a;
   --topic-sand: #eedcc4;
   --topic-sand-foreground: #4f3418;
+  --topic-slate: #d5deea;
+  --topic-slate-foreground: #253a55;
 
   --nodi-body: #d9ccff;
   --nodi-line: #4a36a8;
@@ -280,6 +284,8 @@
   --topic-sage-foreground: #d6e8b8;
   --topic-sand: #40342a;
   --topic-sand-foreground: #eedcc4;
+  --topic-slate: #2c3544;
+  --topic-slate-foreground: #d5deea;
 
   --nodi-body: #c9b8ff;
   --nodi-line: #2b1d5c;

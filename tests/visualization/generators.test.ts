@@ -77,6 +77,17 @@ function summarize(state: VizState): string {
       out += ` dist=${g.distance.map((row) => row.map((d) => (d === null ? "-" : d)).join(",")).join("/")}`;
     parts.push(out);
   }
+  if (state.bars) {
+    const b = state.bars;
+    const sorted = new Set(b.sorted);
+    const items = b.items
+      .map((item) => text(item.value) + marks(b.highlights, item.id) + (sorted.has(item.id) ? "✓" : ""))
+      .join(" ");
+    const pointers = b.pointers.map((p) => `${p.label}@${p.index}`).join(",");
+    parts.push(
+      `${b.title}=|${items}|${b.range ? ` range=${b.range.join("..")}` : ""}${pointers ? ` ${pointers}` : ""}`,
+    );
+  }
   if (state.hash) {
     const h = state.hash;
     const entry = (e: { id: string; key: JsonValue; value: JsonValue }) =>
@@ -131,10 +142,10 @@ describe("generator 등록", () => {
     }
   });
 
-  it("16개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
+  it("19개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
     const used = new Set(TOPIC_PRESETS.map((preset) => preset.generator));
     expect([...used].sort()).toEqual(Object.keys(GENERATORS).sort());
-    expect(used.size).toBe(16);
+    expect(used.size).toBe(19);
   });
 
   it("프리셋 id가 겹치지 않는다", () => {
@@ -225,6 +236,12 @@ describe("입력 검증", () => {
     ["hash-count", [Array.from({ length: 13 }, () => "a")]],
     ["hash-two-sum", [[1], 2]],
     ["hash-two-sum", [[1, 2], 1.5]],
+    ["sort-insertion", [[0, 5]]],
+    ["sort-insertion", [Array.from({ length: 11 }, () => 1)]],
+    ["sort-merge", [Array.from({ length: 9 }, () => 1)]],
+    ["sort-merge", [[]]],
+    ["sort-counting", [[10]]],
+    ["sort-counting", [[-1]]],
   ];
 
   it.each(BAD_INPUTS)("%s %j → 예외 대신 한국어 오류 메시지", (key, input) => {
@@ -280,5 +297,42 @@ describe("해시 generator", () => {
     const none = run("hash-two-sum", [[1, 2, 4], 100]);
     expect(none.at(-1)!.action).toBe("done");
     expect(none.at(-1)!.state.hash!.entries).toHaveLength(3);
+  });
+});
+
+describe("정렬 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+  const values = (steps: VisualizationStep[]) => steps.at(-1)!.state.bars!.items.map((item) => item.value);
+
+  it.each(["sort-insertion", "sort-merge"] as const)("%s: 끝나면 정렬되고 모든 막대가 확정된다", (key) => {
+    const steps = run(key, [[5, 2, 9, 2, 7, 1]]);
+    expect(values(steps)).toEqual([1, 2, 2, 5, 7, 9]);
+    expect(steps.at(-1)!.state.bars!.sorted).toHaveLength(6);
+    // 같은 값의 막대는 원래 순서를 지킨다 (안정 정렬)
+    const ids = steps.at(-1)!.state.bars!.items.map((item) => item.id);
+    expect(ids.indexOf("b1")).toBeLessThan(ids.indexOf("b3"));
+  });
+
+  it("병합 정렬은 중간에도 막대가 사라지거나 겹치지 않는다", () => {
+    for (const step of run("sort-merge", [[4, 3, 2, 1, 8, 7, 6, 5]])) {
+      const ids = step.state.bars!.items.map((item) => item.id);
+      expect(new Set(ids).size).toBe(8);
+    }
+  });
+
+  it("이미 정렬된 배열은 삽입 정렬에서 한 번도 밀지 않는다", () => {
+    const steps = run("sort-insertion", [[1, 2, 3, 4]]);
+    expect(steps.filter((s) => s.action === "shift")).toHaveLength(0);
+  });
+
+  it("계수 정렬은 값별 개수를 세고 결과를 늘어놓는다", () => {
+    const steps = run("sort-counting", [[3, 0, 3, 1]]);
+    const last = steps.at(-1)!.state;
+    expect(last.bars!.items.map((item) => item.value)).toEqual([1, 1, 0, 2, 0, 0, 0, 0, 0, 0]);
+    expect(last.queue!.items.map((item) => item.value)).toEqual([0, 1, 3, 3]);
   });
 });

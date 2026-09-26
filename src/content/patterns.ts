@@ -36,6 +36,11 @@ export const PATTERN_LABELS: Record<PatternTag, string> = {
   "complement-lookup": "짝 찾기",
   "group-by-key": "같은 것끼리 묶기",
   "prefix-sum-hash": "누적 합 + 해시",
+  "sort-then-scan": "정렬 후 훑기",
+  "custom-order": "정렬 기준 정하기",
+  "merge-step": "정렬된 것 합치기",
+  "counting-sort": "계수 정렬",
+  "interval-sweep": "구간 정렬",
 };
 
 /** 토픽별 대표 패턴 (AI 문제 생성의 집중 패턴 후보) */
@@ -48,6 +53,7 @@ export const TOPIC_PATTERNS: Record<TopicSlug, PatternTag[]> = {
   bfs: ["shortest-path-unweighted", "grid-shortest-path", "multi-source-bfs", "state-space-bfs", "level-order"],
   backtracking: ["permutation", "combination", "subset", "constraint-pruning"],
   hash: ["existence-check", "frequency-count", "complement-lookup", "group-by-key", "prefix-sum-hash"],
+  sorting: ["sort-then-scan", "custom-order", "merge-step", "counting-sort", "interval-sweep"],
 };
 
 /** 패턴이 속한 토픽 */

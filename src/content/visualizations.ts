@@ -186,4 +186,27 @@ export const TOPIC_VISUALIZATIONS: Record<TopicSlug, VisualizationPreset[]> = {
       [[4, 9, 1, 6, 3], 7],
     ),
   ],
+  sorting: [
+    preset(
+      "sort-insertion-6",
+      "sort-insertion",
+      "삽입 정렬",
+      "카드를 한 장씩 뽑아, 왼쪽의 정렬된 카드들 사이 알맞은 자리에 끼워 넣어요. 큰 카드는 한 칸씩 오른쪽으로 밀려요.",
+      [[5, 2, 4, 6, 1, 3]],
+    ),
+    preset(
+      "sort-merge-7",
+      "sort-merge",
+      "병합 정렬",
+      "한 칸이 될 때까지 반으로 나눈 뒤, 정렬된 두 줄의 맨 앞끼리 비교하며 합쳐요.",
+      [[38, 27, 43, 3, 9, 82, 10]],
+    ),
+    preset(
+      "sort-counting-10",
+      "sort-counting",
+      "계수 정렬",
+      "값이 0~9뿐이면 비교하지 않고, 값마다 개수를 센 다음 작은 값부터 개수만큼 늘어놓아요.",
+      [[3, 1, 4, 1, 5, 9, 2, 6, 5, 3]],
+    ),
+  ],
 };

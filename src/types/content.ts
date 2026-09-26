@@ -10,11 +10,12 @@ export const TOPIC_SLUGS = [
   "bfs",
   "backtracking",
   "hash",
+  "sorting",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
 /** 이후 확장 예정 주제 (로드맵에 "곧 열려요"로 표시) */
-export type UpcomingTopicSlug = "sorting" | "binary-search" | "dp";
+export type UpcomingTopicSlug = "binary-search" | "dp";
 
 export type LevelNumber = 1 | 2 | 3 | 4 | 5;
 
@@ -35,8 +36,8 @@ export const LEVEL_STAGE_LABELS: Record<LevelStage, string> = {
   exam: "코딩테스트 실전",
 };
 
-export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand";
-export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers";
+export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate";
+export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars";
 
 export const PATTERN_TAGS = [
   // 스택
@@ -81,6 +82,12 @@ export const PATTERN_TAGS = [
   "complement-lookup",
   "group-by-key",
   "prefix-sum-hash",
+  // 정렬
+  "sort-then-scan",
+  "custom-order",
+  "merge-step",
+  "counting-sort",
+  "interval-sweep",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -132,7 +139,9 @@ export type IllustrationKey =
   | "bfs-ripple"
   | "backtracking-tree"
   | "hash-lockers"
-  | "hash-tally";
+  | "hash-tally"
+  | "sorting-bars"
+  | "sorting-merge";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {

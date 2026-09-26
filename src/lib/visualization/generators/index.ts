@@ -53,6 +53,17 @@ import {
   validateFibonacci,
 } from "./recursion";
 import { InputError } from "./shared";
+import {
+  COUNTING_PSEUDOCODE,
+  INSERTION_PSEUDOCODE,
+  MERGE_PSEUDOCODE,
+  countingSort,
+  insertionSort,
+  mergeSort,
+  validateCounting,
+  validateInsertion,
+  validateMerge,
+} from "./sorting";
 
 export interface GeneratorDefinition {
   key: VisualizationGeneratorKey;
@@ -178,6 +189,27 @@ export const GENERATORS: Record<VisualizationGeneratorKey, GeneratorDefinition> 
     pseudocode: HASH_TWO_SUM_PSEUDOCODE,
     validate: validateHashTwoSum,
     generate: hashTwoSum,
+  },
+  "sort-insertion": {
+    key: "sort-insertion",
+    inputHint: "[수 목록] 예: [[5, 2, 4, 6, 1, 3]] — 1~99 정수 1 ~ 10개",
+    pseudocode: INSERTION_PSEUDOCODE,
+    validate: validateInsertion,
+    generate: insertionSort,
+  },
+  "sort-merge": {
+    key: "sort-merge",
+    inputHint: "[수 목록] 예: [[38, 27, 43, 3, 9]] — 1~99 정수 1 ~ 8개",
+    pseudocode: MERGE_PSEUDOCODE,
+    validate: validateMerge,
+    generate: mergeSort,
+  },
+  "sort-counting": {
+    key: "sort-counting",
+    inputHint: "[수 목록] 예: [[3, 1, 4, 1, 5]] — 0~9 정수 1 ~ 12개",
+    pseudocode: COUNTING_PSEUDOCODE,
+    validate: validateCounting,
+    generate: countingSort,
   },
 };
 

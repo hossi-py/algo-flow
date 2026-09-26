@@ -27,6 +27,8 @@ const LABELS: Record<IllustrationKey, string> = {
   "backtracking-tree": "갈림길 트리에서 막힌 가지를 잘라 내는 그림",
   "hash-lockers": "이름표가 해시 함수를 거쳐 번호가 붙은 사물함 한 칸으로 바로 들어가는 그림",
   "hash-tally": "과일 이름마다 개수 막대가 붙어 있는 표 그림",
+  "sorting-bars": "높이가 뒤섞인 막대들이 낮은 것부터 높은 것 순서로 정리되는 그림",
+  "sorting-merge": "정렬된 두 줄의 맨 앞끼리 비교해서 한 줄로 합치는 그림",
 };
 
 /** 강조 면(HOT) 위 글자. 다크 모드에서도 밝은 보라 위에 어두운 글자가 되도록 */
@@ -658,6 +660,65 @@ function HashTally() {
   );
 }
 
+function SortingBars() {
+  const before = [5, 2, 7, 3];
+  const after = [2, 3, 5, 7];
+  const bar = (x: number, value: number, fill: string) => (
+    <rect
+      key={x}
+      x={x}
+      y={80 - value * 8}
+      width={11}
+      height={value * 8}
+      rx={2}
+      fill={fill}
+      stroke="currentColor"
+      strokeWidth={1.6}
+    />
+  );
+  return (
+    <>
+      <line x1={8} y1={80} x2={70} y2={80} stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+      {before.map((v, i) => bar(14 + i * 14, v, i === 1 ? HOT : PAPER))}
+      <Arrow d="M76 50 L90 50" />
+      <line x1={96} y1={80} x2={156} y2={80} stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+      {after.map((v, i) => bar(100 + i * 14, v, DONE))}
+      <Label x={40} y={94}>
+        뒤섞임
+      </Label>
+      <Label x={126} y={94}>
+        작은 것부터
+      </Label>
+    </>
+  );
+}
+
+function SortingMerge() {
+  const left = [1, 4, 7];
+  const right = [2, 3, 9];
+  const merged = [1, 2, 3, 4, 7, 9];
+  const cell = (x: number, y: number, value: number, fill: string, fg: string = "currentColor") => (
+    <g key={`${x}-${y}`}>
+      <rect x={x} y={y} width={16} height={14} rx={3} fill={fill} stroke="currentColor" strokeWidth={1.5} />
+      <Label x={x + 8} y={y + 10} fill={fg}>
+        {value}
+      </Label>
+    </g>
+  );
+  return (
+    <>
+      {left.map((v, i) => cell(14 + i * 19, 12, v, i === 0 ? HOT : PAPER, i === 0 ? ON_HOT : "currentColor"))}
+      {right.map((v, i) => cell(96 + i * 19, 12, v, i === 0 ? WAIT : PAPER))}
+      <Arrow d="M40 32 Q52 48 62 56" />
+      <Arrow d="M120 32 Q108 48 98 56" />
+      {merged.map((v, i) => cell(24 + i * 19, 62, v, i < 2 ? DONE : PAPER))}
+      <Label x={80} y={94}>
+        맨 앞끼리 비교해서 작은 것부터
+      </Label>
+    </>
+  );
+}
+
 const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "stack-plates": StackPlates,
   "stack-undo": StackUndo,
@@ -672,6 +733,8 @@ const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "backtracking-tree": BacktrackingTree,
   "hash-lockers": HashLockers,
   "hash-tally": HashTally,
+  "sorting-bars": SortingBars,
+  "sorting-merge": SortingMerge,
 };
 
 export function ConceptIllustration({
