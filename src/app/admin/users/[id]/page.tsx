@@ -1,9 +1,10 @@
+import { Bot, Flame, Sparkles, Star } from "lucide-react";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LANGUAGE_LABELS, VERDICT_LABELS, formatDate, formatDateTime, formatNumber } from "@/components/admin/format";
-import { StatTile } from "@/components/admin/stat-tile";
+import { KpiCard } from "@/components/admin/kpi-card";
 import { getAdmin, requireAdmin } from "@/lib/admin/auth";
 import { getUserDetail } from "@/lib/admin/queries";
 
@@ -22,7 +23,7 @@ const GENERATION_LABELS: Record<string, string> = {
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="flex flex-col gap-3 rounded-lg border border-border/70 bg-card p-4 shadow-soft">
+    <section className="flex flex-col gap-3 rounded-xl border border-border/60 bg-card p-5 shadow-soft">
       <h2 className="text-h3 text-foreground">{title}</h2>
       {children}
     </section>
@@ -57,12 +58,20 @@ export default async function AdminUserDetailPage(props: PageProps<"/admin/users
         </p>
       </div>
 
-      <section aria-label="학습 통계" className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <StatTile label="XP" value={user.stats.xp} />
-        <StatTile label="연속 학습" value={user.stats.currentStreak} hint={`최장 ${user.stats.longestStreak}일`} />
-        <StatTile label="AI 코치 질문" value={user.ai.coachQuestions} />
-        <StatTile
+      <section aria-label="학습 통계" className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <KpiCard label="XP" value={user.stats.xp} icon={Star} tone="lemon" />
+        <KpiCard
+          label="연속 학습"
+          value={user.stats.currentStreak}
+          icon={Flame}
+          tone="peach"
+          hint={`최장 ${user.stats.longestStreak}일`}
+        />
+        <KpiCard label="AI 코치 질문" value={user.ai.coachQuestions} icon={Bot} tone="lilac" />
+        <KpiCard
           label="AI 맞춤 문제"
+          icon={Sparkles}
+          tone="violet"
           value={Object.values(user.ai.generated).reduce((a, b) => a + b, 0)}
           hint={
             Object.entries(user.ai.generated)
