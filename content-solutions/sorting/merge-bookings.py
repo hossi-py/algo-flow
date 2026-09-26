@@ -1,0 +1,8 @@
+def solution(bookings):
+    out = []
+    for s, e in sorted(bookings):
+        if out and out[-1][1] >= s:
+            out[-1][1] = max(out[-1][1], e)
+        else:
+            out.append([s, e])
+    return out

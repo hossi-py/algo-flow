@@ -68,6 +68,14 @@
   --color-topic-lemon-foreground: var(--topic-lemon-foreground);
   --color-topic-sage: var(--topic-sage);
   --color-topic-sage-foreground: var(--topic-sage-foreground);
+  --color-topic-sand: var(--topic-sand);
+  --color-topic-sand-foreground: var(--topic-sand-foreground);
+  --color-topic-slate: var(--topic-slate);
+  --color-topic-slate-foreground: var(--topic-slate-foreground);
+  --color-topic-plum: var(--topic-plum);
+  --color-topic-plum-foreground: var(--topic-plum-foreground);
+  --color-topic-teal: var(--topic-teal);
+  --color-topic-teal-foreground: var(--topic-teal-foreground);
 
   --color-nodi-body: var(--nodi-body);
   --color-nodi-line: var(--nodi-line);
@@ -194,6 +202,14 @@
   --topic-lemon-foreground: #5c4200;
   --topic-sage: #d6e8b8;
   --topic-sage-foreground: #36501a;
+  --topic-sand: #eedcc4;
+  --topic-sand-foreground: #4f3418;
+  --topic-slate: #d5deea;
+  --topic-slate-foreground: #253a55;
+  --topic-plum: #ebd2e8;
+  --topic-plum-foreground: #5a1f52;
+  --topic-teal: #bfe6e9;
+  --topic-teal-foreground: #0d4549;
 
   --nodi-body: #d9ccff;
   --nodi-line: #4a36a8;
@@ -274,6 +290,14 @@
   --topic-lemon-foreground: #ffeba8;
   --topic-sage: #2f3a25;
   --topic-sage-foreground: #d6e8b8;
+  --topic-sand: #40342a;
+  --topic-sand-foreground: #eedcc4;
+  --topic-slate: #2c3544;
+  --topic-slate-foreground: #d5deea;
+  --topic-plum: #3e2a3b;
+  --topic-plum-foreground: #ebd2e8;
+  --topic-teal: #1f393c;
+  --topic-teal-foreground: #bfe6e9;
 
   --nodi-body: #c9b8ff;
   --nodi-line: #2b1d5c;
@@ -318,4 +342,23 @@
 
 @utility tabular {
   font-variant-numeric: tabular-nums;
+}
+
+/* 화면 맨 위 진행 막대: 처음엔 빠르게, 끝에 가까울수록 느리게 차오른다 (끝까지는 채우지 않는다) */
+@keyframes nav-progress {
+  from {
+    transform: scaleX(0.05);
+  }
+  to {
+    transform: scaleX(0.9);
+  }
+}
+.nav-progress {
+  animation: nav-progress 8s cubic-bezier(0.1, 0.7, 0.2, 1) forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-progress {
+    animation: none;
+    transform: scaleX(0.6);
+  }
 }

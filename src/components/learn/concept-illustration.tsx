@@ -25,6 +25,14 @@ const LABELS: Record<IllustrationKey, string> = {
   "dfs-maze-dive": "한 갈래로 끝까지 내려갔다가 되돌아오는 탐색 경로 그림",
   "bfs-ripple": "가운데서 물결이 한 겹씩 퍼지며 노드를 만나는 그림",
   "backtracking-tree": "갈림길 트리에서 막힌 가지를 잘라 내는 그림",
+  "hash-lockers": "이름표가 해시 함수를 거쳐 번호가 붙은 사물함 한 칸으로 바로 들어가는 그림",
+  "hash-tally": "과일 이름마다 개수 막대가 붙어 있는 표 그림",
+  "sorting-bars": "높이가 뒤섞인 막대들이 낮은 것부터 높은 것 순서로 정리되는 그림",
+  "sorting-merge": "정렬된 두 줄의 맨 앞끼리 비교해서 한 줄로 합치는 그림",
+  "bsearch-halving": "정렬된 칸들에서 가운데를 보고 절반씩 지워 가며 범위를 좁히는 그림",
+  "bsearch-yes-no": "가능·가능·가능 뒤로 불가능이 이어지는 줄에서 그 경계를 찾는 그림",
+  "dp-memo-notebook": "한 번 계산한 답을 수첩에 적어 두고 다시 필요할 때 꺼내 쓰는 그림",
+  "dp-table-fill": "표의 칸을 왼쪽 위부터 차례로 채우며 위·왼쪽 칸의 값을 더하는 그림",
 };
 
 /** 강조 면(HOT) 위 글자. 다크 모드에서도 밝은 보라 위에 어두운 글자가 되도록 */
@@ -562,6 +570,305 @@ function BacktrackingTree() {
   );
 }
 
+function HashLockers() {
+  const lockers = [0, 1, 2, 3, 4];
+  return (
+    <>
+      <rect x={6} y={38} width={34} height={20} rx={10} fill={PAPER} stroke="currentColor" strokeWidth={1.8} />
+      <Label x={23} y={51}>
+        {'"cat"'}
+      </Label>
+      <Arrow d="M42 48 L56 48" />
+      <rect x={58} y={36} width={30} height={24} rx={6} fill={HOT} stroke="currentColor" strokeWidth={1.8} />
+      <Label x={73} y={51} fill={ON_HOT}>
+        hash
+      </Label>
+      <Arrow d="M90 48 Q104 48 110 36" />
+      {lockers.map((i) => (
+        <g key={i}>
+          <rect
+            x={106}
+            y={8 + i * 17}
+            width={46}
+            height={15}
+            rx={3}
+            fill={i === 2 ? DONE : PAPER}
+            stroke="currentColor"
+            strokeWidth={1.6}
+          />
+          <Label x={114} y={18.5 + i * 17}>
+            {i}
+          </Label>
+          <circle cx={145} cy={15.5 + i * 17} r={1.6} fill="currentColor" />
+        </g>
+      ))}
+      <Label x={132} y={18.5 + 2 * 17}>
+        cat
+      </Label>
+      <Label x={48} y={80}>
+        번호를 계산해서
+      </Label>
+      <Label x={48} y={92}>
+        한 칸으로 바로!
+      </Label>
+    </>
+  );
+}
+
+function HashTally() {
+  const rows = [
+    { name: "apple", count: 3 },
+    { name: "kiwi", count: 2 },
+    { name: "plum", count: 1 },
+  ];
+  return (
+    <>
+      {rows.map((row, i) => (
+        <g key={row.name}>
+          <rect
+            x={14}
+            y={14 + i * 24}
+            width={48}
+            height={18}
+            rx={5}
+            fill={PAPER}
+            stroke="currentColor"
+            strokeWidth={1.6}
+          />
+          <Label x={38} y={26 + i * 24}>
+            {row.name}
+          </Label>
+          <Arrow d={`M64 ${23 + i * 24} L76 ${23 + i * 24}`} />
+          {Array.from({ length: row.count }, (_, k) => (
+            <rect
+              key={k}
+              x={80 + k * 20}
+              y={15 + i * 24}
+              width={16}
+              height={16}
+              rx={4}
+              fill={i === 0 ? HOT : WAIT}
+              stroke="currentColor"
+              strokeWidth={1.4}
+            />
+          ))}
+          <Label x={152} y={27 + i * 24} anchor="end">
+            {row.count}
+          </Label>
+        </g>
+      ))}
+      <Label x={80} y={94}>
+        count[x] += 1
+      </Label>
+    </>
+  );
+}
+
+function SortingBars() {
+  const before = [5, 2, 7, 3];
+  const after = [2, 3, 5, 7];
+  const bar = (x: number, value: number, fill: string) => (
+    <rect
+      key={x}
+      x={x}
+      y={80 - value * 8}
+      width={11}
+      height={value * 8}
+      rx={2}
+      fill={fill}
+      stroke="currentColor"
+      strokeWidth={1.6}
+    />
+  );
+  return (
+    <>
+      <line x1={8} y1={80} x2={70} y2={80} stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+      {before.map((v, i) => bar(14 + i * 14, v, i === 1 ? HOT : PAPER))}
+      <Arrow d="M76 50 L90 50" />
+      <line x1={96} y1={80} x2={156} y2={80} stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+      {after.map((v, i) => bar(100 + i * 14, v, DONE))}
+      <Label x={40} y={94}>
+        뒤섞임
+      </Label>
+      <Label x={126} y={94}>
+        작은 것부터
+      </Label>
+    </>
+  );
+}
+
+function SortingMerge() {
+  const left = [1, 4, 7];
+  const right = [2, 3, 9];
+  const merged = [1, 2, 3, 4, 7, 9];
+  const cell = (x: number, y: number, value: number, fill: string, fg: string = "currentColor") => (
+    <g key={`${x}-${y}`}>
+      <rect x={x} y={y} width={16} height={14} rx={3} fill={fill} stroke="currentColor" strokeWidth={1.5} />
+      <Label x={x + 8} y={y + 10} fill={fg}>
+        {value}
+      </Label>
+    </g>
+  );
+  return (
+    <>
+      {left.map((v, i) => cell(14 + i * 19, 12, v, i === 0 ? HOT : PAPER, i === 0 ? ON_HOT : "currentColor"))}
+      {right.map((v, i) => cell(96 + i * 19, 12, v, i === 0 ? WAIT : PAPER))}
+      <Arrow d="M40 32 Q52 48 62 56" />
+      <Arrow d="M120 32 Q108 48 98 56" />
+      {merged.map((v, i) => cell(24 + i * 19, 62, v, i < 2 ? DONE : PAPER))}
+      <Label x={80} y={94}>
+        맨 앞끼리 비교해서 작은 것부터
+      </Label>
+    </>
+  );
+}
+
+function BsearchHalving() {
+  const cells = [3, 8, 15, 21, 27, 34, 42, 56];
+  const rows = [
+    { y: 10, lo: 0, hi: 7, mid: 3 },
+    { y: 38, lo: 4, hi: 7, mid: 5 },
+    { y: 66, lo: 6, hi: 7, mid: 6 },
+  ];
+  return (
+    <>
+      {rows.map((row) =>
+        cells.map((value, i) => {
+          const inside = i >= row.lo && i <= row.hi;
+          const isMid = i === row.mid;
+          return (
+            <g key={`${row.y}-${i}`} opacity={inside ? 1 : 0.3}>
+              <rect
+                x={8 + i * 18}
+                y={row.y}
+                width={16}
+                height={16}
+                rx={3}
+                fill={isMid ? (row.y === 66 ? DONE : HOT) : PAPER}
+                stroke="currentColor"
+                strokeWidth={1.4}
+              />
+              <Label x={16 + i * 18} y={row.y + 11} fill={isMid && row.y !== 66 ? ON_HOT : "currentColor"}>
+                {value}
+              </Label>
+            </g>
+          );
+        }),
+      )}
+      <Label x={80} y={96}>
+        가운데를 보고 절반씩 버려요
+      </Label>
+    </>
+  );
+}
+
+function BsearchYesNo() {
+  const marks = ["O", "O", "O", "O", "X", "X", "X"];
+  return (
+    <>
+      {marks.map((mark, i) => (
+        <g key={i}>
+          <rect
+            x={10 + i * 20}
+            y={34}
+            width={18}
+            height={22}
+            rx={4}
+            fill={mark === "O" ? DONE : BAD}
+            stroke="currentColor"
+            strokeWidth={1.6}
+          />
+          <Label x={19 + i * 20} y={49}>
+            {mark}
+          </Label>
+          <Label x={19 + i * 20} y={70}>
+            {i + 1}
+          </Label>
+        </g>
+      ))}
+      <line x1={89} y1={24} x2={89} y2={62} stroke="currentColor" strokeWidth={2.5} strokeDasharray="3 3" />
+      <Label x={89} y={18}>
+        경계
+      </Label>
+      <Label x={80} y={92}>
+        가능한 가장 큰 값 = 4
+      </Label>
+    </>
+  );
+}
+
+function DpMemoNotebook() {
+  const notes = [
+    { k: "f(2)", v: "2" },
+    { k: "f(3)", v: "3" },
+    { k: "f(4)", v: "5" },
+  ];
+  return (
+    <>
+      <rect x={96} y={10} width={56} height={70} rx={6} fill={PAPER} stroke="currentColor" strokeWidth={1.8} />
+      <line x1={104} y1={10} x2={104} y2={80} stroke="currentColor" strokeWidth={1} opacity={0.5} />
+      {notes.map((note, i) => (
+        <g key={note.k}>
+          <Label x={110} y={28 + i * 18} anchor="start">
+            {note.k}
+          </Label>
+          <Label x={146} y={28 + i * 18} anchor="end">
+            {note.v}
+          </Label>
+        </g>
+      ))}
+      <rect x={10} y={30} width={40} height={20} rx={10} fill={HOT} stroke="currentColor" strokeWidth={1.8} />
+      <Label x={30} y={43} fill={ON_HOT}>
+        f(5)?
+      </Label>
+      <Arrow d="M52 36 Q74 20 94 28" />
+      <Arrow d="M94 64 Q74 72 52 48" />
+      <Label x={70} y={94}>
+        이미 푼 답은 꺼내 쓰기
+      </Label>
+    </>
+  );
+}
+
+function DpTableFill() {
+  const values = [
+    [1, 1, 1, 1],
+    [1, 2, 3, 4],
+    [1, 3, null, null],
+  ];
+  return (
+    <>
+      {values.map((row, r) =>
+        row.map((value, c) => {
+          const current = r === 2 && c === 2;
+          const source = (r === 1 && c === 2) || (r === 2 && c === 1);
+          return (
+            <g key={`${r}-${c}`}>
+              <rect
+                x={30 + c * 26}
+                y={8 + r * 24}
+                width={22}
+                height={20}
+                rx={4}
+                fill={current ? HOT : source ? WAIT : value === null ? "none" : DONE}
+                stroke="currentColor"
+                strokeWidth={1.5}
+                strokeDasharray={value === null && !current ? "3 3" : undefined}
+              />
+              <Label x={41 + c * 26} y={22 + r * 24} fill={current ? ON_HOT : "currentColor"}>
+                {current ? "6" : value === null ? "" : value}
+              </Label>
+            </g>
+          );
+        }),
+      )}
+      <Label x={80} y={94}>
+        위 + 왼쪽 = 이 칸
+      </Label>
+    </>
+  );
+}
+
 const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "stack-plates": StackPlates,
   "stack-undo": StackUndo,
@@ -574,6 +881,14 @@ const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "dfs-maze-dive": DfsMazeDive,
   "bfs-ripple": BfsRipple,
   "backtracking-tree": BacktrackingTree,
+  "hash-lockers": HashLockers,
+  "hash-tally": HashTally,
+  "sorting-bars": SortingBars,
+  "sorting-merge": SortingMerge,
+  "bsearch-halving": BsearchHalving,
+  "bsearch-yes-no": BsearchYesNo,
+  "dp-memo-notebook": DpMemoNotebook,
+  "dp-table-fill": DpTableFill,
 };
 
 export function ConceptIllustration({

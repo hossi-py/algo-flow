@@ -9,11 +9,15 @@ export const TOPIC_SLUGS = [
   "dfs",
   "bfs",
   "backtracking",
+  "hash",
+  "sorting",
+  "binary-search",
+  "dp",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
 /** 이후 확장 예정 주제 (로드맵에 "곧 열려요"로 표시) */
-export type UpcomingTopicSlug = "hash" | "sorting" | "binary-search" | "dp";
+export type UpcomingTopicSlug = never;
 
 export type LevelNumber = 1 | 2 | 3 | 4 | 5;
 
@@ -34,8 +38,10 @@ export const LEVEL_STAGE_LABELS: Record<LevelStage, string> = {
   exam: "코딩테스트 실전",
 };
 
-export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage";
-export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze";
+export type TopicColor =
+  "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum" | "teal";
+export type TopicIcon =
+  "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table";
 
 export const PATTERN_TAGS = [
   // 스택
@@ -74,6 +80,29 @@ export const PATTERN_TAGS = [
   "combination",
   "subset",
   "constraint-pruning",
+  // 해시
+  "existence-check",
+  "frequency-count",
+  "complement-lookup",
+  "group-by-key",
+  "prefix-sum-hash",
+  // 정렬
+  "sort-then-scan",
+  "custom-order",
+  "merge-step",
+  "counting-sort",
+  "interval-sweep",
+  // 이분 탐색
+  "exact-search",
+  "boundary-search",
+  "range-count",
+  "parametric-search",
+  // DP
+  "linear-dp",
+  "grid-dp",
+  "knapsack",
+  "sequence-dp",
+  "state-dp",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -123,7 +152,15 @@ export type IllustrationKey =
   | "graph-matrix"
   | "dfs-maze-dive"
   | "bfs-ripple"
-  | "backtracking-tree";
+  | "backtracking-tree"
+  | "hash-lockers"
+  | "hash-tally"
+  | "sorting-bars"
+  | "sorting-merge"
+  | "bsearch-halving"
+  | "bsearch-yes-no"
+  | "dp-memo-notebook"
+  | "dp-table-fill";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {

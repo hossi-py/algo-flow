@@ -49,11 +49,15 @@ export const TOPIC_SLUGS = [
   "dfs",
   "bfs",
   "backtracking",
+  "hash",
+  "sorting",
+  "binary-search",
+  "dp",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
 /** 이후 확장 예정 주제 (로드맵에 "곧 열려요"로 표시) */
-export type UpcomingTopicSlug = "hash" | "sorting" | "binary-search" | "dp";
+export type UpcomingTopicSlug = never; // 지금은 준비 중인 토픽이 없다
 
 export type LevelNumber = 1 | 2 | 3 | 4 | 5;
 
@@ -74,8 +78,8 @@ export const LEVEL_STAGE_LABELS: Record<LevelStage, string> = {
   exam: "코딩테스트 실전",
 };
 
-export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage";
-export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze";
+export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum" | "teal";
+export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table";
 
 export const PATTERN_TAGS = [
   // 스택
@@ -114,6 +118,29 @@ export const PATTERN_TAGS = [
   "combination",
   "subset",
   "constraint-pruning",
+  // 해시
+  "existence-check",
+  "frequency-count",
+  "complement-lookup",
+  "group-by-key",
+  "prefix-sum-hash",
+  // 정렬
+  "sort-then-scan",
+  "custom-order",
+  "merge-step",
+  "counting-sort",
+  "interval-sweep",
+  // 이분 탐색
+  "exact-search",
+  "boundary-search",
+  "range-count",
+  "parametric-search",
+  // DP
+  "linear-dp",
+  "grid-dp",
+  "knapsack",
+  "sequence-dp",
+  "state-dp",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -165,7 +192,15 @@ export type IllustrationKey =
   | "graph-matrix"
   | "dfs-maze-dive"
   | "bfs-ripple"
-  | "backtracking-tree";
+  | "backtracking-tree"
+  | "hash-lockers"
+  | "hash-tally"
+  | "sorting-bars"
+  | "sorting-merge"
+  | "bsearch-halving"
+  | "bsearch-yes-no"
+  | "dp-memo-notebook"
+  | "dp-table-fill";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {
@@ -353,7 +388,19 @@ export type VisualizationGeneratorKey =
   | "grid-dfs"
   | "grid-bfs"
   | "backtracking-permutation"
-  | "backtracking-subset";
+  | "backtracking-subset"
+  | "hash-buckets"
+  | "hash-count"
+  | "hash-two-sum"
+  | "sort-insertion"
+  | "sort-merge"
+  | "sort-counting"
+  | "bsearch-exact"
+  | "bsearch-lower-bound"
+  | "bsearch-answer"
+  | "dp-stairs"
+  | "dp-grid-paths"
+  | "dp-lcs";
 
 export interface VisualizationPreset {
   id: string;
@@ -395,6 +442,22 @@ export type VizAction =
   | "unchoose"
   | "prune"
   | "record"
+  // 해시
+  | "hash"
+  | "insert"
+  | "found"
+  | "not-found"
+  | "count"
+  // 정렬
+  | "shift"
+  | "split"
+  | "merge"
+  | "place"
+  // 이분 탐색
+  | "narrow"
+  // DP
+  | "fill"
+  | "reuse"
   // 공통
   | "compare"
   | "init"
@@ -475,6 +538,53 @@ export interface SequenceSnapshot {
   highlights: { itemId: string; tone: HighlightTone }[];
 }
 
+export interface HashEntryViz {
+  /** 애니메이션용 고정 id */
+  id: string;
+  key: JsonValue;
+  value: JsonValue;
+}
+
+/** 해시 테이블. buckets가 있으면 칸(버킷) 그림, 없으면 entries를 키 → 값 표로 그린다 */
+export interface HashSnapshot {
+  /** 패널 제목. 예: "count", "seen" */
+  title?: string;
+  /** 버킷 그림: 칸마다 들어 있는 항목 (충돌하면 한 칸에 여러 개가 줄 선다) */
+  buckets?: HashEntryViz[][];
+  /** 표 그림: 들어간 순서대로 */
+  entries?: HashEntryViz[];
+  /** 지금 보고 있는 버킷 */
+  activeBucket?: number | null;
+  highlights: { entryId: string; tone: HighlightTone }[];
+  /** 방금 계산한 해시 (버킷 그림 전용) */
+  hashing?: { key: string; formula: string; bucket: number } | null;
+}
+
+/** 값의 크기를 막대 높이로 보여 준다 (정렬) */
+export interface BarsSnapshot {
+  title?: string;
+  /** 막대 값 (0 이상). 같은 id는 자리를 옮겨도 같은 막대로 움직인다 */
+  items: VizItem[];
+  highlights: { itemId: string; tone: HighlightTone }[];
+  /** 자리가 확정된 막대 */
+  sorted: string[];
+  /** 지금 다루는 범위 [시작, 끝] (포함) */
+  range?: [number, number] | null;
+  /** 막대 아래에 붙는 표시. 예: "i", "j" */
+  pointers: { index: number; label: string }[];
+}
+
+/** 2차원 표 (DP 표 등). 아직 안 채운 칸은 null */
+export interface TableSnapshot {
+  title?: string;
+  /** 행 머리글 (없으면 번호) */
+  rowLabels?: string[];
+  /** 열 머리글 (없으면 번호) */
+  colLabels?: string[];
+  cells: (JsonValue | null)[][];
+  highlights: { row: number; col: number; tone: HighlightTone }[];
+}
+
 export interface CallFrame {
   id: string;
   /** 예: "dfs(0, 1)" */
@@ -490,6 +600,9 @@ export interface VizState {
   sequence?: SequenceSnapshot;
   graph?: GraphSnapshot;
   grid?: GridSnapshot;
+  hash?: HashSnapshot;
+  bars?: BarsSnapshot;
+  table?: TableSnapshot;
   callStack?: CallFrame[];
   variables?: Record<string, JsonValue>;
 }

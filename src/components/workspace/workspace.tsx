@@ -378,9 +378,9 @@ function DesktopLayout({
   );
 }
 
-function WorkspaceSkeleton() {
+export function WorkspaceSkeleton() {
   return (
-    <div className="flex h-dvh flex-col" aria-busy="true" aria-label="문제 풀이 화면을 불러오는 중">
+    <div className="flex h-dvh flex-col" role="status" aria-busy="true" aria-label="문제 풀이 화면을 불러오는 중">
       <div className="h-14 shrink-0 border-b bg-card" />
       <div className="grid min-h-0 flex-1 gap-2 p-2 lg:grid-cols-[30fr_42fr_28fr]">
         <div className="animate-pulse rounded-xl bg-muted" />

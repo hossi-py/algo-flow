@@ -8,6 +8,17 @@ import {
   validateSubset,
 } from "./backtracking";
 import {
+  HASH_BUCKETS_PSEUDOCODE,
+  HASH_COUNT_PSEUDOCODE,
+  HASH_TWO_SUM_PSEUDOCODE,
+  hashBuckets,
+  hashCount,
+  hashTwoSum,
+  validateHashBuckets,
+  validateHashCount,
+  validateHashTwoSum,
+} from "./hash";
+import {
   DEQUE_BASIC_PSEUDOCODE,
   QUEUE_BASIC_PSEUDOCODE,
   STACK_BASIC_PSEUDOCODE,
@@ -41,7 +52,40 @@ import {
   validateFactorial,
   validateFibonacci,
 } from "./recursion";
+import {
+  ANSWER_PSEUDOCODE,
+  EXACT_PSEUDOCODE,
+  LOWER_BOUND_PSEUDOCODE,
+  answerSearch,
+  exactSearch,
+  lowerBound,
+  validateAnswer,
+  validateExact,
+  validateLowerBound,
+} from "./binary-search";
+import {
+  GRID_PATHS_PSEUDOCODE,
+  LCS_PSEUDOCODE,
+  STAIRS_PSEUDOCODE,
+  gridPaths,
+  lcs,
+  stairs,
+  validateGridPaths,
+  validateLcs,
+  validateStairs,
+} from "./dp";
 import { InputError } from "./shared";
+import {
+  COUNTING_PSEUDOCODE,
+  INSERTION_PSEUDOCODE,
+  MERGE_PSEUDOCODE,
+  countingSort,
+  insertionSort,
+  mergeSort,
+  validateCounting,
+  validateInsertion,
+  validateMerge,
+} from "./sorting";
 
 export interface GeneratorDefinition {
   key: VisualizationGeneratorKey;
@@ -145,6 +189,91 @@ export const GENERATORS: Record<VisualizationGeneratorKey, GeneratorDefinition> 
     pseudocode: SUBSET_PSEUDOCODE,
     validate: validateSubset,
     generate: subset,
+  },
+  "hash-buckets": {
+    key: "hash-buckets",
+    inputHint:
+      '[명령 목록, 칸 수] 예: [["add cat", "add dog", "find cat"], 5] — add 단어 / find 단어 (영어 소문자), 최대 12개, 칸 2 ~ 8',
+    pseudocode: HASH_BUCKETS_PSEUDOCODE,
+    validate: validateHashBuckets,
+    generate: hashBuckets,
+  },
+  "hash-count": {
+    key: "hash-count",
+    inputHint: '[단어 목록] 예: [["apple", "kiwi", "apple"]] — 영어 소문자 1~8글자, 최대 12개',
+    pseudocode: HASH_COUNT_PSEUDOCODE,
+    validate: validateHashCount,
+    generate: hashCount,
+  },
+  "hash-two-sum": {
+    key: "hash-two-sum",
+    inputHint: "[수 목록, target] 예: [[4, 9, 1, 6], 7] — 정수 2 ~ 10개",
+    pseudocode: HASH_TWO_SUM_PSEUDOCODE,
+    validate: validateHashTwoSum,
+    generate: hashTwoSum,
+  },
+  "sort-insertion": {
+    key: "sort-insertion",
+    inputHint: "[수 목록] 예: [[5, 2, 4, 6, 1, 3]] — 1~99 정수 1 ~ 10개",
+    pseudocode: INSERTION_PSEUDOCODE,
+    validate: validateInsertion,
+    generate: insertionSort,
+  },
+  "sort-merge": {
+    key: "sort-merge",
+    inputHint: "[수 목록] 예: [[38, 27, 43, 3, 9]] — 1~99 정수 1 ~ 8개",
+    pseudocode: MERGE_PSEUDOCODE,
+    validate: validateMerge,
+    generate: mergeSort,
+  },
+  "sort-counting": {
+    key: "sort-counting",
+    inputHint: "[수 목록] 예: [[3, 1, 4, 1, 5]] — 0~9 정수 1 ~ 12개",
+    pseudocode: COUNTING_PSEUDOCODE,
+    validate: validateCounting,
+    generate: countingSort,
+  },
+  "bsearch-exact": {
+    key: "bsearch-exact",
+    inputHint: "[정렬된 수 목록, target] 예: [[3, 8, 15, 21, 27], 21] — 1~99 정수 1 ~ 16개",
+    pseudocode: EXACT_PSEUDOCODE,
+    validate: validateExact,
+    generate: exactSearch,
+  },
+  "bsearch-lower-bound": {
+    key: "bsearch-lower-bound",
+    inputHint: "[정렬된 수 목록, target] 예: [[2, 4, 4, 7], 4] — 1~99 정수 1 ~ 16개",
+    pseudocode: LOWER_BOUND_PSEUDOCODE,
+    validate: validateLowerBound,
+    generate: lowerBound,
+  },
+  "bsearch-answer": {
+    key: "bsearch-answer",
+    inputHint: "[줄 길이 목록, k] 예: [[80, 43, 57, 39], 11] — 1~99 정수 1 ~ 8개, k 1 ~ 50",
+    pseudocode: ANSWER_PSEUDOCODE,
+    validate: validateAnswer,
+    generate: answerSearch,
+  },
+  "dp-stairs": {
+    key: "dp-stairs",
+    inputHint: "[n] 예: [6] — 계단 칸 수 1 ~ 12",
+    pseudocode: STAIRS_PSEUDOCODE,
+    validate: validateStairs,
+    generate: stairs,
+  },
+  "dp-grid-paths": {
+    key: "dp-grid-paths",
+    inputHint: '[격자] 예: [["....", ".#..", "...."]] — . 길, # 막힘, 최대 6×6 (출발·도착 칸은 길)',
+    pseudocode: GRID_PATHS_PSEUDOCODE,
+    validate: validateGridPaths,
+    generate: gridPaths,
+  },
+  "dp-lcs": {
+    key: "dp-lcs",
+    inputHint: '[단어 A, 단어 B] 예: ["acbde", "abcfe"] — 영어 소문자 1 ~ 7글자',
+    pseudocode: LCS_PSEUDOCODE,
+    validate: validateLcs,
+    generate: lcs,
   },
 };
 

@@ -27,7 +27,7 @@ function loadJsSolution(code: string): (...args: JsonValue[]) => unknown {
 describe("토픽", () => {
   it("커리큘럼 순서와 슬러그가 타입 정의와 일치한다", () => {
     expect(TOPICS.map((t) => t.slug)).toEqual([...TOPIC_SLUGS]);
-    expect(TOPICS.map((t) => t.order)).toEqual([1, 2, 3, 4, 5, 6, 7]);
+    expect(TOPICS.map((t) => t.order)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
   });
 
   it.each(TOPICS.map((t) => [t.slug, t] as const))("%s: 레벨 1~5가 순서대로 있다", (_, topic) => {

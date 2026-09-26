@@ -29,6 +29,21 @@ import { bfsRippleRings } from "./bfs/ripple-rings";
 import { bfsRumorDays } from "./bfs/rumor-days";
 import { bfsSafeDial } from "./bfs/safe-dial";
 import { bfsTwoBuckets } from "./bfs/two-buckets";
+import { binarySearchCutCables } from "./binary-search/cut-cables";
+import { binarySearchCutoffCount } from "./binary-search/cutoff-count";
+import { binarySearchEatingSpeed } from "./binary-search/eating-speed";
+import { binarySearchKthTable } from "./binary-search/kth-table";
+import { binarySearchLanternSpacing } from "./binary-search/lantern-spacing";
+import { binarySearchNearestStation } from "./binary-search/nearest-station";
+import { binarySearchPageFinder } from "./binary-search/page-finder";
+import { binarySearchRangeCount } from "./binary-search/range-count";
+import { binarySearchRisingPath } from "./binary-search/rising-path";
+import { binarySearchRotatedShelf } from "./binary-search/rotated-shelf";
+import { binarySearchSplitBooks } from "./binary-search/split-books";
+import { binarySearchSquareGarden } from "./binary-search/square-garden";
+import { binarySearchToyWorkshop } from "./binary-search/toy-workshop";
+import { binarySearchTreeSaw } from "./binary-search/tree-saw";
+import { binarySearchUpdown } from "./binary-search/updown";
 import { dfsCaveOrder } from "./dfs/cave-order";
 import { dfsClubCount } from "./dfs/club-count";
 import { dfsDownhillRoutes } from "./dfs/downhill-routes";
@@ -44,6 +59,21 @@ import { dfsPowerRestore } from "./dfs/power-restore";
 import { dfsRadioNetwork } from "./dfs/radio-network";
 import { dfsRecipeLoop } from "./dfs/recipe-loop";
 import { dfsTeamSize } from "./dfs/team-size";
+import { dpAcornHouses } from "./dp/acorn-houses";
+import { dpBerryMarket } from "./dp/berry-market";
+import { dpBestStreak } from "./dp/best-streak";
+import { dpCoinWays } from "./dp/coin-ways";
+import { dpCommonSong } from "./dp/common-song";
+import { dpFewestCoins } from "./dp/fewest-coins";
+import { dpForestPaths } from "./dp/forest-paths";
+import { dpFruitPyramid } from "./dp/fruit-pyramid";
+import { dpMinTrail } from "./dp/min-trail";
+import { dpPalindromeCuts } from "./dp/palindrome-cuts";
+import { dpPicnicBag } from "./dp/picnic-bag";
+import { dpSecretMessage } from "./dp/secret-message";
+import { dpStairWays } from "./dp/stair-ways";
+import { dpSteppingStones } from "./dp/stepping-stones";
+import { dpWordEdit } from "./dp/word-edit";
 import { graphCommonFriends } from "./graph-representation/graph-common-friends";
 import { graphDirectFlights } from "./graph-representation/graph-direct-flights";
 import { graphFamilyTree } from "./graph-representation/graph-family-tree";
@@ -59,6 +89,21 @@ import { graphStationNeighbors } from "./graph-representation/graph-station-neig
 import { graphTripleFriends } from "./graph-representation/graph-triple-friends";
 import { graphTrustedShop } from "./graph-representation/graph-trusted-shop";
 import { graphTwoTransfers } from "./graph-representation/graph-two-transfers";
+import { hashAnagramGroups } from "./hash/anagram-groups";
+import { hashBalancedDays } from "./hash/balanced-days";
+import { hashCampingGear } from "./hash/camping-gear";
+import { hashClassVote } from "./hash/class-vote";
+import { hashDiffPairs } from "./hash/diff-pairs";
+import { hashFirstRepeat } from "./hash/first-repeat";
+import { hashGuestList } from "./hash/guest-list";
+import { hashLongestRun } from "./hash/longest-run";
+import { hashLostCamper } from "./hash/lost-camper";
+import { hashMagazineLetter } from "./hash/magazine-letter";
+import { hashSecretPattern } from "./hash/secret-pattern";
+import { hashSnackLine } from "./hash/snack-line";
+import { hashSnackPair } from "./hash/snack-pair";
+import { hashStickerAlbum } from "./hash/sticker-album";
+import { hashSubarraySum } from "./hash/subarray-sum";
 import { dequeEndCards } from "./queue-deque/deque-end-cards";
 import { dequeSteadySignal } from "./queue-deque/deque-steady-signal";
 import { dequeSteppingScore } from "./queue-deque/deque-stepping-score";
@@ -89,6 +134,21 @@ import { recursionRocketCountdown } from "./recursion/rocket-countdown";
 import { recursionSnowflakeKnit } from "./recursion/snowflake-knit";
 import { recursionSteppingStones } from "./recursion/stepping-stones";
 import { recursionSwappedPairs } from "./recursion/swapped-pairs";
+import { sortingAdjacentSwaps } from "./sorting/adjacent-swaps";
+import { sortingBiggestNumber } from "./sorting/biggest-number";
+import { sortingClosestGap } from "./sorting/closest-gap";
+import { sortingHeightOrder } from "./sorting/height-order";
+import { sortingInversions } from "./sorting/inversions";
+import { sortingKthHeaviest } from "./sorting/kth-heaviest";
+import { sortingLeaderboard } from "./sorting/leaderboard";
+import { sortingMeetingRooms } from "./sorting/meeting-rooms";
+import { sortingMergeBookings } from "./sorting/merge-bookings";
+import { sortingMergeShelves } from "./sorting/merge-shelves";
+import { sortingPhotoNames } from "./sorting/photo-names";
+import { sortingRaftPairs } from "./sorting/raft-pairs";
+import { sortingRankCompress } from "./sorting/rank-compress";
+import { sortingScoreRanks } from "./sorting/score-ranks";
+import { sortingWordDictionary } from "./sorting/word-dictionary";
 import { stackBackspaceKeyboard } from "./stack/backspace-keyboard";
 import { stackBracketPartner } from "./stack/bracket-partner";
 import { stackDeadEndParking } from "./stack/dead-end-parking";
@@ -137,6 +197,21 @@ export const PROBLEMS: readonly Problem[] = [
   bfsRumorDays,
   bfsSafeDial,
   bfsTwoBuckets,
+  binarySearchCutCables,
+  binarySearchCutoffCount,
+  binarySearchEatingSpeed,
+  binarySearchKthTable,
+  binarySearchLanternSpacing,
+  binarySearchNearestStation,
+  binarySearchPageFinder,
+  binarySearchRangeCount,
+  binarySearchRisingPath,
+  binarySearchRotatedShelf,
+  binarySearchSplitBooks,
+  binarySearchSquareGarden,
+  binarySearchToyWorkshop,
+  binarySearchTreeSaw,
+  binarySearchUpdown,
   dfsCaveOrder,
   dfsClubCount,
   dfsDownhillRoutes,
@@ -152,6 +227,21 @@ export const PROBLEMS: readonly Problem[] = [
   dfsRadioNetwork,
   dfsRecipeLoop,
   dfsTeamSize,
+  dpAcornHouses,
+  dpBerryMarket,
+  dpBestStreak,
+  dpCoinWays,
+  dpCommonSong,
+  dpFewestCoins,
+  dpForestPaths,
+  dpFruitPyramid,
+  dpMinTrail,
+  dpPalindromeCuts,
+  dpPicnicBag,
+  dpSecretMessage,
+  dpStairWays,
+  dpSteppingStones,
+  dpWordEdit,
   graphCommonFriends,
   graphDirectFlights,
   graphFamilyTree,
@@ -167,6 +257,21 @@ export const PROBLEMS: readonly Problem[] = [
   graphTripleFriends,
   graphTrustedShop,
   graphTwoTransfers,
+  hashAnagramGroups,
+  hashBalancedDays,
+  hashCampingGear,
+  hashClassVote,
+  hashDiffPairs,
+  hashFirstRepeat,
+  hashGuestList,
+  hashLongestRun,
+  hashLostCamper,
+  hashMagazineLetter,
+  hashSecretPattern,
+  hashSnackLine,
+  hashSnackPair,
+  hashStickerAlbum,
+  hashSubarraySum,
   dequeEndCards,
   dequeSteadySignal,
   dequeSteppingScore,
@@ -197,6 +302,21 @@ export const PROBLEMS: readonly Problem[] = [
   recursionSnowflakeKnit,
   recursionSteppingStones,
   recursionSwappedPairs,
+  sortingAdjacentSwaps,
+  sortingBiggestNumber,
+  sortingClosestGap,
+  sortingHeightOrder,
+  sortingInversions,
+  sortingKthHeaviest,
+  sortingLeaderboard,
+  sortingMeetingRooms,
+  sortingMergeBookings,
+  sortingMergeShelves,
+  sortingPhotoNames,
+  sortingRaftPairs,
+  sortingRankCompress,
+  sortingScoreRanks,
+  sortingWordDictionary,
   stackBackspaceKeyboard,
   stackBracketPartner,
   stackDeadEndParking,

@@ -63,4 +63,32 @@ export const TOPIC_COLOR_CLASSES: Record<
     stroke: "stroke-topic-sage-foreground",
     fill: "fill-topic-sage",
   },
+  sand: {
+    surface: "bg-topic-sand",
+    text: "text-topic-sand-foreground",
+    ring: "ring-topic-sand-foreground/30",
+    stroke: "stroke-topic-sand-foreground",
+    fill: "fill-topic-sand",
+  },
+  slate: {
+    surface: "bg-topic-slate",
+    text: "text-topic-slate-foreground",
+    ring: "ring-topic-slate-foreground/30",
+    stroke: "stroke-topic-slate-foreground",
+    fill: "fill-topic-slate",
+  },
+  plum: {
+    surface: "bg-topic-plum",
+    text: "text-topic-plum-foreground",
+    ring: "ring-topic-plum-foreground/30",
+    stroke: "stroke-topic-plum-foreground",
+    fill: "fill-topic-plum",
+  },
+  teal: {
+    surface: "bg-topic-teal",
+    text: "text-topic-teal-foreground",
+    ring: "ring-topic-teal-foreground/30",
+    stroke: "stroke-topic-teal-foreground",
+    fill: "fill-topic-teal",
+  },
 };

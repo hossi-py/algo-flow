@@ -1,10 +1,14 @@
 import type { Topic, TopicSlug, UpcomingTopicSlug } from "@/types";
 import { backtrackingTopic } from "./backtracking";
 import { bfsTopic } from "./bfs";
+import { binarySearchTopic } from "./binary-search";
 import { dfsTopic } from "./dfs";
+import { dpTopic } from "./dp";
 import { graphRepresentationTopic } from "./graph-representation";
+import { hashTopic } from "./hash";
 import { queueDequeTopic } from "./queue-deque";
 import { recursionTopic } from "./recursion";
+import { sortingTopic } from "./sorting";
 import { stackTopic } from "./stack";
 
 /** 커리큘럼 순서 */
@@ -16,6 +20,10 @@ export const TOPICS: readonly Topic[] = [
   dfsTopic,
   bfsTopic,
   backtrackingTopic,
+  hashTopic,
+  sortingTopic,
+  binarySearchTopic,
+  dpTopic,
 ];
 
 const TOPICS_BY_SLUG = new Map<string, Topic>(TOPICS.map((topic) => [topic.slug, topic]));
@@ -28,9 +36,5 @@ export function isTopicSlug(value: string): value is TopicSlug {
   return TOPICS_BY_SLUG.has(value);
 }
 
-export const UPCOMING_TOPICS: { slug: UpcomingTopicSlug; title: string }[] = [
-  { slug: "hash", title: "해시" },
-  { slug: "sorting", title: "정렬" },
-  { slug: "binary-search", title: "이분 탐색" },
-  { slug: "dp", title: "DP" },
-];
+/** 지금은 모든 토픽이 열려 있어요. 새 토픽을 준비할 때 여기에 적으면 로드맵에 "준비 중"으로 보여요 */
+export const UPCOMING_TOPICS: { slug: UpcomingTopicSlug; title: string }[] = [];

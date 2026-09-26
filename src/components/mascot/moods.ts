@@ -49,4 +49,8 @@ export const FLOWER_COLORS: Record<TopicColor, string> = {
   blossom: "#ffa8c9",
   lemon: "#ffe07a",
   sage: "#b9d98e",
+  sand: "#e3c296",
+  slate: "#a9bbd6",
+  plum: "#d9a8d2",
+  teal: "#8fd3d8",
 };

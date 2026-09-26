@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, type ReactNode } from "react";
+import { Suspense, useEffect, type ReactNode } from "react";
 import { MotionConfig } from "motion/react";
 import { ThemeProvider } from "next-themes";
 import { AccountSync } from "@/components/auth/account-sync";
 import { CelebrationLayer } from "@/components/common/celebration";
+import { NavigationProgress } from "@/components/layout/navigation-progress";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useProgressStore } from "@/stores/progress-store";
 
@@ -25,6 +26,10 @@ export function Providers({ children }: { children: ReactNode }) {
       <MotionConfig reducedMotion="user">
         <TooltipProvider delayDuration={150}>
           <ProgressHydrator />
+          {/* 쿼리를 읽어서 정적 렌더를 막지 않도록 Suspense로 감싼다 */}
+          <Suspense fallback={null}>
+            <NavigationProgress />
+          </Suspense>
           <AccountSync />
           {children}
           <CelebrationLayer />

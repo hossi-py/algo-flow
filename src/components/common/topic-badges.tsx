@@ -1,5 +1,9 @@
 import {
+  ArrowDownUp,
+  Crosshair,
+  Grid3x3,
   GitBranch,
+  KeyRound,
   Layers,
   Radar,
   Repeat,
@@ -21,6 +25,10 @@ const TOPIC_ICONS: Record<TopicIcon, LucideIcon> = {
   dive: GitBranch,
   ripple: Radar,
   maze: Route,
+  lockers: KeyRound,
+  bars: ArrowDownUp,
+  target: Crosshair,
+  table: Grid3x3,
 };
 
 export function TopicGlyph({ icon, ...props }: { icon: TopicIcon } & LucideProps) {

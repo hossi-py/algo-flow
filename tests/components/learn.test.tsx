@@ -30,6 +30,14 @@ describe("ConceptIllustration", () => {
     "dfs-maze-dive",
     "bfs-ripple",
     "backtracking-tree",
+    "hash-lockers",
+    "hash-tally",
+    "sorting-bars",
+    "sorting-merge",
+    "bsearch-halving",
+    "bsearch-yes-no",
+    "dp-memo-notebook",
+    "dp-table-fill",
   ];
   it.each(keys)("%s 그림이 설명과 함께 그려진다", (key) => {
     const { container } = render(<ConceptIllustration illustration={key} />);

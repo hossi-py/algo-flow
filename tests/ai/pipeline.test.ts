@@ -131,6 +131,13 @@ describe("AI 문제 생성 파이프라인", () => {
       "알고리즘 이름",
     ],
     [
+      "알고리즘 이름 노출 (이분 탐색)",
+      validDraft({ statement: `${validDraft().statement}\n\n이분 탐색을 쓰면 빨라요.` }),
+      "quality",
+      "알고리즘 이름",
+    ],
+    ["알고리즘 이름 노출 (DP)", validDraft({ summary: "DP로 경우의 수를 세요" }), "quality", "알고리즘 이름"],
+    [
       "예제가 너무 적음",
       validDraft({
         testInputs: validDraft().testInputs.map((t, i) => (i === 1 ? { ...t, visibility: "hidden" as const } : t)),

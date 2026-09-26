@@ -1,0 +1,180 @@
+import type { Problem } from "@/types/content";
+
+export const hashStickerAlbum: Problem = {
+  id: "c:hash-sticker-album",
+  slug: "hash-sticker-album",
+  source: "curated",
+  topic: "hash",
+  level: 1,
+  title: "빠진 스티커 찾기",
+  summary: "모은 스티커를 set에 넣고 앨범에서 빈칸 번호를 찾아요",
+  statement: [
+    "노디의 스티커 앨범에는 1번부터 `n`번까지 칸이 있어요. 지금까지 모은 스티커 번호가 `stickers`로 주어져요. 같은 번호를 여러 장 모았을 수도 있어요.",
+    "",
+    "앨범에서 **아직 채우지 못한 번호**를 작은 번호부터 차례로 담은 리스트를 반환해 주세요. 모두 모았다면 빈 리스트예요.",
+  ].join("\n"),
+  inputFormat: "`n`: 앨범 칸 수, `stickers`: 모은 스티커 번호 리스트예요.",
+  outputFormat: "빠진 번호를 오름차순으로 담은 리스트",
+  constraints: ["1 ≤ n ≤ 100,000", "0 ≤ stickers의 길이 ≤ 100,000", "1 ≤ 스티커 번호 ≤ n"],
+  signature: {
+    name: "solution",
+    params: [
+      { name: "n", type: { python: "int", javascript: "number", java: "int" }, description: "앨범 칸 수" },
+      {
+        name: "stickers",
+        type: { python: "list[int]", javascript: "number[]", java: "int[]" },
+        description: "모은 스티커 번호",
+      },
+    ],
+    returns: {
+      type: { python: "list[int]", javascript: "number[]", java: "List<Integer>" },
+      description: "빠진 번호 (오름차순)",
+    },
+  },
+  starterCode: {
+    python: ["def solution(n, stickers):", "    answer = []", "    return answer", ""].join("\n"),
+    javascript: ["function solution(n, stickers) {", "  let answer = [];", "  return answer;", "}", ""].join("\n"),
+    java: [
+      "import java.util.*;",
+      "",
+      "class Solution {",
+      "    public List<Integer> solution(int n, int[] stickers) {",
+      "        List<Integer> answer = new ArrayList<>();",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
+  },
+  testCases: [
+    {
+      id: "ex-1",
+      visibility: "example",
+      purpose: "basic",
+      args: [5, [3, 1, 3, 5]],
+      expected: [2, 4],
+      explanation: "1, 3, 5는 있어요. 2와 4가 빠졌어요.",
+    },
+    {
+      id: "ex-2",
+      visibility: "example",
+      purpose: "edge",
+      args: [3, [2, 1, 3, 2]],
+      expected: [],
+      explanation: "모두 모았어요. 빈 리스트예요.",
+    },
+    {
+      id: "hid-1",
+      visibility: "hidden",
+      purpose: "edge",
+      args: [4, []],
+      expected: [1, 2, 3, 4],
+      failureNote: "하나도 없으면 1번부터 n번까지 전부 빠졌어요.",
+    },
+    {
+      id: "hid-2",
+      visibility: "hidden",
+      purpose: "edge",
+      args: [1, [1, 1, 1]],
+      expected: [],
+      failureNote: "같은 스티커만 여러 장이에요.",
+    },
+    {
+      id: "hid-3",
+      visibility: "hidden",
+      purpose: "tricky",
+      args: [6, [6, 5, 4]],
+      expected: [1, 2, 3],
+      failureNote: "모은 순서와 상관없이 빠진 번호는 작은 번호부터 적어요: [1, 2, 3].",
+    },
+    {
+      id: "hid-4",
+      visibility: "hidden",
+      purpose: "stress",
+      args: [
+        100000,
+        Array.from({ length: 100000 }, (_, i) => i + 1)
+          .filter((x) => x % 10000 !== 0)
+          .reverse(),
+      ],
+      expected: [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000],
+      failureNote: "번호 10만 개를 확인해요. 번호마다 스티커 리스트를 훑으면(x in list) 시간 초과예요.",
+    },
+  ],
+  judge: {
+    timeLimitMs: 2000,
+    compare: { type: "exact" },
+    recursionLimit: 3000,
+    revealFirstFailure: true,
+  },
+  hints: [
+    {
+      step: 1,
+      kind: "pattern",
+      title: "어떤 유형일까요?",
+      body: [
+        "1부터 n까지 번호마다 '**가지고 있나?**'를 물어봐요 → 모은 번호를 **set**으로 만들어 두는 해시 문제예요.",
+      ].join("\n"),
+      xpPenaltyRate: 0.05,
+    },
+    {
+      step: 2,
+      kind: "approach",
+      title: "어떻게 접근할까요?",
+      body: [
+        "1. `stickers`를 set으로 바꿔요. 같은 번호가 여러 장이어도 한 번만 남아요.",
+        "2. 1부터 n까지 차례로 돌면서, set에 **없는** 번호를 답에 넣어요.",
+        "",
+        "1부터 순서대로 도니까 따로 정렬하지 않아도 오름차순이에요.",
+      ].join("\n"),
+      xpPenaltyRate: 0.15,
+    },
+    {
+      step: 3,
+      kind: "pseudocode",
+      title: "의사코드",
+      body: [
+        "~~~text",
+        "have = stickers를 담은 set",
+        "for k in 1..n:",
+        "    if k가 have에 없으면: answer에 k 추가",
+        "~~~",
+      ].join("\n"),
+      xpPenaltyRate: 0.3,
+    },
+    {
+      step: 4,
+      kind: "key-code",
+      title: "핵심 코드",
+      body: ["빠진 번호를 고르는 조건이에요. 빈칸을 채워 보세요."].join("\n"),
+      code: {
+        code: {
+          python: [
+            "have = set(stickers)",
+            "for k in range(1, n + 1):",
+            "    if ______:",
+            "        answer.append(k)",
+          ].join("\n"),
+          javascript: [
+            "const have = new Set(stickers);",
+            "for (let k = 1; k <= n; k++) {",
+            "  if (______) answer.push(k);",
+            "}",
+          ].join("\n"),
+          java: [
+            "Set<Integer> have = new HashSet<>();",
+            "for (int s : stickers) have.add(s);",
+            "for (int k = 1; k <= n; k++) {",
+            "    if (______) answer.add(k);",
+            "}",
+          ].join("\n"),
+        },
+      },
+      xpPenaltyRate: 0.5,
+    },
+  ],
+  patternTags: ["existence-check"],
+  signalIds: ["sig-seen-before"],
+  estimatedMinutes: 8,
+  xp: 10,
+};
