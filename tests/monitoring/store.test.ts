@@ -2,9 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-const insert = vi.fn<(row: Record<string, unknown>) => Promise<{ error: { message: string } | null }>>(
-  async () => ({ error: null }),
-);
+const insert = vi.fn<(row: Record<string, unknown>) => Promise<{ error: { message: string } | null }>>(async () => ({
+  error: null,
+}));
 const admin = { configured: true };
 vi.mock("@/lib/supabase/admin", () => ({
   isSupabaseAdminConfigured: () => admin.configured,

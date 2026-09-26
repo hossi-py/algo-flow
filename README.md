@@ -20,15 +20,15 @@ pnpm dev          # http://localhost:3000
 
 `.env.example`을 `.env.local`로 복사해 채웁니다. 비워 두면 해당 기능만 꺼지고 화면에 안내가 나옵니다.
 
-| 변수                                                                | 용도                                                                                        |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `ANTHROPIC_API_KEY`                                                 | AI 코치 · AI 맞춤 문제 생성                                                                 |
-| `AI_COACH_MODEL` / `AI_GENERATOR_MODEL`                             | 모델 ID (기본 `claude-opus-5`)                                                              |
-| `AI_MOCK=1`                                                         | 개발 전용 모의 AI. 키 없이 코치 스트리밍·가드 재작성, 생성 → 검증 실패 → 재생성 흐름 확인   |
-| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | 로그인 · 진도 저장 (없으면 게스트 모드만)                                                   |
-| `SUPABASE_SERVICE_ROLE_KEY`                                         | 서버 전용. 진도 기록 RPC · AI 생성 문제 저장                                                |
-| `NEXT_PUBLIC_AUTH_PROVIDERS`                                        | 로그인 화면의 소셜 로그인 (`google,github,kakao` 중 켠 것)                                  |
-| `NEXT_PUBLIC_RELEASE`                                               | 선택. 배포 버전(커밋 해시 등). 에러 기록에 함께 남아 어느 배포에서 난 에러인지 알 수 있어요 |
+| 변수                                                                | 용도                                                                                      |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `ANTHROPIC_API_KEY`                                                 | AI 코치 · AI 맞춤 문제 생성                                                               |
+| `AI_COACH_MODEL` / `AI_GENERATOR_MODEL`                             | 모델 ID (기본 `claude-opus-5`)                                                            |
+| `AI_MOCK=1`                                                         | 개발 전용 모의 AI. 키 없이 코치 스트리밍·가드 재작성, 생성 → 검증 실패 → 재생성 흐름 확인 |
+| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | 로그인 · 진도 저장 (없으면 게스트 모드만)                                                 |
+| `SUPABASE_SERVICE_ROLE_KEY`                                         | 서버 전용. 진도 기록 RPC · AI 생성 문제 저장                                              |
+| `NEXT_PUBLIC_AUTH_PROVIDERS`                                        | 로그인 화면의 소셜 로그인 (`google,github,kakao` 중 켠 것)                                |
+| `NEXT_PUBLIC_RELEASE`                                               | 선택. 배포 버전. 비우면 Vercel 커밋 해시를 자동으로 써요. 에러 기록에 함께 남아요         |
 
 ### Supabase 연결
 
@@ -53,6 +53,26 @@ pnpm dev          # http://localhost:3000
 | `pnpm format`               | Prettier                                                                                                                                                                                                             |
 
 개발 서버에서는 화면 오른쪽 아래 🔧 버튼(개발용 도구)으로 예시 진도 불러오기 · XP 추가 · 축하 연출 · 진도 초기화를 할 수 있습니다. 프로덕션 빌드에는 나타나지 않습니다.
+
+## 관리자 화면
+
+`/admin`에서 운영 현황(합계, 최근 14일 가입·활동·제출 추이, 최근 에러)과 회원 목록·검색·상세(진도, 최근 제출, 배지, AI 사용량)를 볼 수 있어요. 읽기 전용이고, 회원의 코드와 AI 코치 대화 내용은 보여 주지 않아요.
+
+관리자는 `admins` 테이블에 등록된 계정뿐이에요. 로그인한 뒤 Supabase SQL Editor에서 한 번 등록해요.
+
+```sql
+insert into public.admins (user_id, note)
+select id, 운영자 from auth.users where email = 내-이메일@example.com;
+```
+
+관리자가 아니면 `/admin`은 없는 주소와 똑같은 404(탭 제목까지 같음)를 보여 줘서 관리자 화면이 있다는 것도 드러나지 않아요. 관리자에게는 마이페이지에 "관리자 화면" 링크가 보여요.
+
+## CI · 배포
+
+- **CI** (`.github/workflows/ci.yml`): PR과 `master` 푸시마다 GitHub Actions가 타입 검사 · 린트 · 포맷 · 단위 테스트(JDK 21 포함) · 콘텐츠 검증 · Playwright E2E를 돌려요. PR에서 `supabase/migrations/`가 바뀌면 운영 DB에 적용하라는 경고를 남겨요.
+- **배포**: Vercel이 `master`를 받아 자동으로 배포하고, PR마다 미리보기 배포를 만들어요. `vercel.json`으로 Next.js 빌드를 고정해 두었어요.
+- **마이그레이션**: 배포만으로는 DB가 바뀌지 않아요. 새 마이그레이션은 Supabase SQL Editor(또는 `supabase db push`)로 직접 적용해요.
+- **배포 버전**: Vercel 빌드에서는 커밋 해시 앞 7자리가 자동으로 `NEXT_PUBLIC_RELEASE`가 되어 에러 기록에 남아요.
 
 ## 에러 모니터링
 

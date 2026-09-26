@@ -154,6 +154,8 @@
   --primary-foreground: #2b1d5c;
   --primary-edge: #a792f0;
   --primary-strong: #6a4fd1;
+  /* 관리자 추이 차트 막대 (dataviz 검증: 흰 카드 대비 3:1 이상, 명도·채도 범위 통과) */
+  --chart-trend: #6a4fd1;
   --primary-soft: #f1ecff;
   --primary-soft-foreground: #4a36a8;
   --secondary: #ffd3bf;
@@ -230,6 +232,7 @@
   --primary-foreground: #221747;
   --primary-edge: #8f78e6;
   --primary-strong: #cbbbff;
+  --chart-trend: #8f74f0;
   --primary-soft: #352c5c;
   --primary-soft-foreground: #d9ccff;
   --secondary: #44302a;

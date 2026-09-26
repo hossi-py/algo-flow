@@ -3,3 +3,6 @@ pnpm-lock.yaml
 node_modules
 docs
 tests/fixtures
+tmp-authoring
+test-results
+playwright-report
