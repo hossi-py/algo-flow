@@ -2,6 +2,11 @@ import type { PatternTag, TopicSlug } from "@/types";
 
 /** 화면에 보여 줄 패턴 이름 */
 export const PATTERN_LABELS: Record<PatternTag, string> = {
+  "formula-o1": "공식으로 한 번에",
+  "single-pass": "한 번 훑기",
+  precompute: "미리 계산해 두기",
+  "halving-log": "절반씩 줄이기",
+  "sqrt-bound": "제곱근까지만 보기",
   "bracket-matching": "괄호 짝 맞추기",
   "stack-simulation": "스택 시뮬레이션",
   "monotonic-stack": "단조 스택",
@@ -93,6 +98,7 @@ export const TOPIC_PATTERNS: Record<TopicSlug, PatternTag[]> = {
   heap: ["top-k", "repeated-min", "k-way-merge", "two-heaps", "heap-scheduling"],
   dijkstra: ["weighted-shortest-path", "path-restore", "reverse-or-multi-source", "state-dijkstra", "minimax-path"],
   "graph-advanced": ["union-find", "reverse-union", "minimum-spanning-tree", "topological-sort", "dag-dp"],
+  complexity: ["formula-o1", "single-pass", "precompute", "halving-log", "sqrt-bound"],
 };
 
 /** 패턴이 속한 토픽 */

@@ -44,6 +44,21 @@ import { binarySearchSquareGarden } from "./binary-search/square-garden";
 import { binarySearchToyWorkshop } from "./binary-search/toy-workshop";
 import { binarySearchTreeSaw } from "./binary-search/tree-saw";
 import { binarySearchUpdown } from "./binary-search/updown";
+import { cxBalancedSplit } from "./complexity/cx-balanced-split";
+import { cxBestTrade } from "./complexity/cx-best-trade";
+import { cxCountDivisors } from "./complexity/cx-count-divisors";
+import { cxCountMultiples } from "./complexity/cx-count-multiples";
+import { cxCountPrimes } from "./complexity/cx-count-primes";
+import { cxFastPower } from "./complexity/cx-fast-power";
+import { cxGcd } from "./complexity/cx-gcd";
+import { cxHalvingSteps } from "./complexity/cx-halving-steps";
+import { cxHandshakes } from "./complexity/cx-handshakes";
+import { cxIsPrime } from "./complexity/cx-is-prime";
+import { cxMaxSubarray } from "./complexity/cx-max-subarray";
+import { cxPrefixQueries } from "./complexity/cx-prefix-queries";
+import { cxPrimeFactors } from "./complexity/cx-prime-factors";
+import { cxRangeSums } from "./complexity/cx-range-sums";
+import { cxSameColorPairs } from "./complexity/cx-same-color-pairs";
 import { dfsCaveOrder } from "./dfs/cave-order";
 import { dfsClubCount } from "./dfs/club-count";
 import { dfsDownhillRoutes } from "./dfs/downhill-routes";
@@ -287,6 +302,21 @@ export const PROBLEMS: readonly Problem[] = [
   binarySearchToyWorkshop,
   binarySearchTreeSaw,
   binarySearchUpdown,
+  cxBalancedSplit,
+  cxBestTrade,
+  cxCountDivisors,
+  cxCountMultiples,
+  cxCountPrimes,
+  cxFastPower,
+  cxGcd,
+  cxHalvingSteps,
+  cxHandshakes,
+  cxIsPrime,
+  cxMaxSubarray,
+  cxPrefixQueries,
+  cxPrimeFactors,
+  cxRangeSums,
+  cxSameColorPairs,
   dfsCaveOrder,
   dfsClubCount,
   dfsDownhillRoutes,

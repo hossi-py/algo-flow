@@ -43,6 +43,8 @@ const LABELS: Record<IllustrationKey, string> = {
   "dijkstra-settle": "출발점에서 가까운 마을부터 거리가 확정되고, 다음 후보가 기다리는 그림",
   "uf-groups": "두 그룹이 각자 대표를 가리키고 있고, 한 대표를 다른 대표 밑에 붙여 한 그룹으로 합치는 그림",
   "topo-order": "양말·속옷을 먼저, 그다음 바지, 마지막에 신발을 신는 순서를 화살표로 이은 그림",
+  "cx-growth-curves": "N이 커질 때 log N은 거의 평평하고, N은 곧게, N²은 가파르게 치솟는 세 곡선 그림",
+  "cx-count-steps": "1부터 N까지 하나씩 더하는 긴 칸 줄과, 공식 한 줄로 끝나는 칸 하나를 나란히 둔 그림",
 };
 
 /** 강조 면(HOT) 위 글자. 다크 모드에서도 밝은 보라 위에 어두운 글자가 되도록 */
@@ -1284,6 +1286,65 @@ function TopoOrder() {
   );
 }
 
+function CxGrowthCurves() {
+  return (
+    <>
+      <path d="M18 8 L18 88 L150 88" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" />
+      <path d="M18 86 Q60 70 140 64" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+      <path d="M18 88 L140 38" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+      <path d="M18 88 Q92 86 112 10" fill="none" stroke={BAD} strokeWidth={3} strokeLinecap="round" />
+      <Label x={146} y={62} anchor="end">
+        log N
+      </Label>
+      <Label x={146} y={34} anchor="end">
+        N
+      </Label>
+      <Label x={120} y={14} anchor="start">
+        N²
+      </Label>
+      <Label x={150} y={98} anchor="end">
+        N →
+      </Label>
+    </>
+  );
+}
+
+function CxCountSteps() {
+  return (
+    <>
+      {Array.from({ length: 8 }, (_, i) => (
+        <rect
+          key={i}
+          x={8 + i * 12}
+          y={24}
+          width={10}
+          height={14}
+          rx={2}
+          fill={i === 7 ? HOT : WAIT}
+          stroke="currentColor"
+          strokeWidth={1.2}
+        />
+      ))}
+      <Label x={56} y={16}>
+        1 + 2 + … + N
+      </Label>
+      <Label x={56} y={52}>
+        N번
+      </Label>
+      <rect x={112} y={24} width={40} height={14} rx={3} fill={DONE} stroke="currentColor" strokeWidth={1.4} />
+      <Label x={132} y={16}>
+        공식
+      </Label>
+      <Label x={132} y={52}>
+        1번
+      </Label>
+      <Label x={80} y={84}>
+        같은 답, 다른 계산 횟수
+      </Label>
+    </>
+  );
+}
+
 const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "stack-plates": StackPlates,
   "stack-undo": StackUndo,
@@ -1314,6 +1375,8 @@ const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "dijkstra-settle": DijkstraSettle,
   "uf-groups": UfGroups,
   "topo-order": TopoOrder,
+  "cx-growth-curves": CxGrowthCurves,
+  "cx-count-steps": CxCountSteps,
 };
 
 export function ConceptIllustration({

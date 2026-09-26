@@ -3,6 +3,39 @@ import type { PatternSignal } from "@/types";
 /** "문제에 이런 표현이 나오면 이 알고리즘을 의심하라" 신호 목록 */
 export const SIGNALS: PatternSignal[] = [
   {
+    id: "sig-huge-n",
+    phrase: "N이 10억·10¹⁵처럼 아주 커요",
+    examples: ["1 ≤ N ≤ 10¹⁵일 때 1부터 N까지 7의 배수는 몇 개?", "a의 b제곱을 구하세요 (b ≤ 10¹⁸)"],
+    suspects: ["complexity", "binary-search"],
+    patterns: ["formula-o1", "halving-log", "sqrt-bound"],
+    reason:
+      "1초에 약 1억 번 계산해요. N이 10억을 넘으면 반복문 한 바퀴(O(N))도 못 돌아서, 공식(O(1))이나 절반씩 줄이기(O(log N))가 필요해요.",
+    caution: "범위가 크고 '조건을 만족하는 가장 작은 값'을 찾는다면 이분 탐색이에요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-all-pairs-slow",
+    phrase: "모든 쌍을 보면 풀리는데, N이 10만이에요",
+    examples: ["한 번 사고 한 번 팔 때 가장 큰 이익 (가격 10만 개)", "구간 합을 10만 번 물어봐요"],
+    suspects: ["complexity", "two-pointers", "hash"],
+    patterns: ["single-pass", "precompute"],
+    reason:
+      "모든 쌍은 N²이라 N = 10만이면 100억 번이에요. 한 번 훑으며 필요한 값(지금까지의 최솟값·누적 합)을 기억하면 N번이면 돼요.",
+    caution: "기억해 둘 값이 '짝이 되는 수'라면 해시, 정렬된 배열의 양 끝이라면 두 포인터를 떠올려요.",
+    strength: "medium",
+  },
+  {
+    id: "sig-input-size",
+    phrase: "N ≤ 20 / N ≤ 1,000 / N ≤ 100,000 같은 입력 제한",
+    examples: ["1 ≤ N ≤ 100,000", "1 ≤ N ≤ 20"],
+    suspects: ["complexity"],
+    patterns: ["single-pass", "sqrt-bound"],
+    reason:
+      "제한을 보면 필요한 속도가 나와요. N ≤ 20이면 2ᴺ, N ≤ 1,000이면 N², N ≤ 10만이면 N log N, N ≤ 1,000만이면 N까지 괜찮아요.",
+    caution: "제한은 거의 모든 문제에 있어요. 이것만으로 유형이 정해지진 않고, 방법의 속도를 가늠하는 데 써요.",
+    strength: "weak",
+  },
+  {
     id: "sig-bracket-pair",
     phrase: "괄호·태그처럼 짝이 맞아야 하는 구조",
     examples: ["올바른 괄호 문자열인지 판단하세요", "여는 태그와 닫는 태그의 짝이 맞는지 확인하세요"],

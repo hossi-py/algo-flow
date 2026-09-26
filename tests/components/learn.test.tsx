@@ -48,6 +48,8 @@ describe("ConceptIllustration", () => {
     "dijkstra-settle",
     "uf-groups",
     "topo-order",
+    "cx-growth-curves",
+    "cx-count-steps",
   ];
   it.each(keys)("%s 그림이 설명과 함께 그려진다", (key) => {
     const { container } = render(<ConceptIllustration illustration={key} />);

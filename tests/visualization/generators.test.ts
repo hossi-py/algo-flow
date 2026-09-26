@@ -154,10 +154,10 @@ describe("generator 등록", () => {
     }
   });
 
-  it("40개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
+  it("43개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
     const used = new Set(TOPIC_PRESETS.map((preset) => preset.generator));
     expect([...used].sort()).toEqual(Object.keys(GENERATORS).sort());
-    expect(used.size).toBe(40);
+    expect(used.size).toBe(43);
   });
 
   it("프리셋 id가 겹치지 않는다", () => {
@@ -320,6 +320,9 @@ describe("입력 검증", () => {
       ],
     ],
     ["topo-kahn", [3, [[0, 5]]]],
+    ["cx-growth", [1]],
+    ["cx-pairs", [[5]]],
+    ["cx-halving", [0]],
   ];
 
   it.each(BAD_INPUTS)("%s %j → 예외 대신 한국어 오류 메시지", (key, input) => {
@@ -704,5 +707,29 @@ describe("그래프 심화 generator", () => {
         ],
       ]).at(-1)!.message,
     ).toContain("3개 노드가 고리에");
+  });
+});
+
+describe("시간 복잡도 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+
+  it("N이 커질수록 N²이 가장 빨리 늘어난다", () => {
+    const last = run("cx-growth", [10]).at(-1)!;
+    expect(last.state.variables!["N²"]).toBe(100);
+    expect(last.state.bars!.items.map((item) => item.value)).toEqual([3.3, 10, 33.2, 100]);
+  });
+
+  it("모든 쌍과 한 번 훑기는 같은 답을 다른 횟수로 구한다", () => {
+    const last = run("cx-pairs", [[7, 1, 5, 3, 6, 4]]).at(-1)!;
+    expect(last.state.variables).toEqual({ "모든 쌍": 15, "한 번 훑기": 5, 최대이익: 5 });
+  });
+
+  it("절반씩 줄이면 log₂ N번 만에 1이 된다", () => {
+    expect(run("cx-halving", [1000]).at(-1)!.state.variables!["steps"]).toBe(9);
+    expect(run("cx-halving", [1]).at(-1)!.state.variables!["steps"]).toBe(0);
   });
 });

@@ -2,6 +2,7 @@ import type { JsonValue, Language, LanguageMap, ProblemKey } from "./common";
 import type { VisualizationPreset } from "./visualization";
 
 export const TOPIC_SLUGS = [
+  "complexity",
   "stack",
   "queue-deque",
   "recursion",
@@ -73,9 +74,16 @@ export type TopicIcon =
   | "pointers"
   | "heap"
   | "route"
-  | "network";
+  | "network"
+  | "timer";
 
 export const PATTERN_TAGS = [
+  // 시간 복잡도 입문
+  "formula-o1",
+  "single-pass",
+  "precompute",
+  "halving-log",
+  "sqrt-bound",
   // 스택
   "bracket-matching",
   "stack-simulation",
@@ -230,7 +238,9 @@ export type IllustrationKey =
   | "dijkstra-map"
   | "dijkstra-settle"
   | "uf-groups"
-  | "topo-order";
+  | "topo-order"
+  | "cx-growth-curves"
+  | "cx-count-steps";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {

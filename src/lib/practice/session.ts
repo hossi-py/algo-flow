@@ -49,6 +49,7 @@ const TOPIC_NAMES: Record<TopicSlug, RegExp> = {
   heap: /힙|우선순위\s*큐/,
   dijkstra: /다익스트라|데이크스트라/,
   "graph-advanced": /유니온\s*파인드|위상\s*정렬|크루스칼|최소\s*신장/,
+  complexity: /시간\s*복잡도/,
 };
 
 export function revealsTopic(problem: Problem): boolean {
@@ -76,6 +77,7 @@ const CONFUSABLE: Record<TopicSlug, TopicSlug[]> = {
   heap: ["sorting", "greedy", "queue-deque"],
   dijkstra: ["bfs", "dp", "heap"],
   "graph-advanced": ["dfs", "bfs", "dijkstra"],
+  complexity: ["binary-search", "dp", "greedy"],
 };
 
 /** 정답 + 헷갈리는 토픽 2개 + 나머지 중 하나를 섞어 4지선다 */

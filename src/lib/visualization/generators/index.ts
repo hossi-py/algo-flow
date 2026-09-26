@@ -86,6 +86,17 @@ import {
   validateIntervals,
 } from "./greedy";
 import {
+  CX_GROWTH_PSEUDOCODE,
+  CX_HALVING_PSEUDOCODE,
+  CX_PAIRS_PSEUDOCODE,
+  cxGrowth,
+  cxHalving,
+  cxPairs,
+  validateCxGrowth,
+  validateCxHalving,
+  validateCxPairs,
+} from "./complexity";
+import {
   DIJKSTRA_BASIC_PSEUDOCODE,
   DIJKSTRA_GRID_PSEUDOCODE,
   DIJKSTRA_PATH_PSEUDOCODE,
@@ -437,6 +448,27 @@ export const GENERATORS: Record<VisualizationGeneratorKey, GeneratorDefinition> 
     pseudocode: TOPO_KAHN_PSEUDOCODE,
     validate: validateTopoKahn,
     generate: topoKahn,
+  },
+  "cx-growth": {
+    key: "cx-growth",
+    inputHint: "[N] 예: [12] — 2 ~ 20",
+    pseudocode: CX_GROWTH_PSEUDOCODE,
+    validate: validateCxGrowth,
+    generate: cxGrowth,
+  },
+  "cx-pairs": {
+    key: "cx-pairs",
+    inputHint: "[가격 목록] 예: [[7, 1, 5, 3, 6, 4]] — 1~99 정수 2 ~ 8개",
+    pseudocode: CX_PAIRS_PSEUDOCODE,
+    validate: validateCxPairs,
+    generate: cxPairs,
+  },
+  "cx-halving": {
+    key: "cx-halving",
+    inputHint: "[N] 예: [1000] — 1 ~ 1,000,000",
+    pseudocode: CX_HALVING_PSEUDOCODE,
+    validate: validateCxHalving,
+    generate: cxHalving,
   },
 };
 

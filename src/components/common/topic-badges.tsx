@@ -13,6 +13,7 @@ import {
   Repeat,
   Route,
   Signpost,
+  Timer,
   Share2,
   UsersRound,
   type LucideIcon,
@@ -39,6 +40,7 @@ const TOPIC_ICONS: Record<TopicIcon, LucideIcon> = {
   heap: Pyramid,
   route: Signpost,
   network: Network,
+  timer: Timer,
 };
 
 export function TopicGlyph({ icon, ...props }: { icon: TopicIcon } & LucideProps) {

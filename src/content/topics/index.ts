@@ -2,6 +2,7 @@ import type { Topic, TopicSlug, UpcomingTopicSlug } from "@/types";
 import { backtrackingTopic } from "./backtracking";
 import { bfsTopic } from "./bfs";
 import { binarySearchTopic } from "./binary-search";
+import { complexityTopic } from "./complexity";
 import { dfsTopic } from "./dfs";
 import { dijkstraTopic } from "./dijkstra";
 import { dpTopic } from "./dp";
@@ -18,6 +19,7 @@ import { twoPointersTopic } from "./two-pointers";
 
 /** 커리큘럼 순서 */
 export const TOPICS: readonly Topic[] = [
+  complexityTopic,
   stackTopic,
   queueDequeTopic,
   recursionTopic,

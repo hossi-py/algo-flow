@@ -46,6 +46,29 @@ const COMPARE_GRAPH: JsonValue[] = [
 
 /** 토픽별 개념 학습 화면의 시각화 예시 */
 export const TOPIC_VISUALIZATIONS: Record<TopicSlug, VisualizationPreset[]> = {
+  complexity: [
+    preset(
+      "cx-growth-12",
+      "cx-growth",
+      "N이 커지면 얼마나 늘어날까",
+      "N이 조금씩 커질 때 log N, N, N log N, N²이 얼마나 빨리 늘어나는지 막대로 비교해요.",
+      [12],
+    ),
+    preset(
+      "cx-pairs-6",
+      "cx-pairs",
+      "모든 쌍 vs 한 번 훑기",
+      "같은 답을 모든 쌍을 비교해서도, 지금까지 가장 싼 가격만 기억하며 한 번 훑어서도 구할 수 있어요. 비교 횟수를 세어 봐요.",
+      [[7, 1, 5, 3, 6, 4]],
+    ),
+    preset(
+      "cx-halving-1000",
+      "cx-halving",
+      "절반씩 줄이면 금방 끝나요",
+      "1000을 계속 절반으로 나누면 10번도 안 돼서 1이 돼요. 하나씩 빼면 999번이에요.",
+      [1000],
+    ),
+  ],
   stack: [
     preset(
       "stack-basic-intro",

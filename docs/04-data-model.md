@@ -42,6 +42,7 @@ import type { JsonValue, Language, ProblemKey } from "./common";
 import type { VisualizationPreset } from "./visualization";
 
 export const TOPIC_SLUGS = [
+  "complexity",
   "stack",
   "queue-deque",
   "recursion",
@@ -84,9 +85,15 @@ export const LEVEL_STAGE_LABELS: Record<LevelStage, string> = {
 };
 
 export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum" | "teal" | "coral" | "indigo";
-export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table" | "coins" | "pointers" | "heap" | "route" | "network";
+export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table" | "coins" | "pointers" | "heap" | "route" | "network" | "timer";
 
 export const PATTERN_TAGS = [
+  // 시간 복잡도 입문
+  "formula-o1",
+  "single-pass",
+  "precompute",
+  "halving-log",
+  "sqrt-bound",
   // 스택
   "bracket-matching",
   "stack-simulation",
@@ -243,7 +250,9 @@ export type IllustrationKey =
   | "dijkstra-map"
   | "dijkstra-settle"
   | "uf-groups"
-  | "topo-order";
+  | "topo-order"
+  | "cx-growth-curves"
+  | "cx-count-steps";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {
@@ -458,7 +467,10 @@ export type VisualizationGeneratorKey =
   | "dijkstra-grid"
   | "uf-union"
   | "mst-kruskal"
-  | "topo-kahn";
+  | "topo-kahn"
+  | "cx-growth"
+  | "cx-pairs"
+  | "cx-halving";
 
 export interface VisualizationPreset {
   id: string;

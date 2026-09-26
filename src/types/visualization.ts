@@ -40,7 +40,10 @@ export type VisualizationGeneratorKey =
   | "dijkstra-grid"
   | "uf-union"
   | "mst-kruskal"
-  | "topo-kahn";
+  | "topo-kahn"
+  | "cx-growth"
+  | "cx-pairs"
+  | "cx-halving";
 
 export interface VisualizationPreset {
   id: string;
