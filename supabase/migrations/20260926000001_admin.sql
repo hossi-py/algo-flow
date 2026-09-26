@@ -1,11 +1,12 @@
 -- 관리자 화면: 관리자 계정 목록과, 관리자 화면만 쓰는 조회 함수.
 -- 모두 service role 전용이다. 서버가 요청한 사람이 admins에 있는지 확인한 뒤에만 부른다 (src/lib/admin).
+-- 여러 번 실행해도 안전하다 (테이블은 없을 때만 만들고, 함수는 덮어쓴다).
 --
 -- 관리자 등록 (Supabase SQL Editor에서 한 번):
 --   insert into public.admins (user_id, note)
 --   select id, '운영자' from auth.users where email = '내-이메일@example.com';
 
-create table public.admins (
+create table if not exists public.admins (
   user_id    uuid primary key references auth.users (id) on delete cascade,
   note       text check (char_length(note) <= 200),
   created_at timestamptz not null default now()
@@ -15,7 +16,7 @@ alter table public.admins enable row level security; -- 정책 없음 = service 
 revoke all on public.admins from anon, authenticated;
 
 -- 회원 목록: 이메일·닉네임 검색, 정렬, 페이지. total_count는 검색 결과 전체 수
-create function public.admin_list_users(
+create or replace function public.admin_list_users(
   p_search text default '',
   p_sort   text default 'joined',
   p_limit  int  default 50,
@@ -74,7 +75,7 @@ as $$
 $$;
 
 -- 회원 한 명의 계정 정보 (auth.users에만 있는 값). 나머지 상세는 서버가 public 테이블에서 직접 읽는다
-create function public.admin_user_account(p_user_id uuid)
+create or replace function public.admin_user_account(p_user_id uuid)
 returns table (email text, joined_at timestamptz, last_sign_in_at timestamptz, is_admin boolean)
 language sql
 stable
@@ -87,7 +88,7 @@ as $$
 $$;
 
 -- 운영 현황: 합계와 최근 p_days일의 날짜별 추이 (Asia/Seoul 기준 날짜)
-create function public.admin_overview(
+create or replace function public.admin_overview(
   p_days  int  default 14,
   p_today date default (now() at time zone 'Asia/Seoul')::date
 )
