@@ -38,6 +38,8 @@ interface ProfileRow {
   theme: AccountProfile["theme"];
   editor_font_size: number;
   preferred_language: AccountProfile["preferredLanguage"];
+  /** 20260926000003 마이그레이션 전에는 없다 */
+  show_in_ranking?: boolean;
   created_at: string;
 }
 
@@ -52,6 +54,7 @@ export async function loadProfile(user: User): Promise<AccountProfile> {
     theme: data.theme,
     editorFontSize: data.editor_font_size,
     preferredLanguage: data.preferred_language,
+    showInRanking: data.show_in_ranking ?? true,
     createdAt: new Date(data.created_at).toISOString(),
   };
 }

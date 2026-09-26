@@ -315,7 +315,7 @@ describe("게스트 → 계정 병합", () => {
   }
 
   it("게스트로 3문제 푼 뒤 로그인하면 XP·진도·스트릭·배지가 그대로 보존된다", async () => {
-    const C = "00000000-0000-4000-8000-00000000000c";
+    const C = "00000000-0000-4000-8000-0000000000c1";
     await signUp(db, C);
     const guest = guestWithThreeSolved();
     expect(guest.progress.stats).toMatchObject({ xp: 70, currentStreak: 2 });
@@ -344,7 +344,7 @@ describe("게스트 → 계정 병합", () => {
 
 describe("약점 분석", () => {
   it("DB 뷰(user_pattern_stats)와 TS 계산이 같은 결과를 낸다 → Top3가 실제 제출과 일치", async () => {
-    const D = "00000000-0000-4000-8000-00000000000d";
+    const D = "00000000-0000-4000-8000-0000000000d1";
     await signUp(db, D);
     const bfs1 = generated("bbbbbbbb-0000-4000-8000-000000000001", ["shortest-path-unweighted", "grid-shortest-path"]);
     const bfs2 = generated("bbbbbbbb-0000-4000-8000-000000000002", ["shortest-path-unweighted"]);
@@ -585,5 +585,117 @@ describe("관리자 (admins · 관리자 조회 함수)", () => {
     }
     expect(weekly.submissions?.current).toBeGreaterThanOrEqual(2);
     expect(weekly.solvedProblems?.current).toBeGreaterThanOrEqual(1);
+  });
+});
+
+describe("주간 랭킹과 이상 기록", () => {
+  // 2026-09-20(일)이 속한 주: 9/14(월) ~ 9/20(일)
+  const TODAY = "2026-09-20";
+  const C = "00000000-0000-4000-8000-00000000a0c1"; // 10분 안에 10문제
+  const D = "00000000-0000-4000-8000-00000000a0d1"; // 하루 XP 5,000
+  const E = "00000000-0000-4000-8000-00000000a0e1"; // 한 글자 코드로 정답
+  const F = "00000000-0000-4000-8000-00000000a0f1"; // 정상, A와 같은 XP
+  type Row = { rank: number; nickname: string; xp: number; is_me: boolean; week_start: string; participants: number };
+  const ranking = (userId: string | null, limit = 50) =>
+    as(
+      db,
+      { kind: "service" },
+      async () => (await db.query<Row>("select * from public.weekly_ranking($1, $2, $3)", [userId, limit, TODAY])).rows,
+    );
+
+  beforeAll(async () => {
+    for (const [id, name] of [
+      [C, "번개손"],
+      [D, "만렙"],
+      [E, "한글자"],
+      [F, "성실이"],
+    ] as const) {
+      await signUp(db, id, name);
+    }
+    await as(db, { kind: "service" }, async () => {
+      const insert =
+        "insert into public.submissions (user_id, problem_key, source, topic_slug, level, language, code, verdict, passed, total, created_at) values ($1, $2, 'curated', 'stack', 1, 'python', $3, 'accepted', 5, 5, $4)";
+      for (let i = 0; i < 10; i++) {
+        await db.query(insert, [C, `c:rapid-${i}`, "def solution(x):\n    return x\n", `2026-09-18T10:0${i}:00+09:00`]);
+      }
+      await db.query(insert, [E, "c:tiny", "x", "2026-09-18T12:00:00+09:00"]);
+      const activity =
+        "insert into public.activity_days (user_id, activity_date, xp_earned, solved_count) values ($1, $2, $3, $4)";
+      await db.query(activity, [C, "2026-09-18", 100, 10]);
+      await db.query(activity, [D, "2026-09-19", 5000, 1]);
+      await db.query(activity, [E, "2026-09-18", 10, 1]);
+      await db.query(activity, [F, "2026-09-15", 10, 1]);
+      await db.query(activity, [F, "2026-09-13", 999, 9]); // 지난주라 빠진다
+    });
+  });
+
+  it("클라이언트 키로는 랭킹·이상 기록 함수를 부를 수 없다 (서버가 닉네임만 골라 보여 준다)", async () => {
+    for (const role of [{ kind: "anon" }, { kind: "user", id: A }] as const) {
+      await expect(as(db, role, () => db.query("select * from public.weekly_ranking()"))).rejects.toThrow(
+        /permission denied/,
+      );
+      await expect(
+        as(db, role, () => db.query("select * from public.ranking_flags('2026-09-14', '2026-09-20')")),
+      ).rejects.toThrow(/permission denied/);
+    }
+  });
+
+  it("이상 기록을 이유와 함께 찾는다", async () => {
+    const flags = await as(
+      db,
+      { kind: "service" },
+      async () =>
+        (
+          await db.query<{ user_id: string; reason: string }>(
+            "select user_id, reason from public.ranking_flags('2026-09-14', '2026-09-20') order by reason",
+          )
+        ).rows,
+    );
+    expect(flags).toEqual(
+      expect.arrayContaining([
+        { user_id: C, reason: "rapid-solves" },
+        { user_id: D, reason: "xp-overflow" },
+        { user_id: E, reason: "tiny-code" },
+      ]),
+    );
+    expect(flags.some((f) => f.user_id === F)).toBe(false);
+  });
+
+  it("이번 주 XP로 순위를 매기고, 이상 기록·XP 0 회원은 뺀다. 같은 XP는 같은 순위", async () => {
+    const rows = await ranking(F);
+    const names = rows.map((r) => r.nickname);
+    expect(names).not.toContain("번개손");
+    expect(names).not.toContain("만렙");
+    expect(names).not.toContain("한글자");
+    expect(rows.every((r) => r.xp > 0)).toBe(true);
+    expect(new Date(rows[0]?.week_start ?? "").toISOString().slice(0, 10)).toBe("2026-09-14");
+    const me = rows.find((r) => r.is_me);
+    expect(me).toMatchObject({ nickname: "성실이", xp: 10 }); // 지난주 999 XP는 들어가지 않는다
+    const sameXp = rows.filter((r) => r.xp === me?.xp);
+    expect(new Set(sameXp.map((r) => r.rank)).size).toBe(1);
+  });
+
+  it("상위 몇 명만 보여 주되, 순위 밖이어도 내 행은 함께 준다", async () => {
+    const rows = await ranking(F, 1);
+    expect(rows.some((r) => r.is_me)).toBe(true);
+    expect(rows.filter((r) => !r.is_me).every((r) => r.rank <= 1)).toBe(true);
+  });
+
+  it("랭킹 숨기기를 켜면 빠지고, 본인만 그 설정을 바꿀 수 있다", async () => {
+    await as(db, { kind: "user", id: F }, () =>
+      db.query("update public.profiles set show_in_ranking = false where id = $1", [F]),
+    );
+    expect((await ranking(F)).some((r) => r.nickname === "성실이")).toBe(false);
+    // 다른 사람의 설정은 바꿀 수 없다 (RLS)
+    const changed = await as(
+      db,
+      { kind: "user", id: A },
+      async () =>
+        (await db.query("update public.profiles set show_in_ranking = false where id = $1", [F])).affectedRows,
+    );
+    expect(changed).toBe(0);
+    await as(db, { kind: "user", id: F }, () =>
+      db.query("update public.profiles set show_in_ranking = true where id = $1", [F]),
+    );
   });
 });

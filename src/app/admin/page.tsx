@@ -9,6 +9,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AdminOverviewPage() {
   await requireAdmin();
-  const { overview, errors, fetchedAt } = await getOverview(14);
-  return <OverviewView overview={overview} errors={errors} now={fetchedAt} />;
+  const { overview, errors, flags, fetchedAt } = await getOverview(14);
+  return <OverviewView overview={overview} errors={errors} flags={flags} now={fetchedAt} />;
 }

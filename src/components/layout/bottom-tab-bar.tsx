@@ -18,7 +18,11 @@ export function BottomTabBar({ className }: { className?: string }) {
         className,
       )}
     >
-      <ul className="mx-auto grid max-w-md grid-cols-4 gap-1">
+      {/* 메뉴 수만큼 칸을 나눈다 (메뉴가 늘어도 한 줄에 들어가게) */}
+      <ul
+        className="mx-auto grid max-w-md gap-1"
+        style={{ gridTemplateColumns: `repeat(${NAV_ITEMS.length}, minmax(0, 1fr))` }}
+      >
         {NAV_ITEMS.map((item) => {
           const active = item.match(pathname);
           const Icon = item.icon;

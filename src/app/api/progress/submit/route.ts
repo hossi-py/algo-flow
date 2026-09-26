@@ -2,6 +2,7 @@ import { TOPICS } from "@/content/topics";
 import type { ProgressMutationResponse } from "@/lib/progress/account";
 import { submitBodySchema } from "@/lib/progress/api-schemas";
 import { submitForUser } from "@/lib/progress/service";
+import { checkSubmission } from "@/lib/progress/submission-check";
 import { badRequest, findProblemForUser, readJson, requireAccount, serverClock } from "@/lib/server/account";
 import type { JudgeResult } from "@/types";
 
@@ -15,6 +16,9 @@ export async function POST(request: Request) {
 
   const problem = await findProblemForUser(body.problemKey, account.user.id);
   if (!problem) return Response.json({ error: "문제를 찾을 수 없어요." }, { status: 404 });
+  // 채점은 브라우저에서 하므로, 앞뒤가 맞지 않는 제출은 기록하지 않는다
+  const rejected = checkSubmission(problem, body);
+  if (rejected) return badRequest(rejected);
 
   const result = await submitForUser(
     account.repo,
@@ -22,7 +26,7 @@ export async function POST(request: Request) {
     problem,
     {
       verdict: body.verdict,
-      passed: Math.min(body.passed, body.total),
+      passed: body.passed,
       total: body.total,
       runtimeMs: body.runtimeMs,
       language: body.language,

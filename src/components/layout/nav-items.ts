@@ -1,4 +1,4 @@
-import { House, Map as MapIcon, Sparkles, UserRound, type LucideIcon } from "lucide-react";
+import { House, Map as MapIcon, Sparkles, Trophy, UserRound, type LucideIcon } from "lucide-react";
 
 export interface NavItem {
   href: string;
@@ -17,5 +17,6 @@ export const NAV_ITEMS: NavItem[] = [
     match: (p) => p.startsWith("/roadmap") || p.startsWith("/topics"),
   },
   { href: "/ai-lab", label: "AI 랩", icon: Sparkles, match: (p) => p.startsWith("/ai-lab") },
+  { href: "/ranking", label: "랭킹", icon: Trophy, match: (p) => p.startsWith("/ranking") },
   { href: "/me", label: "마이", icon: UserRound, match: (p) => p.startsWith("/me") },
 ];
