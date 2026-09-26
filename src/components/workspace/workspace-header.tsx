@@ -12,6 +12,9 @@ import { LANGUAGES, LANGUAGE_LABELS, type Language, type Problem } from "@/types
 /** 언어 이름 뒤 목적격 조사 (파이썬을 · 자바스크립트를 · 자바를) */
 const OBJECT_PARTICLE: Record<Language, string> = { python: "을", javascript: "를", java: "를" };
 
+/** 좁은 화면에서 보이는 짧은 이름 (읽어 주는 이름은 그대로) */
+const SHORT_LABELS: Partial<Record<Language, string>> = { javascript: "JS" };
+
 interface WorkspaceHeaderProps {
   problem: Problem;
   solved: boolean;
@@ -43,7 +46,11 @@ export function LanguageToggle({
   className?: string;
 }) {
   return (
-    <div role="group" aria-label={label} className={cn("inline-flex h-9 rounded-full bg-muted p-1", className)}>
+    <div
+      role="group"
+      aria-label={label}
+      className={cn("inline-flex h-9 shrink-0 rounded-full bg-muted p-1", className)}
+    >
       {languages.map((value) => {
         const active = value === language;
         const isPreferred = value === preferred;
@@ -52,15 +59,22 @@ export function LanguageToggle({
             key={value}
             type="button"
             aria-pressed={active}
-            aria-label={isPreferred ? `${LANGUAGE_LABELS[value]} (주력 언어)` : undefined}
+            aria-label={isPreferred ? `${LANGUAGE_LABELS[value]} (주력 언어)` : LANGUAGE_LABELS[value]}
             onClick={() => onChange(value)}
             className={cn(
-              "inline-flex items-center gap-1 rounded-full px-3 text-caption font-bold transition-colors outline-none focus-visible:ring-4 focus-visible:ring-ring/40",
+              "inline-flex items-center gap-1 rounded-full px-2.5 text-caption font-bold whitespace-nowrap transition-colors outline-none focus-visible:ring-4 focus-visible:ring-ring/40 sm:px-3",
               active ? "bg-card text-foreground shadow-soft" : "text-muted-foreground hover:text-foreground",
             )}
           >
             {isPreferred && <Star className="text-streak size-3 fill-current" aria-hidden />}
-            {LANGUAGE_LABELS[value]}
+            {SHORT_LABELS[value] ? (
+              <>
+                <span className="sm:hidden">{SHORT_LABELS[value]}</span>
+                <span className="hidden sm:inline">{LANGUAGE_LABELS[value]}</span>
+              </>
+            ) : (
+              LANGUAGE_LABELS[value]
+            )}
           </button>
         );
       })}
