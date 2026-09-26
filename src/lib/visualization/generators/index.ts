@@ -63,6 +63,17 @@ import {
   validateExact,
   validateLowerBound,
 } from "./binary-search";
+import {
+  GRID_PATHS_PSEUDOCODE,
+  LCS_PSEUDOCODE,
+  STAIRS_PSEUDOCODE,
+  gridPaths,
+  lcs,
+  stairs,
+  validateGridPaths,
+  validateLcs,
+  validateStairs,
+} from "./dp";
 import { InputError } from "./shared";
 import {
   COUNTING_PSEUDOCODE,
@@ -242,6 +253,27 @@ export const GENERATORS: Record<VisualizationGeneratorKey, GeneratorDefinition> 
     pseudocode: ANSWER_PSEUDOCODE,
     validate: validateAnswer,
     generate: answerSearch,
+  },
+  "dp-stairs": {
+    key: "dp-stairs",
+    inputHint: "[n] 예: [6] — 계단 칸 수 1 ~ 12",
+    pseudocode: STAIRS_PSEUDOCODE,
+    validate: validateStairs,
+    generate: stairs,
+  },
+  "dp-grid-paths": {
+    key: "dp-grid-paths",
+    inputHint: '[격자] 예: [["....", ".#..", "...."]] — . 길, # 막힘, 최대 6×6 (출발·도착 칸은 길)',
+    pseudocode: GRID_PATHS_PSEUDOCODE,
+    validate: validateGridPaths,
+    generate: gridPaths,
+  },
+  "dp-lcs": {
+    key: "dp-lcs",
+    inputHint: '[단어 A, 단어 B] 예: ["acbde", "abcfe"] — 영어 소문자 1 ~ 7글자',
+    pseudocode: LCS_PSEUDOCODE,
+    validate: validateLcs,
+    generate: lcs,
   },
 };
 

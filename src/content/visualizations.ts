@@ -232,4 +232,27 @@ export const TOPIC_VISUALIZATIONS: Record<TopicSlug, VisualizationPreset[]> = {
       [[80, 43, 57, 39], 11],
     ),
   ],
+  dp: [
+    preset(
+      "dp-stairs-6",
+      "dp-stairs",
+      "계단 오르기 (1차원 표)",
+      "i칸까지 오는 방법 = (i-1칸까지) + (i-2칸까지). 앞에서 적어 둔 답을 꺼내 쓰니 같은 계산을 다시 하지 않아요.",
+      [6],
+    ),
+    preset(
+      "dp-grid-paths-3x4",
+      "dp-grid-paths",
+      "격자 길 세기 (2차원 표)",
+      "오른쪽·아래로만 가면, 한 칸으로 오는 길 = 위 칸의 길 + 왼쪽 칸의 길이에요. 막힌 칸은 0이에요.",
+      [["....", ".#..", "...."]],
+    ),
+    preset(
+      "dp-lcs-words",
+      "dp-lcs",
+      "가장 긴 공통 부분 수열 (두 문자열 표)",
+      "글자가 같으면 대각선 + 1, 다르면 위·왼쪽 중 큰 값. 표가 다 차면 오른쪽 아래 칸이 답이에요.",
+      ["acbde", "abcfe"],
+    ),
+  ],
 };

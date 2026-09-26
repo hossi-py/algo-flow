@@ -88,6 +88,18 @@ function summarize(state: VizState): string {
       `${b.title}=|${items}|${b.range ? ` range=${b.range.join("..")}` : ""}${pointers ? ` ${pointers}` : ""}`,
     );
   }
+  if (state.table) {
+    const t = state.table;
+    const rows = t.cells.map((row, r) =>
+      row
+        .map((cell, c) => {
+          const tone = t.highlights.find((h) => h.row === r && h.col === c)?.tone;
+          return (cell === null ? "." : text(cell)) + (tone ? TONE_MARK[tone] : "");
+        })
+        .join(" "),
+    );
+    parts.push(`${t.title}[${rows.join(" / ")}]`);
+  }
   if (state.hash) {
     const h = state.hash;
     const entry = (e: { id: string; key: JsonValue; value: JsonValue }) =>
@@ -142,10 +154,10 @@ describe("generator 등록", () => {
     }
   });
 
-  it("22개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
+  it("25개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
     const used = new Set(TOPIC_PRESETS.map((preset) => preset.generator));
     expect([...used].sort()).toEqual(Object.keys(GENERATORS).sort());
-    expect(used.size).toBe(22);
+    expect(used.size).toBe(25);
   });
 
   it("프리셋 id가 겹치지 않는다", () => {
@@ -247,6 +259,13 @@ describe("입력 검증", () => {
     ["bsearch-lower-bound", [[], 1]],
     ["bsearch-answer", [[0, 5], 2]],
     ["bsearch-answer", [[5], 51]],
+    ["dp-stairs", [0]],
+    ["dp-stairs", [13]],
+    ["dp-grid-paths", [["#..", "..."]]],
+    ["dp-grid-paths", [["..", "..."]]],
+    ["dp-grid-paths", [["abc"]]],
+    ["dp-lcs", ["ABC", "abc"]],
+    ["dp-lcs", ["abcdefgh", "a"]],
   ];
 
   it.each(BAD_INPUTS)("%s %j → 예외 대신 한국어 오류 메시지", (key, input) => {
@@ -374,5 +393,42 @@ describe("이분 탐색 generator", () => {
     expect(answer([80, 43, 57, 39], 11)).toBe(19);
     expect(answer([5], 5)).toBe(1);
     expect(answer([3], 4)).toBe(0);
+  });
+});
+
+describe("DP generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+  const cells = (steps: VisualizationStep[]) => steps.at(-1)!.state.table!.cells;
+
+  it("계단 표는 피보나치처럼 채워진다", () => {
+    expect(cells(run("dp-stairs", [6]))[0]).toEqual([1, 1, 2, 3, 5, 8, 13]);
+    expect(cells(run("dp-stairs", [1]))[0]).toEqual([1, 1]);
+  });
+
+  it("격자 길 수는 막힌 칸을 0으로 보고 위·왼쪽을 더한다", () => {
+    expect(
+      cells(run("dp-grid-paths", [["...", "...", "..."]]))
+        .at(-1)!
+        .at(-1),
+    ).toBe(6);
+    const blocked = cells(run("dp-grid-paths", [["....", ".#..", "...."]]));
+    expect(blocked[1]![1]).toBe("#");
+    expect(blocked.at(-1)!.at(-1)).toBe(4);
+    expect(
+      cells(run("dp-grid-paths", [[".#", "#."]]))
+        .at(-1)!
+        .at(-1),
+    ).toBe(0);
+  });
+
+  it("LCS 표의 오른쪽 아래가 답이고, 거꾸로 따라간 공통 부분 수열을 알려 준다", () => {
+    const steps = run("dp-lcs", ["acbde", "abcfe"]);
+    expect(cells(steps).at(-1)!.at(-1)).toBe(3);
+    expect(steps.at(-1)!.message).toMatch(/공통 부분 수열: (abe|ace)/);
+    expect(run("dp-lcs", ["abc", "xyz"]).at(-1)!.message).toContain("(없음)");
   });
 });

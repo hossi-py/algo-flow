@@ -31,6 +31,8 @@ const LABELS: Record<IllustrationKey, string> = {
   "sorting-merge": "정렬된 두 줄의 맨 앞끼리 비교해서 한 줄로 합치는 그림",
   "bsearch-halving": "정렬된 칸들에서 가운데를 보고 절반씩 지워 가며 범위를 좁히는 그림",
   "bsearch-yes-no": "가능·가능·가능 뒤로 불가능이 이어지는 줄에서 그 경계를 찾는 그림",
+  "dp-memo-notebook": "한 번 계산한 답을 수첩에 적어 두고 다시 필요할 때 꺼내 쓰는 그림",
+  "dp-table-fill": "표의 칸을 왼쪽 위부터 차례로 채우며 위·왼쪽 칸의 값을 더하는 그림",
 };
 
 /** 강조 면(HOT) 위 글자. 다크 모드에서도 밝은 보라 위에 어두운 글자가 되도록 */
@@ -795,6 +797,78 @@ function BsearchYesNo() {
   );
 }
 
+function DpMemoNotebook() {
+  const notes = [
+    { k: "f(2)", v: "2" },
+    { k: "f(3)", v: "3" },
+    { k: "f(4)", v: "5" },
+  ];
+  return (
+    <>
+      <rect x={96} y={10} width={56} height={70} rx={6} fill={PAPER} stroke="currentColor" strokeWidth={1.8} />
+      <line x1={104} y1={10} x2={104} y2={80} stroke="currentColor" strokeWidth={1} opacity={0.5} />
+      {notes.map((note, i) => (
+        <g key={note.k}>
+          <Label x={110} y={28 + i * 18} anchor="start">
+            {note.k}
+          </Label>
+          <Label x={146} y={28 + i * 18} anchor="end">
+            {note.v}
+          </Label>
+        </g>
+      ))}
+      <rect x={10} y={30} width={40} height={20} rx={10} fill={HOT} stroke="currentColor" strokeWidth={1.8} />
+      <Label x={30} y={43} fill={ON_HOT}>
+        f(5)?
+      </Label>
+      <Arrow d="M52 36 Q74 20 94 28" />
+      <Arrow d="M94 64 Q74 72 52 48" />
+      <Label x={70} y={94}>
+        이미 푼 답은 꺼내 쓰기
+      </Label>
+    </>
+  );
+}
+
+function DpTableFill() {
+  const values = [
+    [1, 1, 1, 1],
+    [1, 2, 3, 4],
+    [1, 3, null, null],
+  ];
+  return (
+    <>
+      {values.map((row, r) =>
+        row.map((value, c) => {
+          const current = r === 2 && c === 2;
+          const source = (r === 1 && c === 2) || (r === 2 && c === 1);
+          return (
+            <g key={`${r}-${c}`}>
+              <rect
+                x={30 + c * 26}
+                y={8 + r * 24}
+                width={22}
+                height={20}
+                rx={4}
+                fill={current ? HOT : source ? WAIT : value === null ? "none" : DONE}
+                stroke="currentColor"
+                strokeWidth={1.5}
+                strokeDasharray={value === null && !current ? "3 3" : undefined}
+              />
+              <Label x={41 + c * 26} y={22 + r * 24} fill={current ? ON_HOT : "currentColor"}>
+                {current ? "6" : value === null ? "" : value}
+              </Label>
+            </g>
+          );
+        }),
+      )}
+      <Label x={80} y={94}>
+        위 + 왼쪽 = 이 칸
+      </Label>
+    </>
+  );
+}
+
 const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "stack-plates": StackPlates,
   "stack-undo": StackUndo,
@@ -813,6 +887,8 @@ const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "sorting-merge": SortingMerge,
   "bsearch-halving": BsearchHalving,
   "bsearch-yes-no": BsearchYesNo,
+  "dp-memo-notebook": DpMemoNotebook,
+  "dp-table-fill": DpTableFill,
 };
 
 export function ConceptIllustration({

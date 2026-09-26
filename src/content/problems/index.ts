@@ -59,6 +59,21 @@ import { dfsPowerRestore } from "./dfs/power-restore";
 import { dfsRadioNetwork } from "./dfs/radio-network";
 import { dfsRecipeLoop } from "./dfs/recipe-loop";
 import { dfsTeamSize } from "./dfs/team-size";
+import { dpAcornHouses } from "./dp/acorn-houses";
+import { dpBerryMarket } from "./dp/berry-market";
+import { dpBestStreak } from "./dp/best-streak";
+import { dpCoinWays } from "./dp/coin-ways";
+import { dpCommonSong } from "./dp/common-song";
+import { dpFewestCoins } from "./dp/fewest-coins";
+import { dpForestPaths } from "./dp/forest-paths";
+import { dpFruitPyramid } from "./dp/fruit-pyramid";
+import { dpMinTrail } from "./dp/min-trail";
+import { dpPalindromeCuts } from "./dp/palindrome-cuts";
+import { dpPicnicBag } from "./dp/picnic-bag";
+import { dpSecretMessage } from "./dp/secret-message";
+import { dpStairWays } from "./dp/stair-ways";
+import { dpSteppingStones } from "./dp/stepping-stones";
+import { dpWordEdit } from "./dp/word-edit";
 import { graphCommonFriends } from "./graph-representation/graph-common-friends";
 import { graphDirectFlights } from "./graph-representation/graph-direct-flights";
 import { graphFamilyTree } from "./graph-representation/graph-family-tree";
@@ -212,6 +227,21 @@ export const PROBLEMS: readonly Problem[] = [
   dfsRadioNetwork,
   dfsRecipeLoop,
   dfsTeamSize,
+  dpAcornHouses,
+  dpBerryMarket,
+  dpBestStreak,
+  dpCoinWays,
+  dpCommonSong,
+  dpFewestCoins,
+  dpForestPaths,
+  dpFruitPyramid,
+  dpMinTrail,
+  dpPalindromeCuts,
+  dpPicnicBag,
+  dpSecretMessage,
+  dpStairWays,
+  dpSteppingStones,
+  dpWordEdit,
   graphCommonFriends,
   graphDirectFlights,
   graphFamilyTree,

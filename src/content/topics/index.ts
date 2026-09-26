@@ -3,6 +3,7 @@ import { backtrackingTopic } from "./backtracking";
 import { bfsTopic } from "./bfs";
 import { binarySearchTopic } from "./binary-search";
 import { dfsTopic } from "./dfs";
+import { dpTopic } from "./dp";
 import { graphRepresentationTopic } from "./graph-representation";
 import { hashTopic } from "./hash";
 import { queueDequeTopic } from "./queue-deque";
@@ -22,6 +23,7 @@ export const TOPICS: readonly Topic[] = [
   hashTopic,
   sortingTopic,
   binarySearchTopic,
+  dpTopic,
 ];
 
 const TOPICS_BY_SLUG = new Map<string, Topic>(TOPICS.map((topic) => [topic.slug, topic]));
@@ -34,4 +36,5 @@ export function isTopicSlug(value: string): value is TopicSlug {
   return TOPICS_BY_SLUG.has(value);
 }
 
-export const UPCOMING_TOPICS: { slug: UpcomingTopicSlug; title: string }[] = [{ slug: "dp", title: "DP" }];
+/** 지금은 모든 토픽이 열려 있어요. 새 토픽을 준비할 때 여기에 적으면 로드맵에 "준비 중"으로 보여요 */
+export const UPCOMING_TOPICS: { slug: UpcomingTopicSlug; title: string }[] = [];

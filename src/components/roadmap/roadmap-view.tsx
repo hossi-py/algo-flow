@@ -142,22 +142,24 @@ export function RoadmapView() {
             </div>
           </div>
 
-          <div>
-            <h2 className="mb-3 flex items-center gap-2 text-h3 text-foreground">
-              <Sprout className="size-5 text-success-text" aria-hidden />곧 열리는 토픽
-            </h2>
-            <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {UPCOMING_TOPICS.map((topic) => (
-                <li
-                  key={topic.slug}
-                  className="rounded-lg border-2 border-dashed border-border bg-card/50 px-4 py-5 text-center"
-                >
-                  <p className="text-small font-bold text-muted-foreground">{topic.title}</p>
-                  <p className="text-caption text-muted-foreground">준비 중</p>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {UPCOMING_TOPICS.length > 0 && (
+            <div>
+              <h2 className="mb-3 flex items-center gap-2 text-h3 text-foreground">
+                <Sprout className="size-5 text-success-text" aria-hidden />곧 열리는 토픽
+              </h2>
+              <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {UPCOMING_TOPICS.map((topic) => (
+                  <li
+                    key={topic.slug}
+                    className="rounded-lg border-2 border-dashed border-border bg-card/50 px-4 py-5 text-center"
+                  >
+                    <p className="text-small font-bold text-muted-foreground">{topic.title}</p>
+                    <p className="text-caption text-muted-foreground">준비 중</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </section>
 
         {isDesktop && selectedTopic && selectedView && (

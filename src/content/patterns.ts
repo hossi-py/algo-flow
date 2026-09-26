@@ -45,6 +45,11 @@ export const PATTERN_LABELS: Record<PatternTag, string> = {
   "boundary-search": "경계 찾기",
   "range-count": "범위 안 개수",
   "parametric-search": "답을 이분 탐색",
+  "linear-dp": "1차원 DP",
+  "grid-dp": "격자 DP",
+  knapsack: "배낭 · 동전",
+  "sequence-dp": "문자열 · 수열 DP",
+  "state-dp": "상태를 나눈 DP",
 };
 
 /** 토픽별 대표 패턴 (AI 문제 생성의 집중 패턴 후보) */
@@ -59,6 +64,7 @@ export const TOPIC_PATTERNS: Record<TopicSlug, PatternTag[]> = {
   hash: ["existence-check", "frequency-count", "complement-lookup", "group-by-key", "prefix-sum-hash"],
   sorting: ["sort-then-scan", "custom-order", "merge-step", "counting-sort", "interval-sweep"],
   "binary-search": ["exact-search", "boundary-search", "range-count", "parametric-search"],
+  dp: ["linear-dp", "grid-dp", "knapsack", "sequence-dp", "state-dp"],
 };
 
 /** 패턴이 속한 토픽 */

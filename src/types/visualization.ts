@@ -22,7 +22,10 @@ export type VisualizationGeneratorKey =
   | "sort-counting"
   | "bsearch-exact"
   | "bsearch-lower-bound"
-  | "bsearch-answer";
+  | "bsearch-answer"
+  | "dp-stairs"
+  | "dp-grid-paths"
+  | "dp-lcs";
 
 export interface VisualizationPreset {
   id: string;
@@ -77,6 +80,9 @@ export type VizAction =
   | "place"
   // 이분 탐색
   | "narrow"
+  // DP
+  | "fill"
+  | "reuse"
   // 공통
   | "compare"
   | "init"
@@ -193,6 +199,17 @@ export interface BarsSnapshot {
   pointers: { index: number; label: string }[];
 }
 
+/** 2차원 표 (DP 표 등). 아직 안 채운 칸은 null */
+export interface TableSnapshot {
+  title?: string;
+  /** 행 머리글 (없으면 번호) */
+  rowLabels?: string[];
+  /** 열 머리글 (없으면 번호) */
+  colLabels?: string[];
+  cells: (JsonValue | null)[][];
+  highlights: { row: number; col: number; tone: HighlightTone }[];
+}
+
 export interface CallFrame {
   id: string;
   /** 예: "dfs(0, 1)" */
@@ -210,6 +227,7 @@ export interface VizState {
   grid?: GridSnapshot;
   hash?: HashSnapshot;
   bars?: BarsSnapshot;
+  table?: TableSnapshot;
   callStack?: CallFrame[];
   variables?: Record<string, JsonValue>;
 }

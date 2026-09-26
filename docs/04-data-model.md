@@ -52,11 +52,12 @@ export const TOPIC_SLUGS = [
   "hash",
   "sorting",
   "binary-search",
+  "dp",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
 /** 이후 확장 예정 주제 (로드맵에 "곧 열려요"로 표시) */
-export type UpcomingTopicSlug = "dp";
+export type UpcomingTopicSlug = never; // 지금은 준비 중인 토픽이 없다
 
 export type LevelNumber = 1 | 2 | 3 | 4 | 5;
 
@@ -77,8 +78,8 @@ export const LEVEL_STAGE_LABELS: Record<LevelStage, string> = {
   exam: "코딩테스트 실전",
 };
 
-export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum";
-export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target";
+export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum" | "teal";
+export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table";
 
 export const PATTERN_TAGS = [
   // 스택
@@ -134,6 +135,12 @@ export const PATTERN_TAGS = [
   "boundary-search",
   "range-count",
   "parametric-search",
+  // DP
+  "linear-dp",
+  "grid-dp",
+  "knapsack",
+  "sequence-dp",
+  "state-dp",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -191,7 +198,9 @@ export type IllustrationKey =
   | "sorting-bars"
   | "sorting-merge"
   | "bsearch-halving"
-  | "bsearch-yes-no";
+  | "bsearch-yes-no"
+  | "dp-memo-notebook"
+  | "dp-table-fill";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {
@@ -388,7 +397,10 @@ export type VisualizationGeneratorKey =
   | "sort-counting"
   | "bsearch-exact"
   | "bsearch-lower-bound"
-  | "bsearch-answer";
+  | "bsearch-answer"
+  | "dp-stairs"
+  | "dp-grid-paths"
+  | "dp-lcs";
 
 export interface VisualizationPreset {
   id: string;
@@ -443,6 +455,9 @@ export type VizAction =
   | "place"
   // 이분 탐색
   | "narrow"
+  // DP
+  | "fill"
+  | "reuse"
   // 공통
   | "compare"
   | "init"
@@ -559,6 +574,17 @@ export interface BarsSnapshot {
   pointers: { index: number; label: string }[];
 }
 
+/** 2차원 표 (DP 표 등). 아직 안 채운 칸은 null */
+export interface TableSnapshot {
+  title?: string;
+  /** 행 머리글 (없으면 번호) */
+  rowLabels?: string[];
+  /** 열 머리글 (없으면 번호) */
+  colLabels?: string[];
+  cells: (JsonValue | null)[][];
+  highlights: { row: number; col: number; tone: HighlightTone }[];
+}
+
 export interface CallFrame {
   id: string;
   /** 예: "dfs(0, 1)" */
@@ -576,6 +602,7 @@ export interface VizState {
   grid?: GridSnapshot;
   hash?: HashSnapshot;
   bars?: BarsSnapshot;
+  table?: TableSnapshot;
   callStack?: CallFrame[];
   variables?: Record<string, JsonValue>;
 }

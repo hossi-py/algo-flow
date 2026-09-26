@@ -380,6 +380,51 @@ export const SIGNALS: PatternSignal[] = [
     reason: "답 후보를 하나씩 다 확인할 수 없을 만큼 크면, 반씩 줄여 약 30~60번만 확인하는 이분 탐색을 떠올려요.",
     strength: "weak",
   },
+  {
+    id: "sig-count-ways-mod",
+    phrase: "방법의 수를 1,000,000,007로 나눈 나머지",
+    examples: [
+      "계단을 오르는 방법의 수를 1,000,000,007로 나눈 나머지를 구하세요",
+      "경로의 수가 매우 클 수 있으니 나머지를 출력하세요",
+    ],
+    suspects: ["dp"],
+    patterns: ["linear-dp", "grid-dp"],
+    reason:
+      "나머지를 구하라는 건 경우의 수가 너무 많아 하나씩 셀 수 없다는 뜻이에요. 작은 문제의 답을 표에 적어 두고 더해 가는 DP가 딱 맞아요.",
+    caution: "모든 경우를 직접 나열해야 한다면 백트래킹이에요. '개수'만 필요하면 DP예요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-overlapping-subproblems",
+    phrase: "같은 계산이 여러 번 반복됨 (작은 문제의 답을 합쳐 큰 답)",
+    examples: ["n번째 칸까지 오는 방법 = n-1번째 + n-2번째", "이 칸의 최소 비용은 위 칸과 왼쪽 칸 중 작은 쪽 + 이 칸"],
+    suspects: ["dp"],
+    patterns: ["linear-dp", "grid-dp"],
+    reason:
+      "재귀로 그대로 풀면 같은 작은 문제를 수없이 다시 계산해요. 한 번 구한 답을 표(메모)에 적어 두면 각 문제를 한 번씩만 풀어요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-best-choice-sequence",
+    phrase: "선택마다 결과가 달라지는 최대 · 최소 (고르면 다음 선택이 제한)",
+    examples: ["이웃한 집은 함께 고를 수 없을 때 최대 금액은?", "무게 한도 안에서 가치의 합을 최대로 하세요"],
+    suspects: ["dp"],
+    patterns: ["knapsack", "state-dp"],
+    reason:
+      "그 순간 가장 좋아 보이는 선택(탐욕)이 전체 최선이 아닐 수 있어요. '여기까지 봤을 때의 최선'을 상태별로 표에 기록하면 모든 선택을 빠르게 비교할 수 있어요.",
+    caution: "N이 아주 작으면(≤ 20) 백트래킹으로도 돼요. N이나 한도가 크면 DP예요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-two-strings",
+    phrase: "두 문자열의 공통 부분 / 바꾸는 최소 횟수",
+    examples: ["두 단어의 가장 긴 공통 부분 수열의 길이는?", "한 단어를 다른 단어로 바꾸는 최소 편집 횟수는?"],
+    suspects: ["dp"],
+    patterns: ["sequence-dp"],
+    reason:
+      "앞에서 i글자, j글자까지 봤을 때의 답을 dp[i][j]에 적으면, 마지막 글자가 같은지만 보고 이웃 칸에서 답을 가져올 수 있어요.",
+    strength: "strong",
+  },
 ];
 
 const SIGNALS_BY_ID = new Map(SIGNALS.map((signal) => [signal.id, signal]));

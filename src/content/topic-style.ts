@@ -84,4 +84,11 @@ export const TOPIC_COLOR_CLASSES: Record<
     stroke: "stroke-topic-plum-foreground",
     fill: "fill-topic-plum",
   },
+  teal: {
+    surface: "bg-topic-teal",
+    text: "text-topic-teal-foreground",
+    ring: "ring-topic-teal-foreground/30",
+    stroke: "stroke-topic-teal-foreground",
+    fill: "fill-topic-teal",
+  },
 };
