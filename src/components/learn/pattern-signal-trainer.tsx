@@ -45,7 +45,7 @@ function Snippet({ question, reveal }: { question: RecognitionQuestion; reveal: 
   );
 }
 
-function ChoiceButton({
+export function ChoiceButton({
   slug,
   picked,
   answer,

@@ -1,6 +1,7 @@
 "use client";
 
-import { Search } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Search } from "lucide-react";
 import { SoftCard } from "@/components/common/soft-card";
 import { TopicChip } from "@/components/common/topic-badges";
 import { SIGNALS } from "@/content/signals";
@@ -40,6 +41,12 @@ export function SignalOfTheDay({ today }: { today: LocalDate }) {
           {signal.caution}
         </p>
       )}
+      <Link
+        href="/practice"
+        className="inline-flex items-center gap-1 self-start text-small font-bold text-primary-strong underline-offset-4 outline-none hover:underline focus-visible:ring-4 focus-visible:ring-ring/40"
+      >
+        토픽을 숨긴 문제로 섞어 풀기 <ArrowRight className="size-4" aria-hidden />
+      </Link>
     </SoftCard>
   );
 }

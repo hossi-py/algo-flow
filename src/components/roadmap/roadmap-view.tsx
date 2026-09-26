@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Sprout } from "lucide-react";
+import Link from "next/link";
+import { Shuffle, Sprout } from "lucide-react";
+import { PopButton } from "@/components/common/pop-button";
 import { Nodi } from "@/components/mascot/nodi";
 import { ProgressBar } from "@/components/common/progress-bar";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -67,7 +69,14 @@ export function RoadmapView() {
   return (
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-3">
-        <h1 className="text-h1 text-foreground">알고리즘 숲 로드맵</h1>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="text-h1 text-foreground">알고리즘 숲 로드맵</h1>
+          <PopButton asChild variant="soft" size="sm">
+            <Link href="/practice">
+              <Shuffle /> 섞어 풀기
+            </Link>
+          </PopButton>
+        </div>
         <p className="text-body text-muted-foreground">
           쉬운 토픽부터 순서대로 열려요. 이전 토픽의 Lv3을 클리어하면 다음 토픽으로 갈 수 있어요.
         </p>
