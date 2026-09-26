@@ -51,3 +51,6 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Monaco 에디터 복사본 (scripts/copy-monaco.mjs가 만든다)
+/public/monaco/

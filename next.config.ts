@@ -14,6 +14,15 @@ const nextConfig: NextConfig = {
   },
   // 브라우저·서버 코드의 process.env.NEXT_PUBLIC_RELEASE를 빌드 때 이 값으로 바꾼다
   env: { NEXT_PUBLIC_RELEASE: release },
+  // Monaco 복사본은 주소에 버전이 들어 있어 내용이 바뀌지 않는다 → 1년 동안 캐시
+  async headers() {
+    return [
+      {
+        source: "/monaco/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

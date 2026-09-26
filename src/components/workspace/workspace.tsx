@@ -168,8 +168,9 @@ function WorkspaceBody({ problem, aiEnabled }: WorkspaceProps) {
   const handleOpenHint = (step: HintStep) => openHint(problem, step, new Date().toISOString());
 
   const editor = (
+    // 언어를 바꿔도 에디터는 그대로 두고 path(언어별 파일)로 모델만 바꾼다. 에디터를 다시 만들면
+    // 받는 중이던 Monaco 워커가 끊겨 가짜 에러가 나고, 언어별 되돌리기 기록도 path 덕분에 따로 유지된다
     <CodeEditor
-      key={language}
       path={fileName(problem, language)}
       language={language}
       defaultValue={draft ?? starter}
