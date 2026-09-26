@@ -27,7 +27,7 @@ function loadJsSolution(code: string): (...args: JsonValue[]) => unknown {
 describe("토픽", () => {
   it("커리큘럼 순서와 슬러그가 타입 정의와 일치한다", () => {
     expect(TOPICS.map((t) => t.slug)).toEqual([...TOPIC_SLUGS]);
-    expect(TOPICS.map((t) => t.order)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+    expect(TOPICS.map((t) => t.order)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]);
   });
 
   it.each(TOPICS.map((t) => [t.slug, t] as const))("%s: 레벨 1~5가 순서대로 있다", (_, topic) => {
@@ -36,9 +36,10 @@ describe("토픽", () => {
     expect(topic.levels[0].clearRule.requiresConcept).toBe(true);
   });
 
-  it("각 토픽은 바로 앞 토픽의 Lv3 클리어로 열린다", () => {
+  it("입문(시간 복잡도)과 스택은 처음부터 열려 있고, 나머지는 바로 앞 토픽의 Lv3 클리어로 열린다", () => {
+    expect(TOPICS.slice(0, 2).map((t) => t.slug)).toEqual(["complexity", "stack"]);
     TOPICS.forEach((topic, index) => {
-      if (index === 0) {
+      if (index <= 1) {
         expect(topic.unlock).toEqual({ type: "always" });
       } else {
         expect(topic.unlock).toEqual({ type: "level-cleared", topic: TOPICS[index - 1]?.slug, level: 3 });

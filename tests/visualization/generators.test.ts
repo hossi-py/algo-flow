@@ -154,10 +154,10 @@ describe("generator 등록", () => {
     }
   });
 
-  it("25개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
+  it("46개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
     const used = new Set(TOPIC_PRESETS.map((preset) => preset.generator));
     expect([...used].sort()).toEqual(Object.keys(GENERATORS).sort());
-    expect(used.size).toBe(25);
+    expect(used.size).toBe(46);
   });
 
   it("프리셋 id가 겹치지 않는다", () => {
@@ -266,6 +266,67 @@ describe("입력 검증", () => {
     ["dp-grid-paths", [["abc"]]],
     ["dp-lcs", ["ABC", "abc"]],
     ["dp-lcs", ["abcdefgh", "a"]],
+    ["greedy-intervals", [[[3, 3]]]],
+    ["greedy-intervals", [[[0, 17]]]],
+    ["greedy-coins", [[5, 5], 10]],
+    ["greedy-coins", [[5], 0]],
+    ["greedy-digits", ["12a", 1]],
+    ["greedy-digits", ["123", 3]],
+    ["tp-pair-sum", [[3, 1, 2], 4]],
+    ["tp-pair-sum", [[1], 2]],
+    ["tp-min-window", [[0, 5], 3]],
+    ["tp-min-window", [[1, 2], 0]],
+    ["tp-dedupe", [[2, 1]]],
+    ["heap-ops", [["pop"]]],
+    ["heap-ops", [["push 1000"]]],
+    ["heap-ops", [["add 1"]]],
+    ["heap-merge", [[5]]],
+    ["heap-top-k", [[1, 2], 6]],
+    ["dijkstra-basic", [3, [[0, 1]], 0]],
+    ["dijkstra-basic", [3, [[0, 1, 0]], 0]],
+    [
+      "dijkstra-basic",
+      [
+        3,
+        [
+          [0, 1, 2],
+          [1, 0, 3],
+        ],
+        0,
+      ],
+    ],
+    ["dijkstra-path", [3, [[0, 1, 2]], 0, 5]],
+    ["dijkstra-grid", [[[1, 2], [3]]]],
+    [
+      "dijkstra-grid",
+      [
+        [
+          [1, 0],
+          [3, 4],
+        ],
+      ],
+    ],
+    ["uf-union", [3, []]],
+    ["uf-union", [3, [[0, 0]]]],
+    ["mst-kruskal", [3, []]],
+    [
+      "topo-kahn",
+      [
+        3,
+        [
+          [0, 1],
+          [0, 1],
+        ],
+      ],
+    ],
+    ["topo-kahn", [3, [[0, 5]]]],
+    ["cx-growth", [1]],
+    ["cx-pairs", [[5]]],
+    ["cx-halving", [0]],
+    ["sim-robot", [["...", "..."], "F"]],
+    ["sim-robot", [["S.", ".."], "FX"]],
+    ["sim-spiral", [0, 3]],
+    ["sim-rotate", [[[1, 2], [3]]]],
   ];
 
   it.each(BAD_INPUTS)("%s %j → 예외 대신 한국어 오류 메시지", (key, input) => {
@@ -430,5 +491,287 @@ describe("DP generator", () => {
     expect(cells(steps).at(-1)!.at(-1)).toBe(3);
     expect(steps.at(-1)!.message).toMatch(/공통 부분 수열: (abe|ace)/);
     expect(run("dp-lcs", ["abc", "xyz"]).at(-1)!.message).toContain("(없음)");
+  });
+});
+
+describe("그리디 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+
+  it("회의는 끝나는 시각 순으로 고르고, 최대 개수를 알려 준다", () => {
+    const steps = run("greedy-intervals", [
+      [
+        [0, 6],
+        [1, 4],
+        [5, 7],
+        [3, 5],
+      ],
+    ]);
+    expect(steps.at(-1)!.state.table!.rowLabels).toEqual(["[1,4]", "[3,5]", "[0,6]", "[5,7]"]);
+    expect(steps.filter((s) => s.action === "pick")).toHaveLength(2);
+    expect(steps.at(-1)!.message).toContain("최대 2개");
+  });
+
+  it("배수 관계 동전은 최선이라고, 아니면 최선이 아닐 수 있다고 알려 준다", () => {
+    expect(run("greedy-coins", [[500, 100, 50, 10], 1260]).at(-1)!.message).toContain("동전 6개");
+    expect(run("greedy-coins", [[4, 3, 1], 6]).at(-1)!.message).toContain("최선이 아닐 수 있어요");
+    expect(run("greedy-coins", [[4], 6]).at(-1)!.message).toContain("줄 수 없어요");
+  });
+
+  it("앞자리부터 크게 만든다", () => {
+    const last = (n: string, k: number) => run("greedy-digits", [n, k]).at(-1)!.message;
+    expect(last("4177252841", 4)).toContain("775841");
+    expect(last("1924", 2)).toContain("94");
+    expect(last("4321", 2)).toContain("43");
+  });
+});
+
+describe("두 포인터 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+
+  it("양 끝에서 좁혀 합이 target인 쌍을 찾거나, 없으면 만났다고 알려 준다", () => {
+    const found = run("tp-pair-sum", [[1, 2, 4, 6, 9, 11, 14, 17], 20]);
+    expect(found.find((s) => s.action === "found")?.message).toContain("[3, 6]");
+    const none = run("tp-pair-sum", [[1, 2, 3], 10]);
+    expect(none.at(-1)!.message).toContain("없어요");
+    expect(none.filter((s) => s.action === "compare").length).toBeLessThanOrEqual(2);
+  });
+
+  it("합이 S 이상인 가장 짧은 창의 길이를 찾는다", () => {
+    expect(run("tp-min-window", [[2, 3, 1, 2, 4, 3], 7]).at(-1)!.state.variables!.가장짧은길이).toBe(2);
+    expect(run("tp-min-window", [[1, 1], 5]).at(-1)!.state.variables!.가장짧은길이).toBe(0);
+  });
+
+  it("중복을 제자리에서 걸러 낸다", () => {
+    const last = run("tp-dedupe", [[1, 1, 2, 3, 3, 3, 5, 8, 8]]).at(-1)!;
+    expect(last.state.variables!.결과).toBe("1, 2, 3, 5, 8");
+    expect(last.state.bars!.sorted).toHaveLength(5);
+  });
+});
+
+describe("힙 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+  const isHeap = (labels: string[]) =>
+    labels.every((v, i) => i === 0 || Number(labels[Math.floor((i - 1) / 2)]) <= Number(v));
+
+  it("넣고 꺼내도 부모 ≤ 자식이 유지되고, 가장 작은 값부터 나온다", () => {
+    const steps = run("heap-ops", [["push 5", "push 3", "push 8", "push 1", "push 4", "pop", "pop", "push 2", "pop"]]);
+    expect(steps.at(-1)!.message).toContain("꺼낸 순서: 1, 3, 2");
+    const last = steps.at(-1)!.state.graph!.nodes.map((n) => n.label);
+    expect(isHeap(last)).toBe(true);
+    expect(last).toHaveLength(3);
+  });
+
+  it("가장 작은 두 더미부터 합쳐 총 비용을 구한다", () => {
+    expect(run("heap-merge", [[10, 20, 40]]).at(-1)!.state.variables!["총 비용"]).toBe(100);
+    expect(run("heap-merge", [[1, 2, 3, 4]]).at(-1)!.state.variables!["총 비용"]).toBe(19);
+  });
+
+  it("크기 K인 최소 힙의 맨 위가 K번째로 큰 수다", () => {
+    const steps = run("heap-top-k", [[5, 1, 9, 3, 7, 2, 8], 3]);
+    expect(steps.at(-1)!.state.variables!["지금 3번째로 큰 수"]).toBe(7);
+    expect(run("heap-top-k", [[4], 2]).at(-1)!.message).toContain("없어요");
+  });
+});
+
+describe("다익스트라 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+
+  it("돌아가는 길이 더 짧으면 거리를 줄이고, 오래된 기록은 버린다", () => {
+    const steps = run("dijkstra-basic", [
+      4,
+      [
+        [0, 1, 10],
+        [0, 2, 2],
+        [2, 1, 3],
+        [1, 3, 1],
+      ],
+      0,
+    ]);
+    expect(steps.at(-1)!.state.variables!["dist"]).toEqual([0, 5, 2, 6]);
+    expect(steps.some((s) => s.action === "skip")).toBe(true);
+    expect(steps.at(-1)!.state.graph!.edges.find((e) => e.from === "0" && e.to === "1")!.label).toBe("10");
+  });
+
+  it("닿지 않는 노드는 ∞로 남는다", () => {
+    const steps = run("dijkstra-basic", [3, [[0, 1, 4]], 0]);
+    expect(steps.at(-1)!.state.variables!["dist"]).toEqual([0, 4, "∞"]);
+  });
+
+  it("prev를 따라 최단 경로를 되짚는다", () => {
+    const steps = run("dijkstra-path", [
+      5,
+      [
+        [0, 1, 2],
+        [0, 2, 6],
+        [1, 2, 3],
+        [1, 3, 8],
+        [2, 3, 1],
+        [3, 4, 2],
+        [2, 4, 7],
+      ],
+      0,
+      4,
+    ]);
+    expect(steps.at(-1)!.state.variables!["경로"]).toEqual([0, 1, 2, 3, 4]);
+    expect(steps.at(-1)!.state.variables!["비용"]).toBe(8);
+    expect(run("dijkstra-path", [3, [[0, 1, 1]], 0, 2]).at(-1)!.action).toBe("not-found");
+  });
+
+  it("격자에서는 도착 칸을 꺼내는 순간 끝난다", () => {
+    const steps = run("dijkstra-grid", [
+      [
+        [1, 3, 1],
+        [1, 5, 1],
+        [4, 2, 1],
+      ],
+    ]);
+    expect(steps.at(-1)!.message).toContain("최소 비용 = 7");
+  });
+});
+
+describe("그래프 심화 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+
+  it("작은 그룹을 큰 그룹 밑에 붙이고, 지나온 노드는 대표에 바로 붙인다", () => {
+    const steps = run("uf-union", [
+      6,
+      [
+        [0, 1],
+        [2, 3],
+        [1, 3],
+        [4, 5],
+        [5, 3],
+        [0, 2],
+      ],
+    ]);
+    expect(steps.some((s) => s.action === "compress")).toBe(true);
+    expect(steps.filter((s) => s.action === "skip")).toHaveLength(1);
+    expect(steps.at(-1)!.message).toBe("그룹 1개: {0, 1, 2, 3, 4, 5}");
+  });
+
+  it("크루스칼은 고리가 생기는 간선을 건너뛰고 최소 비용을 구한다", () => {
+    const steps = run("mst-kruskal", [
+      5,
+      [
+        [0, 1, 4],
+        [0, 2, 1],
+        [1, 2, 2],
+        [1, 3, 5],
+        [2, 3, 8],
+        [3, 4, 3],
+        [2, 4, 9],
+      ],
+    ]);
+    expect(steps.at(-1)!.state.variables!["총 비용"]).toBe(11);
+    expect(steps.filter((s) => s.action === "pick")).toHaveLength(4);
+    expect(run("mst-kruskal", [4, [[0, 1, 1]]]).at(-1)!.message).toContain("모두 잇지 못했어요");
+  });
+
+  it("위상 정렬은 진입 차수가 0인 노드부터 꺼내고, 고리는 남긴다", () => {
+    const steps = run("topo-kahn", [
+      6,
+      [
+        [0, 2],
+        [1, 2],
+        [1, 3],
+        [2, 4],
+        [3, 4],
+        [4, 5],
+      ],
+    ]);
+    expect(steps.at(-1)!.message).toBe("모든 노드를 꺼냈어요. 순서: 0 → 1 → 2 → 3 → 4 → 5");
+    expect(steps.at(-1)!.state.graph!.directed).toBe(true);
+    expect(
+      run("topo-kahn", [
+        3,
+        [
+          [0, 1],
+          [1, 2],
+          [2, 0],
+        ],
+      ]).at(-1)!.message,
+    ).toContain("3개 노드가 고리에");
+  });
+});
+
+describe("시간 복잡도 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+
+  it("N이 커질수록 N²이 가장 빨리 늘어난다", () => {
+    const last = run("cx-growth", [10]).at(-1)!;
+    expect(last.state.variables!["N²"]).toBe(100);
+    expect(last.state.bars!.items.map((item) => item.value)).toEqual([3.3, 10, 33.2, 100]);
+  });
+
+  it("모든 쌍과 한 번 훑기는 같은 답을 다른 횟수로 구한다", () => {
+    const last = run("cx-pairs", [[7, 1, 5, 3, 6, 4]]).at(-1)!;
+    expect(last.state.variables).toEqual({ "모든 쌍": 15, "한 번 훑기": 5, 최대이익: 5 });
+  });
+
+  it("절반씩 줄이면 log₂ N번 만에 1이 된다", () => {
+    expect(run("cx-halving", [1000]).at(-1)!.state.variables!["steps"]).toBe(9);
+    expect(run("cx-halving", [1]).at(-1)!.state.variables!["steps"]).toBe(0);
+  });
+});
+
+describe("구현 / 시뮬레이션 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+
+  it("로봇은 벽과 격자 밖에서는 멈추고, 돌며 움직인다", () => {
+    const steps = run("sim-robot", [["S...", ".##.", "...."], "FRFFFRFFRFRF"]);
+    expect(steps.at(-1)!.message).toContain("(2, 2)");
+    expect(steps.filter((s) => s.action === "turn")).toHaveLength(4);
+    expect(steps.some((s) => s.action === "check")).toBe(true);
+  });
+
+  it("달팽이 모양으로 1부터 채운다", () => {
+    const last = run("sim-spiral", [3, 3]).at(-1)!;
+    expect(last.state.table!.cells).toEqual([
+      [1, 2, 3],
+      [8, 9, 4],
+      [7, 6, 5],
+    ]);
+  });
+
+  it("시계 방향으로 90도 돌린다", () => {
+    const last = run("sim-rotate", [
+      [
+        [1, 2, 3],
+        [4, 5, 6],
+      ],
+    ]).at(-1)!;
+    expect(last.state.table!.cells).toEqual([
+      [4, 1],
+      [5, 2],
+      [6, 3],
+    ]);
   });
 });

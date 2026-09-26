@@ -2,6 +2,11 @@ import type { PatternTag, TopicSlug } from "@/types";
 
 /** 화면에 보여 줄 패턴 이름 */
 export const PATTERN_LABELS: Record<PatternTag, string> = {
+  "formula-o1": "공식으로 한 번에",
+  "single-pass": "한 번 훑기",
+  precompute: "미리 계산해 두기",
+  "halving-log": "절반씩 줄이기",
+  "sqrt-bound": "제곱근까지만 보기",
   "bracket-matching": "괄호 짝 맞추기",
   "stack-simulation": "스택 시뮬레이션",
   "monotonic-stack": "단조 스택",
@@ -50,6 +55,34 @@ export const PATTERN_LABELS: Record<PatternTag, string> = {
   knapsack: "배낭 · 동전",
   "sequence-dp": "문자열 · 수열 DP",
   "state-dp": "상태를 나눈 DP",
+  "greedy-by-sort": "정렬하고 욕심껏",
+  "interval-scheduling": "구간 고르기",
+  "greedy-accumulate": "누적하며 욕심껏",
+  "digit-greedy": "앞자리부터 크게",
+  "opposite-ends": "양 끝에서 좁히기",
+  "same-direction": "같은 방향 두 포인터",
+  "fixed-window": "고정 길이 창",
+  "variable-window": "늘였다 줄이는 창",
+  "top-k": "상위 K개",
+  "repeated-min": "가장 작은 것 계속 꺼내기",
+  "k-way-merge": "여러 줄 합치기",
+  "two-heaps": "힙 두 개",
+  "heap-scheduling": "힙으로 순서 정하기",
+  "weighted-shortest-path": "비용이 다른 최단 경로",
+  "path-restore": "경로 되짚기",
+  "reverse-or-multi-source": "거꾸로 · 여러 곳에서 출발",
+  "state-dijkstra": "상태를 더한 다익스트라",
+  "minimax-path": "가장 험한 구간 최소화",
+  "union-find": "그룹 합치고 찾기",
+  "reverse-union": "거꾸로 합치기",
+  "minimum-spanning-tree": "모두 잇는 가장 싼 방법",
+  "topological-sort": "먼저 할 일부터 줄 세우기",
+  "dag-dp": "순서를 따라 채우는 DP",
+  "direction-move": "방향 바꾸며 움직이기",
+  "matrix-transform": "판 돌리고 옮기기",
+  "step-simulation": "한 단계씩 상태 바꾸기",
+  "string-parse": "문자열 쪼개고 세기",
+  "time-calc": "시각·날짜 계산",
 };
 
 /** 토픽별 대표 패턴 (AI 문제 생성의 집중 패턴 후보) */
@@ -65,6 +98,13 @@ export const TOPIC_PATTERNS: Record<TopicSlug, PatternTag[]> = {
   sorting: ["sort-then-scan", "custom-order", "merge-step", "counting-sort", "interval-sweep"],
   "binary-search": ["exact-search", "boundary-search", "range-count", "parametric-search"],
   dp: ["linear-dp", "grid-dp", "knapsack", "sequence-dp", "state-dp"],
+  greedy: ["greedy-by-sort", "interval-scheduling", "greedy-accumulate", "digit-greedy"],
+  "two-pointers": ["opposite-ends", "same-direction", "fixed-window", "variable-window"],
+  heap: ["top-k", "repeated-min", "k-way-merge", "two-heaps", "heap-scheduling"],
+  dijkstra: ["weighted-shortest-path", "path-restore", "reverse-or-multi-source", "state-dijkstra", "minimax-path"],
+  "graph-advanced": ["union-find", "reverse-union", "minimum-spanning-tree", "topological-sort", "dag-dp"],
+  complexity: ["formula-o1", "single-pass", "precompute", "halving-log", "sqrt-bound"],
+  implementation: ["direction-move", "matrix-transform", "step-simulation", "string-parse", "time-calc"],
 };
 
 /** 패턴이 속한 토픽 */

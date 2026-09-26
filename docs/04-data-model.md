@@ -42,6 +42,7 @@ import type { JsonValue, Language, ProblemKey } from "./common";
 import type { VisualizationPreset } from "./visualization";
 
 export const TOPIC_SLUGS = [
+  "complexity",
   "stack",
   "queue-deque",
   "recursion",
@@ -53,6 +54,12 @@ export const TOPIC_SLUGS = [
   "sorting",
   "binary-search",
   "dp",
+  "greedy",
+  "two-pointers",
+  "heap",
+  "dijkstra",
+  "graph-advanced",
+  "implementation",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
@@ -78,10 +85,16 @@ export const LEVEL_STAGE_LABELS: Record<LevelStage, string> = {
   exam: "코딩테스트 실전",
 };
 
-export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum" | "teal";
-export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table";
+export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum" | "teal" | "coral" | "indigo";
+export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table" | "coins" | "pointers" | "heap" | "route" | "network" | "timer" | "cog";
 
 export const PATTERN_TAGS = [
+  // 시간 복잡도 입문
+  "formula-o1",
+  "single-pass",
+  "precompute",
+  "halving-log",
+  "sqrt-bound",
   // 스택
   "bracket-matching",
   "stack-simulation",
@@ -141,6 +154,40 @@ export const PATTERN_TAGS = [
   "knapsack",
   "sequence-dp",
   "state-dp",
+  // 그리디
+  "greedy-by-sort",
+  "interval-scheduling",
+  "greedy-accumulate",
+  "digit-greedy",
+  // 두 포인터
+  "opposite-ends",
+  "same-direction",
+  "fixed-window",
+  "variable-window",
+  // 힙
+  "top-k",
+  "repeated-min",
+  "k-way-merge",
+  "two-heaps",
+  "heap-scheduling",
+  // 다익스트라
+  "weighted-shortest-path",
+  "path-restore",
+  "reverse-or-multi-source",
+  "state-dijkstra",
+  "minimax-path",
+  // 그래프 심화
+  "union-find",
+  "reverse-union",
+  "minimum-spanning-tree",
+  "topological-sort",
+  "dag-dp",
+  // 구현 / 시뮬레이션
+  "direction-move",
+  "matrix-transform",
+  "step-simulation",
+  "string-parse",
+  "time-calc",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -200,7 +247,21 @@ export type IllustrationKey =
   | "bsearch-halving"
   | "bsearch-yes-no"
   | "dp-memo-notebook"
-  | "dp-table-fill";
+  | "dp-table-fill"
+  | "greedy-meetings"
+  | "greedy-counterexample"
+  | "tp-squeeze"
+  | "tp-window"
+  | "heap-tree"
+  | "heap-emergency"
+  | "dijkstra-map"
+  | "dijkstra-settle"
+  | "uf-groups"
+  | "topo-order"
+  | "cx-growth-curves"
+  | "cx-count-steps"
+  | "sim-robot-grid"
+  | "sim-rulebook";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {
@@ -400,7 +461,28 @@ export type VisualizationGeneratorKey =
   | "bsearch-answer"
   | "dp-stairs"
   | "dp-grid-paths"
-  | "dp-lcs";
+  | "dp-lcs"
+  | "greedy-intervals"
+  | "greedy-coins"
+  | "greedy-digits"
+  | "tp-pair-sum"
+  | "tp-min-window"
+  | "tp-dedupe"
+  | "heap-ops"
+  | "heap-merge"
+  | "heap-top-k"
+  | "dijkstra-basic"
+  | "dijkstra-path"
+  | "dijkstra-grid"
+  | "uf-union"
+  | "mst-kruskal"
+  | "topo-kahn"
+  | "cx-growth"
+  | "cx-pairs"
+  | "cx-halving"
+  | "sim-robot"
+  | "sim-spiral"
+  | "sim-rotate";
 
 export interface VisualizationPreset {
   id: string;
@@ -458,6 +540,23 @@ export type VizAction =
   // DP
   | "fill"
   | "reuse"
+  // 그리디
+  | "pick"
+  | "skip"
+  // 두 포인터
+  | "move-left"
+  | "move-right"
+  // 힙
+  | "swap"
+  // 다익스트라
+  | "relax"
+  | "settle"
+  // 유니온 파인드
+  | "find"
+  | "union"
+  | "compress"
+  // 구현 / 시뮬레이션
+  | "turn"
   // 공통
   | "compare"
   | "init"

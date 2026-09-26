@@ -2,17 +2,25 @@ import type { Topic, TopicSlug, UpcomingTopicSlug } from "@/types";
 import { backtrackingTopic } from "./backtracking";
 import { bfsTopic } from "./bfs";
 import { binarySearchTopic } from "./binary-search";
+import { complexityTopic } from "./complexity";
 import { dfsTopic } from "./dfs";
+import { dijkstraTopic } from "./dijkstra";
 import { dpTopic } from "./dp";
+import { graphAdvancedTopic } from "./graph-advanced";
 import { graphRepresentationTopic } from "./graph-representation";
+import { greedyTopic } from "./greedy";
 import { hashTopic } from "./hash";
+import { heapTopic } from "./heap";
+import { implementationTopic } from "./implementation";
 import { queueDequeTopic } from "./queue-deque";
 import { recursionTopic } from "./recursion";
 import { sortingTopic } from "./sorting";
 import { stackTopic } from "./stack";
+import { twoPointersTopic } from "./two-pointers";
 
 /** 커리큘럼 순서 */
 export const TOPICS: readonly Topic[] = [
+  complexityTopic,
   stackTopic,
   queueDequeTopic,
   recursionTopic,
@@ -24,6 +32,12 @@ export const TOPICS: readonly Topic[] = [
   sortingTopic,
   binarySearchTopic,
   dpTopic,
+  greedyTopic,
+  twoPointersTopic,
+  heapTopic,
+  dijkstraTopic,
+  graphAdvancedTopic,
+  implementationTopic,
 ];
 
 const TOPICS_BY_SLUG = new Map<string, Topic>(TOPICS.map((topic) => [topic.slug, topic]));

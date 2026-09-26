@@ -8,7 +8,7 @@ import type { Topic, UserProgress } from "@/types";
 const TODAY = "2026-09-24";
 const NOW = "2026-09-24T01:00:00.000Z";
 
-const stack = TOPICS[0]!;
+const stack = getTopic("stack")!;
 const cardIds = stack.concept.cards.map((card) => card.id);
 
 function readAll(progress: UserProgress, topic: Topic, topics: readonly Topic[] = TOPICS): UserProgress {
@@ -94,7 +94,7 @@ describe("개념 완료로 Lv1 클리어", () => {
       ...stack.levels.slice(1),
     ] as unknown as Topic["levels"],
   };
-  const follower: Topic = { ...TOPICS[1]!, unlock: { type: "level-cleared", topic: "stack", level: 1 } };
+  const follower: Topic = { ...getTopic("queue-deque")!, unlock: { type: "level-cleared", topic: "stack", level: 1 } };
   const topics = [withProblem, follower];
 
   function solvedDemo(): UserProgress {

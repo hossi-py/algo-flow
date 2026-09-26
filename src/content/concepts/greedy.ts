@@ -1,0 +1,160 @@
+import type { ConceptCard, RecognitionQuestion } from "@/types";
+
+export const GREEDY_CARDS: ConceptCard[] = [
+  {
+    id: "greedy-what",
+    title: "지금 가장 좋은 것을 고르기",
+    analogy: "뷔페에서 접시가 하나뿐이면, 매번 가장 맛있어 보이는 것부터 담아요.",
+    body: [
+      "**그리디**(탐욕법)는 매 순간 **지금 가장 좋아 보이는 선택**을 하고, 한 번 고른 것은 되돌리지 않는 방법이에요.",
+      "",
+      "모든 경우를 따지는 백트래킹이나, 작은 답을 모두 적어 두는 DP보다 훨씬 간단하고 빨라요. 보통 **정렬 한 번 + 한 번 훑기**로 끝나요.",
+      "",
+      "대신 **항상 맞지는 않아요.** '지금의 최선'이 '전체의 최선'으로 이어질 때만 쓸 수 있어요.",
+    ].join("\n"),
+    illustration: "greedy-meetings",
+    keyPoints: ["매 순간 최선을 골라요", "고른 것은 되돌리지 않아요", "맞을 때만 쓸 수 있어요"],
+  },
+  {
+    id: "greedy-meetings",
+    title: "회의실 배정: 일찍 끝나는 것부터",
+    analogy: "놀이공원에서 가장 빨리 끝나는 놀이기구부터 타면, 남은 시간에 더 많이 탈 수 있어요.",
+    body: [
+      "회의실 하나에 겹치지 않게 회의를 **최대한 많이** 넣으려면, **끝나는 시각이 빠른 회의부터** 골라요.",
+      "",
+      "일찍 끝나는 회의를 고르면 뒤에 남는 시간이 가장 넉넉해요. 다른 회의를 골라서 더 좋아질 일이 없어요.",
+      "",
+      "'짧은 회의부터'나 '일찍 시작하는 회의부터'는 반례가 있어요. **기준을 무엇으로 정렬하느냐**가 그리디의 전부예요.",
+    ].join("\n"),
+    illustration: "greedy-meetings",
+    keyPoints: ["끝나는 시각 순으로 정렬", "안 겹치면 고르고, 겹치면 건너뛰기", "정렬 기준이 핵심"],
+    code: {
+      code: {
+        python: [
+          "meetings.sort(key=lambda m: (m[1], m[0]))   # 끝나는 시각 순",
+          "last_end, count = 0, 0",
+          "for start, end in meetings:",
+          "    if start >= last_end:",
+          "        count += 1",
+          "        last_end = end",
+        ].join("\n"),
+        javascript: [
+          "meetings.sort((a, b) => a[1] - b[1] || a[0] - b[0]);   // 끝나는 시각 순",
+          "let lastEnd = 0, count = 0;",
+          "for (const [start, end] of meetings) {",
+          "  if (start >= lastEnd) {",
+          "    count++;",
+          "    lastEnd = end;",
+          "  }",
+          "}",
+        ].join("\n"),
+        java: [
+          "Arrays.sort(meetings, (a, b) -> a[1] != b[1] ? a[1] - b[1] : a[0] - b[0]);",
+          "int lastEnd = 0, count = 0;",
+          "for (int[] m : meetings) {",
+          "    if (m[0] >= lastEnd) {",
+          "        count++;",
+          "        lastEnd = m[1];",
+          "    }",
+          "}",
+        ].join("\n"),
+      },
+    },
+  },
+  {
+    id: "greedy-counterexample",
+    title: "반례 찾기: 욕심이 틀리는 순간",
+    analogy: "지름길 같아 보이는 길이 막다른 골목일 때가 있어요.",
+    body: [
+      "동전 [500, 100, 50, 10]으로 거스름돈을 줄 때는 **큰 동전부터** 쓰면 항상 최선이에요. 큰 동전이 작은 동전의 **배수**라서요.",
+      "",
+      "하지만 동전이 [4, 3, 1]이고 6원을 만들면: 큰 것부터 쓰면 4 + 1 + 1 = **3개**, 최선은 3 + 3 = **2개**예요.",
+      "",
+      "그리디를 쓰기 전에 **작은 예를 손으로 몇 개 만들어** 욕심껏 고른 답과 진짜 답을 비교해 보세요. 반례가 하나라도 있으면 DP로 가요.",
+    ].join("\n"),
+    illustration: "greedy-counterexample",
+    keyPoints: ["반례 하나면 그리디는 틀려요", "작은 예로 직접 확인하기", "반례가 있으면 DP로"],
+  },
+  {
+    id: "greedy-reach",
+    title: "한 번 훑으며 최선만 들고 가기",
+    analogy: "징검다리를 건너며 '지금까지 닿을 수 있는 가장 먼 돌'만 기억해요.",
+    body: [
+      "정렬 없이 **앞에서부터 한 번 훑으며** 지금까지의 최선만 들고 가는 그리디도 있어요.",
+      "",
+      "- 끝까지 갈 수 있나? → 지금까지 닿을 수 있는 **가장 먼 칸**을 늘려 가요.",
+      "- 한 바퀴 돌 수 있는 주유소는? → 연료가 **모자라면** 그다음 칸부터 다시 시작해요.",
+      "- 가장 큰 수 만들기 → 뒤에 더 큰 숫자가 오면 **앞의 작은 숫자**를 지워요.",
+      "",
+      "모두 O(N)이에요. 되돌아가 다시 볼 필요가 없다는 게 그리디의 힘이에요.",
+    ].join("\n"),
+    illustration: "greedy-meetings",
+    keyPoints: ["지금까지의 최선만 기억", "모자라면 다시 시작", "되돌아가지 않아서 O(N)"],
+  },
+  {
+    id: "greedy-when",
+    title: "그리디일까, DP일까?",
+    analogy: "지도를 보고 한 번에 길을 정할 수 있으면 그리디, 갈림길마다 비교해야 하면 DP.",
+    body: [
+      "- **정렬 기준 하나**로 줄 세우면 앞에서부터 고르기만 하면 될 것 같다 → 그리디 후보",
+      "- **겹치지 않게 최대 몇 개**, **모두 덮는 최소 몇 개** → 끝 시각 기준 그리디",
+      "- 고르는 순간 **나중 선택이 달라지고**, 반례가 쉽게 만들어진다 → DP",
+      "",
+      "헷갈리면 작은 입력에서 그리디 답과 완전 탐색 답을 비교해 보세요. 같으면 그리디를 믿어도 좋아요.",
+    ].join("\n"),
+    illustration: "greedy-counterexample",
+    keyPoints: ["정렬 + 한 번 훑기로 되면 그리디", "구간 최대 개수 → 끝 시각 순", "반례가 쉽게 나오면 DP"],
+  },
+];
+
+export const GREEDY_QUIZ: RecognitionQuestion[] = [
+  {
+    id: "greedy-q1",
+    snippet:
+      "회의 N개(N ≤ 100,000)의 시작·끝 시각이 주어져요. 회의실 하나로 겹치지 않게 열 수 있는 회의는 최대 몇 개인가요?",
+    choices: ["greedy", "dp", "backtracking"],
+    answer: "greedy",
+    signalIds: ["sig-interval-max-count"],
+    highlightPhrases: ["겹치지 않게 열 수 있는 회의는 최대 몇 개"],
+    explanation: "끝나는 시각이 빠른 회의부터 고르면 최선이에요. 정렬 + 한 번 훑기, O(N log N)이에요.",
+  },
+  {
+    id: "greedy-q2",
+    snippet: "동전 [1, 3, 4]를 몇 개든 쓸 수 있을 때, 금액 K를 만드는 동전 수의 최솟값을 구하세요.",
+    choices: ["greedy", "dp", "hash"],
+    answer: "dp",
+    signalIds: ["sig-best-choice-sequence"],
+    highlightPhrases: ["동전 [1, 3, 4]"],
+    explanation:
+      "큰 동전부터 쓰면 6원이 4+1+1(3개)이지만 최선은 3+3(2개)이에요. 동전이 배수 관계가 아니면 DP로 풀어요.",
+  },
+  {
+    id: "greedy-q3",
+    snippet: "각 칸에 적힌 수만큼 앞으로 뛸 수 있어요. 첫 칸에서 마지막 칸까지 갈 수 있는지 구하세요. (칸 ≤ 100,000)",
+    choices: ["bfs", "greedy", "stack"],
+    answer: "greedy",
+    signalIds: ["sig-running-reach"],
+    highlightPhrases: ["마지막 칸까지 갈 수 있는지"],
+    explanation:
+      "한 번 훑으며 '지금까지 닿을 수 있는 가장 먼 칸'만 늘려 가면 돼요. BFS로도 풀리지만 O(N)의 그리디가 간단해요.",
+  },
+  {
+    id: "greedy-q4",
+    snippet:
+      "손님 N명이 줄을 서요. 사람마다 일을 보는 데 걸리는 시간이 달라요. 모든 사람의 기다린 시간의 합을 최소로 하려면 어떤 순서로 세워야 하나요?",
+    choices: ["greedy", "binary-search", "dp"],
+    answer: "greedy",
+    signalIds: ["sig-greedy-local-best"],
+    highlightPhrases: ["기다린 시간의 합을 최소로"],
+    explanation: "빨리 끝나는 사람을 앞에 세울수록 뒤 사람들이 덜 기다려요. 시간 순으로 정렬하는 그리디예요.",
+  },
+  {
+    id: "greedy-q5",
+    snippet: "무게 제한이 있는 가방에 물건을 골라 담아 가치의 합을 최대로 하세요. 물건은 쪼갤 수 없어요. (물건 ≤ 100)",
+    choices: ["greedy", "dp", "sorting"],
+    answer: "dp",
+    signalIds: ["sig-best-choice-sequence"],
+    highlightPhrases: ["물건은 쪼갤 수 없어요"],
+    explanation: "무게당 가치가 큰 것부터 담는 욕심은 쪼갤 수 있을 때만 맞아요. 쪼갤 수 없으면 0/1 배낭 DP예요.",
+  },
+];

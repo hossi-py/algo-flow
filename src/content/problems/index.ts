@@ -44,6 +44,21 @@ import { binarySearchSquareGarden } from "./binary-search/square-garden";
 import { binarySearchToyWorkshop } from "./binary-search/toy-workshop";
 import { binarySearchTreeSaw } from "./binary-search/tree-saw";
 import { binarySearchUpdown } from "./binary-search/updown";
+import { cxBalancedSplit } from "./complexity/cx-balanced-split";
+import { cxBestTrade } from "./complexity/cx-best-trade";
+import { cxCountDivisors } from "./complexity/cx-count-divisors";
+import { cxCountMultiples } from "./complexity/cx-count-multiples";
+import { cxCountPrimes } from "./complexity/cx-count-primes";
+import { cxFastPower } from "./complexity/cx-fast-power";
+import { cxGcd } from "./complexity/cx-gcd";
+import { cxHalvingSteps } from "./complexity/cx-halving-steps";
+import { cxHandshakes } from "./complexity/cx-handshakes";
+import { cxIsPrime } from "./complexity/cx-is-prime";
+import { cxMaxSubarray } from "./complexity/cx-max-subarray";
+import { cxPrefixQueries } from "./complexity/cx-prefix-queries";
+import { cxPrimeFactors } from "./complexity/cx-prime-factors";
+import { cxRangeSums } from "./complexity/cx-range-sums";
+import { cxSameColorPairs } from "./complexity/cx-same-color-pairs";
 import { dfsCaveOrder } from "./dfs/cave-order";
 import { dfsClubCount } from "./dfs/club-count";
 import { dfsDownhillRoutes } from "./dfs/downhill-routes";
@@ -59,6 +74,21 @@ import { dfsPowerRestore } from "./dfs/power-restore";
 import { dfsRadioNetwork } from "./dfs/radio-network";
 import { dfsRecipeLoop } from "./dfs/recipe-loop";
 import { dfsTeamSize } from "./dfs/team-size";
+import { dijkstraCheapestRoute } from "./dijkstra/cheapest-route";
+import { dijkstraCountRoutes } from "./dijkstra/count-routes";
+import { dijkstraCouponFare } from "./dijkstra/coupon-fare";
+import { dijkstraDeliveryTime } from "./dijkstra/delivery-time";
+import { dijkstraGentleHike } from "./dijkstra/gentle-hike";
+import { dijkstraGridCost } from "./dijkstra/grid-cost";
+import { dijkstraLimitedTransfers } from "./dijkstra/limited-transfers";
+import { dijkstraMustVisit } from "./dijkstra/must-visit";
+import { dijkstraNearestShelter } from "./dijkstra/nearest-shelter";
+import { dijkstraPartyRoundtrip } from "./dijkstra/party-roundtrip";
+import { dijkstraReachableInTime } from "./dijkstra/reachable-in-time";
+import { dijkstraRoutePath } from "./dijkstra/route-path";
+import { dijkstraSignalDelay } from "./dijkstra/signal-delay";
+import { dijkstraUsefulRoads } from "./dijkstra/useful-roads";
+import { dijkstraWallBreak } from "./dijkstra/wall-break";
 import { dpAcornHouses } from "./dp/acorn-houses";
 import { dpBerryMarket } from "./dp/berry-market";
 import { dpBestStreak } from "./dp/best-streak";
@@ -74,6 +104,21 @@ import { dpSecretMessage } from "./dp/secret-message";
 import { dpStairWays } from "./dp/stair-ways";
 import { dpSteppingStones } from "./dp/stepping-stones";
 import { dpWordEdit } from "./dp/word-edit";
+import { mstManhattan } from "./graph-advanced/mst-manhattan";
+import { mstMinCable } from "./graph-advanced/mst-min-cable";
+import { mstPowerPlants } from "./graph-advanced/mst-power-plants";
+import { mstSplitVillages } from "./graph-advanced/mst-split-villages";
+import { topoBuildTime } from "./graph-advanced/topo-build-time";
+import { topoCanFinish } from "./graph-advanced/topo-can-finish";
+import { topoCourseOrder } from "./graph-advanced/topo-course-order";
+import { topoSemester } from "./graph-advanced/topo-semester";
+import { ufEquations } from "./graph-advanced/uf-equations";
+import { ufFirstCycle } from "./graph-advanced/uf-first-cycle";
+import { ufFriendGroups } from "./graph-advanced/uf-friend-groups";
+import { ufGroupSizes } from "./graph-advanced/uf-group-sizes";
+import { ufOnlineIslands } from "./graph-advanced/uf-online-islands";
+import { ufReverseCuts } from "./graph-advanced/uf-reverse-cuts";
+import { ufSameGroup } from "./graph-advanced/uf-same-group";
 import { graphCommonFriends } from "./graph-representation/graph-common-friends";
 import { graphDirectFlights } from "./graph-representation/graph-direct-flights";
 import { graphFamilyTree } from "./graph-representation/graph-family-tree";
@@ -89,6 +134,21 @@ import { graphStationNeighbors } from "./graph-representation/graph-station-neig
 import { graphTripleFriends } from "./graph-representation/graph-triple-friends";
 import { graphTrustedShop } from "./graph-representation/graph-trusted-shop";
 import { graphTwoTransfers } from "./graph-representation/graph-two-transfers";
+import { greedyBalloonArrows } from "./greedy/balloon-arrows";
+import { greedyBestTrade } from "./greedy/best-trade";
+import { greedyBiggestAfterErase } from "./greedy/biggest-after-erase";
+import { greedyCandyLine } from "./greedy/candy-line";
+import { greedyChangeCoins } from "./greedy/change-coins";
+import { greedyCookieShare } from "./greedy/cookie-share";
+import { greedyFewestJumps } from "./greedy/fewest-jumps";
+import { greedyFuelLoop } from "./greedy/fuel-loop";
+import { greedyHeightQueue } from "./greedy/height-queue";
+import { greedyLetterParts } from "./greedy/letter-parts";
+import { greedyMeetingRoom } from "./greedy/meeting-room";
+import { greedyRopeLift } from "./greedy/rope-lift";
+import { greedyShortestFirst } from "./greedy/shortest-first";
+import { greedySnackBudget } from "./greedy/snack-budget";
+import { greedyStoneJump } from "./greedy/stone-jump";
 import { hashAnagramGroups } from "./hash/anagram-groups";
 import { hashBalancedDays } from "./hash/balanced-days";
 import { hashCampingGear } from "./hash/camping-gear";
@@ -104,6 +164,36 @@ import { hashSnackLine } from "./hash/snack-line";
 import { hashSnackPair } from "./hash/snack-pair";
 import { hashStickerAlbum } from "./hash/sticker-album";
 import { hashSubarraySum } from "./hash/subarray-sum";
+import { heapBestProjects } from "./heap/best-projects";
+import { heapClosestTrees } from "./heap/closest-trees";
+import { heapCoursePlan } from "./heap/course-plan";
+import { heapFewestRefuels } from "./heap/fewest-refuels";
+import { heapKthLargest } from "./heap/kth-largest";
+import { heapLastStone } from "./heap/last-stone";
+import { heapMatrixKth } from "./heap/matrix-kth";
+import { heapMergePiles } from "./heap/merge-piles";
+import { heapMergeShelves } from "./heap/merge-shelves";
+import { heapNearlySorted } from "./heap/nearly-sorted";
+import { heapNoRepeatString } from "./heap/no-repeat-string";
+import { heapRunningMedian } from "./heap/running-median";
+import { heapSmallestK } from "./heap/smallest-k";
+import { heapTaskOrder } from "./heap/task-order";
+import { heapTopWords } from "./heap/top-words";
+import { simCleaningRobot } from "./implementation/sim-cleaning-robot";
+import { simClockAdd } from "./implementation/sim-clock-add";
+import { simDateAdd } from "./implementation/sim-date-add";
+import { simDiceSum } from "./implementation/sim-dice-sum";
+import { simGravity } from "./implementation/sim-gravity";
+import { simGridRobot } from "./implementation/sim-grid-robot";
+import { simLadder } from "./implementation/sim-ladder";
+import { simLifeSteps } from "./implementation/sim-life-steps";
+import { simRentalFee } from "./implementation/sim-rental-fee";
+import { simRobotFinal } from "./implementation/sim-robot-final";
+import { simRotateMatrix } from "./implementation/sim-rotate-matrix";
+import { simSnake } from "./implementation/sim-snake";
+import { simSpiralFill } from "./implementation/sim-spiral-fill";
+import { simTurnWalk } from "./implementation/sim-turn-walk";
+import { simZipBest } from "./implementation/sim-zip-best";
 import { dequeEndCards } from "./queue-deque/deque-end-cards";
 import { dequeSteadySignal } from "./queue-deque/deque-steady-signal";
 import { dequeSteppingScore } from "./queue-deque/deque-stepping-score";
@@ -164,6 +254,21 @@ import { stackUndoMemo } from "./stack/undo-memo";
 import { stackVaultBrackets } from "./stack/vault-brackets";
 import { stackWarmerWait } from "./stack/warmer-wait";
 import { stackWidestBanner } from "./stack/widest-banner";
+import { twoPointersAnagramSpots } from "./two-pointers/anagram-spots";
+import { twoPointersBestKDays } from "./two-pointers/best-k-days";
+import { twoPointersCoverWindow } from "./two-pointers/cover-window";
+import { twoPointersFruitBasket } from "./two-pointers/fruit-basket";
+import { twoPointersGoodWeeks } from "./two-pointers/good-weeks";
+import { twoPointersHiddenWord } from "./two-pointers/hidden-word";
+import { twoPointersPalindromeNote } from "./two-pointers/palindrome-note";
+import { twoPointersRainGarden } from "./two-pointers/rain-garden";
+import { twoPointersShortestEnough } from "./two-pointers/shortest-enough";
+import { twoPointersSortedPair } from "./two-pointers/sorted-pair";
+import { twoPointersSortedSquares } from "./two-pointers/sorted-squares";
+import { twoPointersThreeClosest } from "./two-pointers/three-closest";
+import { twoPointersUniqueStamps } from "./two-pointers/unique-stamps";
+import { twoPointersWaterBox } from "./two-pointers/water-box";
+import { twoPointersZerosBack } from "./two-pointers/zeros-back";
 
 /** 큐레이션 문제 전체. 새 문제는 여기에 추가하고 토픽의 레벨 problemSlugs에도 등록한다 */
 export const PROBLEMS: readonly Problem[] = [
@@ -212,6 +317,21 @@ export const PROBLEMS: readonly Problem[] = [
   binarySearchToyWorkshop,
   binarySearchTreeSaw,
   binarySearchUpdown,
+  cxBalancedSplit,
+  cxBestTrade,
+  cxCountDivisors,
+  cxCountMultiples,
+  cxCountPrimes,
+  cxFastPower,
+  cxGcd,
+  cxHalvingSteps,
+  cxHandshakes,
+  cxIsPrime,
+  cxMaxSubarray,
+  cxPrefixQueries,
+  cxPrimeFactors,
+  cxRangeSums,
+  cxSameColorPairs,
   dfsCaveOrder,
   dfsClubCount,
   dfsDownhillRoutes,
@@ -227,6 +347,21 @@ export const PROBLEMS: readonly Problem[] = [
   dfsRadioNetwork,
   dfsRecipeLoop,
   dfsTeamSize,
+  dijkstraCheapestRoute,
+  dijkstraCountRoutes,
+  dijkstraCouponFare,
+  dijkstraDeliveryTime,
+  dijkstraGentleHike,
+  dijkstraGridCost,
+  dijkstraLimitedTransfers,
+  dijkstraMustVisit,
+  dijkstraNearestShelter,
+  dijkstraPartyRoundtrip,
+  dijkstraReachableInTime,
+  dijkstraRoutePath,
+  dijkstraSignalDelay,
+  dijkstraUsefulRoads,
+  dijkstraWallBreak,
   dpAcornHouses,
   dpBerryMarket,
   dpBestStreak,
@@ -242,6 +377,21 @@ export const PROBLEMS: readonly Problem[] = [
   dpStairWays,
   dpSteppingStones,
   dpWordEdit,
+  mstManhattan,
+  mstMinCable,
+  mstPowerPlants,
+  mstSplitVillages,
+  topoBuildTime,
+  topoCanFinish,
+  topoCourseOrder,
+  topoSemester,
+  ufEquations,
+  ufFirstCycle,
+  ufFriendGroups,
+  ufGroupSizes,
+  ufOnlineIslands,
+  ufReverseCuts,
+  ufSameGroup,
   graphCommonFriends,
   graphDirectFlights,
   graphFamilyTree,
@@ -257,6 +407,21 @@ export const PROBLEMS: readonly Problem[] = [
   graphTripleFriends,
   graphTrustedShop,
   graphTwoTransfers,
+  greedyBalloonArrows,
+  greedyBestTrade,
+  greedyBiggestAfterErase,
+  greedyCandyLine,
+  greedyChangeCoins,
+  greedyCookieShare,
+  greedyFewestJumps,
+  greedyFuelLoop,
+  greedyHeightQueue,
+  greedyLetterParts,
+  greedyMeetingRoom,
+  greedyRopeLift,
+  greedyShortestFirst,
+  greedySnackBudget,
+  greedyStoneJump,
   hashAnagramGroups,
   hashBalancedDays,
   hashCampingGear,
@@ -272,6 +437,36 @@ export const PROBLEMS: readonly Problem[] = [
   hashSnackPair,
   hashStickerAlbum,
   hashSubarraySum,
+  heapBestProjects,
+  heapClosestTrees,
+  heapCoursePlan,
+  heapFewestRefuels,
+  heapKthLargest,
+  heapLastStone,
+  heapMatrixKth,
+  heapMergePiles,
+  heapMergeShelves,
+  heapNearlySorted,
+  heapNoRepeatString,
+  heapRunningMedian,
+  heapSmallestK,
+  heapTaskOrder,
+  heapTopWords,
+  simCleaningRobot,
+  simClockAdd,
+  simDateAdd,
+  simDiceSum,
+  simGravity,
+  simGridRobot,
+  simLadder,
+  simLifeSteps,
+  simRentalFee,
+  simRobotFinal,
+  simRotateMatrix,
+  simSnake,
+  simSpiralFill,
+  simTurnWalk,
+  simZipBest,
   dequeEndCards,
   dequeSteadySignal,
   dequeSteppingScore,
@@ -332,6 +527,21 @@ export const PROBLEMS: readonly Problem[] = [
   stackVaultBrackets,
   stackWarmerWait,
   stackWidestBanner,
+  twoPointersAnagramSpots,
+  twoPointersBestKDays,
+  twoPointersCoverWindow,
+  twoPointersFruitBasket,
+  twoPointersGoodWeeks,
+  twoPointersHiddenWord,
+  twoPointersPalindromeNote,
+  twoPointersRainGarden,
+  twoPointersShortestEnough,
+  twoPointersSortedPair,
+  twoPointersSortedSquares,
+  twoPointersThreeClosest,
+  twoPointersUniqueStamps,
+  twoPointersWaterBox,
+  twoPointersZerosBack,
 ];
 
 /** 목록 화면에서 쓰는 가벼운 요약 (테스트케이스·힌트 제외) */

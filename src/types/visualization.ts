@@ -25,7 +25,28 @@ export type VisualizationGeneratorKey =
   | "bsearch-answer"
   | "dp-stairs"
   | "dp-grid-paths"
-  | "dp-lcs";
+  | "dp-lcs"
+  | "greedy-intervals"
+  | "greedy-coins"
+  | "greedy-digits"
+  | "tp-pair-sum"
+  | "tp-min-window"
+  | "tp-dedupe"
+  | "heap-ops"
+  | "heap-merge"
+  | "heap-top-k"
+  | "dijkstra-basic"
+  | "dijkstra-path"
+  | "dijkstra-grid"
+  | "uf-union"
+  | "mst-kruskal"
+  | "topo-kahn"
+  | "cx-growth"
+  | "cx-pairs"
+  | "cx-halving"
+  | "sim-robot"
+  | "sim-spiral"
+  | "sim-rotate";
 
 export interface VisualizationPreset {
   id: string;
@@ -83,6 +104,23 @@ export type VizAction =
   // DP
   | "fill"
   | "reuse"
+  // 그리디
+  | "pick"
+  | "skip"
+  // 두 포인터
+  | "move-left"
+  | "move-right"
+  // 힙
+  | "swap"
+  // 다익스트라
+  | "relax"
+  | "settle"
+  // 유니온 파인드
+  | "find"
+  | "union"
+  | "compress"
+  // 구현 / 시뮬레이션
+  | "turn"
   // 공통
   | "compare"
   | "init"
@@ -127,6 +165,8 @@ export interface GraphEdgeViz {
   from: string;
   to: string;
   status: GraphEdgeStatus;
+  /** 간선 가운데에 붙는 표시. 예: 가중치 "4" */
+  label?: string;
 }
 
 export interface GraphSnapshot {

@@ -38,6 +38,20 @@ describe("ConceptIllustration", () => {
     "bsearch-yes-no",
     "dp-memo-notebook",
     "dp-table-fill",
+    "greedy-meetings",
+    "greedy-counterexample",
+    "tp-squeeze",
+    "tp-window",
+    "heap-tree",
+    "heap-emergency",
+    "dijkstra-map",
+    "dijkstra-settle",
+    "uf-groups",
+    "topo-order",
+    "cx-growth-curves",
+    "cx-count-steps",
+    "sim-robot-grid",
+    "sim-rulebook",
   ];
   it.each(keys)("%s 그림이 설명과 함께 그려진다", (key) => {
     const { container } = render(<ConceptIllustration illustration={key} />);

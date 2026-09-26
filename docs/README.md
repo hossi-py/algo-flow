@@ -1,6 +1,6 @@
 # algo-flow 설계 문서 (Step 1)
 
-스택부터 백트래킹·해시·정렬·이분 탐색·DP까지, 알고리즘을 쉬운 단계부터 순서대로 배우는 학습 플랫폼 **algo-flow**의 설계 문서입니다.
+시간 복잡도 입문과 스택부터 백트래킹·해시·정렬·이분 탐색·DP·그리디·두 포인터·힙·다익스트라·유니온 파인드·시뮬레이션까지, 알고리즘을 쉬운 단계부터 순서대로 배우는 학습 플랫폼 **algo-flow**의 설계 문서입니다.
 마스코트는 새싹 노드 **노디(Nodi)** 🌱
 
 | 문서 | 내용 |
@@ -11,6 +11,7 @@
 | [04-data-model.md](04-data-model.md) | TypeScript 인터페이스, zod 스키마, 게임화 규칙, Supabase 테이블·RLS SQL |
 | [05-example-problem.md](05-example-problem.md) | DFS Lv3 「꽃밭 구역 나누기」 전체 데이터 (문제·테스트·힌트·신호·시각화 스텝) |
 | [06-milestones.md](06-milestones.md) | 마일스톤별 목표, 산출물, 완료 기준 |
+| [07-development.md](07-development.md) | 실행·환경 변수·명령, Supabase 연결, 랭킹·관리자·에러 모니터링 운영, CI·배포, 브라우저 Java |
 
 ---
 

@@ -98,9 +98,9 @@ describe("레벨 클리어 조건", () => {
 });
 
 describe("findNextStep", () => {
-  it("처음이면 스택 Lv1", () => {
+  it("처음이면 맨 앞 입문 토픽(시간 복잡도) Lv1", () => {
     expect(findNextStep(createEmptyProgress(), TOPICS)).toEqual({
-      topic: "stack",
+      topic: "complexity",
       level: 1,
       problemSlug: TOPICS[0]?.levels[0].problemSlugs[0],
     });

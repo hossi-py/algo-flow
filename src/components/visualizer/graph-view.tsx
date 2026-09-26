@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import type { GraphEdgeStatus, GraphNodeStatus, GraphSnapshot } from "@/types";
 
@@ -33,6 +34,7 @@ const EDGE_STYLE: Record<GraphEdgeStatus, { stroke: string; width: number; dash?
 
 export function GraphView({ snapshot }: { snapshot: GraphSnapshot }) {
   const reduceMotion = useReducedMotion();
+  const markerId = useId().replace(/:/g, "");
   const count = snapshot.nodes.length;
   const r = count > 12 ? 3.6 : count > 8 ? 4.6 : 5.6;
   const font = r * 0.78;
@@ -47,24 +49,84 @@ export function GraphView({ snapshot }: { snapshot: GraphSnapshot }) {
         role="img"
         aria-label={`그래프: 노드 ${count}개${visitedLabels.length ? `, 완료 ${visitedLabels.join(", ")}` : ""}`}
       >
+        {snapshot.directed && (
+          <defs>
+            {(Object.keys(EDGE_STYLE) as GraphEdgeStatus[]).map((status) => (
+              <marker
+                key={status}
+                id={`${markerId}-${status}`}
+                viewBox="0 0 10 10"
+                refX={9}
+                refY={5}
+                markerWidth={3.6}
+                markerHeight={3.6}
+                orient="auto"
+              >
+                <path d="M0,0 L10,5 L0,10 z" fill={EDGE_STYLE[status].stroke} />
+              </marker>
+            ))}
+          </defs>
+        )}
         {snapshot.edges.map((edge) => {
           const from = byId.get(edge.from);
           const to = byId.get(edge.to);
           if (!from || !to) return null;
           const style = EDGE_STYLE[edge.status];
+          // 방향 그래프는 화살표가 노드에 가리지 않게 선을 노드 테두리에서 멈춘다
+          const len = Math.hypot(to.x - from.x, to.y - from.y) || 1;
+          const trim = snapshot.directed ? r + 0.8 : 0;
+          const ux = (to.x - from.x) / len;
+          const uy = (to.y - from.y) / len;
           return (
             <line
               key={`${edge.from}-${edge.to}`}
-              x1={from.x}
-              y1={from.y}
-              x2={to.x}
-              y2={to.y}
+              x1={from.x + ux * trim}
+              y1={from.y + uy * trim}
+              x2={to.x - ux * trim}
+              y2={to.y - uy * trim}
               stroke={style.stroke}
               strokeWidth={style.width}
               strokeDasharray={style.dash}
               strokeLinecap="round"
               opacity={style.opacity}
+              markerEnd={snapshot.directed ? `url(#${markerId}-${edge.status})` : undefined}
             />
+          );
+        })}
+        {snapshot.edges.map((edge) => {
+          const from = byId.get(edge.from);
+          const to = byId.get(edge.to);
+          if (!edge.label || !from || !to) return null;
+          const size = font * 0.72;
+          const width = edge.label.length * size * 0.62 + size * 0.7;
+          const x = (from.x + to.x) / 2;
+          const y = (from.y + to.y) / 2;
+          const strong = edge.status === "active" || edge.status === "tree";
+          return (
+            <g key={`label-${edge.from}-${edge.to}`}>
+              <rect
+                x={x - width / 2}
+                y={y - size * 0.7}
+                width={width}
+                height={size * 1.4}
+                rx={size * 0.4}
+                fill="var(--card)"
+                stroke={strong ? EDGE_STYLE[edge.status].stroke : "var(--border)"}
+                strokeWidth={0.35}
+              />
+              <text
+                x={x}
+                y={y}
+                textAnchor="middle"
+                dominantBaseline="central"
+                fontSize={size}
+                fontWeight={strong ? 800 : 600}
+                fill={strong ? "var(--foreground)" : "var(--muted-foreground)"}
+                fontFamily="inherit"
+              >
+                {edge.label}
+              </text>
+            </g>
           );
         })}
         {snapshot.nodes.map((node) => {

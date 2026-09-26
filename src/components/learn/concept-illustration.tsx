@@ -33,6 +33,20 @@ const LABELS: Record<IllustrationKey, string> = {
   "bsearch-yes-no": "가능·가능·가능 뒤로 불가능이 이어지는 줄에서 그 경계를 찾는 그림",
   "dp-memo-notebook": "한 번 계산한 답을 수첩에 적어 두고 다시 필요할 때 꺼내 쓰는 그림",
   "dp-table-fill": "표의 칸을 왼쪽 위부터 차례로 채우며 위·왼쪽 칸의 값을 더하는 그림",
+  "greedy-meetings": "시간 막대 중 일찍 끝나는 회의부터 고르고, 겹치는 회의는 건너뛰는 그림",
+  "greedy-counterexample": "6원을 만들 때 큰 동전부터 쓰면 3개, 3원 두 개면 2개라 욕심이 틀리는 반례 그림",
+  "tp-squeeze": "정렬된 칸의 양 끝에 손가락을 두고 가운데로 좁혀 오는 그림",
+  "tp-window": "칸들 위로 창틀이 오른쪽으로 미끄러지며 늘었다 줄었다 하는 그림",
+  "heap-tree": "가장 작은 값이 맨 위에 있고 부모가 자식보다 작은 트리 그림",
+  "heap-emergency": "응급실에서 급한 환자가 먼저 들어가는 대기 줄 그림",
+  "dijkstra-map": "곧장 가는 길은 10분, 한 마을을 거쳐 돌아가는 길은 2 + 3 = 5분이라 돌아가는 길이 더 빠른 지도 그림",
+  "dijkstra-settle": "출발점에서 가까운 마을부터 거리가 확정되고, 다음 후보가 기다리는 그림",
+  "uf-groups": "두 그룹이 각자 대표를 가리키고 있고, 한 대표를 다른 대표 밑에 붙여 한 그룹으로 합치는 그림",
+  "topo-order": "양말·속옷을 먼저, 그다음 바지, 마지막에 신발을 신는 순서를 화살표로 이은 그림",
+  "cx-growth-curves": "N이 커질 때 log N은 거의 평평하고, N은 곧게, N²은 가파르게 치솟는 세 곡선 그림",
+  "cx-count-steps": "1부터 N까지 하나씩 더하는 긴 칸 줄과, 공식 한 줄로 끝나는 칸 하나를 나란히 둔 그림",
+  "sim-robot-grid": "격자 위 로봇이 화살표를 따라 돌며 걷고, 벽 앞에서 멈추는 그림",
+  "sim-rulebook": "번호가 붙은 규칙 목록을 한 줄씩 짚으며 따라 하는 그림",
 };
 
 /** 강조 면(HOT) 위 글자. 다크 모드에서도 밝은 보라 위에 어두운 글자가 되도록 */
@@ -869,6 +883,534 @@ function DpTableFill() {
   );
 }
 
+function GreedyMeetings() {
+  const bars = [
+    { s: 1, e: 4, pick: true },
+    { s: 3, e: 5, pick: false },
+    { s: 5, e: 7, pick: true },
+    { s: 6, e: 10, pick: false },
+    { s: 8, e: 11, pick: true },
+  ];
+  const x = (t: number) => 14 + t * 12;
+  return (
+    <>
+      <line x1={x(0)} y1={86} x2={x(11)} y2={86} stroke="currentColor" strokeWidth={1.5} opacity={0.6} />
+      {bars.map((b, i) => (
+        <rect
+          key={i}
+          x={x(b.s)}
+          y={8 + i * 15}
+          width={x(b.e) - x(b.s)}
+          height={10}
+          rx={4}
+          fill={b.pick ? DONE : PAPER}
+          stroke="currentColor"
+          strokeWidth={1.4}
+          strokeDasharray={b.pick ? undefined : "3 3"}
+          opacity={b.pick ? 1 : 0.6}
+        />
+      ))}
+      <Label x={80} y={98}>
+        일찍 끝나는 것부터 고르기
+      </Label>
+    </>
+  );
+}
+
+function GreedyCounterexample() {
+  const coin = (cx: number, cy: number, value: number, fill: string) => (
+    <g key={`${cx}-${cy}`}>
+      <circle cx={cx} cy={cy} r={9} fill={fill} stroke="currentColor" strokeWidth={1.6} />
+      <Label x={cx} y={cy + 3}>
+        {value}
+      </Label>
+    </g>
+  );
+  return (
+    <>
+      <Label x={40} y={16}>
+        욕심: 3개
+      </Label>
+      {[4, 1, 1].map((v, i) => coin(16 + i * 24, 36, v, BAD))}
+      <path d="M14 58 l6 6 m0 -6 l-6 6" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+      <Label x={120} y={16}>
+        최선: 2개
+      </Label>
+      {[3, 3].map((v, i) => coin(108 + i * 24, 36, v, DONE))}
+      <path d="M106 62 l4 4 l8 -8" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+      <Label x={80} y={92}>
+        동전 [4, 3, 1]로 6원 만들기
+      </Label>
+    </>
+  );
+}
+
+function TpSqueeze() {
+  const values = [1, 3, 4, 6, 8, 11, 14];
+  return (
+    <>
+      {values.map((v, i) => (
+        <g key={i}>
+          <rect
+            x={10 + i * 20}
+            y={34}
+            width={18}
+            height={18}
+            rx={4}
+            fill={i === 1 || i === 5 ? HOT : PAPER}
+            stroke="currentColor"
+            strokeWidth={1.5}
+          />
+          <Label x={19 + i * 20} y={46} fill={i === 1 || i === 5 ? ON_HOT : "currentColor"}>
+            {v}
+          </Label>
+        </g>
+      ))}
+      <Label x={39} y={70}>
+        L
+      </Label>
+      <Label x={119} y={70}>
+        R
+      </Label>
+      <Arrow d="M40 22 L52 22" />
+      <Arrow d="M120 22 L108 22" />
+      <Label x={80} y={92}>
+        작으면 L을, 크면 R을 옮겨요
+      </Label>
+    </>
+  );
+}
+
+function TpWindow() {
+  const values = [2, 3, 1, 2, 4, 3, 1];
+  return (
+    <>
+      {values.map((v, i) => (
+        <g key={i}>
+          <rect
+            x={10 + i * 20}
+            y={36}
+            width={18}
+            height={18}
+            rx={4}
+            fill={i >= 3 && i <= 5 ? DONE : PAPER}
+            stroke="currentColor"
+            strokeWidth={1.5}
+          />
+          <Label x={19 + i * 20} y={48}>
+            {v}
+          </Label>
+        </g>
+      ))}
+      <rect
+        x={67}
+        y={30}
+        width={66}
+        height={30}
+        rx={6}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2.2}
+        strokeDasharray="5 3"
+      />
+      <Arrow d="M112 20 L132 20" />
+      <Arrow d="M68 20 L88 20" />
+      <Label x={80} y={80}>
+        오른쪽을 늘리고, 왼쪽을 줄이고
+      </Label>
+    </>
+  );
+}
+
+function HeapTree() {
+  const nodes = [
+    { x: 80, y: 14, v: 1 },
+    { x: 48, y: 42, v: 3 },
+    { x: 112, y: 42, v: 5 },
+    { x: 32, y: 72, v: 7 },
+    { x: 64, y: 72, v: 4 },
+    { x: 96, y: 72, v: 9 },
+  ];
+  const parent = [-1, 0, 0, 1, 1, 2];
+  return (
+    <>
+      {nodes.map((n, i) =>
+        parent[i]! >= 0 ? (
+          <line
+            key={`e${i}`}
+            x1={nodes[parent[i]!]!.x}
+            y1={nodes[parent[i]!]!.y}
+            x2={n.x}
+            y2={n.y}
+            stroke="currentColor"
+            strokeWidth={1.8}
+          />
+        ) : null,
+      )}
+      {nodes.map((n, i) => (
+        <g key={i}>
+          <circle cx={n.x} cy={n.y} r={9} fill={i === 0 ? HOT : PAPER} stroke="currentColor" strokeWidth={1.8} />
+          <Label x={n.x} y={n.y + 3} fill={i === 0 ? ON_HOT : "currentColor"}>
+            {n.v}
+          </Label>
+        </g>
+      ))}
+      <Label x={140} y={17} anchor="end">
+        가장 작은 값
+      </Label>
+      <Label x={80} y={96}>
+        부모 ≤ 자식
+      </Label>
+    </>
+  );
+}
+
+function HeapEmergency() {
+  const queue = [
+    { label: "3", fill: WAIT },
+    { label: "1", fill: BAD },
+    { label: "4", fill: PAPER },
+    { label: "2", fill: WAIT },
+  ];
+  return (
+    <>
+      <rect x={112} y={26} width={38} height={40} rx={6} fill={PAPER} stroke="currentColor" strokeWidth={1.8} />
+      <Label x={131} y={50}>
+        진료실
+      </Label>
+      {queue.map((q, i) => (
+        <g key={i}>
+          <circle cx={20 + i * 22} cy={46} r={9} fill={q.fill} stroke="currentColor" strokeWidth={1.6} />
+          <Label x={20 + i * 22} y={49}>
+            {q.label}
+          </Label>
+        </g>
+      ))}
+      <Arrow d="M42 30 Q76 10 108 36" />
+      <Label x={70} y={86}>
+        도착 순서가 아니라 급한 순서(1)부터
+      </Label>
+    </>
+  );
+}
+
+function Road({
+  x1,
+  y1,
+  x2,
+  y2,
+  cost,
+  hot = false,
+  bad = false,
+}: {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  cost: string;
+  hot?: boolean;
+  bad?: boolean;
+}) {
+  const mx = (x1 + x2) / 2;
+  const my = (y1 + y2) / 2;
+  return (
+    <>
+      <line
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
+        stroke="currentColor"
+        strokeWidth={hot ? 3 : 1.6}
+        strokeDasharray={bad ? "3 3" : undefined}
+        strokeLinecap="round"
+      />
+      <rect
+        x={mx - 7}
+        y={my - 6}
+        width={14}
+        height={11}
+        rx={3}
+        fill={hot ? HOT : PAPER}
+        stroke="currentColor"
+        strokeWidth={1}
+      />
+      <Label x={mx} y={my + 2.5} fill={hot ? ON_HOT : "currentColor"}>
+        {cost}
+      </Label>
+    </>
+  );
+}
+
+function DijkstraMap() {
+  return (
+    <>
+      <Road x1={22} y1={58} x2={138} y2={58} cost="10" bad />
+      <Road x1={22} y1={58} x2={80} y2={20} cost="2" hot />
+      <Road x1={80} y1={20} x2={138} y2={58} cost="3" hot />
+      {[
+        { x: 22, y: 58, label: "출발", fill: DONE },
+        { x: 80, y: 20, label: "", fill: PAPER },
+        { x: 138, y: 58, label: "도착", fill: DONE },
+      ].map((n, i) => (
+        <g key={i}>
+          <circle cx={n.x} cy={n.y} r={8} fill={n.fill} stroke="currentColor" strokeWidth={1.8} />
+          {n.label && (
+            <Label x={n.x} y={n.y + 19}>
+              {n.label}
+            </Label>
+          )}
+        </g>
+      ))}
+      <Label x={80} y={94}>
+        돌아가도 2 + 3 = 5 &lt; 10
+      </Label>
+    </>
+  );
+}
+
+function DijkstraSettle() {
+  const nodes = [
+    { x: 18, y: 50, d: "0", fill: DONE },
+    { x: 58, y: 22, d: "2", fill: DONE },
+    { x: 58, y: 78, d: "3", fill: HOT },
+    { x: 104, y: 30, d: "7", fill: WAIT },
+    { x: 142, y: 70, d: "∞", fill: PAPER },
+  ];
+  const edges: [number, number][] = [
+    [0, 1],
+    [0, 2],
+    [1, 3],
+    [2, 3],
+    [3, 4],
+    [2, 4],
+  ];
+  return (
+    <>
+      {edges.map(([a, b]) => (
+        <line
+          key={`${a}-${b}`}
+          x1={nodes[a]!.x}
+          y1={nodes[a]!.y}
+          x2={nodes[b]!.x}
+          y2={nodes[b]!.y}
+          stroke="currentColor"
+          strokeWidth={1.6}
+          strokeLinecap="round"
+        />
+      ))}
+      {nodes.map((n, i) => (
+        <g key={i}>
+          <circle cx={n.x} cy={n.y} r={9} fill={n.fill} stroke="currentColor" strokeWidth={1.8} />
+          <Label x={n.x} y={n.y + 3} fill={n.fill === HOT ? ON_HOT : "currentColor"}>
+            {n.d}
+          </Label>
+        </g>
+      ))}
+      <Label x={40} y={98}>
+        가까운 곳부터 확정
+      </Label>
+      <Label x={124} y={14}>
+        다음 후보
+      </Label>
+    </>
+  );
+}
+
+function UfGroups() {
+  const nodes = [
+    { x: 38, y: 22, fill: HOT, label: "A" },
+    { x: 18, y: 62, fill: PAPER, label: "" },
+    { x: 58, y: 62, fill: PAPER, label: "" },
+    { x: 122, y: 22, fill: DONE, label: "B" },
+    { x: 122, y: 62, fill: PAPER, label: "" },
+  ];
+  const parent = [-1, 0, 0, -1, 3];
+  return (
+    <>
+      {nodes.map((n, i) =>
+        parent[i]! >= 0 ? (
+          <Arrow key={`e${i}`} d={`M${n.x} ${n.y - 9} L${nodes[parent[i]!]!.x} ${nodes[parent[i]!]!.y + 11}`} />
+        ) : null,
+      )}
+      <path
+        d="M112 22 L50 22"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeDasharray="4 3"
+        markerEnd="url(#ci-arrow)"
+      />
+      {nodes.map((n, i) => (
+        <g key={i}>
+          <circle cx={n.x} cy={n.y} r={8} fill={n.fill} stroke="currentColor" strokeWidth={1.8} />
+          {n.label && (
+            <Label x={n.x} y={n.y + 3} fill={n.fill === HOT ? ON_HOT : "currentColor"}>
+              {n.label}
+            </Label>
+          )}
+        </g>
+      ))}
+      <Label x={80} y={14}>
+        합치기
+      </Label>
+      <Label x={80} y={92}>
+        대표끼리만 이으면 한 그룹
+      </Label>
+    </>
+  );
+}
+
+function TopoOrder() {
+  const boxes = [
+    { x: 6, y: 16, label: "양말", fill: DONE },
+    { x: 6, y: 58, label: "속옷", fill: DONE },
+    { x: 60, y: 58, label: "바지", fill: HOT },
+    { x: 114, y: 36, label: "신발", fill: PAPER },
+  ];
+  return (
+    <>
+      <Arrow d="M46 66 L58 66" />
+      <Arrow d="M46 24 L112 42" />
+      <Arrow d="M100 64 L112 52" />
+      {boxes.map((b) => (
+        <g key={b.label}>
+          <rect x={b.x} y={b.y} width={40} height={16} rx={4} fill={b.fill} stroke="currentColor" strokeWidth={1.6} />
+          <Label x={b.x + 20} y={b.y + 11} fill={b.fill === HOT ? ON_HOT : "currentColor"}>
+            {b.label}
+          </Label>
+        </g>
+      ))}
+      <Label x={80} y={94}>
+        먼저 할 일이 끝난 것부터
+      </Label>
+    </>
+  );
+}
+
+function CxGrowthCurves() {
+  return (
+    <>
+      <path d="M18 8 L18 88 L150 88" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" />
+      <path d="M18 86 Q60 70 140 64" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+      <path d="M18 88 L140 38" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+      <path d="M18 88 Q92 86 112 10" fill="none" stroke={BAD} strokeWidth={3} strokeLinecap="round" />
+      <Label x={146} y={62} anchor="end">
+        log N
+      </Label>
+      <Label x={146} y={34} anchor="end">
+        N
+      </Label>
+      <Label x={120} y={14} anchor="start">
+        N²
+      </Label>
+      <Label x={150} y={98} anchor="end">
+        N →
+      </Label>
+    </>
+  );
+}
+
+function CxCountSteps() {
+  return (
+    <>
+      {Array.from({ length: 8 }, (_, i) => (
+        <rect
+          key={i}
+          x={8 + i * 12}
+          y={24}
+          width={10}
+          height={14}
+          rx={2}
+          fill={i === 7 ? HOT : WAIT}
+          stroke="currentColor"
+          strokeWidth={1.2}
+        />
+      ))}
+      <Label x={56} y={16}>
+        1 + 2 + … + N
+      </Label>
+      <Label x={56} y={52}>
+        N번
+      </Label>
+      <rect x={112} y={24} width={40} height={14} rx={3} fill={DONE} stroke="currentColor" strokeWidth={1.4} />
+      <Label x={132} y={16}>
+        공식
+      </Label>
+      <Label x={132} y={52}>
+        1번
+      </Label>
+      <Label x={80} y={84}>
+        같은 답, 다른 계산 횟수
+      </Label>
+    </>
+  );
+}
+
+function SimRobotGrid() {
+  const cell = 16;
+  const walls = ["1-2", "2-2"];
+  return (
+    <>
+      {Array.from({ length: 4 }, (_, r) =>
+        Array.from({ length: 6 }, (_, c) => {
+          const wall = walls.includes(`${r}-${c}`);
+          return (
+            <rect
+              key={`${r}-${c}`}
+              x={32 + c * cell}
+              y={10 + r * cell}
+              width={cell - 2}
+              height={cell - 2}
+              rx={2}
+              fill={wall ? "currentColor" : PAPER}
+              stroke="currentColor"
+              strokeWidth={0.8}
+              opacity={wall ? 0.7 : 1}
+            />
+          );
+        }),
+      )}
+      <Arrow d="M39 17 L71 17" />
+      <Arrow d="M71 17 L71 42" />
+      <Arrow d="M71 49 L71 62" />
+      <circle cx={71} cy={65} r={5} fill={HOT} stroke="currentColor" strokeWidth={1.4} />
+      <Label x={80} y={92}>
+        돌고, 걷고, 벽 앞에선 멈춰요
+      </Label>
+    </>
+  );
+}
+
+function SimRulebook() {
+  const rules = ["1. 앞칸 확인", "2. 벽이면 돌기", "3. 아니면 한 칸"];
+  return (
+    <>
+      <rect x={30} y={8} width={100} height={66} rx={6} fill={PAPER} stroke="currentColor" strokeWidth={1.6} />
+      {rules.map((rule, i) => (
+        <g key={rule}>
+          <rect
+            x={38}
+            y={16 + i * 19}
+            width={84}
+            height={14}
+            rx={3}
+            fill={i === 1 ? HOT : i === 0 ? DONE : WAIT}
+            stroke="currentColor"
+            strokeWidth={1}
+          />
+          <Label x={80} y={26 + i * 19} fill={i === 1 ? ON_HOT : "currentColor"}>
+            {rule}
+          </Label>
+        </g>
+      ))}
+      <Label x={80} y={92}>
+        규칙을 빠짐없이 그대로
+      </Label>
+    </>
+  );
+}
+
 const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "stack-plates": StackPlates,
   "stack-undo": StackUndo,
@@ -889,6 +1431,20 @@ const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "bsearch-yes-no": BsearchYesNo,
   "dp-memo-notebook": DpMemoNotebook,
   "dp-table-fill": DpTableFill,
+  "greedy-meetings": GreedyMeetings,
+  "greedy-counterexample": GreedyCounterexample,
+  "tp-squeeze": TpSqueeze,
+  "tp-window": TpWindow,
+  "heap-tree": HeapTree,
+  "heap-emergency": HeapEmergency,
+  "dijkstra-map": DijkstraMap,
+  "dijkstra-settle": DijkstraSettle,
+  "uf-groups": UfGroups,
+  "topo-order": TopoOrder,
+  "cx-growth-curves": CxGrowthCurves,
+  "cx-count-steps": CxCountSteps,
+  "sim-robot-grid": SimRobotGrid,
+  "sim-rulebook": SimRulebook,
 };
 
 export function ConceptIllustration({
