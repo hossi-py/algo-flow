@@ -3,6 +3,7 @@ import { backtrackingTopic } from "./backtracking";
 import { bfsTopic } from "./bfs";
 import { binarySearchTopic } from "./binary-search";
 import { dfsTopic } from "./dfs";
+import { dijkstraTopic } from "./dijkstra";
 import { dpTopic } from "./dp";
 import { graphRepresentationTopic } from "./graph-representation";
 import { greedyTopic } from "./greedy";
@@ -30,6 +31,7 @@ export const TOPICS: readonly Topic[] = [
   greedyTopic,
   twoPointersTopic,
   heapTopic,
+  dijkstraTopic,
 ];
 
 const TOPICS_BY_SLUG = new Map<string, Topic>(TOPICS.map((topic) => [topic.slug, topic]));

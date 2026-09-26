@@ -47,6 +47,7 @@ const TOPIC_NAMES: Record<TopicSlug, RegExp> = {
   greedy: /그리디|탐욕/,
   "two-pointers": /두\s*포인터|투\s*포인터|슬라이딩\s*윈도우/,
   heap: /힙|우선순위\s*큐/,
+  dijkstra: /다익스트라|데이크스트라/,
 };
 
 export function revealsTopic(problem: Problem): boolean {
@@ -72,6 +73,7 @@ const CONFUSABLE: Record<TopicSlug, TopicSlug[]> = {
   greedy: ["dp", "sorting", "two-pointers"],
   "two-pointers": ["hash", "binary-search", "greedy"],
   heap: ["sorting", "greedy", "queue-deque"],
+  dijkstra: ["bfs", "dp", "heap"],
 };
 
 /** 정답 + 헷갈리는 토픽 2개 + 나머지 중 하나를 섞어 4지선다 */

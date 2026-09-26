@@ -86,6 +86,17 @@ import {
   validateIntervals,
 } from "./greedy";
 import {
+  DIJKSTRA_BASIC_PSEUDOCODE,
+  DIJKSTRA_GRID_PSEUDOCODE,
+  DIJKSTRA_PATH_PSEUDOCODE,
+  dijkstraBasic,
+  dijkstraGrid,
+  dijkstraPath,
+  validateDijkstraBasic,
+  validateDijkstraGrid,
+  validateDijkstraPath,
+} from "./dijkstra";
+import {
   HEAP_MERGE_PSEUDOCODE,
   HEAP_OPS_PSEUDOCODE,
   HEAP_TOP_K_PSEUDOCODE,
@@ -370,6 +381,29 @@ export const GENERATORS: Record<VisualizationGeneratorKey, GeneratorDefinition> 
     pseudocode: HEAP_TOP_K_PSEUDOCODE,
     validate: validateHeapTopK,
     generate: heapTopK,
+  },
+  "dijkstra-basic": {
+    key: "dijkstra-basic",
+    inputHint:
+      "[노드 수, 간선 [[a, b, 비용]], 시작] 예: [4, [[0, 1, 4], [0, 2, 1], [2, 1, 2]], 0] — 노드 2~8개, 간선 12개까지, 비용 1~99",
+    pseudocode: DIJKSTRA_BASIC_PSEUDOCODE,
+    validate: validateDijkstraBasic,
+    generate: dijkstraBasic,
+  },
+  "dijkstra-path": {
+    key: "dijkstra-path",
+    inputHint:
+      "[노드 수, 간선 [[a, b, 비용]], 시작, 도착] 예: [4, [[0, 1, 4], [0, 2, 1], [2, 1, 2]], 0, 1] — 노드 2~8개, 간선 12개까지",
+    pseudocode: DIJKSTRA_PATH_PSEUDOCODE,
+    validate: validateDijkstraPath,
+    generate: dijkstraPath,
+  },
+  "dijkstra-grid": {
+    key: "dijkstra-grid",
+    inputHint: "[칸 비용 격자] 예: [[[1, 3, 1], [1, 5, 1], [4, 2, 1]]] — 2~5줄 × 2~5칸, 비용 1~9",
+    pseudocode: DIJKSTRA_GRID_PSEUDOCODE,
+    validate: validateDijkstraGrid,
+    generate: dijkstraGrid,
   },
 };
 

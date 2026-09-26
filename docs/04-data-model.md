@@ -56,6 +56,7 @@ export const TOPIC_SLUGS = [
   "greedy",
   "two-pointers",
   "heap",
+  "dijkstra",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
@@ -82,7 +83,7 @@ export const LEVEL_STAGE_LABELS: Record<LevelStage, string> = {
 };
 
 export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum" | "teal" | "coral" | "indigo";
-export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table" | "coins" | "pointers" | "heap";
+export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table" | "coins" | "pointers" | "heap" | "route";
 
 export const PATTERN_TAGS = [
   // 스택
@@ -160,6 +161,12 @@ export const PATTERN_TAGS = [
   "k-way-merge",
   "two-heaps",
   "heap-scheduling",
+  // 다익스트라
+  "weighted-shortest-path",
+  "path-restore",
+  "reverse-or-multi-source",
+  "state-dijkstra",
+  "minimax-path",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -225,7 +232,9 @@ export type IllustrationKey =
   | "tp-squeeze"
   | "tp-window"
   | "heap-tree"
-  | "heap-emergency";
+  | "heap-emergency"
+  | "dijkstra-map"
+  | "dijkstra-settle";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {
@@ -434,7 +443,10 @@ export type VisualizationGeneratorKey =
   | "tp-dedupe"
   | "heap-ops"
   | "heap-merge"
-  | "heap-top-k";
+  | "heap-top-k"
+  | "dijkstra-basic"
+  | "dijkstra-path"
+  | "dijkstra-grid";
 
 export interface VisualizationPreset {
   id: string;
@@ -500,6 +512,9 @@ export type VizAction =
   | "move-right"
   // 힙
   | "swap"
+  // 다익스트라
+  | "relax"
+  | "settle"
   // 공통
   | "compare"
   | "init"

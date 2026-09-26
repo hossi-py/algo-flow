@@ -11,6 +11,7 @@ import {
   Radar,
   Repeat,
   Route,
+  Signpost,
   Share2,
   UsersRound,
   type LucideIcon,
@@ -35,6 +36,7 @@ const TOPIC_ICONS: Record<TopicIcon, LucideIcon> = {
   coins: Coins,
   pointers: ArrowLeftRight,
   heap: Pyramid,
+  route: Signpost,
 };
 
 export function TopicGlyph({ icon, ...props }: { icon: TopicIcon } & LucideProps) {

@@ -63,6 +63,11 @@ export const PATTERN_LABELS: Record<PatternTag, string> = {
   "k-way-merge": "여러 줄 합치기",
   "two-heaps": "힙 두 개",
   "heap-scheduling": "힙으로 순서 정하기",
+  "weighted-shortest-path": "비용이 다른 최단 경로",
+  "path-restore": "경로 되짚기",
+  "reverse-or-multi-source": "거꾸로 · 여러 곳에서 출발",
+  "state-dijkstra": "상태를 더한 다익스트라",
+  "minimax-path": "가장 험한 구간 최소화",
 };
 
 /** 토픽별 대표 패턴 (AI 문제 생성의 집중 패턴 후보) */
@@ -81,6 +86,7 @@ export const TOPIC_PATTERNS: Record<TopicSlug, PatternTag[]> = {
   greedy: ["greedy-by-sort", "interval-scheduling", "greedy-accumulate", "digit-greedy"],
   "two-pointers": ["opposite-ends", "same-direction", "fixed-window", "variable-window"],
   heap: ["top-k", "repeated-min", "k-way-merge", "two-heaps", "heap-scheduling"],
+  dijkstra: ["weighted-shortest-path", "path-restore", "reverse-or-multi-source", "state-dijkstra", "minimax-path"],
 };
 
 /** 패턴이 속한 토픽 */

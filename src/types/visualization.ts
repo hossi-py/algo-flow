@@ -34,7 +34,10 @@ export type VisualizationGeneratorKey =
   | "tp-dedupe"
   | "heap-ops"
   | "heap-merge"
-  | "heap-top-k";
+  | "heap-top-k"
+  | "dijkstra-basic"
+  | "dijkstra-path"
+  | "dijkstra-grid";
 
 export interface VisualizationPreset {
   id: string;
@@ -100,6 +103,9 @@ export type VizAction =
   | "move-right"
   // 힙
   | "swap"
+  // 다익스트라
+  | "relax"
+  | "settle"
   // 공통
   | "compare"
   | "init"
@@ -144,6 +150,8 @@ export interface GraphEdgeViz {
   from: string;
   to: string;
   status: GraphEdgeStatus;
+  /** 간선 가운데에 붙는 표시. 예: 가중치 "4" */
+  label?: string;
 }
 
 export interface GraphSnapshot {

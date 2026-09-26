@@ -39,6 +39,8 @@ const LABELS: Record<IllustrationKey, string> = {
   "tp-window": "칸들 위로 창틀이 오른쪽으로 미끄러지며 늘었다 줄었다 하는 그림",
   "heap-tree": "가장 작은 값이 맨 위에 있고 부모가 자식보다 작은 트리 그림",
   "heap-emergency": "응급실에서 급한 환자가 먼저 들어가는 대기 줄 그림",
+  "dijkstra-map": "곧장 가는 길은 10분, 한 마을을 거쳐 돌아가는 길은 2 + 3 = 5분이라 돌아가는 길이 더 빠른 지도 그림",
+  "dijkstra-settle": "출발점에서 가까운 마을부터 거리가 확정되고, 다음 후보가 기다리는 그림",
 };
 
 /** 강조 면(HOT) 위 글자. 다크 모드에서도 밝은 보라 위에 어두운 글자가 되도록 */
@@ -1086,6 +1088,129 @@ function HeapEmergency() {
   );
 }
 
+function Road({
+  x1,
+  y1,
+  x2,
+  y2,
+  cost,
+  hot = false,
+  bad = false,
+}: {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  cost: string;
+  hot?: boolean;
+  bad?: boolean;
+}) {
+  const mx = (x1 + x2) / 2;
+  const my = (y1 + y2) / 2;
+  return (
+    <>
+      <line
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
+        stroke="currentColor"
+        strokeWidth={hot ? 3 : 1.6}
+        strokeDasharray={bad ? "3 3" : undefined}
+        strokeLinecap="round"
+      />
+      <rect
+        x={mx - 7}
+        y={my - 6}
+        width={14}
+        height={11}
+        rx={3}
+        fill={hot ? HOT : PAPER}
+        stroke="currentColor"
+        strokeWidth={1}
+      />
+      <Label x={mx} y={my + 2.5} fill={hot ? ON_HOT : "currentColor"}>
+        {cost}
+      </Label>
+    </>
+  );
+}
+
+function DijkstraMap() {
+  return (
+    <>
+      <Road x1={22} y1={58} x2={138} y2={58} cost="10" bad />
+      <Road x1={22} y1={58} x2={80} y2={20} cost="2" hot />
+      <Road x1={80} y1={20} x2={138} y2={58} cost="3" hot />
+      {[
+        { x: 22, y: 58, label: "출발", fill: DONE },
+        { x: 80, y: 20, label: "", fill: PAPER },
+        { x: 138, y: 58, label: "도착", fill: DONE },
+      ].map((n, i) => (
+        <g key={i}>
+          <circle cx={n.x} cy={n.y} r={8} fill={n.fill} stroke="currentColor" strokeWidth={1.8} />
+          {n.label && (
+            <Label x={n.x} y={n.y + 19}>
+              {n.label}
+            </Label>
+          )}
+        </g>
+      ))}
+      <Label x={80} y={94}>
+        돌아가도 2 + 3 = 5 &lt; 10
+      </Label>
+    </>
+  );
+}
+
+function DijkstraSettle() {
+  const nodes = [
+    { x: 18, y: 50, d: "0", fill: DONE },
+    { x: 58, y: 22, d: "2", fill: DONE },
+    { x: 58, y: 78, d: "3", fill: HOT },
+    { x: 104, y: 30, d: "7", fill: WAIT },
+    { x: 142, y: 70, d: "∞", fill: PAPER },
+  ];
+  const edges: [number, number][] = [
+    [0, 1],
+    [0, 2],
+    [1, 3],
+    [2, 3],
+    [3, 4],
+    [2, 4],
+  ];
+  return (
+    <>
+      {edges.map(([a, b]) => (
+        <line
+          key={`${a}-${b}`}
+          x1={nodes[a]!.x}
+          y1={nodes[a]!.y}
+          x2={nodes[b]!.x}
+          y2={nodes[b]!.y}
+          stroke="currentColor"
+          strokeWidth={1.6}
+          strokeLinecap="round"
+        />
+      ))}
+      {nodes.map((n, i) => (
+        <g key={i}>
+          <circle cx={n.x} cy={n.y} r={9} fill={n.fill} stroke="currentColor" strokeWidth={1.8} />
+          <Label x={n.x} y={n.y + 3} fill={n.fill === HOT ? ON_HOT : "currentColor"}>
+            {n.d}
+          </Label>
+        </g>
+      ))}
+      <Label x={40} y={98}>
+        가까운 곳부터 확정
+      </Label>
+      <Label x={124} y={14}>
+        다음 후보
+      </Label>
+    </>
+  );
+}
+
 const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "stack-plates": StackPlates,
   "stack-undo": StackUndo,
@@ -1112,6 +1237,8 @@ const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "tp-window": TpWindow,
   "heap-tree": HeapTree,
   "heap-emergency": HeapEmergency,
+  "dijkstra-map": DijkstraMap,
+  "dijkstra-settle": DijkstraSettle,
 };
 
 export function ConceptIllustration({

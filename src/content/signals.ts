@@ -524,6 +524,37 @@ export const SIGNALS: PatternSignal[] = [
     reason: "작은 절반은 최대 힙, 큰 절반은 최소 힙에 나눠 담으면 두 힙의 맨 위가 가운데 값이에요.",
     strength: "strong",
   },
+  {
+    id: "sig-weighted-route",
+    phrase: "길마다 걸리는 시간·비용이 다른데, 가장 적게 드는 길",
+    examples: ["마을을 잇는 길마다 걸리는 시간이 달라요. 0번 마을에서 각 마을까지 가장 빨리 가는 시간은?"],
+    suspects: ["dijkstra"],
+    patterns: ["weighted-shortest-path", "path-restore"],
+    reason:
+      "간선 비용이 다르면 적게 지난 길이 짧은 길이 아니에요. 지금까지 가장 가까운 곳부터 확정하는 다익스트라가 맞아요.",
+    caution: "모든 비용이 같으면 BFS로 충분해요. 비용이 음수면 다익스트라를 쓸 수 없어요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-route-with-state",
+    phrase: "최소 비용인데 쿠폰·환승 횟수 같은 조건이 붙어요",
+    examples: ["한 번만 요금을 반으로 줄이는 쿠폰이 있어요", "많아야 K번 갈아탈 때 가장 싼 요금은?"],
+    suspects: ["dijkstra"],
+    patterns: ["state-dijkstra"],
+    reason: "(노드, 쿠폰을 썼는지)처럼 상태를 노드에 더하면 새 그래프가 생기고, 거기서 다익스트라를 돌리면 돼요.",
+    caution: "상태 수 × 노드 수가 너무 크지 않은지 먼저 확인해요.",
+    strength: "medium",
+  },
+  {
+    id: "sig-worst-edge",
+    phrase: "경로에서 가장 험한(큰) 구간을 가장 작게",
+    examples: ["지나는 길 중 가장 가파른 경사를 가장 작게 하려면?"],
+    suspects: ["dijkstra"],
+    patterns: ["minimax-path"],
+    reason: "경로의 값이 '합'이 아니라 '가장 큰 값'이어도, 가장 작은 후보부터 확정하는 다익스트라가 그대로 통해요.",
+    caution: "답의 범위로 이분 탐색하고 BFS로 갈 수 있는지 확인하는 방법도 있어요.",
+    strength: "medium",
+  },
 ];
 
 const SIGNALS_BY_ID = new Map(SIGNALS.map((signal) => [signal.id, signal]));

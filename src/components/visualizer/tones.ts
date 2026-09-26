@@ -50,6 +50,8 @@ export const ACTION_LABEL: Record<VizAction, string> = {
   "move-left": "왼쪽 포인터 이동",
   "move-right": "오른쪽 포인터 이동",
   swap: "자리 바꾸기",
+  relax: "거리 줄이기",
+  settle: "거리 확정",
   compare: "비교",
   init: "시작",
   done: "끝",

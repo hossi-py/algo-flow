@@ -16,6 +16,7 @@ export const TOPIC_SLUGS = [
   "greedy",
   "two-pointers",
   "heap",
+  "dijkstra",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
@@ -69,7 +70,8 @@ export type TopicIcon =
   | "table"
   | "coins"
   | "pointers"
-  | "heap";
+  | "heap"
+  | "route";
 
 export const PATTERN_TAGS = [
   // 스택
@@ -147,6 +149,12 @@ export const PATTERN_TAGS = [
   "k-way-merge",
   "two-heaps",
   "heap-scheduling",
+  // 다익스트라
+  "weighted-shortest-path",
+  "path-restore",
+  "reverse-or-multi-source",
+  "state-dijkstra",
+  "minimax-path",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -210,7 +218,9 @@ export type IllustrationKey =
   | "tp-squeeze"
   | "tp-window"
   | "heap-tree"
-  | "heap-emergency";
+  | "heap-emergency"
+  | "dijkstra-map"
+  | "dijkstra-settle";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {

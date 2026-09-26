@@ -154,10 +154,10 @@ describe("generator 등록", () => {
     }
   });
 
-  it("34개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
+  it("37개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
     const used = new Set(TOPIC_PRESETS.map((preset) => preset.generator));
     expect([...used].sort()).toEqual(Object.keys(GENERATORS).sort());
-    expect(used.size).toBe(34);
+    expect(used.size).toBe(37);
   });
 
   it("프리셋 id가 겹치지 않는다", () => {
@@ -282,6 +282,30 @@ describe("입력 검증", () => {
     ["heap-ops", [["add 1"]]],
     ["heap-merge", [[5]]],
     ["heap-top-k", [[1, 2], 6]],
+    ["dijkstra-basic", [3, [[0, 1]], 0]],
+    ["dijkstra-basic", [3, [[0, 1, 0]], 0]],
+    [
+      "dijkstra-basic",
+      [
+        3,
+        [
+          [0, 1, 2],
+          [1, 0, 3],
+        ],
+        0,
+      ],
+    ],
+    ["dijkstra-path", [3, [[0, 1, 2]], 0, 5]],
+    ["dijkstra-grid", [[[1, 2], [3]]]],
+    [
+      "dijkstra-grid",
+      [
+        [
+          [1, 0],
+          [3, 4],
+        ],
+      ],
+    ],
   ];
 
   it.each(BAD_INPUTS)("%s %j → 예외 대신 한국어 오류 메시지", (key, input) => {
@@ -537,5 +561,65 @@ describe("힙 generator", () => {
     const steps = run("heap-top-k", [[5, 1, 9, 3, 7, 2, 8], 3]);
     expect(steps.at(-1)!.state.variables!["지금 3번째로 큰 수"]).toBe(7);
     expect(run("heap-top-k", [[4], 2]).at(-1)!.message).toContain("없어요");
+  });
+});
+
+describe("다익스트라 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+
+  it("돌아가는 길이 더 짧으면 거리를 줄이고, 오래된 기록은 버린다", () => {
+    const steps = run("dijkstra-basic", [
+      4,
+      [
+        [0, 1, 10],
+        [0, 2, 2],
+        [2, 1, 3],
+        [1, 3, 1],
+      ],
+      0,
+    ]);
+    expect(steps.at(-1)!.state.variables!["dist"]).toEqual([0, 5, 2, 6]);
+    expect(steps.some((s) => s.action === "skip")).toBe(true);
+    expect(steps.at(-1)!.state.graph!.edges.find((e) => e.from === "0" && e.to === "1")!.label).toBe("10");
+  });
+
+  it("닿지 않는 노드는 ∞로 남는다", () => {
+    const steps = run("dijkstra-basic", [3, [[0, 1, 4]], 0]);
+    expect(steps.at(-1)!.state.variables!["dist"]).toEqual([0, 4, "∞"]);
+  });
+
+  it("prev를 따라 최단 경로를 되짚는다", () => {
+    const steps = run("dijkstra-path", [
+      5,
+      [
+        [0, 1, 2],
+        [0, 2, 6],
+        [1, 2, 3],
+        [1, 3, 8],
+        [2, 3, 1],
+        [3, 4, 2],
+        [2, 4, 7],
+      ],
+      0,
+      4,
+    ]);
+    expect(steps.at(-1)!.state.variables!["경로"]).toEqual([0, 1, 2, 3, 4]);
+    expect(steps.at(-1)!.state.variables!["비용"]).toBe(8);
+    expect(run("dijkstra-path", [3, [[0, 1, 1]], 0, 2]).at(-1)!.action).toBe("not-found");
+  });
+
+  it("격자에서는 도착 칸을 꺼내는 순간 끝난다", () => {
+    const steps = run("dijkstra-grid", [
+      [
+        [1, 3, 1],
+        [1, 5, 1],
+        [4, 2, 1],
+      ],
+    ]);
+    expect(steps.at(-1)!.message).toContain("최소 비용 = 7");
   });
 });

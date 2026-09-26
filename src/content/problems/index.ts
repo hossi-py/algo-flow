@@ -59,6 +59,21 @@ import { dfsPowerRestore } from "./dfs/power-restore";
 import { dfsRadioNetwork } from "./dfs/radio-network";
 import { dfsRecipeLoop } from "./dfs/recipe-loop";
 import { dfsTeamSize } from "./dfs/team-size";
+import { dijkstraCheapestRoute } from "./dijkstra/cheapest-route";
+import { dijkstraCountRoutes } from "./dijkstra/count-routes";
+import { dijkstraCouponFare } from "./dijkstra/coupon-fare";
+import { dijkstraDeliveryTime } from "./dijkstra/delivery-time";
+import { dijkstraGentleHike } from "./dijkstra/gentle-hike";
+import { dijkstraGridCost } from "./dijkstra/grid-cost";
+import { dijkstraLimitedTransfers } from "./dijkstra/limited-transfers";
+import { dijkstraMustVisit } from "./dijkstra/must-visit";
+import { dijkstraNearestShelter } from "./dijkstra/nearest-shelter";
+import { dijkstraPartyRoundtrip } from "./dijkstra/party-roundtrip";
+import { dijkstraReachableInTime } from "./dijkstra/reachable-in-time";
+import { dijkstraRoutePath } from "./dijkstra/route-path";
+import { dijkstraSignalDelay } from "./dijkstra/signal-delay";
+import { dijkstraUsefulRoads } from "./dijkstra/useful-roads";
+import { dijkstraWallBreak } from "./dijkstra/wall-break";
 import { dpAcornHouses } from "./dp/acorn-houses";
 import { dpBerryMarket } from "./dp/berry-market";
 import { dpBestStreak } from "./dp/best-streak";
@@ -272,6 +287,21 @@ export const PROBLEMS: readonly Problem[] = [
   dfsRadioNetwork,
   dfsRecipeLoop,
   dfsTeamSize,
+  dijkstraCheapestRoute,
+  dijkstraCountRoutes,
+  dijkstraCouponFare,
+  dijkstraDeliveryTime,
+  dijkstraGentleHike,
+  dijkstraGridCost,
+  dijkstraLimitedTransfers,
+  dijkstraMustVisit,
+  dijkstraNearestShelter,
+  dijkstraPartyRoundtrip,
+  dijkstraReachableInTime,
+  dijkstraRoutePath,
+  dijkstraSignalDelay,
+  dijkstraUsefulRoads,
+  dijkstraWallBreak,
   dpAcornHouses,
   dpBerryMarket,
   dpBestStreak,
