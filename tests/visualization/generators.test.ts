@@ -154,10 +154,10 @@ describe("generator 등록", () => {
     }
   });
 
-  it("43개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
+  it("46개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
     const used = new Set(TOPIC_PRESETS.map((preset) => preset.generator));
     expect([...used].sort()).toEqual(Object.keys(GENERATORS).sort());
-    expect(used.size).toBe(43);
+    expect(used.size).toBe(46);
   });
 
   it("프리셋 id가 겹치지 않는다", () => {
@@ -323,6 +323,10 @@ describe("입력 검증", () => {
     ["cx-growth", [1]],
     ["cx-pairs", [[5]]],
     ["cx-halving", [0]],
+    ["sim-robot", [["...", "..."], "F"]],
+    ["sim-robot", [["S.", ".."], "FX"]],
+    ["sim-spiral", [0, 3]],
+    ["sim-rotate", [[[1, 2], [3]]]],
   ];
 
   it.each(BAD_INPUTS)("%s %j → 예외 대신 한국어 오류 메시지", (key, input) => {
@@ -731,5 +735,43 @@ describe("시간 복잡도 generator", () => {
   it("절반씩 줄이면 log₂ N번 만에 1이 된다", () => {
     expect(run("cx-halving", [1000]).at(-1)!.state.variables!["steps"]).toBe(9);
     expect(run("cx-halving", [1]).at(-1)!.state.variables!["steps"]).toBe(0);
+  });
+});
+
+describe("구현 / 시뮬레이션 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+
+  it("로봇은 벽과 격자 밖에서는 멈추고, 돌며 움직인다", () => {
+    const steps = run("sim-robot", [["S...", ".##.", "...."], "FRFFFRFFRFRF"]);
+    expect(steps.at(-1)!.message).toContain("(2, 2)");
+    expect(steps.filter((s) => s.action === "turn")).toHaveLength(4);
+    expect(steps.some((s) => s.action === "check")).toBe(true);
+  });
+
+  it("달팽이 모양으로 1부터 채운다", () => {
+    const last = run("sim-spiral", [3, 3]).at(-1)!;
+    expect(last.state.table!.cells).toEqual([
+      [1, 2, 3],
+      [8, 9, 4],
+      [7, 6, 5],
+    ]);
+  });
+
+  it("시계 방향으로 90도 돌린다", () => {
+    const last = run("sim-rotate", [
+      [
+        [1, 2, 3],
+        [4, 5, 6],
+      ],
+    ]).at(-1)!;
+    expect(last.state.table!.cells).toEqual([
+      [4, 1],
+      [5, 2],
+      [6, 3],
+    ]);
   });
 });

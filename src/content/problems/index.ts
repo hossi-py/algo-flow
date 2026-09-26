@@ -179,6 +179,21 @@ import { heapRunningMedian } from "./heap/running-median";
 import { heapSmallestK } from "./heap/smallest-k";
 import { heapTaskOrder } from "./heap/task-order";
 import { heapTopWords } from "./heap/top-words";
+import { simCleaningRobot } from "./implementation/sim-cleaning-robot";
+import { simClockAdd } from "./implementation/sim-clock-add";
+import { simDateAdd } from "./implementation/sim-date-add";
+import { simDiceSum } from "./implementation/sim-dice-sum";
+import { simGravity } from "./implementation/sim-gravity";
+import { simGridRobot } from "./implementation/sim-grid-robot";
+import { simLadder } from "./implementation/sim-ladder";
+import { simLifeSteps } from "./implementation/sim-life-steps";
+import { simRentalFee } from "./implementation/sim-rental-fee";
+import { simRobotFinal } from "./implementation/sim-robot-final";
+import { simRotateMatrix } from "./implementation/sim-rotate-matrix";
+import { simSnake } from "./implementation/sim-snake";
+import { simSpiralFill } from "./implementation/sim-spiral-fill";
+import { simTurnWalk } from "./implementation/sim-turn-walk";
+import { simZipBest } from "./implementation/sim-zip-best";
 import { dequeEndCards } from "./queue-deque/deque-end-cards";
 import { dequeSteadySignal } from "./queue-deque/deque-steady-signal";
 import { dequeSteppingScore } from "./queue-deque/deque-stepping-score";
@@ -437,6 +452,21 @@ export const PROBLEMS: readonly Problem[] = [
   heapSmallestK,
   heapTaskOrder,
   heapTopWords,
+  simCleaningRobot,
+  simClockAdd,
+  simDateAdd,
+  simDiceSum,
+  simGravity,
+  simGridRobot,
+  simLadder,
+  simLifeSteps,
+  simRentalFee,
+  simRobotFinal,
+  simRotateMatrix,
+  simSnake,
+  simSpiralFill,
+  simTurnWalk,
+  simZipBest,
   dequeEndCards,
   dequeSteadySignal,
   dequeSteppingScore,

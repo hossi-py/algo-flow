@@ -1,0 +1,195 @@
+import type { Problem } from "@/types/content";
+import { problemPreset } from "@/content/visualizations";
+
+export const simGridRobot: Problem = {
+  id: "c:sim-grid-robot",
+  slug: "sim-grid-robot",
+  source: "curated",
+  topic: "implementation",
+  level: 2,
+  title: "창고 로봇",
+  summary: "앞칸이 격자 밖이거나 벽이면 움직이지 않고, 아니면 한 칸 가요",
+  statement: [
+    "창고 지도 `grid`에서 `'.'`은 빈칸, `'#'`은 선반(벽), `'S'`는 로봇이 처음 있는 칸이에요. 로봇은 처음에 **위쪽**을 보고 있어요.",
+    "",
+    "`commands`의 글자를 차례로 따라 해요.",
+    "",
+    "- `L`, `R`: 제자리에서 왼쪽·오른쪽으로 90도 돌아요.",
+    "- `F`: 보고 있는 쪽으로 한 칸 가요. 단, 그 칸이 **지도 밖이거나 선반**이면 움직이지 않아요.",
+    "",
+    "마지막 위치 `[줄, 칸]`을 반환해 주세요.",
+  ].join("\n"),
+  inputFormat: "`grid`: 창고 지도, `commands`: `L`, `R`, `F`로 된 명령이에요.",
+  outputFormat: "마지막 위치 [줄, 칸]",
+  constraints: ["1 ≤ 줄 수, 칸 수 ≤ 100", "S는 딱 하나", "1 ≤ commands의 길이 ≤ 100,000"],
+  signature: {
+    name: "solution",
+    params: [
+      {
+        name: "grid",
+        type: { python: "list[str]", javascript: "string[]", java: "String[]" },
+        description: "창고 지도",
+      },
+      { name: "commands", type: { python: "str", javascript: "string", java: "String" }, description: "명령" },
+    ],
+    returns: { type: { python: "list[int]", javascript: "number[]", java: "int[]" }, description: "[줄, 칸]" },
+  },
+  starterCode: {
+    python: ["def solution(grid, commands):", "    answer = [0, 0]", "    return answer", ""].join("\n"),
+    javascript: ["function solution(grid, commands) {", "  let answer = [0, 0];", "  return answer;", "}", ""].join(
+      "\n",
+    ),
+    java: [
+      "class Solution {",
+      "    public int[] solution(String[] grid, String commands) {",
+      "        int[] answer = new int[2];",
+      "        return answer;",
+      "    }",
+      "}",
+      "",
+    ].join("\n"),
+  },
+  testCases: [
+    {
+      id: "ex-1",
+      visibility: "example",
+      purpose: "basic",
+      args: [["S..", ".#.", "..."], "RFFRFF"],
+      expected: [2, 2],
+      explanation: "오른쪽으로 두 칸 가서 (0, 2), 아래로 두 칸 가서 (2, 2)예요.",
+    },
+    {
+      id: "ex-2",
+      visibility: "example",
+      purpose: "edge",
+      args: [["S#", ".."], "RF"],
+      expected: [0, 0],
+      explanation: "오른쪽이 선반이라 움직이지 않아요: [0, 0].",
+    },
+    {
+      id: "hid-1",
+      visibility: "hidden",
+      purpose: "edge",
+      args: [["S"], "FFLF"],
+      expected: [0, 0],
+      failureNote: "어느 쪽이든 지도 밖이라 제자리 [0, 0]이에요.",
+    },
+    {
+      id: "hid-2",
+      visibility: "hidden",
+      purpose: "basic",
+      args: [[".S.", "..."], "LFLF"],
+      expected: [1, 0],
+      failureNote: "왼쪽으로 가서 (0, 0), 다시 왼쪽으로 돌면 아래쪽이라 (1, 0)이에요.",
+    },
+    {
+      id: "hid-3",
+      visibility: "hidden",
+      purpose: "tricky",
+      args: [["...", "#S#", "..."], "FFRFLLFF"],
+      expected: [0, 0],
+      failureNote: "위로 한 칸 뒤 지도 밖이라 멈추고, 오른쪽 (0, 2)로 갔다가 뒤돌아 왼쪽으로 두 칸 가요: [0, 0].",
+    },
+    {
+      id: "hid-4",
+      visibility: "hidden",
+      purpose: "stress",
+      args: [
+        Array.from({ length: 100 }, (_, r) =>
+          Array.from({ length: 100 }, (_, c) =>
+            r === 50 && c === 50 ? "S" : (r * 7 + c * 13) % 11 === 0 ? "#" : ".",
+          ).join(""),
+        ),
+        Array.from({ length: 100000 }, (_, i) => "FFRFLF"[(i * 31 + (i >> 5)) % 6]).join(""),
+      ],
+      expected: [51, 20],
+      failureNote: "100 × 100 창고에 명령 10만 개예요.",
+    },
+  ],
+  judge: {
+    timeLimitMs: 2000,
+    compare: { type: "exact" },
+    recursionLimit: 3000,
+    revealFirstFailure: true,
+  },
+  hints: [
+    {
+      step: 1,
+      kind: "pattern",
+      title: "어떤 유형일까요?",
+      body: ["방향을 돌며 격자를 걷는 **시뮬레이션**이에요. 움직이기 전에 앞칸을 확인하는 게 핵심이에요."].join("\n"),
+      xpPenaltyRate: 0.05,
+    },
+    {
+      step: 2,
+      kind: "approach",
+      title: "어떻게 접근할까요?",
+      body: [
+        "1. `S`의 위치를 찾아 (r, c)로 두고, 방향 d = 0(위)에서 시작해요.",
+        "2. `dr = [-1, 0, 1, 0]`, `dc = [0, 1, 0, -1]` (위, 오른쪽, 아래, 왼쪽)",
+        "3. `F`일 때 `(nr, nc) = (r + dr[d], c + dc[d])`가 지도 안이고 `'#'`이 아니면 옮겨요.",
+      ].join("\n"),
+      xpPenaltyRate: 0.15,
+    },
+    {
+      step: 3,
+      kind: "pseudocode",
+      title: "의사코드",
+      body: [
+        "~~~text",
+        "(r, c) = S의 위치;  d = 0",
+        "for ch in commands:",
+        "    L이면 d = (d + 3) % 4, R이면 d = (d + 1) % 4",
+        "    F면: nr, nc = r + dr[d], c + dc[d]",
+        "         지도 안이고 grid[nr][nc] != '#'이면 r, c = nr, nc",
+        "~~~",
+      ].join("\n"),
+      xpPenaltyRate: 0.3,
+    },
+    {
+      step: 4,
+      kind: "key-code",
+      title: "핵심 코드",
+      body: ["앞칸을 확인하는 부분이에요. 빈칸을 채워 보세요."].join("\n"),
+      code: {
+        code: {
+          python: [
+            "nr, nc = r + dr[d], c + dc[d]",
+            "if 0 <= nr < rows and 0 <= nc < cols and ______:",
+            "    r, c = nr, nc",
+          ].join("\n"),
+          javascript: [
+            "const nr = r + dr[d], nc = c + dc[d];",
+            "if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && ______) {",
+            "  r = nr;",
+            "  c = nc;",
+            "}",
+          ].join("\n"),
+          java: [
+            "int nr = r + DR[d], nc = c + DC[d];",
+            "if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && ______) {",
+            "    r = nr;",
+            "    c = nc;",
+            "}",
+          ].join("\n"),
+        },
+      },
+      xpPenaltyRate: 0.5,
+    },
+  ],
+  patternTags: ["direction-move"],
+  signalIds: ["sig-direction-turn"],
+  visualization: {
+    presets: [
+      problemPreset(
+        "sim-grid-robot-ex1",
+        "sim-robot",
+        "돌고 걷는 로봇",
+        "R로 오른쪽을 보고 두 칸, 다시 R로 아래를 보고 두 칸 가요.",
+        [["S..", ".#.", "..."], "RFFRFF"],
+      ),
+    ],
+  },
+  estimatedMinutes: 12,
+  xp: 20,
+};

@@ -50,6 +50,8 @@ describe("ConceptIllustration", () => {
     "topo-order",
     "cx-growth-curves",
     "cx-count-steps",
+    "sim-robot-grid",
+    "sim-rulebook",
   ];
   it.each(keys)("%s 그림이 설명과 함께 그려진다", (key) => {
     const { container } = render(<ConceptIllustration illustration={key} />);

@@ -45,6 +45,8 @@ const LABELS: Record<IllustrationKey, string> = {
   "topo-order": "양말·속옷을 먼저, 그다음 바지, 마지막에 신발을 신는 순서를 화살표로 이은 그림",
   "cx-growth-curves": "N이 커질 때 log N은 거의 평평하고, N은 곧게, N²은 가파르게 치솟는 세 곡선 그림",
   "cx-count-steps": "1부터 N까지 하나씩 더하는 긴 칸 줄과, 공식 한 줄로 끝나는 칸 하나를 나란히 둔 그림",
+  "sim-robot-grid": "격자 위 로봇이 화살표를 따라 돌며 걷고, 벽 앞에서 멈추는 그림",
+  "sim-rulebook": "번호가 붙은 규칙 목록을 한 줄씩 짚으며 따라 하는 그림",
 };
 
 /** 강조 면(HOT) 위 글자. 다크 모드에서도 밝은 보라 위에 어두운 글자가 되도록 */
@@ -1345,6 +1347,70 @@ function CxCountSteps() {
   );
 }
 
+function SimRobotGrid() {
+  const cell = 16;
+  const walls = ["1-2", "2-2"];
+  return (
+    <>
+      {Array.from({ length: 4 }, (_, r) =>
+        Array.from({ length: 6 }, (_, c) => {
+          const wall = walls.includes(`${r}-${c}`);
+          return (
+            <rect
+              key={`${r}-${c}`}
+              x={32 + c * cell}
+              y={10 + r * cell}
+              width={cell - 2}
+              height={cell - 2}
+              rx={2}
+              fill={wall ? "currentColor" : PAPER}
+              stroke="currentColor"
+              strokeWidth={0.8}
+              opacity={wall ? 0.7 : 1}
+            />
+          );
+        }),
+      )}
+      <Arrow d="M39 17 L71 17" />
+      <Arrow d="M71 17 L71 42" />
+      <Arrow d="M71 49 L71 62" />
+      <circle cx={71} cy={65} r={5} fill={HOT} stroke="currentColor" strokeWidth={1.4} />
+      <Label x={80} y={92}>
+        돌고, 걷고, 벽 앞에선 멈춰요
+      </Label>
+    </>
+  );
+}
+
+function SimRulebook() {
+  const rules = ["1. 앞칸 확인", "2. 벽이면 돌기", "3. 아니면 한 칸"];
+  return (
+    <>
+      <rect x={30} y={8} width={100} height={66} rx={6} fill={PAPER} stroke="currentColor" strokeWidth={1.6} />
+      {rules.map((rule, i) => (
+        <g key={rule}>
+          <rect
+            x={38}
+            y={16 + i * 19}
+            width={84}
+            height={14}
+            rx={3}
+            fill={i === 1 ? HOT : i === 0 ? DONE : WAIT}
+            stroke="currentColor"
+            strokeWidth={1}
+          />
+          <Label x={80} y={26 + i * 19} fill={i === 1 ? ON_HOT : "currentColor"}>
+            {rule}
+          </Label>
+        </g>
+      ))}
+      <Label x={80} y={92}>
+        규칙을 빠짐없이 그대로
+      </Label>
+    </>
+  );
+}
+
 const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "stack-plates": StackPlates,
   "stack-undo": StackUndo,
@@ -1377,6 +1443,8 @@ const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "topo-order": TopoOrder,
   "cx-growth-curves": CxGrowthCurves,
   "cx-count-steps": CxCountSteps,
+  "sim-robot-grid": SimRobotGrid,
+  "sim-rulebook": SimRulebook,
 };
 
 export function ConceptIllustration({

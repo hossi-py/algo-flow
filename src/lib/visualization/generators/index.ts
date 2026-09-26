@@ -129,6 +129,17 @@ import {
   validateHeapOps,
   validateHeapTopK,
 } from "./heap";
+import {
+  SIM_ROBOT_PSEUDOCODE,
+  SIM_ROTATE_PSEUDOCODE,
+  SIM_SPIRAL_PSEUDOCODE,
+  simRobot,
+  simRotate,
+  simSpiral,
+  validateSimRobot,
+  validateSimRotate,
+  validateSimSpiral,
+} from "./implementation";
 import { InputError } from "./shared";
 import {
   DEDUPE_PSEUDOCODE,
@@ -469,6 +480,27 @@ export const GENERATORS: Record<VisualizationGeneratorKey, GeneratorDefinition> 
     pseudocode: CX_HALVING_PSEUDOCODE,
     validate: validateCxHalving,
     generate: cxHalving,
+  },
+  "sim-robot": {
+    key: "sim-robot",
+    inputHint: '[격자, 명령] 예: [["S..", ".#.", "..."], "FRFF"] — 1~8줄, 명령은 L·R·F 20개까지',
+    pseudocode: SIM_ROBOT_PSEUDOCODE,
+    validate: validateSimRobot,
+    generate: simRobot,
+  },
+  "sim-spiral": {
+    key: "sim-spiral",
+    inputHint: "[줄 수, 칸 수] 예: [3, 4] — 1 ~ 6",
+    pseudocode: SIM_SPIRAL_PSEUDOCODE,
+    validate: validateSimSpiral,
+    generate: simSpiral,
+  },
+  "sim-rotate": {
+    key: "sim-rotate",
+    inputHint: "[판] 예: [[[1, 2, 3], [4, 5, 6]]] — 1~5줄 × 1~5칸, −99 ~ 99",
+    pseudocode: SIM_ROTATE_PSEUDOCODE,
+    validate: validateSimRotate,
+    generate: simRotate,
   },
 };
 

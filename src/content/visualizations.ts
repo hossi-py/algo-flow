@@ -465,4 +465,32 @@ export const TOPIC_VISUALIZATIONS: Record<TopicSlug, VisualizationPreset[]> = {
       ],
     ),
   ],
+  implementation: [
+    preset(
+      "sim-robot-4",
+      "sim-robot",
+      "돌고 걷는 로봇",
+      "L·R이면 방향만 바꾸고, F면 바라보는 쪽으로 한 칸 가요. 앞이 벽이나 격자 밖이면 제자리예요.",
+      [["S...", ".##.", "...."], "FRFFFRFFRFRF"],
+    ),
+    preset(
+      "sim-spiral-3x4",
+      "sim-spiral",
+      "달팽이 모양으로 채우기",
+      "오른쪽으로 가다가 판 끝이나 이미 채운 칸을 만나면 오른쪽으로 돌아요.",
+      [3, 4],
+    ),
+    preset(
+      "sim-rotate-2x3",
+      "sim-rotate",
+      "판을 90도 돌리기",
+      "a[r][c]는 돌린 판의 b[c][n − 1 − r]로 가요. 2 × 3 판은 3 × 2 판이 돼요.",
+      [
+        [
+          [1, 2, 3],
+          [4, 5, 6],
+        ],
+      ],
+    ),
+  ],
 };

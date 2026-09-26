@@ -2,6 +2,7 @@ import {
   ArrowDownUp,
   ArrowLeftRight,
   Coins,
+  Cog,
   Crosshair,
   Grid3x3,
   Pyramid,
@@ -41,6 +42,7 @@ const TOPIC_ICONS: Record<TopicIcon, LucideIcon> = {
   route: Signpost,
   network: Network,
   timer: Timer,
+  cog: Cog,
 };
 
 export function TopicGlyph({ icon, ...props }: { icon: TopicIcon } & LucideProps) {

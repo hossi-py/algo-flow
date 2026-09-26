@@ -78,6 +78,11 @@ export const PATTERN_LABELS: Record<PatternTag, string> = {
   "minimum-spanning-tree": "모두 잇는 가장 싼 방법",
   "topological-sort": "먼저 할 일부터 줄 세우기",
   "dag-dp": "순서를 따라 채우는 DP",
+  "direction-move": "방향 바꾸며 움직이기",
+  "matrix-transform": "판 돌리고 옮기기",
+  "step-simulation": "한 단계씩 상태 바꾸기",
+  "string-parse": "문자열 쪼개고 세기",
+  "time-calc": "시각·날짜 계산",
 };
 
 /** 토픽별 대표 패턴 (AI 문제 생성의 집중 패턴 후보) */
@@ -99,6 +104,7 @@ export const TOPIC_PATTERNS: Record<TopicSlug, PatternTag[]> = {
   dijkstra: ["weighted-shortest-path", "path-restore", "reverse-or-multi-source", "state-dijkstra", "minimax-path"],
   "graph-advanced": ["union-find", "reverse-union", "minimum-spanning-tree", "topological-sort", "dag-dp"],
   complexity: ["formula-o1", "single-pass", "precompute", "halving-log", "sqrt-bound"],
+  implementation: ["direction-move", "matrix-transform", "step-simulation", "string-parse", "time-calc"],
 };
 
 /** 패턴이 속한 토픽 */

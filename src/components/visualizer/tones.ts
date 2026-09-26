@@ -55,6 +55,7 @@ export const ACTION_LABEL: Record<VizAction, string> = {
   find: "대표 찾기",
   union: "그룹 합치기",
   compress: "경로 줄이기",
+  turn: "방향 바꾸기",
   compare: "비교",
   init: "시작",
   done: "끝",

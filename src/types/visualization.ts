@@ -43,7 +43,10 @@ export type VisualizationGeneratorKey =
   | "topo-kahn"
   | "cx-growth"
   | "cx-pairs"
-  | "cx-halving";
+  | "cx-halving"
+  | "sim-robot"
+  | "sim-spiral"
+  | "sim-rotate";
 
 export interface VisualizationPreset {
   id: string;
@@ -116,6 +119,8 @@ export type VizAction =
   | "find"
   | "union"
   | "compress"
+  // 구현 / 시뮬레이션
+  | "turn"
   // 공통
   | "compare"
   | "init"

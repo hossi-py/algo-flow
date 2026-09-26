@@ -623,6 +623,41 @@ export const SIGNALS: PatternSignal[] = [
     caution: "끝까지 꺼내지 못한 일이 남으면 조건이 고리를 이루고 있다는 뜻이에요.",
     strength: "strong",
   },
+  {
+    id: "sig-follow-rules",
+    phrase: "규칙이 길게 적혀 있고, 그대로 따라 하면 답이 나와요",
+    examples: [
+      "1초마다 머리를 한 칸 옮기고, 사과를 먹으면 꼬리는 그대로예요…",
+      "청소한 칸이 없으면 뒤로 한 칸 물러나요…",
+    ],
+    suspects: ["implementation"],
+    patterns: ["step-simulation"],
+    reason:
+      "특별한 알고리즘 없이 규칙을 정확히 옮기는 게 핵심이에요. 상태(위치·방향·시간)를 변수로 정하고, 한 단계씩 규칙을 적용해요.",
+    caution:
+      "입력이 커서 한 단계씩 하면 느리다면, 반복되는 부분을 줄이거나(나머지 연산) 다른 알고리즘이 필요한지 봐요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-direction-turn",
+    phrase: "동서남북·왼쪽/오른쪽으로 돌며 움직여요",
+    examples: ["L이면 왼쪽으로 90도 돌고, F면 앞으로 한 칸 가요", "판을 시계 방향으로 90도 돌려요"],
+    suspects: ["implementation"],
+    patterns: ["direction-move", "matrix-transform"],
+    reason: "방향을 0~3 번호로 두고 dr, dc 배열을 쓰면, 오른쪽으로 돌기는 (d + 1) % 4, 왼쪽은 (d + 3) % 4 한 줄이에요.",
+    caution: "가장 가까운 칸·최소 이동 횟수를 물으면 BFS예요.",
+    strength: "medium",
+  },
+  {
+    id: "sig-time-format",
+    phrase: '"HH:MM"·"YYYY-MM-DD" 같은 형식을 읽고 계산해요',
+    examples: ['"23:50"에서 20분 뒤는?', "입차·출차 기록으로 요금을 계산하세요"],
+    suspects: ["implementation"],
+    patterns: ["string-parse", "time-calc"],
+    reason: "시각은 모두 '분'으로, 날짜는 '며칠째'로 바꿔 계산한 뒤 다시 형식에 맞춰 적으면 실수가 줄어요.",
+    caution: "두 자리로 채우기(09:05), 자정 넘기기, 윤년 같은 경계를 꼭 확인해요.",
+    strength: "medium",
+  },
 ];
 
 const SIGNALS_BY_ID = new Map(SIGNALS.map((signal) => [signal.id, signal]));

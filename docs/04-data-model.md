@@ -59,6 +59,7 @@ export const TOPIC_SLUGS = [
   "heap",
   "dijkstra",
   "graph-advanced",
+  "implementation",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
@@ -85,7 +86,7 @@ export const LEVEL_STAGE_LABELS: Record<LevelStage, string> = {
 };
 
 export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum" | "teal" | "coral" | "indigo";
-export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table" | "coins" | "pointers" | "heap" | "route" | "network" | "timer";
+export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table" | "coins" | "pointers" | "heap" | "route" | "network" | "timer" | "cog";
 
 export const PATTERN_TAGS = [
   // 시간 복잡도 입문
@@ -181,6 +182,12 @@ export const PATTERN_TAGS = [
   "minimum-spanning-tree",
   "topological-sort",
   "dag-dp",
+  // 구현 / 시뮬레이션
+  "direction-move",
+  "matrix-transform",
+  "step-simulation",
+  "string-parse",
+  "time-calc",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -252,7 +259,9 @@ export type IllustrationKey =
   | "uf-groups"
   | "topo-order"
   | "cx-growth-curves"
-  | "cx-count-steps";
+  | "cx-count-steps"
+  | "sim-robot-grid"
+  | "sim-rulebook";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {
@@ -470,7 +479,10 @@ export type VisualizationGeneratorKey =
   | "topo-kahn"
   | "cx-growth"
   | "cx-pairs"
-  | "cx-halving";
+  | "cx-halving"
+  | "sim-robot"
+  | "sim-spiral"
+  | "sim-rotate";
 
 export interface VisualizationPreset {
   id: string;
@@ -543,6 +555,8 @@ export type VizAction =
   | "find"
   | "union"
   | "compress"
+  // 구현 / 시뮬레이션
+  | "turn"
   // 공통
   | "compare"
   | "init"
