@@ -54,6 +54,19 @@ pnpm dev          # http://localhost:3000
 
 개발 서버에서는 화면 오른쪽 아래 🔧 버튼(개발용 도구)으로 예시 진도 불러오기 · XP 추가 · 축하 연출 · 진도 초기화를 할 수 있습니다. 프로덕션 빌드에는 나타나지 않습니다.
 
+## 관리자 화면
+
+`/admin`에서 운영 현황(합계, 최근 14일 가입·활동·제출 추이, 최근 에러)과 회원 목록·검색·상세(진도, 최근 제출, 배지, AI 사용량)를 볼 수 있어요. 읽기 전용이고, 회원의 코드와 AI 코치 대화 내용은 보여 주지 않아요.
+
+관리자는 `admins` 테이블에 등록된 계정뿐이에요. 로그인한 뒤 Supabase SQL Editor에서 한 번 등록해요.
+
+```sql
+insert into public.admins (user_id, note)
+select id, 운영자 from auth.users where email = 내-이메일@example.com;
+```
+
+관리자가 아니면 `/admin`은 없는 주소와 똑같은 404(탭 제목까지 같음)를 보여 줘서 관리자 화면이 있다는 것도 드러나지 않아요. 관리자에게는 마이페이지에 "관리자 화면" 링크가 보여요.
+
 ## CI · 배포
 
 - **CI** (`.github/workflows/ci.yml`): PR과 `master` 푸시마다 GitHub Actions가 타입 검사 · 린트 · 포맷 · 단위 테스트(JDK 21 포함) · 콘텐츠 검증 · Playwright E2E를 돌려요. PR에서 `supabase/migrations/`가 바뀌면 운영 DB에 적용하라는 경고를 남겨요.

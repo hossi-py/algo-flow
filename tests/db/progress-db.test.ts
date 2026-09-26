@@ -479,3 +479,96 @@ describe("에러 기록 (error_events)", () => {
     expect(pruned).toBe(1);
   });
 });
+
+describe("관리자 (admins · 관리자 조회 함수)", () => {
+  it("클라이언트 키로는 관리자 목록도, 관리자 조회 함수도 쓸 수 없다", async () => {
+    for (const role of [{ kind: "anon" }, { kind: "user", id: A }] as const) {
+      await expect(as(db, role, () => db.query("select * from public.admins"))).rejects.toThrow(/permission denied/);
+      await expect(
+        as(db, role, () => db.query("insert into public.admins (user_id) values ($1)", [A])),
+      ).rejects.toThrow(/permission denied/);
+      for (const sql of [
+        "select * from public.admin_list_users()",
+        `select * from public.admin_user_account('${A}')`,
+        "select public.admin_overview()",
+      ]) {
+        await expect(
+          as(db, role, () => db.query(sql)),
+          sql,
+        ).rejects.toThrow(/permission denied/);
+      }
+    }
+  });
+
+  it("회원 목록: 닉네임·이메일 검색, 푼 문제·제출 수, 전체 수", async () => {
+    const rows = await as(
+      db,
+      { kind: "service" },
+      async () =>
+        (
+          await db.query<{
+            id: string;
+            email: string;
+            nickname: string;
+            solved_count: number;
+            submission_count: number;
+            total_count: number;
+          }>("select * from public.admin_list_users('알고리즘')")
+        ).rows,
+    );
+    expect(rows).toHaveLength(1);
+    // 앞선 테스트에서 A의 닉네임을 '알고리즘러'로 바꿨다 (부분 일치 검색)
+    expect(rows[0]).toMatchObject({ id: A, nickname: "알고리즘러", email: "0000@example.com" });
+    expect(rows[0]?.solved_count).toBeGreaterThanOrEqual(1);
+    expect(rows[0]?.submission_count).toBeGreaterThanOrEqual(1);
+    expect(Number(rows[0]?.total_count)).toBe(1);
+
+    // 검색어의 %와 _는 글자 그대로 찾는다 (모든 회원이 걸리지 않는다)
+    const wildcard = await as(
+      db,
+      { kind: "service" },
+      async () => (await db.query("select * from public.admin_list_users('%')")).rows,
+    );
+    expect(wildcard).toHaveLength(0);
+
+    // 페이지 크기와 전체 수
+    const page = await as(
+      db,
+      { kind: "service" },
+      async () =>
+        (await db.query<{ total_count: number }>("select * from public.admin_list_users('', 'xp', 1, 0)")).rows,
+    );
+    expect(page).toHaveLength(1);
+    expect(Number(page[0]?.total_count)).toBeGreaterThanOrEqual(2);
+  });
+
+  it("계정 정보와 관리자 여부를 알려 준다", async () => {
+    const account = await as(db, { kind: "service" }, async () => {
+      await db.query("insert into public.admins (user_id, note) values ($1, '운영자') on conflict do nothing", [A]);
+      return (await db.query<{ email: string; is_admin: boolean }>("select * from public.admin_user_account($1)", [A]))
+        .rows;
+    });
+    expect(account).toEqual([expect.objectContaining({ email: "0000@example.com", is_admin: true })]);
+  });
+
+  it("운영 현황: 합계와 날짜별 추이 (Asia/Seoul 날짜)", async () => {
+    const overview = await as(
+      db,
+      { kind: "service" },
+      async () =>
+        (
+          await db.query<{ overview: { totals: Record<string, number>; daily: Record<string, number | string>[] } }>(
+            "select public.admin_overview(14, '2026-09-20') as overview",
+          )
+        ).rows[0]?.overview,
+    );
+    expect(overview?.totals.users).toBeGreaterThanOrEqual(2);
+    expect(overview?.totals.submissions).toBeGreaterThanOrEqual(2);
+    expect(overview?.daily).toHaveLength(14);
+    const last = overview?.daily.at(-1);
+    expect(last).toMatchObject({ day: "2026-09-20" });
+    expect(Number(last?.submissions)).toBeGreaterThanOrEqual(2);
+    expect(Number(last?.accepted)).toBeGreaterThanOrEqual(1);
+    expect(Number(last?.activeUsers)).toBeGreaterThanOrEqual(1);
+  });
+});
