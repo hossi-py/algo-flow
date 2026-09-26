@@ -25,7 +25,10 @@ export type VisualizationGeneratorKey =
   | "bsearch-answer"
   | "dp-stairs"
   | "dp-grid-paths"
-  | "dp-lcs";
+  | "dp-lcs"
+  | "greedy-intervals"
+  | "greedy-coins"
+  | "greedy-digits";
 
 export interface VisualizationPreset {
   id: string;
@@ -83,6 +86,9 @@ export type VizAction =
   // DP
   | "fill"
   | "reuse"
+  // 그리디
+  | "pick"
+  | "skip"
   // 공통
   | "compare"
   | "init"

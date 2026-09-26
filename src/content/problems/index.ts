@@ -89,6 +89,21 @@ import { graphStationNeighbors } from "./graph-representation/graph-station-neig
 import { graphTripleFriends } from "./graph-representation/graph-triple-friends";
 import { graphTrustedShop } from "./graph-representation/graph-trusted-shop";
 import { graphTwoTransfers } from "./graph-representation/graph-two-transfers";
+import { greedyBalloonArrows } from "./greedy/balloon-arrows";
+import { greedyBestTrade } from "./greedy/best-trade";
+import { greedyBiggestAfterErase } from "./greedy/biggest-after-erase";
+import { greedyCandyLine } from "./greedy/candy-line";
+import { greedyChangeCoins } from "./greedy/change-coins";
+import { greedyCookieShare } from "./greedy/cookie-share";
+import { greedyFewestJumps } from "./greedy/fewest-jumps";
+import { greedyFuelLoop } from "./greedy/fuel-loop";
+import { greedyHeightQueue } from "./greedy/height-queue";
+import { greedyLetterParts } from "./greedy/letter-parts";
+import { greedyMeetingRoom } from "./greedy/meeting-room";
+import { greedyRopeLift } from "./greedy/rope-lift";
+import { greedyShortestFirst } from "./greedy/shortest-first";
+import { greedySnackBudget } from "./greedy/snack-budget";
+import { greedyStoneJump } from "./greedy/stone-jump";
 import { hashAnagramGroups } from "./hash/anagram-groups";
 import { hashBalancedDays } from "./hash/balanced-days";
 import { hashCampingGear } from "./hash/camping-gear";
@@ -257,6 +272,21 @@ export const PROBLEMS: readonly Problem[] = [
   graphTripleFriends,
   graphTrustedShop,
   graphTwoTransfers,
+  greedyBalloonArrows,
+  greedyBestTrade,
+  greedyBiggestAfterErase,
+  greedyCandyLine,
+  greedyChangeCoins,
+  greedyCookieShare,
+  greedyFewestJumps,
+  greedyFuelLoop,
+  greedyHeightQueue,
+  greedyLetterParts,
+  greedyMeetingRoom,
+  greedyRopeLift,
+  greedyShortestFirst,
+  greedySnackBudget,
+  greedyStoneJump,
   hashAnagramGroups,
   hashBalancedDays,
   hashCampingGear,

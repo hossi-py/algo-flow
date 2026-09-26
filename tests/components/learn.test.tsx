@@ -38,6 +38,8 @@ describe("ConceptIllustration", () => {
     "bsearch-yes-no",
     "dp-memo-notebook",
     "dp-table-fill",
+    "greedy-meetings",
+    "greedy-counterexample",
   ];
   it.each(keys)("%s 그림이 설명과 함께 그려진다", (key) => {
     const { container } = render(<ConceptIllustration illustration={key} />);

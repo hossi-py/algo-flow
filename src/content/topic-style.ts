@@ -91,4 +91,11 @@ export const TOPIC_COLOR_CLASSES: Record<
     stroke: "stroke-topic-teal-foreground",
     fill: "fill-topic-teal",
   },
+  coral: {
+    surface: "bg-topic-coral",
+    text: "text-topic-coral-foreground",
+    ring: "ring-topic-coral-foreground/30",
+    stroke: "stroke-topic-coral-foreground",
+    fill: "fill-topic-coral",
+  },
 };

@@ -425,6 +425,41 @@ export const SIGNALS: PatternSignal[] = [
       "앞에서 i글자, j글자까지 봤을 때의 답을 dp[i][j]에 적으면, 마지막 글자가 같은지만 보고 이웃 칸에서 답을 가져올 수 있어요.",
     strength: "strong",
   },
+  {
+    id: "sig-greedy-local-best",
+    phrase: "매번 가장 ~한 것부터 고르면 될 것 같음",
+    examples: ["가장 가벼운 짐부터 담으면 가장 많이 담을 수 있나요?", "큰 동전부터 쓰면 동전 수가 가장 적을까요?"],
+    suspects: ["greedy"],
+    patterns: ["greedy-by-sort", "greedy-accumulate"],
+    reason:
+      "지금 가장 좋아 보이는 선택이 나중에도 손해가 안 된다고 보일 수 있으면 그리디예요. 정렬 한 번 + 한 번 훑기로 끝나서 빨라요.",
+    caution:
+      "반례 하나로 무너져요. 작은 예를 손으로 만들어 '욕심껏 고른 답'과 '진짜 최선'이 다른 경우가 없는지 꼭 확인하세요. 있으면 DP예요.",
+    strength: "medium",
+  },
+  {
+    id: "sig-interval-max-count",
+    phrase: "겹치지 않게 최대 몇 개 / 모두 덮는 최소 몇 개",
+    examples: [
+      "회의실 하나로 열 수 있는 회의는 최대 몇 개인가요?",
+      "모든 풍선을 터뜨리려면 화살이 최소 몇 개 필요한가요?",
+    ],
+    suspects: ["greedy"],
+    patterns: ["interval-scheduling"],
+    reason: "끝나는 시각이 빠른 것부터 고르면 남은 시간이 가장 넉넉해요. 끝 시각으로 정렬하고 한 번 훑으면 돼요.",
+    caution: "시작 시각이나 길이로 정렬하면 반례가 있어요. 끝 시각 기준이 핵심이에요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-running-reach",
+    phrase: "지금까지 갈 수 있는 가장 먼 곳 / 모자라면 다시 시작",
+    examples: ["징검다리 끝까지 갈 수 있나요?", "주유소를 한 바퀴 돌 수 있는 출발점은 어디인가요?"],
+    suspects: ["greedy"],
+    patterns: ["greedy-accumulate"],
+    reason:
+      "한 번 훑으면서 '지금까지의 최선'(가장 먼 거리, 남은 연료)만 들고 가면 돼요. 되돌아가 다시 볼 필요가 없어요.",
+    strength: "medium",
+  },
 ];
 
 const SIGNALS_BY_ID = new Map(SIGNALS.map((signal) => [signal.id, signal]));

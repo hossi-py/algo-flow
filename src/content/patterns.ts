@@ -50,6 +50,10 @@ export const PATTERN_LABELS: Record<PatternTag, string> = {
   knapsack: "배낭 · 동전",
   "sequence-dp": "문자열 · 수열 DP",
   "state-dp": "상태를 나눈 DP",
+  "greedy-by-sort": "정렬하고 욕심껏",
+  "interval-scheduling": "구간 고르기",
+  "greedy-accumulate": "누적하며 욕심껏",
+  "digit-greedy": "앞자리부터 크게",
 };
 
 /** 토픽별 대표 패턴 (AI 문제 생성의 집중 패턴 후보) */
@@ -65,6 +69,7 @@ export const TOPIC_PATTERNS: Record<TopicSlug, PatternTag[]> = {
   sorting: ["sort-then-scan", "custom-order", "merge-step", "counting-sort", "interval-sweep"],
   "binary-search": ["exact-search", "boundary-search", "range-count", "parametric-search"],
   dp: ["linear-dp", "grid-dp", "knapsack", "sequence-dp", "state-dp"],
+  greedy: ["greedy-by-sort", "interval-scheduling", "greedy-accumulate", "digit-greedy"],
 };
 
 /** 패턴이 속한 토픽 */

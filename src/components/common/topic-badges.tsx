@@ -1,5 +1,6 @@
 import {
   ArrowDownUp,
+  Coins,
   Crosshair,
   Grid3x3,
   GitBranch,
@@ -29,6 +30,7 @@ const TOPIC_ICONS: Record<TopicIcon, LucideIcon> = {
   bars: ArrowDownUp,
   target: Crosshair,
   table: Grid3x3,
+  coins: Coins,
 };
 
 export function TopicGlyph({ icon, ...props }: { icon: TopicIcon } & LucideProps) {

@@ -74,6 +74,17 @@ import {
   validateLcs,
   validateStairs,
 } from "./dp";
+import {
+  COINS_PSEUDOCODE,
+  DIGITS_PSEUDOCODE,
+  INTERVALS_PSEUDOCODE,
+  coins,
+  digits,
+  intervals,
+  validateCoins,
+  validateDigits,
+  validateIntervals,
+} from "./greedy";
 import { InputError } from "./shared";
 import {
   COUNTING_PSEUDOCODE,
@@ -274,6 +285,27 @@ export const GENERATORS: Record<VisualizationGeneratorKey, GeneratorDefinition> 
     pseudocode: LCS_PSEUDOCODE,
     validate: validateLcs,
     generate: lcs,
+  },
+  "greedy-intervals": {
+    key: "greedy-intervals",
+    inputHint: "[회의 목록] 예: [[[1, 4], [3, 5], [5, 7]]] — [시작, 끝] 1 ~ 8개, 0 ≤ 시작 < 끝 ≤ 16",
+    pseudocode: INTERVALS_PSEUDOCODE,
+    validate: validateIntervals,
+    generate: intervals,
+  },
+  "greedy-coins": {
+    key: "greedy-coins",
+    inputHint: "[동전 목록, 금액] 예: [[500, 100, 50, 10], 1260] — 서로 다른 동전 1 ~ 6개, 금액 1 ~ 9999",
+    pseudocode: COINS_PSEUDOCODE,
+    validate: validateCoins,
+    generate: coins,
+  },
+  "greedy-digits": {
+    key: "greedy-digits",
+    inputHint: '[수, k] 예: ["4177252841", 4] — 2 ~ 12자리 숫자, 지울 개수 k',
+    pseudocode: DIGITS_PSEUDOCODE,
+    validate: validateDigits,
+    generate: digits,
   },
 };
 

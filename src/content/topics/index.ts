@@ -5,6 +5,7 @@ import { binarySearchTopic } from "./binary-search";
 import { dfsTopic } from "./dfs";
 import { dpTopic } from "./dp";
 import { graphRepresentationTopic } from "./graph-representation";
+import { greedyTopic } from "./greedy";
 import { hashTopic } from "./hash";
 import { queueDequeTopic } from "./queue-deque";
 import { recursionTopic } from "./recursion";
@@ -24,6 +25,7 @@ export const TOPICS: readonly Topic[] = [
   sortingTopic,
   binarySearchTopic,
   dpTopic,
+  greedyTopic,
 ];
 
 const TOPICS_BY_SLUG = new Map<string, Topic>(TOPICS.map((topic) => [topic.slug, topic]));

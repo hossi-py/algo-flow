@@ -154,10 +154,10 @@ describe("generator 등록", () => {
     }
   });
 
-  it("25개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
+  it("28개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
     const used = new Set(TOPIC_PRESETS.map((preset) => preset.generator));
     expect([...used].sort()).toEqual(Object.keys(GENERATORS).sort());
-    expect(used.size).toBe(25);
+    expect(used.size).toBe(28);
   });
 
   it("프리셋 id가 겹치지 않는다", () => {
@@ -266,6 +266,12 @@ describe("입력 검증", () => {
     ["dp-grid-paths", [["abc"]]],
     ["dp-lcs", ["ABC", "abc"]],
     ["dp-lcs", ["abcdefgh", "a"]],
+    ["greedy-intervals", [[[3, 3]]]],
+    ["greedy-intervals", [[[0, 17]]]],
+    ["greedy-coins", [[5, 5], 10]],
+    ["greedy-coins", [[5], 0]],
+    ["greedy-digits", ["12a", 1]],
+    ["greedy-digits", ["123", 3]],
   ];
 
   it.each(BAD_INPUTS)("%s %j → 예외 대신 한국어 오류 메시지", (key, input) => {
@@ -430,5 +436,40 @@ describe("DP generator", () => {
     expect(cells(steps).at(-1)!.at(-1)).toBe(3);
     expect(steps.at(-1)!.message).toMatch(/공통 부분 수열: (abe|ace)/);
     expect(run("dp-lcs", ["abc", "xyz"]).at(-1)!.message).toContain("(없음)");
+  });
+});
+
+describe("그리디 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+
+  it("회의는 끝나는 시각 순으로 고르고, 최대 개수를 알려 준다", () => {
+    const steps = run("greedy-intervals", [
+      [
+        [0, 6],
+        [1, 4],
+        [5, 7],
+        [3, 5],
+      ],
+    ]);
+    expect(steps.at(-1)!.state.table!.rowLabels).toEqual(["[1,4]", "[3,5]", "[0,6]", "[5,7]"]);
+    expect(steps.filter((s) => s.action === "pick")).toHaveLength(2);
+    expect(steps.at(-1)!.message).toContain("최대 2개");
+  });
+
+  it("배수 관계 동전은 최선이라고, 아니면 최선이 아닐 수 있다고 알려 준다", () => {
+    expect(run("greedy-coins", [[500, 100, 50, 10], 1260]).at(-1)!.message).toContain("동전 6개");
+    expect(run("greedy-coins", [[4, 3, 1], 6]).at(-1)!.message).toContain("최선이 아닐 수 있어요");
+    expect(run("greedy-coins", [[4], 6]).at(-1)!.message).toContain("줄 수 없어요");
+  });
+
+  it("앞자리부터 크게 만든다", () => {
+    const last = (n: string, k: number) => run("greedy-digits", [n, k]).at(-1)!.message;
+    expect(last("4177252841", 4)).toContain("775841");
+    expect(last("1924", 2)).toContain("94");
+    expect(last("4321", 2)).toContain("43");
   });
 });

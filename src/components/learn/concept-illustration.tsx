@@ -33,6 +33,8 @@ const LABELS: Record<IllustrationKey, string> = {
   "bsearch-yes-no": "가능·가능·가능 뒤로 불가능이 이어지는 줄에서 그 경계를 찾는 그림",
   "dp-memo-notebook": "한 번 계산한 답을 수첩에 적어 두고 다시 필요할 때 꺼내 쓰는 그림",
   "dp-table-fill": "표의 칸을 왼쪽 위부터 차례로 채우며 위·왼쪽 칸의 값을 더하는 그림",
+  "greedy-meetings": "시간 막대 중 일찍 끝나는 회의부터 고르고, 겹치는 회의는 건너뛰는 그림",
+  "greedy-counterexample": "6원을 만들 때 큰 동전부터 쓰면 3개, 3원 두 개면 2개라 욕심이 틀리는 반례 그림",
 };
 
 /** 강조 면(HOT) 위 글자. 다크 모드에서도 밝은 보라 위에 어두운 글자가 되도록 */
@@ -869,6 +871,68 @@ function DpTableFill() {
   );
 }
 
+function GreedyMeetings() {
+  const bars = [
+    { s: 1, e: 4, pick: true },
+    { s: 3, e: 5, pick: false },
+    { s: 5, e: 7, pick: true },
+    { s: 6, e: 10, pick: false },
+    { s: 8, e: 11, pick: true },
+  ];
+  const x = (t: number) => 14 + t * 12;
+  return (
+    <>
+      <line x1={x(0)} y1={86} x2={x(11)} y2={86} stroke="currentColor" strokeWidth={1.5} opacity={0.6} />
+      {bars.map((b, i) => (
+        <rect
+          key={i}
+          x={x(b.s)}
+          y={8 + i * 15}
+          width={x(b.e) - x(b.s)}
+          height={10}
+          rx={4}
+          fill={b.pick ? DONE : PAPER}
+          stroke="currentColor"
+          strokeWidth={1.4}
+          strokeDasharray={b.pick ? undefined : "3 3"}
+          opacity={b.pick ? 1 : 0.6}
+        />
+      ))}
+      <Label x={80} y={98}>
+        일찍 끝나는 것부터 고르기
+      </Label>
+    </>
+  );
+}
+
+function GreedyCounterexample() {
+  const coin = (cx: number, cy: number, value: number, fill: string) => (
+    <g key={`${cx}-${cy}`}>
+      <circle cx={cx} cy={cy} r={9} fill={fill} stroke="currentColor" strokeWidth={1.6} />
+      <Label x={cx} y={cy + 3}>
+        {value}
+      </Label>
+    </g>
+  );
+  return (
+    <>
+      <Label x={40} y={16}>
+        욕심: 3개
+      </Label>
+      {[4, 1, 1].map((v, i) => coin(16 + i * 24, 36, v, BAD))}
+      <path d="M14 58 l6 6 m0 -6 l-6 6" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+      <Label x={120} y={16}>
+        최선: 2개
+      </Label>
+      {[3, 3].map((v, i) => coin(108 + i * 24, 36, v, DONE))}
+      <path d="M106 62 l4 4 l8 -8" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+      <Label x={80} y={92}>
+        동전 [4, 3, 1]로 6원 만들기
+      </Label>
+    </>
+  );
+}
+
 const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "stack-plates": StackPlates,
   "stack-undo": StackUndo,
@@ -889,6 +953,8 @@ const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "bsearch-yes-no": BsearchYesNo,
   "dp-memo-notebook": DpMemoNotebook,
   "dp-table-fill": DpTableFill,
+  "greedy-meetings": GreedyMeetings,
+  "greedy-counterexample": GreedyCounterexample,
 };
 
 export function ConceptIllustration({

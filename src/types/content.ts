@@ -13,6 +13,7 @@ export const TOPIC_SLUGS = [
   "sorting",
   "binary-search",
   "dp",
+  "greedy",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
@@ -39,9 +40,9 @@ export const LEVEL_STAGE_LABELS: Record<LevelStage, string> = {
 };
 
 export type TopicColor =
-  "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum" | "teal";
+  "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum" | "teal" | "coral";
 export type TopicIcon =
-  "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table";
+  "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table" | "coins";
 
 export const PATTERN_TAGS = [
   // 스택
@@ -103,6 +104,11 @@ export const PATTERN_TAGS = [
   "knapsack",
   "sequence-dp",
   "state-dp",
+  // 그리디
+  "greedy-by-sort",
+  "interval-scheduling",
+  "greedy-accumulate",
+  "digit-greedy",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -160,7 +166,9 @@ export type IllustrationKey =
   | "bsearch-halving"
   | "bsearch-yes-no"
   | "dp-memo-notebook"
-  | "dp-table-fill";
+  | "dp-table-fill"
+  | "greedy-meetings"
+  | "greedy-counterexample";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {

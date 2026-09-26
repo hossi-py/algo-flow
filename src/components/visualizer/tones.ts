@@ -45,6 +45,8 @@ export const ACTION_LABEL: Record<VizAction, string> = {
   narrow: "범위 좁히기",
   fill: "칸 채우기",
   reuse: "적어 둔 답 쓰기",
+  pick: "고르기",
+  skip: "건너뛰기",
   compare: "비교",
   init: "시작",
   done: "끝",
