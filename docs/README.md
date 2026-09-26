@@ -11,6 +11,7 @@
 | [04-data-model.md](04-data-model.md) | TypeScript 인터페이스, zod 스키마, 게임화 규칙, Supabase 테이블·RLS SQL |
 | [05-example-problem.md](05-example-problem.md) | DFS Lv3 「꽃밭 구역 나누기」 전체 데이터 (문제·테스트·힌트·신호·시각화 스텝) |
 | [06-milestones.md](06-milestones.md) | 마일스톤별 목표, 산출물, 완료 기준 |
+| [07-development.md](07-development.md) | 실행·환경 변수·명령, Supabase 연결, 랭킹·관리자·에러 모니터링 운영, CI·배포, 브라우저 Java |
 
 ---
 

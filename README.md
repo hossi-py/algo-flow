@@ -1,122 +1,50 @@
-# algo-flow
+# algo-flow 🌱
 
-스택부터 백트래킹·해시·정렬·이분 탐색·DP까지, 알고리즘을 쉬운 단계부터 순서대로 배우는 학습 플랫폼. 마스코트는 새싹 노드 **노디** 🌱
+**노디와 함께, 알고리즘을 쉬운 단계부터 차근차근.**
 
-- 설계 문서: [docs/README.md](docs/README.md)
-- 지원 언어: Python, JavaScript, Java (Java는 큐레이션 문제만. 설정의 **주력 언어**로 문제를 열 때의 기본 언어를 정해요)
+스택부터 DP까지, 개념을 그림과 애니메이션으로 이해하고 → "이 문제는 어떤 유형일까?"를 알아보는 연습을 하고 → 브라우저에서 바로 문제를 풀어요. 설치도, 가입도 필요 없어요.
 
-## 실행
+👉 **[algo-flow 시작하기](https://algo-flow-pearl.vercel.app/)**
 
-Node.js 22.13 이상이 필요합니다 (`packageManager`로 고정한 pnpm 11의 요구 사항).
+## 이런 걸 할 수 있어요
+
+- **알고리즘 숲 로드맵**: 11개 토픽 × 5단계(개념 이해 → 구현 → 패턴 → 응용 → 실전), 165문제. 앞 토픽의 Lv3을 깨면 다음 토픽이 열려요.
+- **개념 카드 + 시각화**: 비유와 그림으로 개념을 익히고, 알고리즘이 한 단계씩 움직이는 모습을 재생하며 봐요. 입력을 바꿔 직접 실험할 수도 있어요.
+- **유형 인식 훈련**: 문제 속 "신호"(예: _최소 몇 번_ → BFS, _모든 경우_ → 백트래킹)를 찾아 어떤 알고리즘을 떠올려야 하는지 연습해요.
+- **브라우저에서 바로 채점**: Python · JavaScript · Java로 풀고 바로 채점해요. 틀리면 어느 테스트에서 왜 틀렸는지 알려 줘요.
+- **4단계 힌트**: 유형 → 접근법 → 의사코드 → 핵심 코드(빈칸) 순서로, 필요한 만큼만 열어 봐요.
+- **AI 코치 · AI 맞춤 문제**: 막히면 노디 코치에게 물어보고(정답은 알려 주지 않아요), 약한 유형은 AI가 새 문제를 만들어 줘요.
+- **함께 자라는 노디**: 문제를 풀수록 노디가 자라고 꽃이 피어요. XP, 연속 학습, 배지, 주간 랭킹도 있어요.
+
+로그인 없이 바로 시작할 수 있고, 로그인하면 기기 사이에 진도를 이어 가요.
+
+## 커리큘럼
+
+| #   | 토픽               | 한 줄 소개                                                    |
+| --- | ------------------ | ------------------------------------------------------------- |
+| 1   | 스택               | 접시 쌓기처럼, 마지막에 올린 것을 먼저 꺼내요                 |
+| 2   | 큐 / 덱            | 줄 서기처럼, 먼저 온 사람이 먼저 나가요                       |
+| 3   | 재귀 기초          | 마주 보는 거울처럼, 자기 자신을 다시 불러요                   |
+| 4   | 그래프와 트리 표현 | 지하철 노선도처럼, 점과 선으로 관계를 그려요                  |
+| 5   | DFS                | 미로에서 한 길로 끝까지 가 보고, 막히면 돌아와요              |
+| 6   | BFS                | 물결처럼, 가까운 곳부터 한 겹씩 퍼져 나가요                   |
+| 7   | 백트래킹           | 갈림길마다 하나씩 골라 보고, 아니면 되돌아와요                |
+| 8   | 해시               | 이름표로 번호를 계산해서, 사물함 한 칸으로 바로 가요          |
+| 9   | 정렬               | 기준을 정해 줄을 세우면, 보이지 않던 순서가 보여요            |
+| 10  | 이분 탐색          | 가운데를 보고 절반씩 버리면, 100만 칸도 20번이면 찾아요       |
+| 11  | DP                 | 한 번 푼 답은 표에 적어 두고, 작은 답을 모아 큰 답을 만들어요 |
+
+모든 문제는 오리지널 이야기와 예제로 만들었고, 문제마다 세 언어의 모범 답안이 숨은 테스트(시간 초과를 잡는 큰 입력 포함)를 모두 통과하는지 자동으로 검증해요.
+
+## 만든 기술
+
+Next.js 16 · React 19 · TypeScript · Tailwind CSS · Motion · Monaco Editor · Pyodide(브라우저 Python) · CheerpJ(브라우저 Java) · Supabase · Claude API
+
+## 직접 실행해 보기
 
 ```bash
 pnpm install
-pnpm dev          # http://localhost:3000
+pnpm dev   # http://localhost:3000
 ```
 
-로그인 없이 바로 쓸 수 있고, 진도는 이 브라우저(localStorage)에 저장됩니다. Supabase를 연결하면 로그인해서 기기 사이에 진도를 이어 갈 수 있습니다.
-
-### 환경 변수
-
-`.env.example`을 `.env.local`로 복사해 채웁니다. 비워 두면 해당 기능만 꺼지고 화면에 안내가 나옵니다.
-
-| 변수                                                                | 용도                                                                                      |
-| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `ANTHROPIC_API_KEY`                                                 | AI 코치 · AI 맞춤 문제 생성                                                               |
-| `AI_COACH_MODEL` / `AI_GENERATOR_MODEL`                             | 모델 ID (기본 `claude-opus-5`)                                                            |
-| `AI_MOCK=1`                                                         | 개발 전용 모의 AI. 키 없이 코치 스트리밍·가드 재작성, 생성 → 검증 실패 → 재생성 흐름 확인 |
-| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | 로그인 · 진도 저장 (없으면 게스트 모드만)                                                 |
-| `SUPABASE_SERVICE_ROLE_KEY`                                         | 서버 전용. 진도 기록 RPC · AI 생성 문제 저장                                              |
-| `NEXT_PUBLIC_AUTH_PROVIDERS`                                        | 로그인 화면의 소셜 로그인 (`google,github,kakao` 중 켠 것)                                |
-| `NEXT_PUBLIC_RELEASE`                                               | 선택. 배포 버전. 비우면 Vercel 커밋 해시를 자동으로 써요. 에러 기록에 함께 남아요         |
-
-### Supabase 연결
-
-1. Supabase 프로젝트를 만들고 `supabase/migrations/`를 순서대로 적용합니다 (`supabase link` → `supabase db push`, 또는 SQL 편집기에 파일 순서대로 붙여 넣기).
-2. Authentication → URL Configuration에 `http://localhost:3000/auth/callback`(배포 주소도)을 Redirect URL로 추가합니다.
-3. 소셜 로그인을 쓰려면 대시보드에서 제공자를 켜고 `NEXT_PUBLIC_AUTH_PROVIDERS`에 적습니다.
-4. 위 환경 변수 세 개를 넣고 다시 실행합니다. 게스트로 쌓은 진도는 첫 로그인 때 계정으로 옮겨집니다.
-
-## 명령
-
-| 명령                        | 설명                                                                                                                                                                                                                 |
-| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev`                  | 개발 서버 (먼저 Monaco 에디터 파일을 `public/monaco/<버전>/`로 복사해 CDN 없이 제공)                                                                                                                                 |
-| `pnpm build` / `pnpm start` | 프로덕션 빌드 / 실행                                                                                                                                                                                                 |
-| `pnpm typecheck`            | 라우트 타입 생성 + `tsc`                                                                                                                                                                                             |
-| `pnpm lint`                 | ESLint                                                                                                                                                                                                               |
-| `pnpm test`                 | Vitest (진도 규칙, 채점기, JS·Python 하네스, 시각화, 개념 학습 화면, AI 코치 가드·문제 생성 파이프라인·서버 Python 러너, PGlite로 마이그레이션·RLS·진도 RPC 검증 등)                                                 |
-| `pnpm test:e2e`             | Playwright E2E. 프로덕션 빌드를 3100번 포트에 띄워 게스트 흐름(길 찾기, Python·JS·Java 채점, 힌트, 개념 학습, 모바일)을 확인. 처음엔 `pnpm exec playwright install chromium` 필요, 엔진을 CDN에서 받아 네트워크 필요 |
-| `pnpm validate:content`     | 모든 문제의 Python·JS 정답 코드를 실제 하네스로 실행해 기대값 검증 (Pyodide). `JAVA_HOME`에 JDK 11+가 있으면 Java 정답도 같은 Java 하네스로 검증                                                                     |
-| `pnpm build:java`           | Java 채점 하네스(`java-runtime/src`)를 `public/java/algoflow-runner.jar`로 빌드 (JDK 11+ 필요, 결과 jar는 커밋)                                                                                                      |
-| `pnpm ai:smoke [횟수]`      | 실제 Claude API로 AI 문제를 여러 번(기본 10회) 생성·검증해 통과율 확인 (API 비용 발생)                                                                                                                               |
-| `pnpm format`               | Prettier                                                                                                                                                                                                             |
-
-개발 서버에서는 화면 오른쪽 아래 🔧 버튼(개발용 도구)으로 예시 진도 불러오기 · XP 추가 · 축하 연출 · 진도 초기화를 할 수 있습니다. 프로덕션 빌드에는 나타나지 않습니다.
-
-## 주간 랭킹
-
-`/ranking`에서 이번 주(월~일, 한국 시간)에 얻은 XP로 순위를 보여 줘요. 닉네임만 보이고, 마이페이지 설정에서 "주간 랭킹에 닉네임 보이기"를 끌 수 있어요. 게스트는 순위를 볼 수 있고 로그인하면 참여해요. 마이그레이션 `20260926000003_weekly_ranking.sql`이 필요해요.
-
-채점은 브라우저에서 하므로 두 가지로 조작을 막아요.
-
-- **막기**: 제출 API가 앞뒤가 맞지 않는 기록(정답인데 일부만 통과, 테스트 개수가 문제와 다름, 빈 코드)을 거절해요.
-- **탐지**: 10분 안에 10문제 이상 새로 해결, 하루 XP 4,000 초과(콘텐츠 전체로 하루에 얻을 수 있는 XP는 약 3,800), 20자 미만 코드로 정답인 회원은 그 주 랭킹에서 빠지고 관리자 화면의 "주의가 필요한 기록"에 나와요. 계정과 기록은 그대로 둬요.
-
-## 관리자 화면
-
-`/admin`에서 운영 현황(지표 6개와 지난주 대비 변화, 최근 14일 가입·활동·제출 추이, 최근 에러)과 회원 목록·검색·상세(진도, 최근 제출, 배지, AI 사용량)를 볼 수 있어요. 읽기 전용이고, 회원의 코드와 AI 코치 대화 내용은 보여 주지 않아요.
-
-마이그레이션 `20260926000001_admin.sql`, `20260926000002_admin_overview_weekly.sql`(지난주 대비 변화)을 적용해야 해요. 둘 다 여러 번 실행해도 안전해요.
-
-관리자는 `admins` 테이블에 등록된 계정뿐이에요. 로그인한 뒤 Supabase SQL Editor에서 한 번 등록해요.
-
-```sql
-insert into public.admins (user_id, note)
-select id, 운영자 from auth.users where email = 내-이메일@example.com;
-```
-
-관리자가 아니면 `/admin`은 없는 주소와 똑같은 404(탭 제목까지 같음)를 보여 줘서 관리자 화면이 있다는 것도 드러나지 않아요. 관리자에게는 마이페이지에 "관리자 화면" 링크가 보여요.
-
-## CI · 배포
-
-- **CI** (`.github/workflows/ci.yml`): PR과 `master` 푸시마다 GitHub Actions가 타입 검사 · 린트 · 포맷 · 단위 테스트(JDK 21 포함) · 콘텐츠 검증 · Playwright E2E를 돌려요. PR에서 `supabase/migrations/`가 바뀌면 운영 DB에 적용하라는 경고를 남겨요.
-- **배포**: Vercel이 `master`를 받아 자동으로 배포하고, PR마다 미리보기 배포를 만들어요. `vercel.json`으로 Next.js 빌드를 고정해 두었어요.
-- **마이그레이션**: 배포만으로는 DB가 바뀌지 않아요. 새 마이그레이션은 Supabase SQL Editor(또는 `supabase db push`)로 직접 적용해요.
-- **배포 버전**: Vercel 빌드에서는 커밋 해시 앞 7자리가 자동으로 `NEXT_PUBLIC_RELEASE`가 되어 에러 기록에 남아요.
-
-## 에러 모니터링
-
-외부 서비스 없이 에러를 직접 모아요. Supabase가 연결돼 있으면 `error_events` 테이블에 저장하고, 없으면 서버 로그에 `[error:출처] {…}` 한 줄로만 남겨요.
-
-- **server**: `src/instrumentation.ts`의 `onRequestError`가 서버 컴포넌트·Route Handler·Server Action·Proxy 에러를 기록해요.
-- **client**: `src/instrumentation-client.ts`가 처리되지 않은 브라우저 에러·Promise 거부를 `/api/errors`로 보내요. 같은 에러는 페이지당 한 번, 최대 10건이고 확장 프로그램·ResizeObserver 같은 잡음은 뺍니다.
-- **boundary**: 화면이 깨졌을 때 뜨는 `error.tsx`·`global-error.tsx`가 보내요. 서버 에러와 같은 `digest`로 이어져요.
-- **engine**: 채점 엔진(Pyodide·CheerpJ)이 CDN에서 로딩에 실패하거나 멈추면 보내요.
-
-저장 전에 길이를 자르고 주소의 쿼리, 이메일, 토큰(`token=…`, JWT, API 키)을 가려요. 요청 헤더·쿠키는 저장하지 않아요. `/api/errors`는 IP마다 하루 300건까지 받아요.
-
-`error_events`와 묶어 보기 뷰 `error_groups`는 service role만 읽을 수 있어요 (Supabase 대시보드 SQL 편집기에서 `select * from error_groups order by last_seen desc;`). 오래된 기록은 `select public.prune_error_events(30);`로 지워요 (Supabase Cron에 매일 등록 권장).
-
-## Java 실행 (브라우저)
-
-Java 코드는 서버 없이 브라우저에서 실행해요. [CheerpJ](https://cheerpj.com/)(WebAssembly JVM, Java 11)가 워커(`public/workers/java.worker.js`)에서 돌고, [Eclipse 컴파일러(ECJ) 3.26](https://github.com/eclipse-jdt/eclipse.jdt.core)가 사용자의 `class Solution`을 컴파일해요. 입력·출력 JSON 변환과 채점은 `java-runtime/src/algoflow`의 하네스가 맡고, 같은 하네스를 Node 검증(진짜 JDK)에서도 써요.
-
-- 첫 실행 때 CheerpJ 런타임을 CDN(`cjrtnc.leaningtech.com`)에서 받느라 10~20초 걸리고, 그 뒤엔 브라우저 캐시로 빨라져요.
-- 브라우저 JVM은 재귀 깊이 약 2,000까지 안전하고, 런타임 예외에 줄 번호를 주지 못해 어느 메서드에서 났는지만 알려 줘요.
-- **라이선스**: CheerpJ는 개인·비상업 용도는 무료이고, 상업 서비스로 운영하려면 Leaning Technologies의 라이선스가 필요해요 (`cheerpjInit`의 `licenseKey`). ECJ(`public/java/ecj.jar`)는 EPL-2.0이에요 (`public/java/NOTICE.md`).
-
-## 구조
-
-```
-src/
-  app/            라우트 ((app) 그룹 = 사이드바/하단탭 셸, (workspace) = 풀이 화면, api/ = AI 코치·문제 생성)
-  components/     common · mascot · layout · auth · dashboard · roadmap · topic · learn · visualizer · workspace · coach · ai-lab · me · ui(shadcn)
-  content/        토픽 · 개념 카드·퀴즈 · 시각화 예시 · 문제 · 유형 신호 · 패턴 이름 (정적 콘텐츠)
-  lib/            진도 규칙(브라우저·서버 공통) · 시각화 · 실행기(브라우저) · runner-node(서버 Python) · ai(코치·생성 파이프라인) · supabase · server · 날짜 · 모션
-  stores/         zustand (게스트 진도·제출 기록·코드 초안·코치 대화는 localStorage, 로그인 상태)
-  types/          데이터 모델 (docs/04와 동일)
-content-solutions/  문제별 Python·JS 정답 코드 (클라이언트 번들 제외)
-supabase/       마이그레이션 (스키마·RLS·진도 RPC·배지), config.toml
-tests/
-```
+환경 변수 없이도 게스트 모드로 모든 학습 기능이 동작해요. 로그인·AI 기능 설정, 테스트, 배포, 운영 방법은 [개발 · 운영 가이드](docs/07-development.md)에, 설계 문서는 [docs](docs/README.md)에 있어요.
