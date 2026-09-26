@@ -87,6 +87,17 @@ import {
 } from "./greedy";
 import { InputError } from "./shared";
 import {
+  DEDUPE_PSEUDOCODE,
+  MIN_WINDOW_PSEUDOCODE,
+  PAIR_SUM_PSEUDOCODE,
+  dedupe,
+  minWindow,
+  pairSum,
+  validateDedupe,
+  validateMinWindow,
+  validatePairSum,
+} from "./two-pointers";
+import {
   COUNTING_PSEUDOCODE,
   INSERTION_PSEUDOCODE,
   MERGE_PSEUDOCODE,
@@ -306,6 +317,27 @@ export const GENERATORS: Record<VisualizationGeneratorKey, GeneratorDefinition> 
     pseudocode: DIGITS_PSEUDOCODE,
     validate: validateDigits,
     generate: digits,
+  },
+  "tp-pair-sum": {
+    key: "tp-pair-sum",
+    inputHint: "[정렬된 수 목록, target] 예: [[1, 2, 4, 6, 9], 10] — 1~99 정수 2 ~ 12개",
+    pseudocode: PAIR_SUM_PSEUDOCODE,
+    validate: validatePairSum,
+    generate: pairSum,
+  },
+  "tp-min-window": {
+    key: "tp-min-window",
+    inputHint: "[양수 목록, S] 예: [[2, 3, 1, 2, 4, 3], 7] — 1~30 정수 2 ~ 12개",
+    pseudocode: MIN_WINDOW_PSEUDOCODE,
+    validate: validateMinWindow,
+    generate: minWindow,
+  },
+  "tp-dedupe": {
+    key: "tp-dedupe",
+    inputHint: "[정렬된 수 목록] 예: [[1, 1, 2, 3, 3]] — 1~99 정수 2 ~ 12개",
+    pseudocode: DEDUPE_PSEUDOCODE,
+    validate: validateDedupe,
+    generate: dedupe,
   },
 };
 

@@ -154,10 +154,10 @@ describe("generator 등록", () => {
     }
   });
 
-  it("28개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
+  it("31개 generator가 모두 최소 한 번은 토픽 시각화 예시로 쓰인다", () => {
     const used = new Set(TOPIC_PRESETS.map((preset) => preset.generator));
     expect([...used].sort()).toEqual(Object.keys(GENERATORS).sort());
-    expect(used.size).toBe(28);
+    expect(used.size).toBe(31);
   });
 
   it("프리셋 id가 겹치지 않는다", () => {
@@ -272,6 +272,11 @@ describe("입력 검증", () => {
     ["greedy-coins", [[5], 0]],
     ["greedy-digits", ["12a", 1]],
     ["greedy-digits", ["123", 3]],
+    ["tp-pair-sum", [[3, 1, 2], 4]],
+    ["tp-pair-sum", [[1], 2]],
+    ["tp-min-window", [[0, 5], 3]],
+    ["tp-min-window", [[1, 2], 0]],
+    ["tp-dedupe", [[2, 1]]],
   ];
 
   it.each(BAD_INPUTS)("%s %j → 예외 대신 한국어 오류 메시지", (key, input) => {
@@ -471,5 +476,32 @@ describe("그리디 generator", () => {
     expect(last("4177252841", 4)).toContain("775841");
     expect(last("1924", 2)).toContain("94");
     expect(last("4321", 2)).toContain("43");
+  });
+});
+
+describe("두 포인터 generator", () => {
+  const run = (key: VisualizationGeneratorKey, input: JsonValue[]) => {
+    const result = runGenerator(key, input);
+    if (!result.ok) throw new Error(result.error);
+    return result.steps;
+  };
+
+  it("양 끝에서 좁혀 합이 target인 쌍을 찾거나, 없으면 만났다고 알려 준다", () => {
+    const found = run("tp-pair-sum", [[1, 2, 4, 6, 9, 11, 14, 17], 20]);
+    expect(found.find((s) => s.action === "found")?.message).toContain("[3, 6]");
+    const none = run("tp-pair-sum", [[1, 2, 3], 10]);
+    expect(none.at(-1)!.message).toContain("없어요");
+    expect(none.filter((s) => s.action === "compare").length).toBeLessThanOrEqual(2);
+  });
+
+  it("합이 S 이상인 가장 짧은 창의 길이를 찾는다", () => {
+    expect(run("tp-min-window", [[2, 3, 1, 2, 4, 3], 7]).at(-1)!.state.variables!.가장짧은길이).toBe(2);
+    expect(run("tp-min-window", [[1, 1], 5]).at(-1)!.state.variables!.가장짧은길이).toBe(0);
+  });
+
+  it("중복을 제자리에서 걸러 낸다", () => {
+    const last = run("tp-dedupe", [[1, 1, 2, 3, 3, 3, 5, 8, 8]]).at(-1)!;
+    expect(last.state.variables!.결과).toBe("1, 2, 3, 5, 8");
+    expect(last.state.bars!.sorted).toHaveLength(5);
   });
 });

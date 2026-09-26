@@ -98,4 +98,11 @@ export const TOPIC_COLOR_CLASSES: Record<
     stroke: "stroke-topic-coral-foreground",
     fill: "fill-topic-coral",
   },
+  indigo: {
+    surface: "bg-topic-indigo",
+    text: "text-topic-indigo-foreground",
+    ring: "ring-topic-indigo-foreground/30",
+    stroke: "stroke-topic-indigo-foreground",
+    fill: "fill-topic-indigo",
+  },
 };

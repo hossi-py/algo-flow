@@ -54,6 +54,10 @@ export const PATTERN_LABELS: Record<PatternTag, string> = {
   "interval-scheduling": "구간 고르기",
   "greedy-accumulate": "누적하며 욕심껏",
   "digit-greedy": "앞자리부터 크게",
+  "opposite-ends": "양 끝에서 좁히기",
+  "same-direction": "같은 방향 두 포인터",
+  "fixed-window": "고정 길이 창",
+  "variable-window": "늘였다 줄이는 창",
 };
 
 /** 토픽별 대표 패턴 (AI 문제 생성의 집중 패턴 후보) */
@@ -70,6 +74,7 @@ export const TOPIC_PATTERNS: Record<TopicSlug, PatternTag[]> = {
   "binary-search": ["exact-search", "boundary-search", "range-count", "parametric-search"],
   dp: ["linear-dp", "grid-dp", "knapsack", "sequence-dp", "state-dp"],
   greedy: ["greedy-by-sort", "interval-scheduling", "greedy-accumulate", "digit-greedy"],
+  "two-pointers": ["opposite-ends", "same-direction", "fixed-window", "variable-window"],
 };
 
 /** 패턴이 속한 토픽 */

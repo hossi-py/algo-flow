@@ -45,6 +45,7 @@ const TOPIC_NAMES: Record<TopicSlug, RegExp> = {
   "binary-search": /이분\s*탐색|이진\s*탐색/,
   dp: /\bDP\b|동적\s*계획/,
   greedy: /그리디|탐욕/,
+  "two-pointers": /두\s*포인터|투\s*포인터|슬라이딩\s*윈도우/,
 };
 
 export function revealsTopic(problem: Problem): boolean {
@@ -67,7 +68,8 @@ const CONFUSABLE: Record<TopicSlug, TopicSlug[]> = {
   sorting: ["hash", "binary-search", "greedy"],
   "binary-search": ["sorting", "hash", "dp"],
   dp: ["backtracking", "greedy", "recursion"],
-  greedy: ["dp", "sorting", "backtracking"],
+  greedy: ["dp", "sorting", "two-pointers"],
+  "two-pointers": ["hash", "binary-search", "greedy"],
 };
 
 /** 정답 + 헷갈리는 토픽 2개 + 나머지 중 하나를 섞어 4지선다 */

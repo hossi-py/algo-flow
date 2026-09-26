@@ -47,6 +47,8 @@ export const ACTION_LABEL: Record<VizAction, string> = {
   reuse: "적어 둔 답 쓰기",
   pick: "고르기",
   skip: "건너뛰기",
+  "move-left": "왼쪽 포인터 이동",
+  "move-right": "오른쪽 포인터 이동",
   compare: "비교",
   init: "시작",
   done: "끝",

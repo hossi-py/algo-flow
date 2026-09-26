@@ -1,5 +1,6 @@
 import {
   ArrowDownUp,
+  ArrowLeftRight,
   Coins,
   Crosshair,
   Grid3x3,
@@ -31,6 +32,7 @@ const TOPIC_ICONS: Record<TopicIcon, LucideIcon> = {
   target: Crosshair,
   table: Grid3x3,
   coins: Coins,
+  pointers: ArrowLeftRight,
 };
 
 export function TopicGlyph({ icon, ...props }: { icon: TopicIcon } & LucideProps) {

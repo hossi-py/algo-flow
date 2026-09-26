@@ -11,6 +11,7 @@ import { queueDequeTopic } from "./queue-deque";
 import { recursionTopic } from "./recursion";
 import { sortingTopic } from "./sorting";
 import { stackTopic } from "./stack";
+import { twoPointersTopic } from "./two-pointers";
 
 /** 커리큘럼 순서 */
 export const TOPICS: readonly Topic[] = [
@@ -26,6 +27,7 @@ export const TOPICS: readonly Topic[] = [
   binarySearchTopic,
   dpTopic,
   greedyTopic,
+  twoPointersTopic,
 ];
 
 const TOPICS_BY_SLUG = new Map<string, Topic>(TOPICS.map((topic) => [topic.slug, topic]));

@@ -35,6 +35,8 @@ const LABELS: Record<IllustrationKey, string> = {
   "dp-table-fill": "표의 칸을 왼쪽 위부터 차례로 채우며 위·왼쪽 칸의 값을 더하는 그림",
   "greedy-meetings": "시간 막대 중 일찍 끝나는 회의부터 고르고, 겹치는 회의는 건너뛰는 그림",
   "greedy-counterexample": "6원을 만들 때 큰 동전부터 쓰면 3개, 3원 두 개면 2개라 욕심이 틀리는 반례 그림",
+  "tp-squeeze": "정렬된 칸의 양 끝에 손가락을 두고 가운데로 좁혀 오는 그림",
+  "tp-window": "칸들 위로 창틀이 오른쪽으로 미끄러지며 늘었다 줄었다 하는 그림",
 };
 
 /** 강조 면(HOT) 위 글자. 다크 모드에서도 밝은 보라 위에 어두운 글자가 되도록 */
@@ -933,6 +935,83 @@ function GreedyCounterexample() {
   );
 }
 
+function TpSqueeze() {
+  const values = [1, 3, 4, 6, 8, 11, 14];
+  return (
+    <>
+      {values.map((v, i) => (
+        <g key={i}>
+          <rect
+            x={10 + i * 20}
+            y={34}
+            width={18}
+            height={18}
+            rx={4}
+            fill={i === 1 || i === 5 ? HOT : PAPER}
+            stroke="currentColor"
+            strokeWidth={1.5}
+          />
+          <Label x={19 + i * 20} y={46} fill={i === 1 || i === 5 ? ON_HOT : "currentColor"}>
+            {v}
+          </Label>
+        </g>
+      ))}
+      <Label x={39} y={70}>
+        L
+      </Label>
+      <Label x={119} y={70}>
+        R
+      </Label>
+      <Arrow d="M40 22 L52 22" />
+      <Arrow d="M120 22 L108 22" />
+      <Label x={80} y={92}>
+        작으면 L을, 크면 R을 옮겨요
+      </Label>
+    </>
+  );
+}
+
+function TpWindow() {
+  const values = [2, 3, 1, 2, 4, 3, 1];
+  return (
+    <>
+      {values.map((v, i) => (
+        <g key={i}>
+          <rect
+            x={10 + i * 20}
+            y={36}
+            width={18}
+            height={18}
+            rx={4}
+            fill={i >= 3 && i <= 5 ? DONE : PAPER}
+            stroke="currentColor"
+            strokeWidth={1.5}
+          />
+          <Label x={19 + i * 20} y={48}>
+            {v}
+          </Label>
+        </g>
+      ))}
+      <rect
+        x={67}
+        y={30}
+        width={66}
+        height={30}
+        rx={6}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2.2}
+        strokeDasharray="5 3"
+      />
+      <Arrow d="M112 20 L132 20" />
+      <Arrow d="M68 20 L88 20" />
+      <Label x={80} y={80}>
+        오른쪽을 늘리고, 왼쪽을 줄이고
+      </Label>
+    </>
+  );
+}
+
 const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "stack-plates": StackPlates,
   "stack-undo": StackUndo,
@@ -955,6 +1034,8 @@ const DRAWINGS: Record<IllustrationKey, () => ReactNode> = {
   "dp-table-fill": DpTableFill,
   "greedy-meetings": GreedyMeetings,
   "greedy-counterexample": GreedyCounterexample,
+  "tp-squeeze": TpSqueeze,
+  "tp-window": TpWindow,
 };
 
 export function ConceptIllustration({

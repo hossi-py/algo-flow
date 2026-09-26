@@ -28,7 +28,10 @@ export type VisualizationGeneratorKey =
   | "dp-lcs"
   | "greedy-intervals"
   | "greedy-coins"
-  | "greedy-digits";
+  | "greedy-digits"
+  | "tp-pair-sum"
+  | "tp-min-window"
+  | "tp-dedupe";
 
 export interface VisualizationPreset {
   id: string;
@@ -89,6 +92,9 @@ export type VizAction =
   // 그리디
   | "pick"
   | "skip"
+  // 두 포인터
+  | "move-left"
+  | "move-right"
   // 공통
   | "compare"
   | "init"

@@ -54,4 +54,5 @@ export const FLOWER_COLORS: Record<TopicColor, string> = {
   plum: "#d9a8d2",
   teal: "#8fd3d8",
   coral: "#ffa597",
+  indigo: "#a9b0f0",
 };

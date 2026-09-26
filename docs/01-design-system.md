@@ -73,6 +73,7 @@ shadcn/ui 변수명 체계를 그대로 따르고, 값만 전부 교체한다. (
 | 이분 탐색 | plum 자두 | `#EBD2E8` / `#5A1F52` (8.51) | `#3E2A3B` / `#EBD2E8` (9.33) |
 | DP | teal 청록 | `#BFE6E9` / `#0D4549` (8.00) | `#1F393C` / `#BFE6E9` (9.19) |
 | 그리디 | coral 산호 | `#FFCAC2` / `#6E2320` (7.52) | `#472A27` / `#FFCAC2` (8.89) |
+| 두 포인터 | indigo 남색 | `#D6D9F7` / `#28307A` (8.43) | `#2B2E4A` / `#D6D9F7` (9.50) |
 
 토큰 명명: `--topic-{name}`, `--topic-{name}-foreground`. Tailwind에서는 `bg-topic-peach text-topic-peach-foreground`.
 

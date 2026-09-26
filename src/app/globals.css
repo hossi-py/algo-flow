@@ -78,6 +78,8 @@
   --color-topic-teal-foreground: var(--topic-teal-foreground);
   --color-topic-coral: var(--topic-coral);
   --color-topic-coral-foreground: var(--topic-coral-foreground);
+  --color-topic-indigo: var(--topic-indigo);
+  --color-topic-indigo-foreground: var(--topic-indigo-foreground);
 
   --color-nodi-body: var(--nodi-body);
   --color-nodi-line: var(--nodi-line);
@@ -214,6 +216,8 @@
   --topic-teal-foreground: #0d4549;
   --topic-coral: #ffcac2;
   --topic-coral-foreground: #6e2320;
+  --topic-indigo: #d6d9f7;
+  --topic-indigo-foreground: #28307a;
 
   --nodi-body: #d9ccff;
   --nodi-line: #4a36a8;
@@ -304,6 +308,8 @@
   --topic-teal-foreground: #bfe6e9;
   --topic-coral: #472a27;
   --topic-coral-foreground: #ffcac2;
+  --topic-indigo: #2b2e4a;
+  --topic-indigo-foreground: #d6d9f7;
 
   --nodi-body: #c9b8ff;
   --nodi-line: #2b1d5c;

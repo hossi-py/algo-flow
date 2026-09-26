@@ -54,6 +54,7 @@ export const TOPIC_SLUGS = [
   "binary-search",
   "dp",
   "greedy",
+  "two-pointers",
 ] as const;
 export type TopicSlug = (typeof TOPIC_SLUGS)[number];
 
@@ -79,8 +80,8 @@ export const LEVEL_STAGE_LABELS: Record<LevelStage, string> = {
   exam: "코딩테스트 실전",
 };
 
-export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum" | "teal" | "coral";
-export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table" | "coins";
+export type TopicColor = "peach" | "mint" | "lilac" | "sky" | "blossom" | "lemon" | "sage" | "sand" | "slate" | "plum" | "teal" | "coral" | "indigo";
+export type TopicIcon = "plates" | "line" | "mirror" | "map" | "dive" | "ripple" | "maze" | "lockers" | "bars" | "target" | "table" | "coins" | "pointers";
 
 export const PATTERN_TAGS = [
   // 스택
@@ -147,6 +148,11 @@ export const PATTERN_TAGS = [
   "interval-scheduling",
   "greedy-accumulate",
   "digit-greedy",
+  // 두 포인터
+  "opposite-ends",
+  "same-direction",
+  "fixed-window",
+  "variable-window",
 ] as const;
 export type PatternTag = (typeof PATTERN_TAGS)[number];
 
@@ -208,7 +214,9 @@ export type IllustrationKey =
   | "dp-memo-notebook"
   | "dp-table-fill"
   | "greedy-meetings"
-  | "greedy-counterexample";
+  | "greedy-counterexample"
+  | "tp-squeeze"
+  | "tp-window";
 
 /** 같은 코드를 언어별로 제공. 사용자가 고른 언어의 코드만 보여준다 */
 export interface CodeSnippet {
@@ -411,7 +419,10 @@ export type VisualizationGeneratorKey =
   | "dp-lcs"
   | "greedy-intervals"
   | "greedy-coins"
-  | "greedy-digits";
+  | "greedy-digits"
+  | "tp-pair-sum"
+  | "tp-min-window"
+  | "tp-dedupe";
 
 export interface VisualizationPreset {
   id: string;
@@ -472,6 +483,9 @@ export type VizAction =
   // 그리디
   | "pick"
   | "skip"
+  // 두 포인터
+  | "move-left"
+  | "move-right"
   // 공통
   | "compare"
   | "init"

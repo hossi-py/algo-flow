@@ -460,6 +460,38 @@ export const SIGNALS: PatternSignal[] = [
       "한 번 훑으면서 '지금까지의 최선'(가장 먼 거리, 남은 연료)만 들고 가면 돼요. 되돌아가 다시 볼 필요가 없어요.",
     strength: "medium",
   },
+  {
+    id: "sig-sorted-pair-ends",
+    phrase: "정렬된 배열에서 합(차)이 K인 두 수 / 양 끝에서 비교",
+    examples: ["정렬된 수열에서 합이 X가 되는 두 수를 찾으세요", "양쪽 벽 사이에 담을 수 있는 물의 최대 양은?"],
+    suspects: ["two-pointers"],
+    patterns: ["opposite-ends"],
+    reason:
+      "정렬돼 있으면 합이 작을 때 왼쪽을, 클 때 오른쪽을 한 칸씩 옮기면 돼요. 두 손가락이 만날 때까지 O(N)이에요.",
+    caution: "정렬이 안 돼 있고 위치를 그대로 돌려줘야 하면 해시로 짝을 찾는 편이 쉬워요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-contiguous-window",
+    phrase: "연속 구간 + 조건 (합이 S 이상인 가장 짧은 / 종류가 K개 이하인 가장 긴)",
+    examples: ["합이 S 이상인 연속 부분 수열의 최소 길이는?", "서로 다른 과일이 2종류 이하인 가장 긴 구간은?"],
+    suspects: ["two-pointers"],
+    patterns: ["variable-window", "fixed-window"],
+    reason:
+      "오른쪽 끝을 늘려 조건을 만족시키고, 왼쪽 끝을 줄여 최소로 만드는 창(슬라이딩 윈도우)을 쓰면 각 칸을 두 번씩만 봐요.",
+    caution: "음수가 섞여 있으면 창을 늘린다고 합이 커지지 않아요. 그땐 누적 합 + 해시를 떠올리세요.",
+    strength: "strong",
+  },
+  {
+    id: "sig-in-place",
+    phrase: "순서를 지키며 제자리에서 걸러 내기 / 부분 수열인지",
+    examples: ["정렬된 배열에서 중복을 없애세요", "s가 t의 부분 수열인지 확인하세요"],
+    suspects: ["two-pointers"],
+    patterns: ["same-direction"],
+    reason:
+      "읽는 손가락(빠름)과 쓰는 손가락(느림) 두 개를 같은 방향으로 움직이면, 한 번 훑으며 순서를 지켜 걸러 낼 수 있어요.",
+    strength: "medium",
+  },
 ];
 
 const SIGNALS_BY_ID = new Map(SIGNALS.map((signal) => [signal.id, signal]));
