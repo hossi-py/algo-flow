@@ -570,5 +570,20 @@ describe("관리자 (admins · 관리자 조회 함수)", () => {
     expect(Number(last?.submissions)).toBeGreaterThanOrEqual(2);
     expect(Number(last?.accepted)).toBeGreaterThanOrEqual(1);
     expect(Number(last?.activeUsers)).toBeGreaterThanOrEqual(1);
+
+    // 이번 주(오늘 포함 7일) vs 지난주 비교: 9/20 제출은 이번 주에 들어간다
+    const weekly = (overview as unknown as { weekly: Record<string, { current: number; previous: number }> }).weekly;
+    for (const key of [
+      "signups",
+      "activeUsers",
+      "submissions",
+      "solvedProblems",
+      "generatedProblems",
+      "coachMessages",
+    ]) {
+      expect(weekly[key], key).toEqual({ current: expect.any(Number), previous: expect.any(Number) });
+    }
+    expect(weekly.submissions?.current).toBeGreaterThanOrEqual(2);
+    expect(weekly.solvedProblems?.current).toBeGreaterThanOrEqual(1);
   });
 });

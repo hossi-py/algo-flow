@@ -154,8 +154,11 @@
   --primary-foreground: #2b1d5c;
   --primary-edge: #a792f0;
   --primary-strong: #6a4fd1;
-  /* 관리자 추이 차트 막대 (dataviz 검증: 흰 카드 대비 3:1 이상, 명도·채도 범위 통과) */
-  --chart-trend: #6a4fd1;
+  /* 관리자 추이 차트 선 (dataviz 검증: 카드 대비 3:1 이상, 명도·채도 범위 통과). 면은 파스텔 토큰으로 채운다 */
+  --chart-violet: #6a4fd1;
+  --chart-peach: #d2643a;
+  --chart-mint: #1f9a6f;
+  --chart-sky: #2a7bc4;
   --primary-soft: #f1ecff;
   --primary-soft-foreground: #4a36a8;
   --secondary: #ffd3bf;
@@ -232,7 +235,10 @@
   --primary-foreground: #221747;
   --primary-edge: #8f78e6;
   --primary-strong: #cbbbff;
-  --chart-trend: #8f74f0;
+  --chart-violet: #8f74f0;
+  --chart-peach: #d06c42;
+  --chart-mint: #34a67d;
+  --chart-sky: #4a98dd;
   --primary-soft: #352c5c;
   --primary-soft-foreground: #d9ccff;
   --secondary: #44302a;

@@ -57,6 +57,9 @@ export async function listUsers(params: { search: string; sort: UserSort; page: 
   };
 }
 
+export type WeeklyKey =
+  "signups" | "activeUsers" | "submissions" | "solvedProblems" | "generatedProblems" | "coachMessages";
+
 export interface AdminOverview {
   totals: {
     users: number;
@@ -67,6 +70,8 @@ export interface AdminOverview {
     generatedProblems: number;
     coachMessages: number;
   };
+  /** 이번 주(오늘 포함 7일) vs 지난주. 20260926000002 마이그레이션 전에는 없다 */
+  weekly?: Record<WeeklyKey, { current: number; previous: number }>;
   daily: { day: string; signups: number; activeUsers: number; submissions: number; accepted: number }[];
 }
 
@@ -81,7 +86,9 @@ export interface ErrorGroupRow {
   release: string | null;
 }
 
-export async function getOverview(days = 14): Promise<{ overview: AdminOverview; errors: ErrorGroupRow[] }> {
+export async function getOverview(
+  days = 14,
+): Promise<{ overview: AdminOverview; errors: ErrorGroupRow[]; fetchedAt: number }> {
   await requireAdmin();
   const supabase = getAdminSupabase();
   const [overview, errors] = await Promise.all([
@@ -92,6 +99,8 @@ export async function getOverview(days = 14): Promise<{ overview: AdminOverview;
   // 에러 기록은 없어도 화면은 보여 준다
   if (errors.error) console.warn("[admin] error_groups 조회 실패", errors.error.message);
   return {
+    // "3시간 전" 같은 상대 시간을 서버·브라우저가 같은 기준으로 그리도록 조회 시각을 함께 넘긴다
+    fetchedAt: Date.now(),
     overview: overview.data as AdminOverview,
     errors: ((errors.data ?? []) as Record<string, unknown>[]).map((row) => ({
       fingerprint: String(row.fingerprint),
