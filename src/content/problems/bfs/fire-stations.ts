@@ -1,4 +1,113 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      7,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [4, 5],
+        [5, 6],
+      ],
+      [0, 6],
+    ],
+    expected: 3,
+    explanation: "양 끝 소방서에서 가운데 3번 집까지가 3으로 가장 멀어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3, [[0, 1]], [0]],
+    expected: -1,
+    explanation: "2번 집은 어느 소방서에서도 갈 수 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, [], [0]],
+    expected: 0,
+    failureNote: "소방서가 있는 집 하나뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      3,
+      [
+        [0, 1],
+        [1, 2],
+      ],
+      [0, 1, 2],
+    ],
+    expected: 0,
+    failureNote: "모든 집에 소방서가 있어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      6,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [4, 5],
+        [0, 5],
+      ],
+      [0, 3],
+    ],
+    expected: 1,
+    failureNote: "고리 모양 마을이에요. 가까운 소방서는 집마다 달라요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      8,
+      [
+        [0, 1],
+        [0, 2],
+        [0, 3],
+        [3, 4],
+        [4, 5],
+        [5, 6],
+        [6, 7],
+      ],
+      [2],
+    ],
+    expected: 6,
+    failureNote: "소방서가 한 곳뿐이면 그곳에서 가장 먼 집까지의 거리예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000, Array.from({ length: 99999 }, (_, i) => [i, i + 1]), Array.from({ length: 50000 }, (_, i) => i * 2)],
+    expected: 1,
+    failureNote: "소방서가 5만 곳이에요. 소방서마다 따로 BFS를 하면 시간 초과예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000, Array.from({ length: 99999 }, (_, i) => [i, i + 1]), [0]],
+    expected: 99999,
+    failureNote: "한 줄로 이어진 10만 채 끝에 소방서가 하나 있어요.",
+  },
+]);
 
 export const bfsFireStations: Problem = {
   id: "c:bfs-fire-stations",
@@ -58,117 +167,9 @@ export const bfsFireStations: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        7,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [3, 4],
-          [4, 5],
-          [5, 6],
-        ],
-        [0, 6],
-      ],
-      expected: 3,
-      explanation: "양 끝 소방서에서 가운데 3번 집까지가 3으로 가장 멀어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3, [[0, 1]], [0]],
-      expected: -1,
-      explanation: "2번 집은 어느 소방서에서도 갈 수 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, [], [0]],
-      expected: 0,
-      failureNote: "소방서가 있는 집 하나뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        3,
-        [
-          [0, 1],
-          [1, 2],
-        ],
-        [0, 1, 2],
-      ],
-      expected: 0,
-      failureNote: "모든 집에 소방서가 있어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        6,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [3, 4],
-          [4, 5],
-          [0, 5],
-        ],
-        [0, 3],
-      ],
-      expected: 1,
-      failureNote: "고리 모양 마을이에요. 가까운 소방서는 집마다 달라요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        8,
-        [
-          [0, 1],
-          [0, 2],
-          [0, 3],
-          [3, 4],
-          [4, 5],
-          [5, 6],
-          [6, 7],
-        ],
-        [2],
-      ],
-      expected: 6,
-      failureNote: "소방서가 한 곳뿐이면 그곳에서 가장 먼 집까지의 거리예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        100000,
-        Array.from({ length: 99999 }, (_, i) => [i, i + 1]),
-        Array.from({ length: 50000 }, (_, i) => i * 2),
-      ],
-      expected: 1,
-      failureNote: "소방서가 5만 곳이에요. 소방서마다 따로 BFS를 하면 시간 초과예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [100000, Array.from({ length: 99999 }, (_, i) => [i, i + 1]), [0]],
-      expected: 99999,
-      failureNote: "한 줄로 이어진 10만 채 끝에 소방서가 하나 있어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

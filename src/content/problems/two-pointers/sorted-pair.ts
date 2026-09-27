@@ -1,5 +1,57 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[2, 7, 11, 15], 9],
+    expected: [0, 1],
+    explanation: "2 + 7 = 9라서 [0, 1]이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 2, 4, 6, 9, 11, 14, 17], 20],
+    expected: [3, 6],
+    explanation: "6 + 14 = 20이라 [3, 6]이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[3, 5], 8],
+    expected: [0, 1],
+    failureNote: "둘뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 3, 3, 10], 6],
+    expected: [1, 2],
+    failureNote: "같은 가격의 서로 다른 간식이에요. [1, 2]예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 2, 3, 100], 103],
+    expected: [2, 3],
+    failureNote: "양 끝을 쓰는 3 + 100이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => i * 2 + 2), 399998],
+    expected: [99998, 99999],
+    failureNote: "10만 개이고 짝은 맨 끝 두 개예요. 모든 쌍을 비교하면 약 50억 번이라 시간 초과예요.",
+  },
+]);
 
 export const twoPointersSortedPair: Problem = {
   id: "c:two-pointers-sorted-pair",
@@ -42,56 +94,9 @@ export const twoPointersSortedPair: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[2, 7, 11, 15], 9],
-      expected: [0, 1],
-      explanation: "2 + 7 = 9라서 [0, 1]이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 2, 4, 6, 9, 11, 14, 17], 20],
-      expected: [3, 6],
-      explanation: "6 + 14 = 20이라 [3, 6]이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[3, 5], 8],
-      expected: [0, 1],
-      failureNote: "둘뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 3, 3, 10], 6],
-      expected: [1, 2],
-      failureNote: "같은 가격의 서로 다른 간식이에요. [1, 2]예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 2, 3, 100], 103],
-      expected: [2, 3],
-      failureNote: "양 끝을 쓰는 3 + 100이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => i * 2 + 2), 399998],
-      expected: [99998, 99999],
-      failureNote: "10만 개이고 짝은 맨 끝 두 개예요. 모든 쌍을 비교하면 약 50억 번이라 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

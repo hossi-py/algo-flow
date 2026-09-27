@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [4],
+    expected: 4,
+    explanation: "1 버림 → 2를 아래로 [3,4,2] → 3 버림 → 4를 아래로 [2,4] → 2 버림 → 4가 남아요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1],
+    expected: 1,
+    explanation: "처음부터 한 장뿐이면 그대로 남아요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2],
+    expected: 2,
+    failureNote: "1을 버리면 2만 남아요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [6],
+    expected: 4,
+    failureNote: "카드 6장이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [7],
+    expected: 6,
+    failureNote: "카드 7장이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [1024],
+    expected: 1024,
+    failureNote: "2의 거듭제곱 장이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [200000],
+    expected: 137856,
+    failureNote: "카드 20만 장이에요. 리스트 맨 앞을 꺼내는 pop(0)·shift()는 매번 전체를 당겨서 느려요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [199999],
+    expected: 137854,
+    failureNote: "카드 199,999장이에요.",
+  },
+]);
 
 export const queueCardShuffle: Problem = {
   id: "c:queue-card-shuffle",
@@ -39,72 +107,9 @@ export const queueCardShuffle: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [4],
-      expected: 4,
-      explanation: "1 버림 → 2를 아래로 [3,4,2] → 3 버림 → 4를 아래로 [2,4] → 2 버림 → 4가 남아요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1],
-      expected: 1,
-      explanation: "처음부터 한 장뿐이면 그대로 남아요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2],
-      expected: 2,
-      failureNote: "1을 버리면 2만 남아요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [6],
-      expected: 4,
-      failureNote: "카드 6장이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [7],
-      expected: 6,
-      failureNote: "카드 7장이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [1024],
-      expected: 1024,
-      failureNote: "2의 거듭제곱 장이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [200000],
-      expected: 137856,
-      failureNote: "카드 20만 장이에요. 리스트 맨 앞을 꺼내는 pop(0)·shift()는 매번 전체를 당겨서 느려요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [199999],
-      expected: 137854,
-      failureNote: "카드 199,999장이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

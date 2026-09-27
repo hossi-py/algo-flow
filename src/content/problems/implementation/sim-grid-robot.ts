@@ -1,5 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["S..", ".#.", "..."], "RFFRFF"],
+    expected: [2, 2],
+    explanation: "오른쪽으로 두 칸 가서 (0, 2), 아래로 두 칸 가서 (2, 2)예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["S#", ".."], "RF"],
+    expected: [0, 0],
+    explanation: "오른쪽이 선반이라 움직이지 않아요: [0, 0].",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["S"], "FFLF"],
+    expected: [0, 0],
+    failureNote: "어느 쪽이든 지도 밖이라 제자리 [0, 0]이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[".S.", "..."], "LFLF"],
+    expected: [1, 0],
+    failureNote: "왼쪽으로 가서 (0, 0), 다시 왼쪽으로 돌면 아래쪽이라 (1, 0)이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["...", "#S#", "..."], "FFRFLLFF"],
+    expected: [0, 0],
+    failureNote: "위로 한 칸 뒤 지도 밖이라 멈추고, 오른쪽 (0, 2)로 갔다가 뒤돌아 왼쪽으로 두 칸 가요: [0, 0].",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100 }, (_, r) =>
+        Array.from({ length: 100 }, (_, c) =>
+          r === 50 && c === 50 ? "S" : (r * 7 + c * 13) % 11 === 0 ? "#" : ".",
+        ).join(""),
+      ),
+      Array.from({ length: 100000 }, (_, i) => "FFRFLF"[(i * 31 + (i >> 5)) % 6]).join(""),
+    ],
+    expected: [51, 20],
+    failureNote: "100 × 100 창고에 명령 10만 개예요.",
+  },
+]);
 
 export const simGridRobot: Problem = {
   id: "c:sim-grid-robot",
@@ -49,63 +108,9 @@ export const simGridRobot: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["S..", ".#.", "..."], "RFFRFF"],
-      expected: [2, 2],
-      explanation: "오른쪽으로 두 칸 가서 (0, 2), 아래로 두 칸 가서 (2, 2)예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["S#", ".."], "RF"],
-      expected: [0, 0],
-      explanation: "오른쪽이 선반이라 움직이지 않아요: [0, 0].",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["S"], "FFLF"],
-      expected: [0, 0],
-      failureNote: "어느 쪽이든 지도 밖이라 제자리 [0, 0]이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[".S.", "..."], "LFLF"],
-      expected: [1, 0],
-      failureNote: "왼쪽으로 가서 (0, 0), 다시 왼쪽으로 돌면 아래쪽이라 (1, 0)이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["...", "#S#", "..."], "FFRFLLFF"],
-      expected: [0, 0],
-      failureNote: "위로 한 칸 뒤 지도 밖이라 멈추고, 오른쪽 (0, 2)로 갔다가 뒤돌아 왼쪽으로 두 칸 가요: [0, 0].",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100 }, (_, r) =>
-          Array.from({ length: 100 }, (_, c) =>
-            r === 50 && c === 50 ? "S" : (r * 7 + c * 13) % 11 === 0 ? "#" : ".",
-          ).join(""),
-        ),
-        Array.from({ length: 100000 }, (_, i) => "FFRFLF"[(i * 31 + (i >> 5)) % 6]).join(""),
-      ],
-      expected: [51, 20],
-      failureNote: "100 × 100 창고에 명령 10만 개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

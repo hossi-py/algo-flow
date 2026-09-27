@@ -1,4 +1,65 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[23, 24, 21, 19, 22, 26, 25]],
+    expected: [1, 4, 2, 1, 1, 0, 0],
+    explanation:
+      "첫날(23)은 다음 날 24가 더 따뜻해서 1. 둘째 날(24)은 나흘 뒤 26이 올 때까지 기다려서 4예요. 26 이후로는 더 따뜻한 날이 없어서 0이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[30, 30, 29]],
+    expected: [0, 0, 0],
+    explanation: "같은 온도는 '더 따뜻한' 날이 아니에요. 모두 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[15]],
+    expected: [0],
+    failureNote: "하루뿐이면 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 2, 3, 4, 5]],
+    expected: [1, 1, 1, 1, 0],
+    failureNote: "매일 따뜻해져요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[5, 1, 1, 1, 6]],
+    expected: [4, 3, 2, 1, 0],
+    failureNote: "첫날은 나흘을 기다려요. 가운데 1들은 모두 마지막 날을 기다려요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[3, 5, 3, 5, 3, 6]],
+    expected: [1, 4, 1, 2, 1, 0],
+    failureNote: "같은 온도가 번갈아 나와요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i === 99999 ? 1000000 : 100000 - i))],
+    expected: Array.from({ length: 100000 }, (_, i) => 99999 - i),
+    failureNote: "점점 추워지다 마지막 날에만 따뜻해져요. 날마다 뒤를 끝까지 훑으면 시간 초과예요.",
+  },
+]);
 
 export const stackWarmerWait: Problem = {
   id: "c:stack-warmer-wait",
@@ -51,65 +112,9 @@ export const stackWarmerWait: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[23, 24, 21, 19, 22, 26, 25]],
-      expected: [1, 4, 2, 1, 1, 0, 0],
-      explanation:
-        "첫날(23)은 다음 날 24가 더 따뜻해서 1. 둘째 날(24)은 나흘 뒤 26이 올 때까지 기다려서 4예요. 26 이후로는 더 따뜻한 날이 없어서 0이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[30, 30, 29]],
-      expected: [0, 0, 0],
-      explanation: "같은 온도는 '더 따뜻한' 날이 아니에요. 모두 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[15]],
-      expected: [0],
-      failureNote: "하루뿐이면 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 2, 3, 4, 5]],
-      expected: [1, 1, 1, 1, 0],
-      failureNote: "매일 따뜻해져요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[5, 1, 1, 1, 6]],
-      expected: [4, 3, 2, 1, 0],
-      failureNote: "첫날은 나흘을 기다려요. 가운데 1들은 모두 마지막 날을 기다려요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[3, 5, 3, 5, 3, 6]],
-      expected: [1, 4, 1, 2, 1, 0],
-      failureNote: "같은 온도가 번갈아 나와요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i === 99999 ? 1000000 : 100000 - i))],
-      expected: Array.from({ length: 100000 }, (_, i) => 99999 - i),
-      failureNote: "점점 추워지다 마지막 날에만 따뜻해져요. 날마다 뒤를 끝까지 훑으면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

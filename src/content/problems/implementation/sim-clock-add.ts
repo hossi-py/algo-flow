@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["23:50", 20],
+    expected: "00:10",
+    explanation: '자정을 넘어 "00:10"이에요.',
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: ["09:05", 0],
+    expected: "09:05",
+    explanation: '그대로 "09:05"예요. 앞의 0을 빼먹지 마세요.',
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["00:00", 1440],
+    expected: "00:00",
+    failureNote: '딱 하루 뒤라 "00:00"이에요.',
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["00:59", 1],
+    expected: "01:00",
+    failureNote: '"01:00"이에요.',
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["10:00", 59],
+    expected: "10:59",
+    failureNote: '"10:59"예요.',
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: ["12:34", 1000000000],
+    expected: "23:14",
+    failureNote: "10억 분 뒤예요. 1분씩 더하면 느려요.",
+  },
+]);
 
 export const simClockAdd: Problem = {
   id: "c:sim-clock-add",
@@ -37,56 +89,9 @@ export const simClockAdd: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["23:50", 20],
-      expected: "00:10",
-      explanation: '자정을 넘어 "00:10"이에요.',
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: ["09:05", 0],
-      expected: "09:05",
-      explanation: '그대로 "09:05"예요. 앞의 0을 빼먹지 마세요.',
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["00:00", 1440],
-      expected: "00:00",
-      failureNote: '딱 하루 뒤라 "00:00"이에요.',
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["00:59", 1],
-      expected: "01:00",
-      failureNote: '"01:00"이에요.',
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["10:00", 59],
-      expected: "10:59",
-      failureNote: '"10:59"예요.',
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: ["12:34", 1000000000],
-      expected: "23:14",
-      failureNote: "10억 분 뒤예요. 1분씩 더하면 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

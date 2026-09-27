@@ -1,5 +1,66 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["nodi", "mimi", "nodi", "toto", "mimi", "nodi"]],
+    expected: "nodi",
+    explanation: "nodi 3표, mimi 2표, toto 1표예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [["toto", "mimi", "toto", "mimi"]],
+    expected: "mimi",
+    explanation: "toto와 mimi가 2표씩 같아요. 사전 순으로 앞선 mimi가 당선이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["solo"]],
+    expected: "solo",
+    failureNote: "한 표뿐이면 그 후보가 당선이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["b", "a", "c", "b", "c", "a"]],
+    expected: "a",
+    failureNote: "세 명이 모두 2표예요. 가장 앞선 a가 당선이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["ab", "b", "abc", "b", "ab", "abc"]],
+    expected: "ab",
+    failureNote: "모두 2표예요. 사전 순으로 ab가 abc와 b보다 앞서요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["z", "y", "z", "y", "y"]],
+    expected: "y",
+    failureNote: "먼저 나온 z가 아니라 표가 더 많은 y(3표)가 당선이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => "c" + ((i * i + 3 * i) % 997).toString(36))],
+    expected: "c0",
+    failureNote:
+      "10만 표, 후보 약 1,000명이에요. 후보마다 votes.count()로 세면 시간 초과예요. 한 번 훑으며 dict로 세세요.",
+  },
+]);
 
 export const hashClassVote: Problem = {
   id: "c:hash-class-vote",
@@ -41,65 +102,9 @@ export const hashClassVote: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["nodi", "mimi", "nodi", "toto", "mimi", "nodi"]],
-      expected: "nodi",
-      explanation: "nodi 3표, mimi 2표, toto 1표예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [["toto", "mimi", "toto", "mimi"]],
-      expected: "mimi",
-      explanation: "toto와 mimi가 2표씩 같아요. 사전 순으로 앞선 mimi가 당선이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["solo"]],
-      expected: "solo",
-      failureNote: "한 표뿐이면 그 후보가 당선이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["b", "a", "c", "b", "c", "a"]],
-      expected: "a",
-      failureNote: "세 명이 모두 2표예요. 가장 앞선 a가 당선이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["ab", "b", "abc", "b", "ab", "abc"]],
-      expected: "ab",
-      failureNote: "모두 2표예요. 사전 순으로 ab가 abc와 b보다 앞서요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["z", "y", "z", "y", "y"]],
-      expected: "y",
-      failureNote: "먼저 나온 z가 아니라 표가 더 많은 y(3표)가 당선이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => "c" + ((i * i + 3 * i) % 997).toString(36))],
-      expected: "c0",
-      failureNote:
-        "10만 표, 후보 약 1,000명이에요. 후보마다 votes.count()로 세면 시간 초과예요. 한 번 훑으며 dict로 세세요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

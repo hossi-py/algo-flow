@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [13],
+    expected: "1101",
+    explanation: "13 → 6 → 3 → 1로 줄여 가며 나머지 1, 0, 1을 뒤에 붙여요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [0],
+    expected: "0",
+    explanation: "0은 전구 하나가 꺼진 신호 `0`이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1],
+    expected: "1",
+    failureNote: "1도 한 글자 신호예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [2],
+    expected: "10",
+    failureNote: "2는 1의 신호 뒤에 0을 붙인 `10`이에요. 종료 조건을 n == 0 하나로만 두면 맨 앞에 0이 붙어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [255],
+    expected: "11111111",
+    failureNote: "전구 8개가 모두 켜져요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [1024],
+    expected: "10000000000",
+    failureNote: "1 뒤에 0이 10개예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000000000],
+    expected: "111011100110101100101000000000",
+    failureNote: "10억이에요. 재귀 깊이는 30 정도예요.",
+  },
+]);
 
 export const recursionBulbSignal: Problem = {
   id: "c:recursion-bulb-signal",
@@ -43,64 +103,9 @@ export const recursionBulbSignal: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [13],
-      expected: "1101",
-      explanation: "13 → 6 → 3 → 1로 줄여 가며 나머지 1, 0, 1을 뒤에 붙여요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [0],
-      expected: "0",
-      explanation: "0은 전구 하나가 꺼진 신호 `0`이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1],
-      expected: "1",
-      failureNote: "1도 한 글자 신호예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [2],
-      expected: "10",
-      failureNote: "2는 1의 신호 뒤에 0을 붙인 `10`이에요. 종료 조건을 n == 0 하나로만 두면 맨 앞에 0이 붙어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [255],
-      expected: "11111111",
-      failureNote: "전구 8개가 모두 켜져요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [1024],
-      expected: "10000000000",
-      failureNote: "1 뒤에 0이 10개예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000000000],
-      expected: "111011100110101100101000000000",
-      failureNote: "10억이에요. 재귀 깊이는 30 정도예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

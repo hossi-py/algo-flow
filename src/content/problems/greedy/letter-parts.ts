@@ -1,4 +1,59 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["ababcbacadefegdehijhklij"],
+    expected: [9, 7, 8],
+    explanation: "ababcbaca / defegde / hijhklij로 9, 7, 8이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: ["abc"],
+    expected: [1, 1, 1],
+    explanation: "모두 다른 글자면 한 글자씩 [1, 1, 1]이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["aaaa"],
+    expected: [4],
+    failureNote: "한 글자뿐이면 통째로 [4]예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["abca"],
+    expected: [4],
+    failureNote: "a가 맨 끝에도 있어서 전체가 한 조각 [4]예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["abacdcef"],
+    expected: [3, 3, 1, 1],
+    failureNote: "aba / cdc / e / f로 [3, 3, 1, 1]이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => String.fromCharCode(97 + (Math.floor(i / 4000) % 26))).join("")],
+    expected: [
+      4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000,
+      4000, 4000, 4000, 4000, 4000, 4000,
+    ],
+    failureNote: "10만 글자예요. 자르는 곳마다 앞뒤 글자를 다시 훑으면 시간 초과예요.",
+  },
+]);
 
 export const greedyLetterParts: Problem = {
   id: "c:greedy-letter-parts",
@@ -39,59 +94,9 @@ export const greedyLetterParts: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["ababcbacadefegdehijhklij"],
-      expected: [9, 7, 8],
-      explanation: "ababcbaca / defegde / hijhklij로 9, 7, 8이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: ["abc"],
-      expected: [1, 1, 1],
-      explanation: "모두 다른 글자면 한 글자씩 [1, 1, 1]이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["aaaa"],
-      expected: [4],
-      failureNote: "한 글자뿐이면 통째로 [4]예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["abca"],
-      expected: [4],
-      failureNote: "a가 맨 끝에도 있어서 전체가 한 조각 [4]예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["abacdcef"],
-      expected: [3, 3, 1, 1],
-      failureNote: "aba / cdc / e / f로 [3, 3, 1, 1]이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => String.fromCharCode(97 + (Math.floor(i / 4000) % 26))).join("")],
-      expected: [
-        4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000,
-        4000, 4000, 4000, 4000, 4000, 4000, 4000,
-      ],
-      failureNote: "10만 글자예요. 자르는 곳마다 앞뒤 글자를 다시 훑으면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

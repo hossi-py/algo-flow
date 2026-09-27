@@ -1,5 +1,99 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [0, 1, 2],
+        [0, 2, 6],
+        [1, 2, 3],
+        [1, 3, 8],
+        [2, 3, 1],
+        [3, 4, 2],
+        [2, 4, 7],
+      ],
+      0,
+      4,
+    ],
+    expected: [0, 1, 2, 3, 4],
+    explanation: "0 → 1 → 2 → 3 → 4로 8분이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3, [[0, 1, 1]], 0, 2],
+    expected: [],
+    explanation: "2번으로 가는 길이 없어서 []예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2, [[0, 1, 3]], 1, 1],
+    expected: [1],
+    failureNote: "출발과 도착이 같으면 [1]이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 3, 10],
+        [0, 1, 2],
+        [1, 2, 2],
+        [2, 3, 2],
+      ],
+      0,
+      3,
+    ],
+    expected: [0, 1, 2, 3],
+    failureNote: "곧장 가는 10분보다 [0, 1, 2, 3]의 6분이 빨라요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1, 1],
+        [1, 2, 1],
+        [2, 3, 1],
+        [1, 3, 5],
+      ],
+      3,
+      0,
+    ],
+    expected: [3, 2, 1, 0],
+    failureNote: "거꾸로 가도 돼요: [3, 2, 1, 0]이에요. prev를 따라간 뒤 뒤집는 걸 잊지 마세요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      10000,
+      [
+        ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 2]),
+        ...Array.from({ length: 9998 }, (_, i) => [i, i + 2, 5]),
+        ...Array.from({ length: 9997 }, (_, i) => [i, i + 3, 7]),
+      ],
+      0,
+      9999,
+    ],
+    expected: Array.from({ length: 10000 }, (_, i) => i),
+    failureNote: "1만 개의 마을을 모두 지나는 길이에요. 경로를 매번 통째로 복사해 들고 다니면 느려요.",
+  },
+]);
 
 export const dijkstraRoutePath: Problem = {
   id: "c:dijkstra-route-path",
@@ -52,98 +146,9 @@ export const dijkstraRoutePath: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [0, 1, 2],
-          [0, 2, 6],
-          [1, 2, 3],
-          [1, 3, 8],
-          [2, 3, 1],
-          [3, 4, 2],
-          [2, 4, 7],
-        ],
-        0,
-        4,
-      ],
-      expected: [0, 1, 2, 3, 4],
-      explanation: "0 → 1 → 2 → 3 → 4로 8분이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3, [[0, 1, 1]], 0, 2],
-      expected: [],
-      explanation: "2번으로 가는 길이 없어서 []예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2, [[0, 1, 3]], 1, 1],
-      expected: [1],
-      failureNote: "출발과 도착이 같으면 [1]이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 3, 10],
-          [0, 1, 2],
-          [1, 2, 2],
-          [2, 3, 2],
-        ],
-        0,
-        3,
-      ],
-      expected: [0, 1, 2, 3],
-      failureNote: "곧장 가는 10분보다 [0, 1, 2, 3]의 6분이 빨라요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1, 1],
-          [1, 2, 1],
-          [2, 3, 1],
-          [1, 3, 5],
-        ],
-        3,
-        0,
-      ],
-      expected: [3, 2, 1, 0],
-      failureNote: "거꾸로 가도 돼요: [3, 2, 1, 0]이에요. prev를 따라간 뒤 뒤집는 걸 잊지 마세요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        10000,
-        [
-          ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 2]),
-          ...Array.from({ length: 9998 }, (_, i) => [i, i + 2, 5]),
-          ...Array.from({ length: 9997 }, (_, i) => [i, i + 3, 7]),
-        ],
-        0,
-        9999,
-      ],
-      expected: Array.from({ length: 10000 }, (_, i) => i),
-      failureNote: "1만 개의 마을을 모두 지나는 길이에요. 경로를 매번 통째로 복사해 들고 다니면 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

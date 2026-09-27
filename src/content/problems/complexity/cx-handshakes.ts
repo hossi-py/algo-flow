@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [4],
+    expected: 6,
+    explanation: "4명이면 3 + 2 + 1 = 6번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1],
+    expected: 0,
+    explanation: "혼자면 0번이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2],
+    expected: 1,
+    failureNote: "두 명이면 1번이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [10],
+    expected: 45,
+    failureNote: "45번이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [100],
+    expected: 4950,
+    failureNote: "99 + 98 + … + 1 = 4,950번이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [10000000],
+    expected: 49999995000000,
+    failureNote: "1,000만 명이면 약 50조 번이에요. 두 겹 반복문으로 세면 끝나지 않아요.",
+  },
+]);
 
 export const cxHandshakes: Problem = {
   id: "c:cx-handshakes",
@@ -34,56 +86,9 @@ export const cxHandshakes: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [4],
-      expected: 6,
-      explanation: "4명이면 3 + 2 + 1 = 6번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1],
-      expected: 0,
-      explanation: "혼자면 0번이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2],
-      expected: 1,
-      failureNote: "두 명이면 1번이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [10],
-      expected: 45,
-      failureNote: "45번이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [100],
-      expected: 4950,
-      failureNote: "99 + 98 + … + 1 = 4,950번이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [10000000],
-      expected: 49999995000000,
-      failureNote: "1,000만 명이면 약 50조 번이에요. 두 겹 반복문으로 세면 끝나지 않아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

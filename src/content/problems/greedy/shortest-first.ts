@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[3, 1, 4, 3, 2]],
+    expected: 32,
+    explanation: "1, 2, 3, 3, 4 순서면 1 + 3 + 6 + 9 + 13 = 32예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[5]],
+    expected: 5,
+    explanation: "혼자면 5예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[2, 2, 2]],
+    expected: 12,
+    failureNote: "2 + 4 + 6 = 12예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[10, 1]],
+    expected: 12,
+    failureNote: "10분 손님이 앞이면 10 + 11 = 21이지만, 1분 손님이 앞이면 1 + 11 = 12예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[4, 3, 2, 1]],
+    expected: 20,
+    failureNote: "1 + 3 + 6 + 10 = 20이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 1000) + 1)],
+    expected: 1669192525000,
+    failureNote: "손님 10만 명이에요. 답이 수십억이라 Java는 long으로 세요.",
+  },
+]);
 
 export const greedyShortestFirst: Problem = {
   id: "c:greedy-shortest-first",
@@ -40,56 +92,9 @@ export const greedyShortestFirst: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[3, 1, 4, 3, 2]],
-      expected: 32,
-      explanation: "1, 2, 3, 3, 4 순서면 1 + 3 + 6 + 9 + 13 = 32예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[5]],
-      expected: 5,
-      explanation: "혼자면 5예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[2, 2, 2]],
-      expected: 12,
-      failureNote: "2 + 4 + 6 = 12예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[10, 1]],
-      expected: 12,
-      failureNote: "10분 손님이 앞이면 10 + 11 = 21이지만, 1분 손님이 앞이면 1 + 11 = 12예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[4, 3, 2, 1]],
-      expected: 20,
-      failureNote: "1 + 3 + 6 + 10 = 20이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 1000) + 1)],
-      expected: 1669192525000,
-      failureNote: "손님 10만 명이에요. 답이 수십억이라 Java는 long으로 세요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

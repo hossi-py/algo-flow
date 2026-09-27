@@ -1,5 +1,109 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [0, 1, 2],
+        [0, 2, 6],
+        [1, 2, 3],
+        [1, 3, 8],
+        [2, 3, 1],
+        [3, 4, 2],
+        [2, 4, 7],
+      ],
+      0,
+      4,
+    ],
+    expected: 8,
+    explanation: "0 → 1 → 2 → 3 → 4로 2 + 3 + 1 + 2 = 8원이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      4,
+      [
+        [0, 1, 5],
+        [2, 3, 5],
+      ],
+      0,
+      3,
+    ],
+    expected: -1,
+    explanation: "0번과 3번이 이어져 있지 않아 -1이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [3, [[0, 1, 4]], 2, 2],
+    expected: 0,
+    failureNote: "출발과 도착이 같으면 0원이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      3,
+      [
+        [0, 2, 50],
+        [0, 1, 20],
+        [1, 2, 20],
+      ],
+      0,
+      2,
+    ],
+    expected: 40,
+    failureNote: "곧장 가면 50원, 1번을 거치면 40원이라 40이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [3, 2, 1],
+        [2, 1, 1],
+        [1, 0, 1],
+        [0, 3, 9],
+      ],
+      3,
+      0,
+    ],
+    expected: 3,
+    failureNote: "길은 양방향이에요. 3 → 2 → 1 → 0으로 3원이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      10000,
+      [
+        ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 1000]),
+        ...Array.from({ length: 20000 }, (_, i) => {
+          const a = (i * 7907) % 10000;
+          const b = (a + 1 + ((i * 104729) % 9999)) % 10000;
+          return [a, b, ((i * 7919) % 1000) + 1];
+        }),
+      ],
+      17,
+      9995,
+    ],
+    expected: 3048,
+    failureNote: "도시 1만 개, 길 3만 개예요.",
+  },
+]);
 
 export const dijkstraCheapestRoute: Problem = {
   id: "c:dijkstra-cheapest-route",
@@ -44,108 +148,9 @@ export const dijkstraCheapestRoute: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [0, 1, 2],
-          [0, 2, 6],
-          [1, 2, 3],
-          [1, 3, 8],
-          [2, 3, 1],
-          [3, 4, 2],
-          [2, 4, 7],
-        ],
-        0,
-        4,
-      ],
-      expected: 8,
-      explanation: "0 → 1 → 2 → 3 → 4로 2 + 3 + 1 + 2 = 8원이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        4,
-        [
-          [0, 1, 5],
-          [2, 3, 5],
-        ],
-        0,
-        3,
-      ],
-      expected: -1,
-      explanation: "0번과 3번이 이어져 있지 않아 -1이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [3, [[0, 1, 4]], 2, 2],
-      expected: 0,
-      failureNote: "출발과 도착이 같으면 0원이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        3,
-        [
-          [0, 2, 50],
-          [0, 1, 20],
-          [1, 2, 20],
-        ],
-        0,
-        2,
-      ],
-      expected: 40,
-      failureNote: "곧장 가면 50원, 1번을 거치면 40원이라 40이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [3, 2, 1],
-          [2, 1, 1],
-          [1, 0, 1],
-          [0, 3, 9],
-        ],
-        3,
-        0,
-      ],
-      expected: 3,
-      failureNote: "길은 양방향이에요. 3 → 2 → 1 → 0으로 3원이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        10000,
-        [
-          ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 1000]),
-          ...Array.from({ length: 20000 }, (_, i) => {
-            const a = (i * 7907) % 10000;
-            const b = (a + 1 + ((i * 104729) % 9999)) % 10000;
-            return [a, b, ((i * 7919) % 1000) + 1];
-          }),
-        ],
-        17,
-        9995,
-      ],
-      expected: 3048,
-      failureNote: "도시 1만 개, 길 3만 개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

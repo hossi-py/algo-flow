@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["16...2", "54..61", ".35214", "421.3.", "2.6.4.", "31452."]],
+    expected: ["163452", "542361", "635214", "421635", "256143", "314526"],
+    explanation: "빈칸 12개예요. 예를 들어 첫 줄 셋째 칸은 가로줄에 1, 6, 2가 있고 화단에 5, 4도 있어서 3만 들어가요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["514623", "263415", "325146", "641532", "152364", "436.51"]],
+    expected: ["514623", "263415", "325146", "641532", "152364", "436251"],
+    explanation: "빈칸이 하나뿐이에요. 마지막 줄에 없는 2를 넣어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["163452", "542361", "635214", "421635", "256143", "314526"]],
+    expected: ["163452", "542361", "635214", "421635", "256143", "314526"],
+    failureNote: "이미 다 채워져 있으면 그대로 돌려줘요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["5.....", ".2.541", ".3..2.", "6.23.5", ".5.43.", ".6...2"]],
+    expected: ["514263", "326541", "135624", "642315", "251436", "463152"],
+    failureNote: "빈칸 20개예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[".4.26.", "..3...", "3..52.", ".....4", "....51", "..53.."]],
+    expected: ["541263", "623415", "314526", "256134", "432651", "165342"],
+    failureNote: "빈칸 24개예요. 한 칸에 들어갈 수 있는 꽃이 여러 개라 넣어 보고 막히면 되돌려야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [["..2...", "35.2..", ".4..51", "...32.", "..4...", ".....5"]],
+    expected: ["462513", "351246", "243651", "615324", "534162", "126435"],
+    failureNote: "빈칸 25개예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [["..2...", "....16", "....43", "6.....", ".3..5.", "5....."]],
+    expected: ["162435", "354216", "215643", "643521", "436152", "521364"],
+    failureNote: "빈칸 27개, 처음 심어진 꽃이 9개뿐이에요.",
+  },
+]);
 
 export const backtrackingFlowerSudoku: Problem = {
   id: "c:backtracking-flower-sudoku",
@@ -46,65 +106,9 @@ export const backtrackingFlowerSudoku: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["16...2", "54..61", ".35214", "421.3.", "2.6.4.", "31452."]],
-      expected: ["163452", "542361", "635214", "421635", "256143", "314526"],
-      explanation:
-        "빈칸 12개예요. 예를 들어 첫 줄 셋째 칸은 가로줄에 1, 6, 2가 있고 화단에 5, 4도 있어서 3만 들어가요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["514623", "263415", "325146", "641532", "152364", "436.51"]],
-      expected: ["514623", "263415", "325146", "641532", "152364", "436251"],
-      explanation: "빈칸이 하나뿐이에요. 마지막 줄에 없는 2를 넣어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["163452", "542361", "635214", "421635", "256143", "314526"]],
-      expected: ["163452", "542361", "635214", "421635", "256143", "314526"],
-      failureNote: "이미 다 채워져 있으면 그대로 돌려줘요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["5.....", ".2.541", ".3..2.", "6.23.5", ".5.43.", ".6...2"]],
-      expected: ["514263", "326541", "135624", "642315", "251436", "463152"],
-      failureNote: "빈칸 20개예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[".4.26.", "..3...", "3..52.", ".....4", "....51", "..53.."]],
-      expected: ["541263", "623415", "314526", "256134", "432651", "165342"],
-      failureNote: "빈칸 24개예요. 한 칸에 들어갈 수 있는 꽃이 여러 개라 넣어 보고 막히면 되돌려야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [["..2...", "35.2..", ".4..51", "...32.", "..4...", ".....5"]],
-      expected: ["462513", "351246", "243651", "615324", "534162", "126435"],
-      failureNote: "빈칸 25개예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [["..2...", "....16", "....43", "6.....", ".3..5.", "5....."]],
-      expected: ["162435", "354216", "215643", "643521", "436152", "521364"],
-      failureNote: "빈칸 27개, 처음 심어진 꽃이 9개뿐이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

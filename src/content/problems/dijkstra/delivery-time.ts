@@ -1,5 +1,88 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1, 10],
+        [0, 2, 2],
+        [2, 1, 3],
+        [1, 3, 1],
+      ],
+    ],
+    expected: [0, 5, 2, 6],
+    explanation: "1번은 곧장 10분보다 2번을 거쳐 2 + 3 = 5분이 빨라요. 3번은 5 + 1 = 6분이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3, [[0, 1, 4]]],
+    expected: [0, 4, -1],
+    explanation: "2번 마을로 가는 길이 없어서 -1이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, []],
+    expected: [0],
+    failureNote: "창고 마을 하나뿐이면 [0]이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      3,
+      [
+        [0, 1, 9],
+        [0, 1, 3],
+        [1, 2, 3],
+      ],
+    ],
+    expected: [0, 3, 6],
+    failureNote: "0번과 1번 사이 길이 두 개예요. 더 짧은 3분 길을 써서 [0, 3, 6]이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      5,
+      [
+        [0, 4, 100],
+        [0, 1, 1],
+        [1, 2, 1],
+        [2, 3, 1],
+        [3, 4, 1],
+      ],
+    ],
+    expected: [0, 1, 2, 3, 4],
+    failureNote: "4번은 길 하나(100분)보다 길 네 개(4분)가 빨라요. 지나는 길 수를 세는 BFS로는 틀려요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      10000,
+      [
+        ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 2]),
+        ...Array.from({ length: 9998 }, (_, i) => [i, i + 2, 5]),
+        ...Array.from({ length: 9997 }, (_, i) => [i, i + 3, 7]),
+      ],
+    ],
+    expected: Array.from({ length: 10000 }, (_, i) => 2 * i),
+    failureNote: "마을 1만 개, 길 3만 개예요. 가장 가까운 마을을 매번 전부 훑어 찾으면 느려요.",
+  },
+]);
 
 export const dijkstraDeliveryTime: Problem = {
   id: "c:dijkstra-delivery-time",
@@ -53,87 +136,9 @@ export const dijkstraDeliveryTime: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1, 10],
-          [0, 2, 2],
-          [2, 1, 3],
-          [1, 3, 1],
-        ],
-      ],
-      expected: [0, 5, 2, 6],
-      explanation: "1번은 곧장 10분보다 2번을 거쳐 2 + 3 = 5분이 빨라요. 3번은 5 + 1 = 6분이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3, [[0, 1, 4]]],
-      expected: [0, 4, -1],
-      explanation: "2번 마을로 가는 길이 없어서 -1이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, []],
-      expected: [0],
-      failureNote: "창고 마을 하나뿐이면 [0]이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        3,
-        [
-          [0, 1, 9],
-          [0, 1, 3],
-          [1, 2, 3],
-        ],
-      ],
-      expected: [0, 3, 6],
-      failureNote: "0번과 1번 사이 길이 두 개예요. 더 짧은 3분 길을 써서 [0, 3, 6]이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        5,
-        [
-          [0, 4, 100],
-          [0, 1, 1],
-          [1, 2, 1],
-          [2, 3, 1],
-          [3, 4, 1],
-        ],
-      ],
-      expected: [0, 1, 2, 3, 4],
-      failureNote: "4번은 길 하나(100분)보다 길 네 개(4분)가 빨라요. 지나는 길 수를 세는 BFS로는 틀려요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        10000,
-        [
-          ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 2]),
-          ...Array.from({ length: 9998 }, (_, i) => [i, i + 2, 5]),
-          ...Array.from({ length: 9997 }, (_, i) => [i, i + 3, 7]),
-        ],
-      ],
-      expected: Array.from({ length: 10000 }, (_, i) => 2 * i),
-      failureNote: "마을 1만 개, 길 3만 개예요. 가장 가까운 마을을 매번 전부 훑어 찾으면 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

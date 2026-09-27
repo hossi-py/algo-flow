@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [2, 10, 1000],
+    expected: 24,
+    explanation: "2¹⁰ = 1024라 24예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [5, 0, 7],
+    expected: 1,
+    explanation: "0제곱은 1이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [5, 0, 1],
+    expected: 0,
+    failureNote: "1로 나눈 나머지는 늘 0이에요. 0제곱이어도 1 % 1 = 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [3, 5, 100],
+    expected: 43,
+    failureNote: "3⁵ = 243이라 43이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [1000000000, 3, 999983],
+    expected: 522411,
+    failureNote: "a가 커도 먼저 m으로 나눈 나머지로 바꿔 두면 곱이 넘치지 않아요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [123456789, 1000000000000000, 999983],
+    expected: 886392,
+    failureNote: "b가 10¹⁵예요. 하나씩 곱하면 끝나지 않아요.",
+  },
+]);
 
 export const cxFastPower: Problem = {
   id: "c:cx-fast-power",
@@ -38,56 +90,9 @@ export const cxFastPower: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [2, 10, 1000],
-      expected: 24,
-      explanation: "2¹⁰ = 1024라 24예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [5, 0, 7],
-      expected: 1,
-      explanation: "0제곱은 1이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [5, 0, 1],
-      expected: 0,
-      failureNote: "1로 나눈 나머지는 늘 0이에요. 0제곱이어도 1 % 1 = 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [3, 5, 100],
-      expected: 43,
-      failureNote: "3⁵ = 243이라 43이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [1000000000, 3, 999983],
-      expected: 522411,
-      failureNote: "a가 커도 먼저 m으로 나눈 나머지로 바꿔 두면 곱이 넘치지 않아요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [123456789, 1000000000000000, 999983],
-      expected: 886392,
-      failureNote: "b가 10¹⁵예요. 하나씩 곱하면 끝나지 않아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

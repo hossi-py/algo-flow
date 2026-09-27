@@ -1,4 +1,82 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [0, 0],
+        [2, 2],
+        [3, 10],
+        [5, 2],
+        [7, 0],
+      ],
+    ],
+    expected: 20,
+    explanation: "4 + 3 + 4 + 9 = 20이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [3, 12],
+        [-2, 5],
+        [-4, 1],
+      ],
+    ],
+    expected: 18,
+    explanation: "(−2, 5)를 가운데 두고 12 + 6 = 18이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[0, 0]]],
+    expected: 0,
+    failureNote: "가로등이 하나면 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [0, 0],
+        [1, 1],
+        [1, 0],
+        [-1, 1],
+      ],
+    ],
+    expected: 4,
+    failureNote: "1 + 1 + 2 = 4예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [-1000000, -1000000],
+        [1000000, 1000000],
+      ],
+    ],
+    expected: 4000000,
+    failureNote: "거리가 4,000,000이에요. 음수 좌표도 절댓값으로 계산해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 500 }, (_, i) => [((i * 7919) % 20001) - 10000, ((i * 104729) % 20011) - 10000])],
+    expected: 300700,
+    failureNote: "가로등 500개면 쌍이 약 12만 5천 개예요.",
+  },
+]);
 
 export const mstManhattan: Problem = {
   id: "c:mst-manhattan",
@@ -42,82 +120,9 @@ export const mstManhattan: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [0, 0],
-          [2, 2],
-          [3, 10],
-          [5, 2],
-          [7, 0],
-        ],
-      ],
-      expected: 20,
-      explanation: "4 + 3 + 4 + 9 = 20이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [3, 12],
-          [-2, 5],
-          [-4, 1],
-        ],
-      ],
-      expected: 18,
-      explanation: "(−2, 5)를 가운데 두고 12 + 6 = 18이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[0, 0]]],
-      expected: 0,
-      failureNote: "가로등이 하나면 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [0, 0],
-          [1, 1],
-          [1, 0],
-          [-1, 1],
-        ],
-      ],
-      expected: 4,
-      failureNote: "1 + 1 + 2 = 4예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [-1000000, -1000000],
-          [1000000, 1000000],
-        ],
-      ],
-      expected: 4000000,
-      failureNote: "거리가 4,000,000이에요. 음수 좌표도 절댓값으로 계산해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 500 }, (_, i) => [((i * 7919) % 20001) - 10000, ((i * 104729) % 20011) - 10000])],
-      expected: 300700,
-      failureNote: "가로등 500개면 쌍이 약 12만 5천 개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

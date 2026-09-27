@@ -1,5 +1,114 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [0, 1],
+        [0, 2],
+        [1, 3],
+        [1, 4],
+        [2, 5],
+      ],
+      0,
+    ],
+    expected: [0, 1, 2, 3, 4, 5],
+    explanation:
+      "0이 1, 2에게, 1이 3, 4에게, 2가 5에게 전해요. 한 겹씩 퍼져서 [0, 1, 2, 3, 4, 5]예요. (DFS라면 0, 1, 3, 4, 2, 5)",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      5,
+      [
+        [0, 1],
+        [0, 2],
+        [1, 3],
+        [2, 3],
+        [3, 4],
+      ],
+      0,
+    ],
+    expected: [0, 1, 2, 3, 4],
+    explanation: "3은 1에게서 먼저 들었어요. 2가 전할 차례엔 이미 들은 사람이라 다시 전하지 않아요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, [], 0],
+    expected: [0],
+    failureNote: "주민이 한 명뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      6,
+      [
+        [0, 1],
+        [2, 3],
+        [3, 4],
+      ],
+      3,
+    ],
+    expected: [3, 2, 4],
+    failureNote: "3에서 시작하면 2, 4에게만 닿아요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      5,
+      [
+        [4, 0],
+        [3, 0],
+        [2, 4],
+        [1, 3],
+      ],
+      0,
+    ],
+    expected: [0, 3, 4, 1, 2],
+    failureNote: "관계가 뒤섞여 있어도 번호가 작은 이웃부터 전해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      7,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [0, 4],
+        [4, 5],
+        [5, 6],
+      ],
+      0,
+    ],
+    expected: [0, 1, 4, 2, 5, 3, 6],
+    failureNote: "양쪽 갈래로 한 걸음씩 번갈아 퍼져요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000, Array.from({ length: 999 }, (_, i) => [999 - i, 998 - i]), 500],
+    expected: [500].concat(...Array.from({ length: 499 }, (_, i) => [499 - i, 501 + i]), [0]),
+    failureNote: "1,000명이 한 줄로 이웃이에요. 가운데에서 양쪽으로 번갈아 퍼져요.",
+  },
+]);
 
 export const bfsNewsOrder: Problem = {
   id: "c:bfs-news-order",
@@ -53,113 +162,9 @@ export const bfsNewsOrder: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [0, 1],
-          [0, 2],
-          [1, 3],
-          [1, 4],
-          [2, 5],
-        ],
-        0,
-      ],
-      expected: [0, 1, 2, 3, 4, 5],
-      explanation:
-        "0이 1, 2에게, 1이 3, 4에게, 2가 5에게 전해요. 한 겹씩 퍼져서 [0, 1, 2, 3, 4, 5]예요. (DFS라면 0, 1, 3, 4, 2, 5)",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        5,
-        [
-          [0, 1],
-          [0, 2],
-          [1, 3],
-          [2, 3],
-          [3, 4],
-        ],
-        0,
-      ],
-      expected: [0, 1, 2, 3, 4],
-      explanation: "3은 1에게서 먼저 들었어요. 2가 전할 차례엔 이미 들은 사람이라 다시 전하지 않아요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, [], 0],
-      expected: [0],
-      failureNote: "주민이 한 명뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        6,
-        [
-          [0, 1],
-          [2, 3],
-          [3, 4],
-        ],
-        3,
-      ],
-      expected: [3, 2, 4],
-      failureNote: "3에서 시작하면 2, 4에게만 닿아요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        5,
-        [
-          [4, 0],
-          [3, 0],
-          [2, 4],
-          [1, 3],
-        ],
-        0,
-      ],
-      expected: [0, 3, 4, 1, 2],
-      failureNote: "관계가 뒤섞여 있어도 번호가 작은 이웃부터 전해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        7,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [0, 4],
-          [4, 5],
-          [5, 6],
-        ],
-        0,
-      ],
-      expected: [0, 1, 4, 2, 5, 3, 6],
-      failureNote: "양쪽 갈래로 한 걸음씩 번갈아 퍼져요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000, Array.from({ length: 999 }, (_, i) => [999 - i, 998 - i]), 500],
-      expected: [500].concat(...Array.from({ length: 499 }, (_, i) => [499 - i, 501 + i]), [0]),
-      failureNote: "1,000명이 한 줄로 이웃이에요. 가운데에서 양쪽으로 번갈아 퍼져요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

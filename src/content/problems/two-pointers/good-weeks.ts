@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[2, 2, 2, 2, 5, 5, 5, 8], 3, 4],
+    expected: 3,
+    explanation: "[2, 5, 5], [5, 5, 5], [5, 5, 8] 세 기간이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[11, 13, 17, 23, 29, 31, 7, 5, 2, 3], 3, 5],
+    expected: 6,
+    explanation: "앞의 6개 기간이 평균 5 이상이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[1], 1, 1],
+    expected: 1,
+    failureNote: "평균이 기준과 같아도 셉니다.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 2], 2, 2],
+    expected: 0,
+    failureNote: "평균 1.5는 2보다 작아요. 정수 나눗셈(3 // 2 = 1)을 쓰면 헷갈리니 합 ≥ 기준 × k로 비교하세요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[0, 0, 0], 2, 0],
+    expected: 2,
+    failureNote: "기준이 0이면 모든 기간이라 2개예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i * 7919) % 101), 30000, 50],
+    expected: 35346,
+    failureNote: "10만 일, k = 3만이에요. 창마다 새로 더하면 시간 초과예요.",
+  },
+]);
 
 export const twoPointersGoodWeeks: Problem = {
   id: "c:two-pointers-good-weeks",
@@ -44,56 +96,9 @@ export const twoPointersGoodWeeks: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[2, 2, 2, 2, 5, 5, 5, 8], 3, 4],
-      expected: 3,
-      explanation: "[2, 5, 5], [5, 5, 5], [5, 5, 8] 세 기간이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[11, 13, 17, 23, 29, 31, 7, 5, 2, 3], 3, 5],
-      expected: 6,
-      explanation: "앞의 6개 기간이 평균 5 이상이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[1], 1, 1],
-      expected: 1,
-      failureNote: "평균이 기준과 같아도 셉니다.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 2], 2, 2],
-      expected: 0,
-      failureNote: "평균 1.5는 2보다 작아요. 정수 나눗셈(3 // 2 = 1)을 쓰면 헷갈리니 합 ≥ 기준 × k로 비교하세요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[0, 0, 0], 2, 0],
-      expected: 2,
-      failureNote: "기준이 0이면 모든 기간이라 2개예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i * 7919) % 101), 30000, 50],
-      expected: 35346,
-      failureNote: "10만 일, k = 3만이에요. 창마다 새로 더하면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

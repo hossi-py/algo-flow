@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[3, -5, 2, -1, -4, 6], 2],
+    expected: 10,
+    explanation: "0 → 2 → 3 → 5번 돌을 밟으면 3 + 2 − 1 + 6 = 10이에요. −5와 −4는 건너뛰어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[5], 1],
+    expected: 5,
+    explanation: "돌이 하나면 출발 돌이 곧 도착 돌이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[-1, -2, -3, -4], 3],
+    expected: -5,
+    failureNote: "모두 음수예요. 0번에서 3번으로 한 번에 뛰는 게 가장 나아요. 답이 음수일 수 있어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[1, -1, 1, -1], 1],
+    expected: 0,
+    failureNote: "k가 1이면 모든 돌을 밟아야 해요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[2, -10, -10, 5, -10, 3], 3],
+    expected: 10,
+    failureNote: "가장 가까운 좋은 돌이 아니라, 최근 k개 돌까지의 최고 점수를 봐야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[4, 1, -2, 7, -8, -3, 5, 2], 3],
+    expected: 19,
+    failureNote: "음수 돌 여러 개를 골라 건너뛰어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * 37) % 201) - 100), 50000],
+    expected: 2512309,
+    failureNote: "돌 10만 개, 한 번에 최대 5만 칸이에요. 돌마다 앞의 k개를 모두 훑으면 시간 초과예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, () => -10000), 1],
+    expected: -1000000000,
+    failureNote: "모든 돌이 −10,000이고 한 칸씩만 뛸 수 있어요. 합은 −10억이에요.",
+  },
+]);
 
 export const dequeSteppingScore: Problem = {
   id: "c:deque-stepping-score",
@@ -47,72 +115,9 @@ export const dequeSteppingScore: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[3, -5, 2, -1, -4, 6], 2],
-      expected: 10,
-      explanation: "0 → 2 → 3 → 5번 돌을 밟으면 3 + 2 − 1 + 6 = 10이에요. −5와 −4는 건너뛰어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[5], 1],
-      expected: 5,
-      explanation: "돌이 하나면 출발 돌이 곧 도착 돌이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[-1, -2, -3, -4], 3],
-      expected: -5,
-      failureNote: "모두 음수예요. 0번에서 3번으로 한 번에 뛰는 게 가장 나아요. 답이 음수일 수 있어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[1, -1, 1, -1], 1],
-      expected: 0,
-      failureNote: "k가 1이면 모든 돌을 밟아야 해요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[2, -10, -10, 5, -10, 3], 3],
-      expected: 10,
-      failureNote: "가장 가까운 좋은 돌이 아니라, 최근 k개 돌까지의 최고 점수를 봐야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[4, 1, -2, 7, -8, -3, 5, 2], 3],
-      expected: 19,
-      failureNote: "음수 돌 여러 개를 골라 건너뛰어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * 37) % 201) - 100), 50000],
-      expected: 2512309,
-      failureNote: "돌 10만 개, 한 번에 최대 5만 칸이에요. 돌마다 앞의 k개를 모두 훑으면 시간 초과예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, () => -10000), 1],
-      expected: -1000000000,
-      failureNote: "모든 돌이 −10,000이고 한 칸씩만 뛸 수 있어요. 합은 −10억이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,5 +1,76 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [1, 3, 1],
+        [1, 5, 1],
+        [4, 2, 1],
+      ],
+    ],
+    expected: 7,
+    explanation: "1 → 3 → 1 → 1 → 1로 7이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[[5]]],
+    expected: 5,
+    explanation: "출발 칸이 곧 도착 칸이라 5예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 9, 1, 1, 1],
+        [1, 9, 1, 9, 1],
+        [1, 1, 1, 9, 1],
+      ],
+    ],
+    expected: 11,
+    failureNote: "아래로 내려갔다가 다시 **위로** 올라가야 가장 싸요 (11). 오른쪽·아래로만 가는 DP로는 못 찾아요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [1, 2],
+        [3, 4],
+      ],
+    ],
+    expected: 7,
+    failureNote: "1 → 2 → 4로 7이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[3, 1, 4, 1, 5]]],
+    expected: 14,
+    failureNote: "한 줄이면 모두 더해 14예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 150 }, (_, r) => Array.from({ length: 150 }, (_, c) => ((r * 31 + c * 17 + r * c) % 9) + 1)),
+    ],
+    expected: 765,
+    failureNote: "150 × 150 = 22,500칸이에요.",
+  },
+]);
 
 export const dijkstraGridCost: Problem = {
   id: "c:dijkstra-grid-cost",
@@ -43,77 +114,9 @@ export const dijkstraGridCost: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [1, 3, 1],
-          [1, 5, 1],
-          [4, 2, 1],
-        ],
-      ],
-      expected: 7,
-      explanation: "1 → 3 → 1 → 1 → 1로 7이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[[5]]],
-      expected: 5,
-      explanation: "출발 칸이 곧 도착 칸이라 5예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 9, 1, 1, 1],
-          [1, 9, 1, 9, 1],
-          [1, 1, 1, 9, 1],
-        ],
-      ],
-      expected: 11,
-      failureNote: "아래로 내려갔다가 다시 **위로** 올라가야 가장 싸요 (11). 오른쪽·아래로만 가는 DP로는 못 찾아요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [1, 2],
-          [3, 4],
-        ],
-      ],
-      expected: 7,
-      failureNote: "1 → 2 → 4로 7이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[3, 1, 4, 1, 5]]],
-      expected: 14,
-      failureNote: "한 줄이면 모두 더해 14예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 150 }, (_, r) =>
-          Array.from({ length: 150 }, (_, c) => ((r * 31 + c * 17 + r * c) % 9) + 1),
-        ),
-      ],
-      expected: 765,
-      failureNote: "150 × 150 = 22,500칸이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

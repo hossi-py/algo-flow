@@ -1,5 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      ["nodi", "mimi", "toto"],
+      ["mimi", "bobo", "nodi"],
+    ],
+    expected: [true, false, true],
+    explanation: "mimi와 nodi는 명단에 있고, bobo는 없어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["nodi"], ["nodi", "nodi"]],
+    expected: [true, true],
+    explanation: "같은 사람이 두 번 와도 매번 확인해요. 두 번 다 true예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["a", "b"], ["c"]],
+    expected: [false],
+    failureNote: "명단에 없는 사람만 왔어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      ["kiki", "kiki", "lulu"],
+      ["lulu", "kiki", "momo", "kik"],
+    ],
+    expected: [true, true, false, false],
+    failureNote: "명단에 같은 이름이 두 번 있어도 괜찮아요. kik은 kiki와 다른 이름이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      ["ab1", "b2"],
+      ["ab", "b2", "ab1"],
+    ],
+    expected: [false, true, true],
+    failureNote: "이름이 정확히 같을 때만 true예요. 앞부분만 같은 ab는 false예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100000 }, (_, i) => "g" + i.toString(36)),
+      Array.from({ length: 100000 }, (_, i) =>
+        i % 2 === 0 ? "g" + ((i * 7) % 100000).toString(36) : "x" + i.toString(36),
+      ),
+    ],
+    expected: Array.from({ length: 100000 }, (_, i) => i % 2 === 0),
+    failureNote:
+      "명단과 손님이 각각 10만 명이에요. 손님마다 명단 리스트를 처음부터 훑으면(x in list) 시간 초과예요. 명단을 set으로 바꿔 두세요.",
+  },
+]);
 
 export const hashGuestList: Problem = {
   id: "c:hash-guest-list",
@@ -56,71 +123,9 @@ export const hashGuestList: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        ["nodi", "mimi", "toto"],
-        ["mimi", "bobo", "nodi"],
-      ],
-      expected: [true, false, true],
-      explanation: "mimi와 nodi는 명단에 있고, bobo는 없어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["nodi"], ["nodi", "nodi"]],
-      expected: [true, true],
-      explanation: "같은 사람이 두 번 와도 매번 확인해요. 두 번 다 true예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["a", "b"], ["c"]],
-      expected: [false],
-      failureNote: "명단에 없는 사람만 왔어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        ["kiki", "kiki", "lulu"],
-        ["lulu", "kiki", "momo", "kik"],
-      ],
-      expected: [true, true, false, false],
-      failureNote: "명단에 같은 이름이 두 번 있어도 괜찮아요. kik은 kiki와 다른 이름이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        ["ab1", "b2"],
-        ["ab", "b2", "ab1"],
-      ],
-      expected: [false, true, true],
-      failureNote: "이름이 정확히 같을 때만 true예요. 앞부분만 같은 ab는 false예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100000 }, (_, i) => "g" + i.toString(36)),
-        Array.from({ length: 100000 }, (_, i) =>
-          i % 2 === 0 ? "g" + ((i * 7) % 100000).toString(36) : "x" + i.toString(36),
-        ),
-      ],
-      expected: Array.from({ length: 100000 }, (_, i) => i % 2 === 0),
-      failureNote:
-        "명단과 손님이 각각 10만 명이에요. 손님마다 명단 리스트를 처음부터 훑으면(x in list) 시간 초과예요. 명단을 set으로 바꿔 두세요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

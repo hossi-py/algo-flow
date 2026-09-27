@@ -1,4 +1,82 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [1, 5, 9],
+        [10, 11, 13],
+        [12, 13, 15],
+      ],
+      8,
+    ],
+    expected: 13,
+    explanation: "1, 5, 9, 10, 11, 12, 13, 13, 15에서 8번째는 13이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[[-5]], 1],
+    expected: -5,
+    explanation: "칸 하나예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [1, 2],
+        [1, 3],
+      ],
+      2,
+    ],
+    expected: 1,
+    failureNote: "1, 1, 2, 3에서 2번째도 1이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 3, 5],
+        [2, 4, 6],
+        [7, 8, 9],
+      ],
+      6,
+    ],
+    expected: 6,
+    failureNote: "6이에요. 줄 순서대로 읽으면 안 돼요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      [
+        [1, 2],
+        [3, 4],
+      ],
+      4,
+    ],
+    expected: 4,
+    failureNote: "가장 큰 4예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 300 }, (_, r) => Array.from({ length: 300 }, (_, c) => r * 3 + c * 5)), 45000],
+    expected: 1196,
+    failureNote: "300 × 300 표예요. 힙에는 줄 수만큼만 들어가요.",
+  },
+]);
 
 export const heapMatrixKth: Problem = {
   id: "c:heap-matrix-kth",
@@ -41,82 +119,9 @@ export const heapMatrixKth: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [1, 5, 9],
-          [10, 11, 13],
-          [12, 13, 15],
-        ],
-        8,
-      ],
-      expected: 13,
-      explanation: "1, 5, 9, 10, 11, 12, 13, 13, 15에서 8번째는 13이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[[-5]], 1],
-      expected: -5,
-      explanation: "칸 하나예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [1, 2],
-          [1, 3],
-        ],
-        2,
-      ],
-      expected: 1,
-      failureNote: "1, 1, 2, 3에서 2번째도 1이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 3, 5],
-          [2, 4, 6],
-          [7, 8, 9],
-        ],
-        6,
-      ],
-      expected: 6,
-      failureNote: "6이에요. 줄 순서대로 읽으면 안 돼요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        [
-          [1, 2],
-          [3, 4],
-        ],
-        4,
-      ],
-      expected: 4,
-      failureNote: "가장 큰 4예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 300 }, (_, r) => Array.from({ length: 300 }, (_, c) => r * 3 + c * 5)), 45000],
-      expected: 1196,
-      failureNote: "300 × 300 표예요. 힙에는 줄 수만큼만 들어가요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[2, 7, 4, 1, 8, 1]],
+    expected: 1,
+    explanation: "8·7 → 1, 4·2 → 2, 2·1 → 1, 1·1 → 없음, 남은 1이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[3]],
+    expected: 3,
+    explanation: "하나면 그대로 3이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5, 5]],
+    expected: 0,
+    failureNote: "같은 무게라 둘 다 부서져 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[10, 4]],
+    expected: 6,
+    failureNote: "6이 남아요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[9, 3, 3]],
+    expected: 3,
+    failureNote: "9·3 → 6이 다시 들어가서 6·3 → 3이에요. 남은 조각을 다시 넣고 가장 무거운 둘을 다시 골라야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 1000) + 1)],
+    expected: 0,
+    failureNote: "돌 10만 개예요. 매번 정렬하면 O(N² log N)이라 시간 초과예요.",
+  },
+]);
 
 export const heapLastStone: Problem = {
   id: "c:heap-last-stone",
@@ -43,56 +95,9 @@ export const heapLastStone: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[2, 7, 4, 1, 8, 1]],
-      expected: 1,
-      explanation: "8·7 → 1, 4·2 → 2, 2·1 → 1, 1·1 → 없음, 남은 1이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[3]],
-      expected: 3,
-      explanation: "하나면 그대로 3이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5, 5]],
-      expected: 0,
-      failureNote: "같은 무게라 둘 다 부서져 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[10, 4]],
-      expected: 6,
-      failureNote: "6이 남아요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[9, 3, 3]],
-      expected: 3,
-      failureNote: "9·3 → 6이 다시 들어가서 6·3 → 3이에요. 남은 조각을 다시 넣고 가장 무거운 둘을 다시 골라야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 1000) + 1)],
-      expected: 0,
-      failureNote: "돌 10만 개예요. 매번 정렬하면 O(N² log N)이라 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

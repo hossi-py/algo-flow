@@ -1,4 +1,79 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 0],
+      ],
+      [0, 2],
+    ],
+    expected: [1, 2],
+    explanation: "0-1이 무너져도 고리라 아직 1개, 2-3까지 무너지면 {1, 2}와 {3, 0}으로 2개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [2, [[0, 1]], [0]],
+    expected: [2],
+    explanation: "하나뿐인 다리가 무너져 2개예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      3,
+      [
+        [0, 1],
+        [1, 2],
+      ],
+      [1, 0],
+    ],
+    expected: [2, 3],
+    failureNote: "다리가 모두 무너지면 섬마다 따로라 [2, 3]이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      2,
+      [
+        [0, 1],
+        [0, 1],
+      ],
+      [0, 1],
+    ],
+    expected: [1, 2],
+    failureNote: "같은 두 섬 사이 다리가 둘이면 하나가 무너져도 1개예요: [1, 2].",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [4, [[0, 1]], [0]],
+    expected: [4],
+    failureNote: "처음부터 떨어진 섬도 세요: 4개.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000, Array.from({ length: 99999 }, (_, i) => [i, i + 1]), Array.from({ length: 99999 }, (_, i) => i)],
+    expected: Array.from({ length: 99999 }, (_, i) => i + 2),
+    failureNote: "다리 10만 개가 차례로 무너져요. 무너질 때마다 그룹을 처음부터 세면 너무 느려요.",
+  },
+]);
 
 export const ufReverseCuts: Problem = {
   id: "c:uf-reverse-cuts",
@@ -54,79 +129,9 @@ export const ufReverseCuts: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [3, 0],
-        ],
-        [0, 2],
-      ],
-      expected: [1, 2],
-      explanation: "0-1이 무너져도 고리라 아직 1개, 2-3까지 무너지면 {1, 2}와 {3, 0}으로 2개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [2, [[0, 1]], [0]],
-      expected: [2],
-      explanation: "하나뿐인 다리가 무너져 2개예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        3,
-        [
-          [0, 1],
-          [1, 2],
-        ],
-        [1, 0],
-      ],
-      expected: [2, 3],
-      failureNote: "다리가 모두 무너지면 섬마다 따로라 [2, 3]이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        2,
-        [
-          [0, 1],
-          [0, 1],
-        ],
-        [0, 1],
-      ],
-      expected: [1, 2],
-      failureNote: "같은 두 섬 사이 다리가 둘이면 하나가 무너져도 1개예요: [1, 2].",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [4, [[0, 1]], [0]],
-      expected: [4],
-      failureNote: "처음부터 떨어진 섬도 세요: 4개.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [100000, Array.from({ length: 99999 }, (_, i) => [i, i + 1]), Array.from({ length: 99999 }, (_, i) => i)],
-      expected: Array.from({ length: 99999 }, (_, i) => i + 2),
-      failureNote: "다리 10만 개가 차례로 무너져요. 무너질 때마다 그룹을 처음부터 세면 너무 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

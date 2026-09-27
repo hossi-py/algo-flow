@@ -1,5 +1,111 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [0, 1],
+        [0, 2],
+        [2, 3],
+      ],
+      0,
+    ],
+    expected: [0, 1, 1, 2, -1],
+    explanation: "1, 2는 1다리, 3은 2다리, 4는 이어지지 않아 -1이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [0, 3],
+      ],
+      0,
+    ],
+    expected: [0, 1, 2, 1],
+    explanation: "3번은 0 → 1 → 2 → 3으로도 가지만, 바로 친구라서 1다리예요. 가장 적은 수를 구해요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, [], 0],
+    expected: [0],
+    failureNote: "나 혼자예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [3, [], 1],
+    expected: [-1, 0, -1],
+    failureNote: "친구가 없어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [5, 4],
+        [4, 3],
+        [3, 2],
+        [2, 1],
+        [1, 0],
+      ],
+      3,
+    ],
+    expected: [3, 2, 1, 0, 1, 2],
+    failureNote: "가운데 학생에서 양쪽으로 재요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      5,
+      [
+        [0, 1],
+        [1, 2],
+        [0, 2],
+        [2, 3],
+        [3, 4],
+        [1, 4],
+      ],
+      0,
+    ],
+    expected: [0, 1, 1, 2, 2],
+    failureNote: "여러 길 중 가장 짧은 것만 세요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000, Array.from({ length: 99999 }, (_, i) => [i, i + 1]), 0],
+    expected: Array.from({ length: 100000 }, (_, i) => i),
+    failureNote: "10만 명이 한 줄로 친구예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000, Array.from({ length: 99999 }, (_, i) => [0, i + 1]), 0],
+    expected: Array.from({ length: 100000 }, (_, i) => (i === 0 ? 0 : 1)),
+    failureNote: "0번이 모두와 친구예요. 큐에 10만 명이 한꺼번에 들어가서 list.pop(0)으로 꺼내면 느려요.",
+  },
+]);
 
 export const bfsFriendDistance: Problem = {
   id: "c:bfs-friend-distance",
@@ -45,110 +151,9 @@ export const bfsFriendDistance: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [0, 1],
-          [0, 2],
-          [2, 3],
-        ],
-        0,
-      ],
-      expected: [0, 1, 1, 2, -1],
-      explanation: "1, 2는 1다리, 3은 2다리, 4는 이어지지 않아 -1이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [0, 3],
-        ],
-        0,
-      ],
-      expected: [0, 1, 2, 1],
-      explanation: "3번은 0 → 1 → 2 → 3으로도 가지만, 바로 친구라서 1다리예요. 가장 적은 수를 구해요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, [], 0],
-      expected: [0],
-      failureNote: "나 혼자예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [3, [], 1],
-      expected: [-1, 0, -1],
-      failureNote: "친구가 없어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [5, 4],
-          [4, 3],
-          [3, 2],
-          [2, 1],
-          [1, 0],
-        ],
-        3,
-      ],
-      expected: [3, 2, 1, 0, 1, 2],
-      failureNote: "가운데 학생에서 양쪽으로 재요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        5,
-        [
-          [0, 1],
-          [1, 2],
-          [0, 2],
-          [2, 3],
-          [3, 4],
-          [1, 4],
-        ],
-        0,
-      ],
-      expected: [0, 1, 1, 2, 2],
-      failureNote: "여러 길 중 가장 짧은 것만 세요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [100000, Array.from({ length: 99999 }, (_, i) => [i, i + 1]), 0],
-      expected: Array.from({ length: 100000 }, (_, i) => i),
-      failureNote: "10만 명이 한 줄로 친구예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [100000, Array.from({ length: 99999 }, (_, i) => [0, i + 1]), 0],
-      expected: Array.from({ length: 100000 }, (_, i) => (i === 0 ? 0 : 1)),
-      failureNote: "0번이 모두와 친구예요. 큐에 10만 명이 한꺼번에 들어가서 list.pop(0)으로 꺼내면 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

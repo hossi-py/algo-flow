@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [3, 5, 100],
+    expected: 43,
+    explanation: "3^5 = 243이고, 100으로 나눈 나머지는 43이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [2, 0, 7],
+    expected: 1,
+    explanation: "0시간 뒤에는 처음 세포 1개 그대로예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [5, 3, 1],
+    expected: 0,
+    failureNote: "1로 나눈 나머지는 항상 0이에요. b가 0일 때도요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [9, 0, 1],
+    expected: 0,
+    failureNote: "b가 0이어도 m이 1이면 0이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [2, 10, 10000],
+    expected: 1024,
+    failureNote: "2^10 = 1024예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [10000, 2, 9999],
+    expected: 1,
+    failureNote: "a가 m보다 커도 돼요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [7, 1000000000, 13],
+    expected: 9,
+    failureNote: "10억 시간이에요. 한 시간씩 곱하면 시간 초과예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [9999, 999999999, 10000],
+    expected: 9999,
+    failureNote: "가장 큰 값들이에요. 곱할 때마다 나머지를 구해야 수가 너무 커지지 않아요.",
+  },
+]);
 
 export const recursionCellDivision: Problem = {
   id: "c:recursion-cell-division",
@@ -40,72 +108,9 @@ export const recursionCellDivision: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [3, 5, 100],
-      expected: 43,
-      explanation: "3^5 = 243이고, 100으로 나눈 나머지는 43이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [2, 0, 7],
-      expected: 1,
-      explanation: "0시간 뒤에는 처음 세포 1개 그대로예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [5, 3, 1],
-      expected: 0,
-      failureNote: "1로 나눈 나머지는 항상 0이에요. b가 0일 때도요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [9, 0, 1],
-      expected: 0,
-      failureNote: "b가 0이어도 m이 1이면 0이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [2, 10, 10000],
-      expected: 1024,
-      failureNote: "2^10 = 1024예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [10000, 2, 9999],
-      expected: 1,
-      failureNote: "a가 m보다 커도 돼요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [7, 1000000000, 13],
-      expected: 9,
-      failureNote: "10억 시간이에요. 한 시간씩 곱하면 시간 초과예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [9999, 999999999, 10000],
-      expected: 9999,
-      failureNote: "가장 큰 값들이에요. 곱할 때마다 나머지를 구해야 수가 너무 커지지 않아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

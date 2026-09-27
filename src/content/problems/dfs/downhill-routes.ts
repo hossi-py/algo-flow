@@ -1,4 +1,117 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [0, 2],
+        [1, 3],
+        [2, 3],
+      ],
+    ],
+    expected: 2,
+    explanation: "0 → 1 → 3, 0 → 2 → 3 두 길이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1],
+        [0, 2],
+        [1, 2],
+        [2, 3],
+      ],
+    ],
+    expected: 2,
+    explanation: "0 → 2 → 3, 0 → 1 → 2 → 3 두 길이에요. 2번에서 마을까지의 길 수는 한 번만 계산하면 돼요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, []],
+    expected: 1,
+    failureNote: "꼭대기가 곧 마을이면 길은 1가지(움직이지 않기)예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [3, [[0, 1]]],
+    expected: 0,
+    failureNote: "마을까지 이어진 길이 없어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [0, 1],
+        [0, 2],
+        [0, 3],
+        [1, 4],
+        [2, 4],
+        [3, 4],
+        [1, 2],
+        [2, 3],
+      ],
+    ],
+    expected: 6,
+    failureNote: "여러 갈래가 섞여 있어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [2, 3],
+        [0, 3],
+        [1, 0],
+      ],
+    ],
+    expected: 1,
+    failureNote: "꼭대기로 들어오는 길은 쓸 일이 없어요. 0 → 3 한 가지예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      2000,
+      [
+        [0, 1],
+        [0, 2],
+        ...Array.from({ length: 998 * 4 }, (_, k) => {
+          const layer = Math.floor(k / 4) + 1;
+          const a = 2 * layer - 1 + (k % 4 >= 2 ? 1 : 0);
+          const b = 2 * layer + 1 + (k % 2);
+          return [a, b];
+        }),
+        [1997, 1999],
+        [1998, 1999],
+      ],
+    ],
+    expected: (() => {
+      let x = 1;
+      for (let i = 0; i < 999; i += 1) x = (x * 2) % 1000000007;
+      return x;
+    })(),
+    failureNote: "두 갈래 길이 999번 이어져 길이 2^999가지예요. 길을 하나씩 세면 절대 끝나지 않아요.",
+  },
+]);
 
 export const dfsDownhillRoutes: Problem = {
   id: "c:dfs-downhill-routes",
@@ -41,117 +154,9 @@ export const dfsDownhillRoutes: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [0, 2],
-          [1, 3],
-          [2, 3],
-        ],
-      ],
-      expected: 2,
-      explanation: "0 → 1 → 3, 0 → 2 → 3 두 길이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1],
-          [0, 2],
-          [1, 2],
-          [2, 3],
-        ],
-      ],
-      expected: 2,
-      explanation: "0 → 2 → 3, 0 → 1 → 2 → 3 두 길이에요. 2번에서 마을까지의 길 수는 한 번만 계산하면 돼요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, []],
-      expected: 1,
-      failureNote: "꼭대기가 곧 마을이면 길은 1가지(움직이지 않기)예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [3, [[0, 1]]],
-      expected: 0,
-      failureNote: "마을까지 이어진 길이 없어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [0, 1],
-          [0, 2],
-          [0, 3],
-          [1, 4],
-          [2, 4],
-          [3, 4],
-          [1, 2],
-          [2, 3],
-        ],
-      ],
-      expected: 6,
-      failureNote: "여러 갈래가 섞여 있어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [2, 3],
-          [0, 3],
-          [1, 0],
-        ],
-      ],
-      expected: 1,
-      failureNote: "꼭대기로 들어오는 길은 쓸 일이 없어요. 0 → 3 한 가지예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        2000,
-        [
-          [0, 1],
-          [0, 2],
-          ...Array.from({ length: 998 * 4 }, (_, k) => {
-            const layer = Math.floor(k / 4) + 1;
-            const a = 2 * layer - 1 + (k % 4 >= 2 ? 1 : 0);
-            const b = 2 * layer + 1 + (k % 2);
-            return [a, b];
-          }),
-          [1997, 1999],
-          [1998, 1999],
-        ],
-      ],
-      expected: (() => {
-        let x = 1;
-        for (let i = 0; i < 999; i += 1) x = (x * 2) % 1000000007;
-        return x;
-      })(),
-      failureNote: "두 갈래 길이 999번 이어져 길이 2^999가지예요. 길을 하나씩 세면 절대 끝나지 않아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

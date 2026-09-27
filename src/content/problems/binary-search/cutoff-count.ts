@@ -1,5 +1,76 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [70, 95, 60, 85, 70],
+      [70, 90, 100],
+    ],
+    expected: [4, 1, 0],
+    explanation: "70점 이상은 4명(70이 두 명), 90점 이상은 1명, 100점 이상은 0명이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[50], [0, 50, 51]],
+    expected: [1, 1, 0],
+    explanation: "합격선이 점수와 같으면 합격이에요 (이상).",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [4, 4, 4, 4],
+      [4, 5, 3],
+    ],
+    expected: [4, 0, 4],
+    failureNote: "같은 점수가 많을 때 '4 이상인 첫 위치'를 찾아야 해요. 아무 4나 찾으면 개수가 틀려요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [10, 20, 30],
+      [15, 25, 35, 5],
+    ],
+    expected: [2, 1, 0, 3],
+    failureNote: "2명, 1명, 0명, 3명이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[1, 2, 3], [0]],
+    expected: [3],
+    failureNote: "합격선이 모든 점수보다 낮으면 전원 합격이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100000 }, (_, i) => (i * 37) % 101),
+      Array.from({ length: 100000 }, (_, i) => (i * 13) % 102),
+    ],
+    expected: (() => {
+      const s = Array.from({ length: 100000 }, (_, i) => (i * 37) % 101);
+      const cnt = Array(103).fill(0);
+      for (const x of s) cnt[x]++;
+      const atLeast = Array(103).fill(0);
+      for (let v = 101; v >= 0; v--) atLeast[v] = atLeast[v + 1] + cnt[v];
+      return Array.from({ length: 100000 }, (_, i) => (i * 13) % 102).map((q) => atLeast[q]);
+    })(),
+    failureNote: "학생 10만 명, 질문 10만 개예요. 질문마다 모두 세면 약 100억 번이라 시간 초과예요.",
+  },
+]);
 
 export const binarySearchCutoffCount: Problem = {
   id: "c:binary-search-cutoff-count",
@@ -38,75 +109,9 @@ export const binarySearchCutoffCount: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [70, 95, 60, 85, 70],
-        [70, 90, 100],
-      ],
-      expected: [4, 1, 0],
-      explanation: "70점 이상은 4명(70이 두 명), 90점 이상은 1명, 100점 이상은 0명이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[50], [0, 50, 51]],
-      expected: [1, 1, 0],
-      explanation: "합격선이 점수와 같으면 합격이에요 (이상).",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [4, 4, 4, 4],
-        [4, 5, 3],
-      ],
-      expected: [4, 0, 4],
-      failureNote: "같은 점수가 많을 때 '4 이상인 첫 위치'를 찾아야 해요. 아무 4나 찾으면 개수가 틀려요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [10, 20, 30],
-        [15, 25, 35, 5],
-      ],
-      expected: [2, 1, 0, 3],
-      failureNote: "2명, 1명, 0명, 3명이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[1, 2, 3], [0]],
-      expected: [3],
-      failureNote: "합격선이 모든 점수보다 낮으면 전원 합격이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100000 }, (_, i) => (i * 37) % 101),
-        Array.from({ length: 100000 }, (_, i) => (i * 13) % 102),
-      ],
-      expected: (() => {
-        const s = Array.from({ length: 100000 }, (_, i) => (i * 37) % 101);
-        const cnt = Array(103).fill(0);
-        for (const x of s) cnt[x]++;
-        const atLeast = Array(103).fill(0);
-        for (let v = 101; v >= 0; v--) atLeast[v] = atLeast[v + 1] + cnt[v];
-        return Array.from({ length: 100000 }, (_, i) => (i * 13) % 102).map((q) => atLeast[q]);
-      })(),
-      failureNote: "학생 10만 명, 질문 10만 개예요. 질문마다 모두 세면 약 100억 번이라 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 3000,
     compare: { type: "exact" },

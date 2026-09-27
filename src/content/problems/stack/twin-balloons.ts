@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["abbaca"],
+    expected: "ca",
+    explanation: 'bb가 터지면 aa가 붙어서 또 터지고, "ca"가 남아요.',
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: ["aabbcc"],
+    expected: "",
+    explanation: "모두 터지면 빈 문자열이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["z"],
+    expected: "z",
+    failureNote: "풍선이 하나뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["abcddcbe"],
+    expected: "ae",
+    failureNote: '가운데부터 연쇄로 터져서 "ae"가 남아요.',
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["abab"],
+    expected: "abab",
+    failureNote: "붙어 있는 같은 글자가 없어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["aaa"],
+    expected: "a",
+    failureNote: "앞의 두 개만 터지고 하나가 남아요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: ["ab".repeat(25000) + "ba".repeat(25000)],
+    expected: "",
+    failureNote: "가운데서부터 5만 쌍이 연쇄로 터져요. 반복해서 문자열을 다시 훑으면 느려요.",
+  },
+]);
 
 export const stackTwinBalloons: Problem = {
   id: "c:stack-twin-balloons",
@@ -36,64 +96,9 @@ export const stackTwinBalloons: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["abbaca"],
-      expected: "ca",
-      explanation: 'bb가 터지면 aa가 붙어서 또 터지고, "ca"가 남아요.',
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: ["aabbcc"],
-      expected: "",
-      explanation: "모두 터지면 빈 문자열이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["z"],
-      expected: "z",
-      failureNote: "풍선이 하나뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["abcddcbe"],
-      expected: "ae",
-      failureNote: '가운데부터 연쇄로 터져서 "ae"가 남아요.',
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["abab"],
-      expected: "abab",
-      failureNote: "붙어 있는 같은 글자가 없어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["aaa"],
-      expected: "a",
-      failureNote: "앞의 두 개만 터지고 하나가 남아요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: ["ab".repeat(25000) + "ba".repeat(25000)],
-      expected: "",
-      failureNote: "가운데서부터 5만 쌍이 연쇄로 터져요. 반복해서 문자열을 다시 훑으면 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { withHiddenData } from "@/content/problems/hidden-data";
 import { getRunner, type EngineState } from "@/lib/runner/client";
 import { judge } from "@/lib/runner/judge";
 import type { JudgeMode, JudgeResult, Language, Problem } from "@/types";
@@ -53,10 +54,12 @@ export function useJudge(problem: Problem, language: Language) {
             : problem.testCases.length,
       });
       try {
+        // 숨은 테스트는 입력·정답을 빼고 받았으니, 제출할 때만 불러와 채운다
+        const target = mode === "run" ? problem : await withHiddenData(problem);
         const judged = await judge({
-          problem,
+          problem: target,
           mode,
-          execute: (args) => runner.runCase(code, args, problem.judge),
+          execute: (args) => runner.runCase(code, args, target.judge),
           onProgress: (done, total) => setProgress({ mode, done, total }),
         });
         setResult(judged);

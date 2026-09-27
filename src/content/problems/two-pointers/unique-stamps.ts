@@ -1,5 +1,58 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 1, 2, 3, 3, 3, 5]],
+    expected: [1, 2, 3, 5],
+    explanation: "[1, 2, 3, 5]예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[4, 4, 4]],
+    expected: [4],
+    explanation: "모두 같으면 [4]예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[7]],
+    expected: [7],
+    failureNote: "하나면 그대로예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[-3, -3, 0, 2, 2]],
+    expected: [-3, 0, 2],
+    failureNote: "음수도 똑같아요: [-3, 0, 2].",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 2, 3]],
+    expected: [1, 2, 3],
+    failureNote: "중복이 없으면 그대로예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => Math.floor(i / 3))],
+    expected: Array.from({ length: 33334 }, (_, i) => i),
+    failureNote:
+      "10만 개예요. 값마다 앞에서 이미 넣었는지 리스트를 훑으면 시간 초과예요. 정렬돼 있으니 바로 앞 값만 보면 돼요.",
+  },
+]);
 
 export const twoPointersUniqueStamps: Problem = {
   id: "c:two-pointers-unique-stamps",
@@ -46,57 +99,9 @@ export const twoPointersUniqueStamps: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 1, 2, 3, 3, 3, 5]],
-      expected: [1, 2, 3, 5],
-      explanation: "[1, 2, 3, 5]예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[4, 4, 4]],
-      expected: [4],
-      explanation: "모두 같으면 [4]예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[7]],
-      expected: [7],
-      failureNote: "하나면 그대로예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[-3, -3, 0, 2, 2]],
-      expected: [-3, 0, 2],
-      failureNote: "음수도 똑같아요: [-3, 0, 2].",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 2, 3]],
-      expected: [1, 2, 3],
-      failureNote: "중복이 없으면 그대로예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => Math.floor(i / 3))],
-      expected: Array.from({ length: 33334 }, (_, i) => i),
-      failureNote:
-        "10만 개예요. 값마다 앞에서 이미 넣었는지 리스트를 훑으면 시간 초과예요. 정렬돼 있으니 바로 앞 값만 보면 돼요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

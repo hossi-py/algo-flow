@@ -1,4 +1,113 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [0, 1],
+        [1, 2],
+        [3, 1],
+        [2, 0],
+        [3, 4],
+      ],
+      0,
+    ],
+    expected: [1, 2],
+    explanation: "0 → 1 → 2 → 0으로 돌 수 있어요. 3과 4로 가는 길은 없어요 (3 → 1은 반대 방향이에요).",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      5,
+      [
+        [0, 1],
+        [3, 4],
+      ],
+      4,
+    ],
+    expected: [],
+    explanation: "4에서 나가는 도로가 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      3,
+      [
+        [1, 0],
+        [2, 0],
+      ],
+      0,
+    ],
+    expected: [],
+    failureNote: "도로가 모두 0으로 들어오기만 해요. 방향을 무시하면 틀려요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      2,
+      [
+        [0, 1],
+        [1, 0],
+      ],
+      1,
+    ],
+    expected: [0],
+    failureNote: "돌고 돌아 출발 도시로 돌아와도 start는 넣지 않아요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      7,
+      [
+        [0, 1],
+        [0, 2],
+        [2, 3],
+        [4, 5],
+        [5, 6],
+        [6, 4],
+      ],
+      0,
+    ],
+    expected: [1, 2, 3],
+    failureNote: "갈 수 없는 순환 도로가 따로 있어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000, Array.from({ length: 999 }, (_, i) => [i, i + 1]), 0],
+    expected: Array.from({ length: 999 }, (_, i) => i + 1),
+    failureNote: "도시 1,000개가 한 줄로 이어져 있어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      1000,
+      Array.from({ length: 5000 }, (_, e) => [
+        e % 1000,
+        ((e % 1000) + [1, 7, 31, 211, 499][Math.floor(e / 1000)]) % 1000,
+      ]),
+      500,
+    ],
+    expected: Array.from({ length: 1000 }, (_, i) => i).filter((i) => i !== 500),
+    failureNote: "순환 도로가 가득해요. 방문 표시를 하지 않으면 영원히 돌아요.",
+  },
+]);
 
 export const dfsOneWayTour: Problem = {
   id: "c:dfs-one-way-tour",
@@ -54,113 +163,9 @@ export const dfsOneWayTour: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [0, 1],
-          [1, 2],
-          [3, 1],
-          [2, 0],
-          [3, 4],
-        ],
-        0,
-      ],
-      expected: [1, 2],
-      explanation: "0 → 1 → 2 → 0으로 돌 수 있어요. 3과 4로 가는 길은 없어요 (3 → 1은 반대 방향이에요).",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        5,
-        [
-          [0, 1],
-          [3, 4],
-        ],
-        4,
-      ],
-      expected: [],
-      explanation: "4에서 나가는 도로가 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        3,
-        [
-          [1, 0],
-          [2, 0],
-        ],
-        0,
-      ],
-      expected: [],
-      failureNote: "도로가 모두 0으로 들어오기만 해요. 방향을 무시하면 틀려요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        2,
-        [
-          [0, 1],
-          [1, 0],
-        ],
-        1,
-      ],
-      expected: [0],
-      failureNote: "돌고 돌아 출발 도시로 돌아와도 start는 넣지 않아요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        7,
-        [
-          [0, 1],
-          [0, 2],
-          [2, 3],
-          [4, 5],
-          [5, 6],
-          [6, 4],
-        ],
-        0,
-      ],
-      expected: [1, 2, 3],
-      failureNote: "갈 수 없는 순환 도로가 따로 있어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000, Array.from({ length: 999 }, (_, i) => [i, i + 1]), 0],
-      expected: Array.from({ length: 999 }, (_, i) => i + 1),
-      failureNote: "도시 1,000개가 한 줄로 이어져 있어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        1000,
-        Array.from({ length: 5000 }, (_, e) => [
-          e % 1000,
-          ((e % 1000) + [1, 7, 31, 211, 499][Math.floor(e / 1000)]) % 1000,
-        ]),
-        500,
-      ],
-      expected: Array.from({ length: 1000 }, (_, i) => i).filter((i) => i !== 500),
-      failureNote: "순환 도로가 가득해요. 방문 표시를 하지 않으면 영원히 돌아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

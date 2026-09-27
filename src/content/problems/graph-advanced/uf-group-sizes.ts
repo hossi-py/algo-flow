@@ -1,4 +1,89 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [0, 1],
+        [1, 2],
+        [3, 4],
+      ],
+    ],
+    expected: [3, 2, 1],
+    explanation: "{0, 1, 2}, {3, 4}, {5}라 [3, 2, 1]이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3, []],
+    expected: [1, 1, 1],
+    explanation: "모두 혼자라 [1, 1, 1]이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [2, 3],
+        [1, 3],
+      ],
+    ],
+    expected: [4],
+    failureNote: "모두 한 모임이라 [4]예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      5,
+      [
+        [0, 4],
+        [4, 0],
+      ],
+    ],
+    expected: [2, 1, 1, 1],
+    failureNote: "같은 관계가 두 번 나와도 2명이에요: [2, 1, 1, 1].",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      7,
+      [
+        [0, 1],
+        [2, 3],
+        [4, 5],
+        [5, 6],
+      ],
+    ],
+    expected: [3, 2, 2],
+    failureNote: "[3, 2, 2]예요. 크기가 같은 모임도 따로 적어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      100000,
+      Array.from({ length: 100000 }, (_, i) => i)
+        .filter((i) => i % 10 !== 9)
+        .map((i) => [i, i + 1]),
+    ],
+    expected: new Array(10000).fill(10),
+    failureNote: "10명씩 모임 1만 개예요.",
+  },
+]);
 
 export const ufGroupSizes: Problem = {
   id: "c:uf-group-sizes",
@@ -44,89 +129,9 @@ export const ufGroupSizes: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [0, 1],
-          [1, 2],
-          [3, 4],
-        ],
-      ],
-      expected: [3, 2, 1],
-      explanation: "{0, 1, 2}, {3, 4}, {5}라 [3, 2, 1]이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3, []],
-      expected: [1, 1, 1],
-      explanation: "모두 혼자라 [1, 1, 1]이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [2, 3],
-          [1, 3],
-        ],
-      ],
-      expected: [4],
-      failureNote: "모두 한 모임이라 [4]예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        5,
-        [
-          [0, 4],
-          [4, 0],
-        ],
-      ],
-      expected: [2, 1, 1, 1],
-      failureNote: "같은 관계가 두 번 나와도 2명이에요: [2, 1, 1, 1].",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        7,
-        [
-          [0, 1],
-          [2, 3],
-          [4, 5],
-          [5, 6],
-        ],
-      ],
-      expected: [3, 2, 2],
-      failureNote: "[3, 2, 2]예요. 크기가 같은 모임도 따로 적어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        100000,
-        Array.from({ length: 100000 }, (_, i) => i)
-          .filter((i) => i % 10 !== 9)
-          .map((i) => [i, i + 1]),
-      ],
-      expected: new Array(10000).fill(10),
-      failureNote: "10명씩 모임 1만 개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,62 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["abaccc", 2],
+    expected: 4,
+    explanation: "accc(a, c 두 종류)로 4개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: ["aaaa", 1],
+    expected: 4,
+    explanation: "한 종류뿐이라 전부 4개예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["abc", 3],
+    expected: 3,
+    failureNote: "바구니가 넉넉해서 3개예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["abcabcbb", 2],
+    expected: 4,
+    failureNote: "bcbb로 4개예요. 종류가 넘치면 창 안의 개수가 0이 될 때까지 왼쪽을 줄여야 해요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["z", 5],
+    expected: 1,
+    failureNote: "나무 한 그루예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from(
+        { length: 100000 },
+        (_, i) => "abcdefgh"[Math.floor(i / 7) % 8 === 7 ? (i * 3) % 8 : Math.floor(i / 7) % 8],
+      ).join(""),
+      3,
+    ],
+    expected: 21,
+    failureNote: "나무 10만 그루예요. 시작점마다 끝까지 보면 시간 초과예요.",
+  },
+]);
 
 export const twoPointersFruitBasket: Problem = {
   id: "c:two-pointers-fruit-basket",
@@ -37,62 +95,9 @@ export const twoPointersFruitBasket: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["abaccc", 2],
-      expected: 4,
-      explanation: "accc(a, c 두 종류)로 4개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: ["aaaa", 1],
-      expected: 4,
-      explanation: "한 종류뿐이라 전부 4개예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["abc", 3],
-      expected: 3,
-      failureNote: "바구니가 넉넉해서 3개예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["abcabcbb", 2],
-      expected: 4,
-      failureNote: "bcbb로 4개예요. 종류가 넘치면 창 안의 개수가 0이 될 때까지 왼쪽을 줄여야 해요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["z", 5],
-      expected: 1,
-      failureNote: "나무 한 그루예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from(
-          { length: 100000 },
-          (_, i) => "abcdefgh"[Math.floor(i / 7) % 8 === 7 ? (i * 3) % 8 : Math.floor(i / 7) % 8],
-        ).join(""),
-        3,
-      ],
-      expected: 21,
-      failureNote: "나무 10만 그루예요. 시작점마다 끝까지 보면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,90 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [1, 0, 1],
+        [1, 2, 1],
+        [2, 3, 1],
+      ],
+      1,
+    ],
+    expected: 2,
+    explanation: "0번과 2번은 1초, 3번은 2초에 받아요. 가장 늦은 2초예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [2, [[0, 1, 1]], 1],
+    expected: -1,
+    explanation: "1번에서 0번으로 가는 연결이 없어서 -1이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, [], 0],
+    expected: 0,
+    failureNote: "봉화대가 하나면 바로 0초예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      3,
+      [
+        [0, 1, 10],
+        [0, 2, 1],
+        [2, 1, 2],
+      ],
+      0,
+    ],
+    expected: 3,
+    failureNote: "1번은 곧장 10초보다 2번을 거쳐 3초가 빨라요. 답은 3이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      3,
+      [
+        [1, 0, 1],
+        [2, 1, 1],
+      ],
+      0,
+    ],
+    expected: -1,
+    failureNote: "연결이 모두 거꾸로라 0번에서는 아무 데도 못 가요. -1이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      10000,
+      [
+        ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 1000]),
+        ...Array.from({ length: 20000 }, (_, i) => {
+          const a = (i * 104729) % 10000;
+          const b = (a + 1 + ((i * 7907) % 9999)) % 10000;
+          return [a, b, ((i * 7919) % 1000) + 1];
+        }),
+      ],
+      0,
+    ],
+    expected: 5467,
+    failureNote: "봉화대 1만 개, 연결 3만 개예요.",
+  },
+]);
 
 export const dijkstraSignalDelay: Problem = {
   id: "c:dijkstra-signal-delay",
@@ -44,90 +130,9 @@ export const dijkstraSignalDelay: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [1, 0, 1],
-          [1, 2, 1],
-          [2, 3, 1],
-        ],
-        1,
-      ],
-      expected: 2,
-      explanation: "0번과 2번은 1초, 3번은 2초에 받아요. 가장 늦은 2초예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [2, [[0, 1, 1]], 1],
-      expected: -1,
-      explanation: "1번에서 0번으로 가는 연결이 없어서 -1이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, [], 0],
-      expected: 0,
-      failureNote: "봉화대가 하나면 바로 0초예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        3,
-        [
-          [0, 1, 10],
-          [0, 2, 1],
-          [2, 1, 2],
-        ],
-        0,
-      ],
-      expected: 3,
-      failureNote: "1번은 곧장 10초보다 2번을 거쳐 3초가 빨라요. 답은 3이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        3,
-        [
-          [1, 0, 1],
-          [2, 1, 1],
-        ],
-        0,
-      ],
-      expected: -1,
-      failureNote: "연결이 모두 거꾸로라 0번에서는 아무 데도 못 가요. -1이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        10000,
-        [
-          ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 1000]),
-          ...Array.from({ length: 20000 }, (_, i) => {
-            const a = (i * 104729) % 10000;
-            const b = (a + 1 + ((i * 7907) % 9999)) % 10000;
-            return [a, b, ((i * 7919) % 1000) + 1];
-          }),
-        ],
-        0,
-      ],
-      expected: 5467,
-      failureNote: "봉화대 1만 개, 연결 3만 개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

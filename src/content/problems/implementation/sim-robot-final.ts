@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["UURDL"],
+    expected: [0, 1],
+    explanation: "위로 두 번, 오른쪽, 아래, 왼쪽이라 [0, 1]이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: ["RRRR"],
+    expected: [4, 0],
+    explanation: "[4, 0]이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["UDUD"],
+    expected: [0, 0],
+    failureNote: "제자리로 돌아와 [0, 0]이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["L"],
+    expected: [-1, 0],
+    failureNote: "음수 좌표도 돼요: [−1, 0].",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["DDDLL"],
+    expected: [-2, -3],
+    failureNote: "[−2, −3]이에요. 순서는 [x, y]예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => "UDLR"[(i * 7919 + (i >> 3)) % 4]).join("")],
+    expected: [0, 0],
+    failureNote: "명령 10만 개예요.",
+  },
+]);
 
 export const simRobotFinal: Problem = {
   id: "c:sim-robot-final",
@@ -41,56 +93,9 @@ export const simRobotFinal: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["UURDL"],
-      expected: [0, 1],
-      explanation: "위로 두 번, 오른쪽, 아래, 왼쪽이라 [0, 1]이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: ["RRRR"],
-      expected: [4, 0],
-      explanation: "[4, 0]이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["UDUD"],
-      expected: [0, 0],
-      failureNote: "제자리로 돌아와 [0, 0]이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["L"],
-      expected: [-1, 0],
-      failureNote: "음수 좌표도 돼요: [−1, 0].",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["DDDLL"],
-      expected: [-2, -3],
-      failureNote: "[−2, −3]이에요. 순서는 [x, y]예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => "UDLR"[(i * 7919 + (i >> 3)) % 4]).join("")],
-      expected: [0, 0],
-      failureNote: "명령 10만 개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

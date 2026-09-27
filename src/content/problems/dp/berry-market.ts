@@ -1,4 +1,65 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 2, 3, 0, 2]],
+    expected: 3,
+    explanation: "1일에 사고 2일에 팔고(+1), 3일 쉬고, 4일에 사서 5일에 팔면(+2) 3이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[5, 4, 3]],
+    expected: 0,
+    explanation: "값이 계속 내려가면 아무것도 안 해서 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[7]],
+    expected: 0,
+    failureNote: "하루뿐이면 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 5]],
+    expected: 4,
+    failureNote: "사서 바로 팔면 4예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 3, 1, 3]],
+    expected: 2,
+    failureNote:
+      "2일에 팔면 3일엔 쉬어야 해서 4일에만 팔 수 있어요. 한 번(1→3)과 같은 2예요. 쉬는 날을 빼먹으면 4가 나와요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[2, 1, 4, 5, 2, 9, 7]],
+    expected: 10,
+    failureNote: "10이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 1000) + 1)],
+    expected: 7443900,
+    failureNote: "10만 일이에요. 사고파는 날을 모두 골라 보면 끝나지 않아요.",
+  },
+]);
 
 export const dpBerryMarket: Problem = {
   id: "c:dp-berry-market",
@@ -44,65 +105,9 @@ export const dpBerryMarket: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 2, 3, 0, 2]],
-      expected: 3,
-      explanation: "1일에 사고 2일에 팔고(+1), 3일 쉬고, 4일에 사서 5일에 팔면(+2) 3이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[5, 4, 3]],
-      expected: 0,
-      explanation: "값이 계속 내려가면 아무것도 안 해서 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[7]],
-      expected: 0,
-      failureNote: "하루뿐이면 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 5]],
-      expected: 4,
-      failureNote: "사서 바로 팔면 4예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 3, 1, 3]],
-      expected: 2,
-      failureNote:
-        "2일에 팔면 3일엔 쉬어야 해서 4일에만 팔 수 있어요. 한 번(1→3)과 같은 2예요. 쉬는 날을 빼먹으면 4가 나와요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[2, 1, 4, 5, 2, 9, 7]],
-      expected: 10,
-      failureNote: "10이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 1000) + 1)],
-      expected: 7443900,
-      failureNote: "10만 일이에요. 사고파는 날을 모두 골라 보면 끝나지 않아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

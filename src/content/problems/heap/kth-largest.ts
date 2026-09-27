@@ -1,5 +1,57 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[3, 2, 1, 5, 6, 4], 2],
+    expected: 5,
+    explanation: "6, 5, …라 2번째는 5예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [[3, 2, 3, 1, 2, 4, 5, 5, 6], 4],
+    expected: 4,
+    explanation: "6, 5, 5, 4라 4번째는 4예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[7], 1],
+    expected: 7,
+    failureNote: "하나뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[4, 9, 2], 3],
+    expected: 2,
+    failureNote: "k가 전체 길이면 가장 낮은 점수예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[-1, -5, -3], 1],
+    expected: -1,
+    failureNote: "음수여도 가장 높은 건 −1이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 1000003) - 500000), 777],
+    expected: 492245,
+    failureNote: "10만 개예요. 크기 777인 힙만 유지하면 돼요.",
+  },
+]);
 
 export const heapKthLargest: Problem = {
   id: "c:heap-kth-largest",
@@ -36,56 +88,9 @@ export const heapKthLargest: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[3, 2, 1, 5, 6, 4], 2],
-      expected: 5,
-      explanation: "6, 5, …라 2번째는 5예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [[3, 2, 3, 1, 2, 4, 5, 5, 6], 4],
-      expected: 4,
-      explanation: "6, 5, 5, 4라 4번째는 4예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[7], 1],
-      expected: 7,
-      failureNote: "하나뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[4, 9, 2], 3],
-      expected: 2,
-      failureNote: "k가 전체 길이면 가장 낮은 점수예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[-1, -5, -3], 1],
-      expected: -1,
-      failureNote: "음수여도 가장 높은 건 −1이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 1000003) - 500000), 777],
-      expected: 492245,
-      failureNote: "10만 개예요. 크기 777인 힙만 유지하면 돼요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

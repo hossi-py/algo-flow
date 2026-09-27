@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[10, 15]],
+    expected: 20,
+    explanation: "둘 다 쓰면 가장 약한 10 × 2 = 20, 15만 쓰면 15라 20이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[7]],
+    expected: 7,
+    explanation: "밧줄 하나면 7이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 100]],
+    expected: 100,
+    failureNote: "둘 다 쓰면 약한 1에 맞춰 2밖에 안 돼요. 100 하나만 쓰는 게 나아요. 모두 쓰는 게 늘 최선은 아니에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[5, 5, 5, 5]],
+    expected: 20,
+    failureNote: "모두 쓰면 20이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[3, 8, 4, 2]],
+    expected: 9,
+    failureNote: "8, 4, 3을 쓰면 3 × 3 = 9예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 10000) + 1)],
+    expected: 250050000,
+    failureNote: "밧줄 10만 개예요. 고르는 방법을 모두 해 보면 불가능해요.",
+  },
+]);
 
 export const greedyRopeLift: Problem = {
   id: "c:greedy-rope-lift",
@@ -40,57 +92,9 @@ export const greedyRopeLift: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[10, 15]],
-      expected: 20,
-      explanation: "둘 다 쓰면 가장 약한 10 × 2 = 20, 15만 쓰면 15라 20이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[7]],
-      expected: 7,
-      explanation: "밧줄 하나면 7이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 100]],
-      expected: 100,
-      failureNote:
-        "둘 다 쓰면 약한 1에 맞춰 2밖에 안 돼요. 100 하나만 쓰는 게 나아요. 모두 쓰는 게 늘 최선은 아니에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[5, 5, 5, 5]],
-      expected: 20,
-      failureNote: "모두 쓰면 20이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[3, 8, 4, 2]],
-      expected: 9,
-      failureNote: "8, 4, 3을 쓰면 3 × 3 = 9예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 10000) + 1)],
-      expected: 250050000,
-      failureNote: "밧줄 10만 개예요. 고르는 방법을 모두 해 보면 불가능해요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

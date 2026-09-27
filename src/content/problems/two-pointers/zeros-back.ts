@@ -1,4 +1,59 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[0, 1, 0, 3, 12]],
+    expected: [1, 3, 12, 0, 0],
+    explanation: "[1, 3, 12, 0, 0]이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[0]],
+    expected: [0],
+    explanation: "0 하나면 그대로예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[4, 2, 0, 0, 7]],
+    expected: [4, 2, 7, 0, 0],
+    failureNote: "순서를 지켜 [4, 2, 7, 0, 0]이에요. 정렬하면 틀려요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5, 6]],
+    expected: [5, 6],
+    failureNote: "0이 없으면 그대로예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[0, 0, 1]],
+    expected: [1, 0, 0],
+    failureNote: "[1, 0, 0]이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i % 3 === 0 ? 0 : i))],
+    expected: [
+      ...Array.from({ length: 100000 }, (_, i) => (i % 3 === 0 ? 0 : i)).filter((x) => x !== 0),
+      ...Array.from({ length: 100000 }, (_, i) => (i % 3 === 0 ? 0 : i)).filter((x) => x === 0),
+    ],
+    failureNote: "10만 개예요. 0을 만날 때마다 뒤를 한 칸씩 당기면 O(N²)이라 시간 초과예요.",
+  },
+]);
 
 export const twoPointersZerosBack: Problem = {
   id: "c:two-pointers-zeros-back",
@@ -40,59 +95,9 @@ export const twoPointersZerosBack: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[0, 1, 0, 3, 12]],
-      expected: [1, 3, 12, 0, 0],
-      explanation: "[1, 3, 12, 0, 0]이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[0]],
-      expected: [0],
-      explanation: "0 하나면 그대로예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[4, 2, 0, 0, 7]],
-      expected: [4, 2, 7, 0, 0],
-      failureNote: "순서를 지켜 [4, 2, 7, 0, 0]이에요. 정렬하면 틀려요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5, 6]],
-      expected: [5, 6],
-      failureNote: "0이 없으면 그대로예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[0, 0, 1]],
-      expected: [1, 0, 0],
-      failureNote: "[1, 0, 0]이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i % 3 === 0 ? 0 : i))],
-      expected: [
-        ...Array.from({ length: 100000 }, (_, i) => (i % 3 === 0 ? 0 : i)).filter((x) => x !== 0),
-        ...Array.from({ length: 100000 }, (_, i) => (i % 3 === 0 ? 0 : i)).filter((x) => x === 0),
-      ],
-      failureNote: "10만 개예요. 0을 만날 때마다 뒤를 한 칸씩 당기면 O(N²)이라 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,89 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [0, 1, 2],
+        [1, 2, 2],
+        [2, 3, 2],
+        [3, 4, 2],
+        [0, 4, 9],
+      ],
+      [0, 3],
+    ],
+    expected: [0, 2, 2, 0, 2],
+    explanation: "1번은 0번 대피소까지 2분, 2번은 3번 대피소까지 2분, 4번은 3번까지 2분이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3, [[0, 1, 5]], [2]],
+    expected: [-1, -1, 0],
+    explanation: "0번과 1번은 대피소가 있는 2번에 못 가서 -1이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2, [[0, 1, 3]], [0, 1]],
+    expected: [0, 0],
+    failureNote: "모두 대피소 마을이면 [0, 0]이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1, 10],
+        [1, 2, 1],
+        [2, 3, 1],
+      ],
+      [0, 3],
+    ],
+    expected: [0, 2, 1, 0],
+    failureNote: "1번은 0번 대피소가 길 하나(10분)지만 3번 대피소가 2분이라 더 가까워요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1, 4],
+        [1, 2, 4],
+        [2, 3, 4],
+      ],
+      [1],
+    ],
+    expected: [4, 0, 4, 8],
+    failureNote: "대피소가 하나면 보통 다익스트라와 같아요: [4, 0, 4, 8].",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      10000,
+      [
+        ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 1]),
+        ...Array.from({ length: 9998 }, (_, i) => [i, i + 2, 3]),
+      ],
+      Array.from({ length: 100 }, (_, i) => i * 100),
+    ],
+    expected: Array.from({ length: 10000 }, (_, i) => (i >= 9900 ? i % 100 : Math.min(i % 100, 100 - (i % 100)))),
+    failureNote: "대피소 100곳이에요. 대피소마다 다익스트라를 따로 돌리면 100번이라 느려요.",
+  },
+]);
 
 export const dijkstraNearestShelter: Problem = {
   id: "c:dijkstra-nearest-shelter",
@@ -53,89 +138,9 @@ export const dijkstraNearestShelter: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [0, 1, 2],
-          [1, 2, 2],
-          [2, 3, 2],
-          [3, 4, 2],
-          [0, 4, 9],
-        ],
-        [0, 3],
-      ],
-      expected: [0, 2, 2, 0, 2],
-      explanation: "1번은 0번 대피소까지 2분, 2번은 3번 대피소까지 2분, 4번은 3번까지 2분이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3, [[0, 1, 5]], [2]],
-      expected: [-1, -1, 0],
-      explanation: "0번과 1번은 대피소가 있는 2번에 못 가서 -1이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2, [[0, 1, 3]], [0, 1]],
-      expected: [0, 0],
-      failureNote: "모두 대피소 마을이면 [0, 0]이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1, 10],
-          [1, 2, 1],
-          [2, 3, 1],
-        ],
-        [0, 3],
-      ],
-      expected: [0, 2, 1, 0],
-      failureNote: "1번은 0번 대피소가 길 하나(10분)지만 3번 대피소가 2분이라 더 가까워요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1, 4],
-          [1, 2, 4],
-          [2, 3, 4],
-        ],
-        [1],
-      ],
-      expected: [4, 0, 4, 8],
-      failureNote: "대피소가 하나면 보통 다익스트라와 같아요: [4, 0, 4, 8].",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        10000,
-        [
-          ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 1]),
-          ...Array.from({ length: 9998 }, (_, i) => [i, i + 2, 3]),
-        ],
-        Array.from({ length: 100 }, (_, i) => i * 100),
-      ],
-      expected: Array.from({ length: 10000 }, (_, i) => (i >= 9900 ? i % 100 : Math.min(i % 100, 100 - (i % 100)))),
-      failureNote: "대피소 100곳이에요. 대피소마다 다익스트라를 따로 돌리면 100번이라 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

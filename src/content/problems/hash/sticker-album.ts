@@ -1,4 +1,61 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [5, [3, 1, 3, 5]],
+    expected: [2, 4],
+    explanation: "1, 3, 5는 있어요. 2와 4가 빠졌어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3, [2, 1, 3, 2]],
+    expected: [],
+    explanation: "모두 모았어요. 빈 리스트예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [4, []],
+    expected: [1, 2, 3, 4],
+    failureNote: "하나도 없으면 1번부터 n번까지 전부 빠졌어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, [1, 1, 1]],
+    expected: [],
+    failureNote: "같은 스티커만 여러 장이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [6, [6, 5, 4]],
+    expected: [1, 2, 3],
+    failureNote: "모은 순서와 상관없이 빠진 번호는 작은 번호부터 적어요: [1, 2, 3].",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      100000,
+      Array.from({ length: 100000 }, (_, i) => i + 1)
+        .filter((x) => x % 10000 !== 0)
+        .reverse(),
+    ],
+    expected: [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000],
+    failureNote: "번호 10만 개를 확인해요. 번호마다 스티커 리스트를 훑으면(x in list) 시간 초과예요.",
+  },
+]);
 
 export const hashStickerAlbum: Problem = {
   id: "c:hash-sticker-album",
@@ -46,61 +103,9 @@ export const hashStickerAlbum: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [5, [3, 1, 3, 5]],
-      expected: [2, 4],
-      explanation: "1, 3, 5는 있어요. 2와 4가 빠졌어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3, [2, 1, 3, 2]],
-      expected: [],
-      explanation: "모두 모았어요. 빈 리스트예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [4, []],
-      expected: [1, 2, 3, 4],
-      failureNote: "하나도 없으면 1번부터 n번까지 전부 빠졌어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, [1, 1, 1]],
-      expected: [],
-      failureNote: "같은 스티커만 여러 장이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [6, [6, 5, 4]],
-      expected: [1, 2, 3],
-      failureNote: "모은 순서와 상관없이 빠진 번호는 작은 번호부터 적어요: [1, 2, 3].",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        100000,
-        Array.from({ length: 100000 }, (_, i) => i + 1)
-          .filter((x) => x % 10000 !== 0)
-          .reverse(),
-      ],
-      expected: [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000],
-      failureNote: "번호 10만 개를 확인해요. 번호마다 스티커 리스트를 훑으면(x in list) 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

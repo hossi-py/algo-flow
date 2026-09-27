@@ -1,4 +1,87 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [3, 1],
+        [2, 0],
+      ],
+    ],
+    expected: [2, 0, 3, 1],
+    explanation: "처음엔 2·3번을 들을 수 있어요. 2번 → (0번이 열림) 0번 → 3번 → 1번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      2,
+      [
+        [0, 1],
+        [1, 0],
+      ],
+    ],
+    expected: [],
+    explanation: "서로가 서로의 선수 과목이라 들을 수 없어요: [].",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [3, []],
+    expected: [0, 1, 2],
+    failureNote: "조건이 없으면 번호 순서 [0, 1, 2]예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      5,
+      [
+        [4, 0],
+        [3, 0],
+        [2, 1],
+      ],
+    ],
+    expected: [2, 1, 3, 4, 0],
+    failureNote:
+      "2번을 들으면 1번이 열려서 3·4번보다 먼저 들어요: [2, 1, 3, 4, 0]. 보통 큐를 쓰면 [2, 3, 4, 1, 0]이 돼서 틀려요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 1],
+        [0, 3],
+      ],
+    ],
+    expected: [],
+    failureNote: "1·2번이 고리라 모두 들을 수는 없어요: [].",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      50000,
+      [...Array.from({ length: 49999 }, (_, i) => [i + 1, i]), ...Array.from({ length: 49998 }, (_, i) => [i + 2, i])],
+    ],
+    expected: Array.from({ length: 50000 }, (_, i) => 49999 - i),
+    failureNote: "과목 5만 개예요. 매번 들을 수 있는 과목을 전부 훑어 가장 작은 번호를 찾으면 느려요.",
+  },
+]);
 
 export const topoCourseOrder: Problem = {
   id: "c:topo-course-order",
@@ -43,90 +126,9 @@ export const topoCourseOrder: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [3, 1],
-          [2, 0],
-        ],
-      ],
-      expected: [2, 0, 3, 1],
-      explanation: "처음엔 2·3번을 들을 수 있어요. 2번 → (0번이 열림) 0번 → 3번 → 1번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        2,
-        [
-          [0, 1],
-          [1, 0],
-        ],
-      ],
-      expected: [],
-      explanation: "서로가 서로의 선수 과목이라 들을 수 없어요: [].",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [3, []],
-      expected: [0, 1, 2],
-      failureNote: "조건이 없으면 번호 순서 [0, 1, 2]예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        5,
-        [
-          [4, 0],
-          [3, 0],
-          [2, 1],
-        ],
-      ],
-      expected: [2, 1, 3, 4, 0],
-      failureNote:
-        "2번을 들으면 1번이 열려서 3·4번보다 먼저 들어요: [2, 1, 3, 4, 0]. 보통 큐를 쓰면 [2, 3, 4, 1, 0]이 돼서 틀려요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 1],
-          [0, 3],
-        ],
-      ],
-      expected: [],
-      failureNote: "1·2번이 고리라 모두 들을 수는 없어요: [].",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        50000,
-        [
-          ...Array.from({ length: 49999 }, (_, i) => [i + 1, i]),
-          ...Array.from({ length: 49998 }, (_, i) => [i + 2, i]),
-        ],
-      ],
-      expected: Array.from({ length: 50000 }, (_, i) => 49999 - i),
-      failureNote: "과목 5만 개예요. 매번 들을 수 있는 과목을 전부 훑어 가장 작은 번호를 찾으면 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

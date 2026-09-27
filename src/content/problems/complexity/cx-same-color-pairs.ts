@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 2, 1, 1, 2]],
+    expected: 4,
+    explanation: "색 1이 3개라 3가지, 색 2가 2개라 1가지, 합 4예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[5, 6, 7]],
+    expected: 0,
+    explanation: "같은 색이 없어서 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[0]],
+    expected: 0,
+    failureNote: "구슬 하나면 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[3, 3, 3, 3]],
+    expected: 6,
+    failureNote: "4개에서 2개 고르기: 6가지예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[0, 99, 0, 99, 50]],
+    expected: 2,
+    failureNote: "0과 99처럼 끝 번호도 세요: 2예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i * 7919) % 100)],
+    expected: 49950000,
+    failureNote: "구슬 10만 개예요. 모든 쌍을 비교하면 약 50억 번이에요.",
+  },
+]);
 
 export const cxSameColorPairs: Problem = {
   id: "c:cx-same-color-pairs",
@@ -40,56 +92,9 @@ export const cxSameColorPairs: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 2, 1, 1, 2]],
-      expected: 4,
-      explanation: "색 1이 3개라 3가지, 색 2가 2개라 1가지, 합 4예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[5, 6, 7]],
-      expected: 0,
-      explanation: "같은 색이 없어서 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[0]],
-      expected: 0,
-      failureNote: "구슬 하나면 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[3, 3, 3, 3]],
-      expected: 6,
-      failureNote: "4개에서 2개 고르기: 6가지예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[0, 99, 0, 99, 50]],
-      expected: 2,
-      failureNote: "0과 99처럼 끝 번호도 세요: 2예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i * 7919) % 100)],
-      expected: 49950000,
-      failureNote: "구슬 10만 개예요. 모든 쌍을 비교하면 약 50억 번이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

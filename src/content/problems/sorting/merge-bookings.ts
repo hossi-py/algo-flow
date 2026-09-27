@@ -1,4 +1,103 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [8, 10],
+        [1, 3],
+        [2, 6],
+        [15, 18],
+      ],
+    ],
+    expected: [
+      [1, 6],
+      [8, 10],
+      [15, 18],
+    ],
+    explanation: "[1, 3]과 [2, 6]이 겹쳐서 [1, 6]이 돼요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 4],
+        [4, 5],
+      ],
+    ],
+    expected: [[1, 5]],
+    explanation: "끝(4)과 시작(4)이 같으면 이어서 [1, 5]예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[3, 7]]],
+    expected: [[3, 7]],
+    failureNote: "하나면 그대로예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 10],
+        [2, 3],
+        [4, 5],
+      ],
+    ],
+    expected: [[1, 10]],
+    failureNote: "[1, 10] 안에 다른 예약이 쏙 들어가요. 끝은 max로 늘려야 해요. 뒤 예약의 끝으로 바꾸면 줄어들어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [5, 6],
+        [1, 2],
+        [3, 4],
+      ],
+    ],
+    expected: [
+      [1, 2],
+      [3, 4],
+      [5, 6],
+    ],
+    failureNote: "겹치는 게 없어도 시작 순으로 정렬해서 돌려줘요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [2, 3],
+        [2, 5],
+        [1, 2],
+      ],
+    ],
+    expected: [[1, 5]],
+    failureNote: "셋이 모두 이어져서 [1, 5] 하나예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => [3 * (99999 - i), 3 * (99999 - i) + 3])],
+    expected: [[0, 300000]],
+    failureNote:
+      "예약 10만 개가 꼬리를 물고 이어져 [0, 300000] 하나가 돼요. 예약마다 모든 예약과 비교하면 시간 초과예요.",
+  },
+]);
 
 export const sortingMergeBookings: Problem = {
   id: "c:sorting-merge-bookings",
@@ -43,103 +142,9 @@ export const sortingMergeBookings: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [8, 10],
-          [1, 3],
-          [2, 6],
-          [15, 18],
-        ],
-      ],
-      expected: [
-        [1, 6],
-        [8, 10],
-        [15, 18],
-      ],
-      explanation: "[1, 3]과 [2, 6]이 겹쳐서 [1, 6]이 돼요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 4],
-          [4, 5],
-        ],
-      ],
-      expected: [[1, 5]],
-      explanation: "끝(4)과 시작(4)이 같으면 이어서 [1, 5]예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[3, 7]]],
-      expected: [[3, 7]],
-      failureNote: "하나면 그대로예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 10],
-          [2, 3],
-          [4, 5],
-        ],
-      ],
-      expected: [[1, 10]],
-      failureNote: "[1, 10] 안에 다른 예약이 쏙 들어가요. 끝은 max로 늘려야 해요. 뒤 예약의 끝으로 바꾸면 줄어들어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [5, 6],
-          [1, 2],
-          [3, 4],
-        ],
-      ],
-      expected: [
-        [1, 2],
-        [3, 4],
-        [5, 6],
-      ],
-      failureNote: "겹치는 게 없어도 시작 순으로 정렬해서 돌려줘요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [2, 3],
-          [2, 5],
-          [1, 2],
-        ],
-      ],
-      expected: [[1, 5]],
-      failureNote: "셋이 모두 이어져서 [1, 5] 하나예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => [3 * (99999 - i), 3 * (99999 - i) + 3])],
-      expected: [[0, 300000]],
-      failureNote:
-        "예약 10만 개가 꼬리를 물고 이어져 [0, 300000] 하나가 돼요. 예약마다 모든 예약과 비교하면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

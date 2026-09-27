@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [12, 18],
+    expected: 6,
+    explanation: "6 × 6 타일이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [7, 7],
+    expected: 7,
+    explanation: "같으면 그 길이 7이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [17, 5],
+    expected: 1,
+    failureNote: "서로 나누어떨어지는 수가 1뿐이라 1이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, 1000000000000000],
+    expected: 1,
+    failureNote: "1이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [1000000000000000, 999999999999999],
+    expected: 1,
+    failureNote: "이웃한 두 수는 최대공약수가 1이에요. 작은 수부터 하나씩 내려가며 확인하면 10¹⁵번이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [806515533049393, 498454011879264],
+    expected: 1,
+    failureNote: "피보나치 수 두 개예요. 유클리드 호제법이 가장 오래 걸리는 경우라도 70번 정도예요.",
+  },
+]);
 
 export const cxGcd: Problem = {
   id: "c:cx-gcd",
@@ -37,56 +89,9 @@ export const cxGcd: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [12, 18],
-      expected: 6,
-      explanation: "6 × 6 타일이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [7, 7],
-      expected: 7,
-      explanation: "같으면 그 길이 7이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [17, 5],
-      expected: 1,
-      failureNote: "서로 나누어떨어지는 수가 1뿐이라 1이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, 1000000000000000],
-      expected: 1,
-      failureNote: "1이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [1000000000000000, 999999999999999],
-      expected: 1,
-      failureNote: "이웃한 두 수는 최대공약수가 1이에요. 작은 수부터 하나씩 내려가며 확인하면 10¹⁵번이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [806515533049393, 498454011879264],
-      expected: 1,
-      failureNote: "피보나치 수 두 개예요. 유클리드 호제법이 가장 오래 걸리는 경우라도 70번 정도예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

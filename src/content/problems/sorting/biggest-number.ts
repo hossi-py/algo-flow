@@ -1,4 +1,77 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[3, 30, 34, 5, 9]],
+    expected: "9534330",
+    explanation: "9, 5, 34, 3, 30 순서로 이어 붙인 9534330이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[0, 0, 0]],
+    expected: "0",
+    explanation: '모두 0이면 "0"이에요.',
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[10, 2]],
+    expected: "210",
+    failureNote: "숫자 크기 순이면 10이 앞이지만, 210 > 102라서 2가 앞이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[3, 30]],
+    expected: "330",
+    failureNote: "글자 순(사전 순)으로 뒤집으면 30이 앞(303)이지만, 330이 더 커요. a+b와 b+a를 비교해야 해요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[1000]],
+    expected: "1000",
+    failureNote: "카드 하나면 그대로예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[121, 12]],
+    expected: "12121",
+    failureNote: "12121 > 12112라서 12가 앞이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[0, 1]],
+    expected: "10",
+    failureNote: "10이에요. 0이 앞에 오면 안 돼요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 10000 }, (_, i) => (i * 37) % 1001)],
+    expected: (() => {
+      const s = Array.from({ length: 10000 }, (_, i) => (i * 37) % 1001).map(String);
+      s.sort((a, b) => (a + b > b + a ? -1 : a + b < b + a ? 1 : 0));
+      const r = s.join("");
+      return r[0] === "0" ? "0" : r;
+    })(),
+    failureNote: "카드 1만 장이에요. 모든 순서를 만들어 보는 건 불가능해요.",
+  },
+]);
 
 export const sortingBiggestNumber: Problem = {
   id: "c:sorting-biggest-number",
@@ -36,77 +109,9 @@ export const sortingBiggestNumber: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[3, 30, 34, 5, 9]],
-      expected: "9534330",
-      explanation: "9, 5, 34, 3, 30 순서로 이어 붙인 9534330이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[0, 0, 0]],
-      expected: "0",
-      explanation: '모두 0이면 "0"이에요.',
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[10, 2]],
-      expected: "210",
-      failureNote: "숫자 크기 순이면 10이 앞이지만, 210 > 102라서 2가 앞이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[3, 30]],
-      expected: "330",
-      failureNote: "글자 순(사전 순)으로 뒤집으면 30이 앞(303)이지만, 330이 더 커요. a+b와 b+a를 비교해야 해요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[1000]],
-      expected: "1000",
-      failureNote: "카드 하나면 그대로예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[121, 12]],
-      expected: "12121",
-      failureNote: "12121 > 12112라서 12가 앞이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[0, 1]],
-      expected: "10",
-      failureNote: "10이에요. 0이 앞에 오면 안 돼요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 10000 }, (_, i) => (i * 37) % 1001)],
-      expected: (() => {
-        const s = Array.from({ length: 10000 }, (_, i) => (i * 37) % 1001).map(String);
-        s.sort((a, b) => (a + b > b + a ? -1 : a + b < b + a ? 1 : 0));
-        const r = s.join("");
-        return r[0] === "0" ? "0" : r;
-      })(),
-      failureNote: "카드 1만 장이에요. 모든 순서를 만들어 보는 건 불가능해요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

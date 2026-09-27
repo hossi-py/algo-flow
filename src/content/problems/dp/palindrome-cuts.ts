@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["aab"],
+    expected: 1,
+    explanation: "aa | b로 한 번 잘라요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: ["racecar"],
+    expected: 0,
+    explanation: "이미 회문이라 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["a"],
+    expected: 0,
+    failureNote: "한 글자는 회문이라 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["abc"],
+    expected: 2,
+    failureNote: "모두 한 글자씩 잘라 2번이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["abacdc"],
+    expected: 1,
+    failureNote: "aba | cdc로 한 번이에요. 앞에서부터 가장 짧은 회문(a)만 떼면 더 많이 잘라요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["aabbaa"],
+    expected: 0,
+    failureNote: "전체가 회문이라 0이에요. aa | bb | aa로 자르면 안 돼요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 500 }, (_, i) => "aab"[(i * i) % 3]).join("")],
+    expected: 0,
+    failureNote: "500글자예요. 자르는 방법을 모두 해 보면 2^499가지예요.",
+  },
+]);
 
 export const dpPalindromeCuts: Problem = {
   id: "c:dp-palindrome-cuts",
@@ -36,64 +96,9 @@ export const dpPalindromeCuts: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["aab"],
-      expected: 1,
-      explanation: "aa | b로 한 번 잘라요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: ["racecar"],
-      expected: 0,
-      explanation: "이미 회문이라 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["a"],
-      expected: 0,
-      failureNote: "한 글자는 회문이라 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["abc"],
-      expected: 2,
-      failureNote: "모두 한 글자씩 잘라 2번이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["abacdc"],
-      expected: 1,
-      failureNote: "aba | cdc로 한 번이에요. 앞에서부터 가장 짧은 회문(a)만 떼면 더 많이 잘라요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["aabbaa"],
-      expected: 0,
-      failureNote: "전체가 회문이라 0이에요. aa | bb | aa로 자르면 안 돼요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 500 }, (_, i) => "aab"[(i * i) % 3]).join("")],
-      expected: 0,
-      failureNote: "500글자예요. 자르는 방법을 모두 해 보면 2^499가지예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 3000,
     compare: { type: "exact" },

@@ -1,5 +1,108 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [0, 1],
+        [0, 2],
+        [1, 3],
+        [2, 4],
+      ],
+    ],
+    expected: [3, 1, 4, 2, 0],
+    explanation:
+      "0 → 1 → 3으로 들어가 3이 먼저 끝나고, 돌아오며 1이 끝나요. 그다음 2 → 4로 들어가 4, 2가 끝나고 마지막에 0이 끝나요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3, [[0, 1]]],
+    expected: [1, 0],
+    explanation: "2번 방은 0번에서 닿을 수 없어서 빠져요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, []],
+    expected: [0],
+    failureNote: "방이 하나뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 0],
+      ],
+    ],
+    expected: [3, 2, 1, 0],
+    failureNote: "고리 모양이에요. 3번에서는 이어진 방(0, 2)을 모두 가 봤으니 바로 끝나요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 3],
+        [0, 1],
+        [1, 3],
+        [0, 2],
+      ],
+    ],
+    expected: [3, 1, 2, 0],
+    failureNote: "굴이 번호 순서로 주어지지 않아요. 이어진 방을 번호 순으로 정렬해야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      6,
+      [
+        [0, 1],
+        [1, 2],
+        [0, 3],
+        [3, 4],
+        [4, 5],
+        [5, 1],
+      ],
+    ],
+    expected: [2, 3, 4, 5, 1, 0],
+    failureNote: "처음 들어간 길에서 다른 길의 방까지 이어져요. 먼저 도착한 쪽에서 탐험해요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000, Array.from({ length: 999 }, (_, i) => [i, i + 1])],
+    expected: Array.from({ length: 1000 }, (_, i) => 999 - i),
+    failureNote: "방 1,000개가 한 줄로 이어져 있어요. 가장 깊은 방부터 끝나요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000, Array.from({ length: 999 }, (_, i) => [999 - i, 0])],
+    expected: [...Array.from({ length: 999 }, (_, i) => i + 1), 0],
+    failureNote: "0번 방에 나머지 방이 모두 이어져 있고, 굴은 번호가 큰 방부터 주어져요.",
+  },
+]);
 
 export const dfsFinishOrder: Problem = {
   id: "c:dfs-finish-order",
@@ -52,107 +155,9 @@ export const dfsFinishOrder: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [0, 1],
-          [0, 2],
-          [1, 3],
-          [2, 4],
-        ],
-      ],
-      expected: [3, 1, 4, 2, 0],
-      explanation:
-        "0 → 1 → 3으로 들어가 3이 먼저 끝나고, 돌아오며 1이 끝나요. 그다음 2 → 4로 들어가 4, 2가 끝나고 마지막에 0이 끝나요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3, [[0, 1]]],
-      expected: [1, 0],
-      explanation: "2번 방은 0번에서 닿을 수 없어서 빠져요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, []],
-      expected: [0],
-      failureNote: "방이 하나뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [3, 0],
-        ],
-      ],
-      expected: [3, 2, 1, 0],
-      failureNote: "고리 모양이에요. 3번에서는 이어진 방(0, 2)을 모두 가 봤으니 바로 끝나요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 3],
-          [0, 1],
-          [1, 3],
-          [0, 2],
-        ],
-      ],
-      expected: [3, 1, 2, 0],
-      failureNote: "굴이 번호 순서로 주어지지 않아요. 이어진 방을 번호 순으로 정렬해야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        6,
-        [
-          [0, 1],
-          [1, 2],
-          [0, 3],
-          [3, 4],
-          [4, 5],
-          [5, 1],
-        ],
-      ],
-      expected: [2, 3, 4, 5, 1, 0],
-      failureNote: "처음 들어간 길에서 다른 길의 방까지 이어져요. 먼저 도착한 쪽에서 탐험해요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000, Array.from({ length: 999 }, (_, i) => [i, i + 1])],
-      expected: Array.from({ length: 1000 }, (_, i) => 999 - i),
-      failureNote: "방 1,000개가 한 줄로 이어져 있어요. 가장 깊은 방부터 끝나요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000, Array.from({ length: 999 }, (_, i) => [999 - i, 0])],
-      expected: [...Array.from({ length: 999 }, (_, i) => i + 1), 0],
-      failureNote: "0번 방에 나머지 방이 모두 이어져 있고, 굴은 번호가 큰 방부터 주어져요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

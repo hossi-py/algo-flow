@@ -1,4 +1,80 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["S...", "....", "..#.", "...E"]],
+    expected: 2,
+    explanation: "S(0, 0) → (2, 1) → E(3, 3)으로 두 번이에요. (1, 2)를 거쳐도 두 번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["S.", ".E"]],
+    expected: -1,
+    explanation: "2×2 초원에서는 L자로 뛸 곳이 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["SE..", "....", "...."]],
+    expected: 3,
+    failureNote: "바로 옆 칸이어도 한 번에 못 가요. L자로 세 번 뛰어야 해요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["S...", "..#.", ".#..", "...E"]],
+    expected: -1,
+    failureNote: "S에서 뛰어 내려앉을 수 있는 두 칸이 모두 가시덤불이에요. 한 번도 뛸 수 없어서 갈 수 없어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["S#..", "##E."]],
+    expected: 1,
+    failureNote: "가시덤불은 뛰어넘을 수 있어요. 내려앉지만 않으면 돼서 한 번에 가요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100 }, (_, r) =>
+        Array.from({ length: 100 }, (_, c) => (r === 0 && c === 0 ? "S" : r === 99 && c === 99 ? "E" : ".")).join(""),
+      ),
+    ],
+    expected: 66,
+    failureNote: "100×100 빈 초원의 대각선 끝이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100 }, (_, r) =>
+        Array.from({ length: 100 }, (_, c) =>
+          r === 0 && c === 0
+            ? "S"
+            : r === 99 && c === 99
+              ? "E"
+              : (r === 97 && c === 98) || (r === 98 && c === 97)
+                ? "#"
+                : ".",
+        ).join(""),
+      ),
+    ],
+    expected: -1,
+    failureNote: "E로 뛰어 들어올 수 있는 두 칸이 모두 가시덤불이에요. 초원 전체를 살펴본 뒤에야 못 간다는 걸 알아요.",
+  },
+]);
 
 export const bfsKangarooField: Problem = {
   id: "c:bfs-kangaroo-field",
@@ -45,81 +121,9 @@ export const bfsKangarooField: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["S...", "....", "..#.", "...E"]],
-      expected: 2,
-      explanation: "S(0, 0) → (2, 1) → E(3, 3)으로 두 번이에요. (1, 2)를 거쳐도 두 번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["S.", ".E"]],
-      expected: -1,
-      explanation: "2×2 초원에서는 L자로 뛸 곳이 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["SE..", "....", "...."]],
-      expected: 3,
-      failureNote: "바로 옆 칸이어도 한 번에 못 가요. L자로 세 번 뛰어야 해요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["S...", "..#.", ".#..", "...E"]],
-      expected: -1,
-      failureNote: "S에서 뛰어 내려앉을 수 있는 두 칸이 모두 가시덤불이에요. 한 번도 뛸 수 없어서 갈 수 없어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["S#..", "##E."]],
-      expected: 1,
-      failureNote: "가시덤불은 뛰어넘을 수 있어요. 내려앉지만 않으면 돼서 한 번에 가요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100 }, (_, r) =>
-          Array.from({ length: 100 }, (_, c) => (r === 0 && c === 0 ? "S" : r === 99 && c === 99 ? "E" : ".")).join(""),
-        ),
-      ],
-      expected: 66,
-      failureNote: "100×100 빈 초원의 대각선 끝이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100 }, (_, r) =>
-          Array.from({ length: 100 }, (_, c) =>
-            r === 0 && c === 0
-              ? "S"
-              : r === 99 && c === 99
-                ? "E"
-                : (r === 97 && c === 98) || (r === 98 && c === 97)
-                  ? "#"
-                  : ".",
-          ).join(""),
-        ),
-      ],
-      expected: -1,
-      failureNote:
-        "E로 뛰어 들어올 수 있는 두 칸이 모두 가시덤불이에요. 초원 전체를 살펴본 뒤에야 못 간다는 걸 알아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

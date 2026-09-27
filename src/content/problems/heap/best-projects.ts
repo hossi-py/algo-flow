@@ -1,4 +1,61 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [2, 0, [1, 2, 3], [0, 1, 1]],
+    expected: 4,
+    explanation: "0번(+1)으로 1개가 되고, 2번(+3)으로 4개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [3, 0, [1, 2, 3], [0, 1, 2]],
+    expected: 6,
+    explanation: "0번 → 1, 1번 → 3, 2번 → 6이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, 0, [5], [1]],
+    expected: 0,
+    failureNote: "시작도 못 해서 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [1, 5, [1, 10, 3], [0, 5, 6]],
+    expected: 15,
+    failureNote: "지금 할 수 있는 일(0번, 1번) 중 이익이 큰 1번을 해요. 15예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [5, 1, [2, 3], [1, 1]],
+    expected: 6,
+    failureNote: "일이 2개뿐이라 6에서 멈춰요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      100000,
+      0,
+      Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 10000) + 1),
+      Array.from({ length: 100000 }, (_, i) => (i * 104729) % 200000),
+    ],
+    expected: 1,
+    failureNote: "일 10만 개예요. 매번 할 수 있는 일을 처음부터 찾으면 시간 초과예요.",
+  },
+]);
 
 export const heapBestProjects: Problem = {
   id: "c:heap-best-projects",
@@ -53,61 +110,9 @@ export const heapBestProjects: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [2, 0, [1, 2, 3], [0, 1, 1]],
-      expected: 4,
-      explanation: "0번(+1)으로 1개가 되고, 2번(+3)으로 4개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [3, 0, [1, 2, 3], [0, 1, 2]],
-      expected: 6,
-      explanation: "0번 → 1, 1번 → 3, 2번 → 6이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, 0, [5], [1]],
-      expected: 0,
-      failureNote: "시작도 못 해서 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [1, 5, [1, 10, 3], [0, 5, 6]],
-      expected: 15,
-      failureNote: "지금 할 수 있는 일(0번, 1번) 중 이익이 큰 1번을 해요. 15예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [5, 1, [2, 3], [1, 1]],
-      expected: 6,
-      failureNote: "일이 2개뿐이라 6에서 멈춰요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        100000,
-        0,
-        Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 10000) + 1),
-        Array.from({ length: 100000 }, (_, i) => (i * 104729) % 200000),
-      ],
-      expected: 1,
-      failureNote: "일 10만 개예요. 매번 할 수 있는 일을 처음부터 찾으면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

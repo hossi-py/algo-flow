@@ -1,5 +1,66 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["(a+(b))"],
+    expected: [6, -1, -1, 5, -1, 3, 0],
+    explanation: "0번 (는 6번 )와, 3번 (는 5번 )와 짝이에요. 괄호가 아닌 a, +, b는 -1이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: ["()()"],
+    expected: [1, 0, 3, 2],
+    explanation: "나란히 있는 두 쌍이에요. 0↔1, 2↔3.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["x"],
+    expected: [-1],
+    failureNote: "괄호가 하나도 없어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["((()))"],
+    expected: [5, 4, 3, 2, 1, 0],
+    failureNote: "겹겹이 감싼 괄호예요. 바깥끼리, 안쪽끼리 짝이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["(()())"],
+    expected: [5, 2, 1, 4, 3, 0],
+    failureNote:
+      "닫는 괄호는 가장 최근에 열린(아직 짝이 없는) 괄호와 짝이에요. 처음 나온 )가 첫 ( 와 짝인 게 아니에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["a(b)c(d(e)f)g"],
+    expected: [-1, 3, -1, 1, -1, 11, -1, 9, -1, 7, -1, 5, -1],
+    failureNote: "글자와 괄호가 섞여 있어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: ["(".repeat(50000) + ")".repeat(50000)],
+    expected: Array.from({ length: 100000 }, (_, i) => 99999 - i),
+    failureNote: "괄호 5만 쌍이 겹겹이 있어요. 괄호마다 짝을 앞뒤로 훑어 찾으면 시간 초과예요.",
+  },
+]);
 
 export const stackBracketPartner: Problem = {
   id: "c:stack-bracket-partner",
@@ -50,65 +111,9 @@ export const stackBracketPartner: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["(a+(b))"],
-      expected: [6, -1, -1, 5, -1, 3, 0],
-      explanation: "0번 (는 6번 )와, 3번 (는 5번 )와 짝이에요. 괄호가 아닌 a, +, b는 -1이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: ["()()"],
-      expected: [1, 0, 3, 2],
-      explanation: "나란히 있는 두 쌍이에요. 0↔1, 2↔3.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["x"],
-      expected: [-1],
-      failureNote: "괄호가 하나도 없어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["((()))"],
-      expected: [5, 4, 3, 2, 1, 0],
-      failureNote: "겹겹이 감싼 괄호예요. 바깥끼리, 안쪽끼리 짝이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["(()())"],
-      expected: [5, 2, 1, 4, 3, 0],
-      failureNote:
-        "닫는 괄호는 가장 최근에 열린(아직 짝이 없는) 괄호와 짝이에요. 처음 나온 )가 첫 ( 와 짝인 게 아니에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["a(b)c(d(e)f)g"],
-      expected: [-1, 3, -1, 1, -1, 11, -1, 9, -1, 7, -1, 5, -1],
-      failureNote: "글자와 괄호가 섞여 있어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: ["(".repeat(50000) + ")".repeat(50000)],
-      expected: Array.from({ length: 100000 }, (_, i) => 99999 - i),
-      failureNote: "괄호 5만 쌍이 겹겹이 있어요. 괄호마다 짝을 앞뒤로 훑어 찾으면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [1, 2, 3],
+      [1, 1],
+    ],
+    expected: 1,
+    explanation: "크기 1 쿠키 두 개로는 필요한 크기가 1인 친구만 만족해요. 1명이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [1, 2],
+      [1, 2, 3],
+    ],
+    expected: 2,
+    explanation: "둘 다 만족해요. 2명이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5], [4]],
+    expected: 0,
+    failureNote: "쿠키가 작아서 0명이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [1, 3],
+      [3, 1],
+    ],
+    expected: 2,
+    failureNote:
+      "큰 쿠키 3을 필요한 크기가 1인 친구에게 주면 남은 1로는 3짜리 친구를 못 채워요. 작은 쿠키부터 알맞게 주면 2명이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [2, 2, 2],
+      [2, 2],
+    ],
+    expected: 2,
+    failureNote: "쿠키가 두 개라 2명이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 100000) + 1),
+      Array.from({ length: 100000 }, (_, i) => ((i * 104729) % 100000) + 1),
+    ],
+    expected: 100000,
+    failureNote: "친구 10만 명, 쿠키 10만 개예요. 친구마다 모든 쿠키를 훑으면 시간 초과예요.",
+  },
+]);
 
 export const greedyCookieShare: Problem = {
   id: "c:greedy-cookie-share",
@@ -45,72 +113,9 @@ export const greedyCookieShare: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [1, 2, 3],
-        [1, 1],
-      ],
-      expected: 1,
-      explanation: "크기 1 쿠키 두 개로는 필요한 크기가 1인 친구만 만족해요. 1명이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [1, 2],
-        [1, 2, 3],
-      ],
-      expected: 2,
-      explanation: "둘 다 만족해요. 2명이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5], [4]],
-      expected: 0,
-      failureNote: "쿠키가 작아서 0명이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [1, 3],
-        [3, 1],
-      ],
-      expected: 2,
-      failureNote:
-        "큰 쿠키 3을 필요한 크기가 1인 친구에게 주면 남은 1로는 3짜리 친구를 못 채워요. 작은 쿠키부터 알맞게 주면 2명이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [2, 2, 2],
-        [2, 2],
-      ],
-      expected: 2,
-      failureNote: "쿠키가 두 개라 2명이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 100000) + 1),
-        Array.from({ length: 100000 }, (_, i) => ((i * 104729) % 100000) + 1),
-      ],
-      expected: 100000,
-      failureNote: "친구 10만 명, 쿠키 10만 개예요. 친구마다 모든 쿠키를 훑으면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

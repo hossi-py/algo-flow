@@ -1,4 +1,89 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["0202", ["0100", "0001", "0201"]],
+    expected: 6,
+    explanation:
+      "바퀴 두 개를 두 칸씩 올리면 4번이지만, 첫 회전으로 갈 수 있는 0100과 0001이 걸려 있어요. 다른 바퀴를 한 번 돌렸다가 되돌려야 해서 6번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: ["0009", []],
+    expected: 1,
+    explanation: "0에서 내리면 바로 9라서 1번이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["0000", []],
+    expected: 0,
+    failureNote: "이미 맞춰져 있으면 0번이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["1234", ["0000"]],
+    expected: -1,
+    failureNote: "처음 조합부터 걸려 있어서 돌릴 수 없어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["8888", ["8887", "8889", "8878", "8898", "8788", "8988", "7888", "9888"]],
+    expected: -1,
+    failureNote: "비밀번호 바로 옆 조합이 모두 걸려서 맞출 수 없어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["5555", []],
+    expected: 20,
+    failureNote: "바퀴마다 5칸씩, 20번이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["1919", ["1000"]],
+    expected: 4,
+    failureNote: "바퀴를 돌리는 방향을 잘 골라야 해요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      "5555",
+      Array.from({ length: 5000 }, (_, i) => String((i * 7 + 3) % 10000).padStart(4, "0")).filter(
+        (s) => s !== "5555" && s !== "0000",
+      ),
+    ],
+    expected: 20,
+    failureNote: "걸리는 조합이 5,000개 가까이 돼요.",
+  },
+  {
+    id: "hid-7",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      "4637",
+      Array.from({ length: 4000 }, (_, i) => String(i * 2 + 1).padStart(4, "0")).filter((s) => s !== "4637"),
+    ],
+    expected: 16,
+    failureNote: "홀수로 끝나는 조합이 거의 다 걸려요.",
+  },
+]);
 
 export const bfsSafeDial: Problem = {
   id: "c:bfs-safe-dial",
@@ -45,89 +130,9 @@ export const bfsSafeDial: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["0202", ["0100", "0001", "0201"]],
-      expected: 6,
-      explanation:
-        "바퀴 두 개를 두 칸씩 올리면 4번이지만, 첫 회전으로 갈 수 있는 0100과 0001이 걸려 있어요. 다른 바퀴를 한 번 돌렸다가 되돌려야 해서 6번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: ["0009", []],
-      expected: 1,
-      explanation: "0에서 내리면 바로 9라서 1번이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["0000", []],
-      expected: 0,
-      failureNote: "이미 맞춰져 있으면 0번이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["1234", ["0000"]],
-      expected: -1,
-      failureNote: "처음 조합부터 걸려 있어서 돌릴 수 없어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["8888", ["8887", "8889", "8878", "8898", "8788", "8988", "7888", "9888"]],
-      expected: -1,
-      failureNote: "비밀번호 바로 옆 조합이 모두 걸려서 맞출 수 없어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["5555", []],
-      expected: 20,
-      failureNote: "바퀴마다 5칸씩, 20번이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["1919", ["1000"]],
-      expected: 4,
-      failureNote: "바퀴를 돌리는 방향을 잘 골라야 해요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        "5555",
-        Array.from({ length: 5000 }, (_, i) => String((i * 7 + 3) % 10000).padStart(4, "0")).filter(
-          (s) => s !== "5555" && s !== "0000",
-        ),
-      ],
-      expected: 20,
-      failureNote: "걸리는 조합이 5,000개 가까이 돼요.",
-    },
-    {
-      id: "hid-7",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        "4637",
-        Array.from({ length: 4000 }, (_, i) => String(i * 2 + 1).padStart(4, "0")).filter((s) => s !== "4637"),
-      ],
-      expected: 16,
-      failureNote: "홀수로 끝나는 조합이 거의 다 걸려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

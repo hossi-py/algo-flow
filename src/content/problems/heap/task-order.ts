@@ -1,4 +1,117 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [1, 2],
+        [2, 4],
+        [3, 2],
+        [4, 1],
+      ],
+    ],
+    expected: [0, 2, 3, 1],
+    explanation: "1초에 0번 시작(3초 끝), 그때 1·2번 대기 → 짧은 2번(5초 끝), 3번(6초 끝), 1번이에요: [0, 2, 3, 1].",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      [
+        [7, 10],
+        [7, 12],
+        [7, 5],
+        [7, 4],
+        [7, 2],
+      ],
+    ],
+    expected: [4, 3, 2, 0, 1],
+    explanation: "모두 동시에 들어와요. 짧은 순서로 [4, 3, 2, 0, 1]이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[5, 3]]],
+    expected: [0],
+    failureNote: "일이 하나면 [0]이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [0, 5],
+        [10, 1],
+        [10, 1],
+      ],
+    ],
+    expected: [0, 1, 2],
+    failureNote: "5초부터 10초까지는 쉬어요. 시간이 같으면 번호 순: [0, 1, 2].",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [0, 10],
+        [1, 1],
+        [2, 1],
+      ],
+    ],
+    expected: [0, 1, 2],
+    failureNote: "짧은 일이 들어와도 하던 일을 멈추지 않아요: [0, 1, 2].",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 5000 }, (_, i) => [((i * 7919) % 5000) * 3, ((i * 104729) % 50) + 1])],
+    expected: (() => {
+      const t = Array.from({ length: 5000 }, (_, i) => [((i * 7919) % 5000) * 3, ((i * 104729) % 50) + 1]).map(
+        ([e, d], i) => ({ e, d, i }),
+      );
+      const order = [];
+      const done = new Array(t.length).fill(false);
+      let time = 0;
+      for (let n = 0; n < t.length; n++) {
+        let best = -1;
+        for (let j = 0; j < t.length; j++) {
+          if (done[j] || t[j].e > time) continue;
+          if (best < 0 || t[j].d < t[best].d || (t[j].d === t[best].d && j < best)) best = j;
+        }
+        if (best < 0) {
+          let next = -1;
+          for (let j = 0; j < t.length; j++)
+            if (
+              !done[j] &&
+              (next < 0 ||
+                t[j].e < t[next].e ||
+                (t[j].e === t[next].e && t[j].d < t[next].d) ||
+                (t[j].e === t[next].e && t[j].d === t[next].d && j < next))
+            )
+              next = j;
+          time = t[next].e;
+          n--;
+          continue;
+        }
+        done[best] = true;
+        order.push(best);
+        time += t[best].d;
+      }
+      return order;
+    })(),
+    failureNote:
+      "일 5,000개예요. 쉴 때마다 기다리는 일을 모두 훑으면 약 2천5백만 번이라 느려요. 들어온 일을 힙에 넣으세요.",
+  },
+]);
 
 export const heapTaskOrder: Problem = {
   id: "c:heap-task-order",
@@ -44,117 +157,9 @@ export const heapTaskOrder: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [1, 2],
-          [2, 4],
-          [3, 2],
-          [4, 1],
-        ],
-      ],
-      expected: [0, 2, 3, 1],
-      explanation: "1초에 0번 시작(3초 끝), 그때 1·2번 대기 → 짧은 2번(5초 끝), 3번(6초 끝), 1번이에요: [0, 2, 3, 1].",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        [
-          [7, 10],
-          [7, 12],
-          [7, 5],
-          [7, 4],
-          [7, 2],
-        ],
-      ],
-      expected: [4, 3, 2, 0, 1],
-      explanation: "모두 동시에 들어와요. 짧은 순서로 [4, 3, 2, 0, 1]이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[5, 3]]],
-      expected: [0],
-      failureNote: "일이 하나면 [0]이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [0, 5],
-          [10, 1],
-          [10, 1],
-        ],
-      ],
-      expected: [0, 1, 2],
-      failureNote: "5초부터 10초까지는 쉬어요. 시간이 같으면 번호 순: [0, 1, 2].",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [0, 10],
-          [1, 1],
-          [2, 1],
-        ],
-      ],
-      expected: [0, 1, 2],
-      failureNote: "짧은 일이 들어와도 하던 일을 멈추지 않아요: [0, 1, 2].",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 5000 }, (_, i) => [((i * 7919) % 5000) * 3, ((i * 104729) % 50) + 1])],
-      expected: (() => {
-        const t = Array.from({ length: 5000 }, (_, i) => [((i * 7919) % 5000) * 3, ((i * 104729) % 50) + 1]).map(
-          ([e, d], i) => ({ e, d, i }),
-        );
-        const order = [];
-        const done = new Array(t.length).fill(false);
-        let time = 0;
-        for (let n = 0; n < t.length; n++) {
-          let best = -1;
-          for (let j = 0; j < t.length; j++) {
-            if (done[j] || t[j].e > time) continue;
-            if (best < 0 || t[j].d < t[best].d || (t[j].d === t[best].d && j < best)) best = j;
-          }
-          if (best < 0) {
-            let next = -1;
-            for (let j = 0; j < t.length; j++)
-              if (
-                !done[j] &&
-                (next < 0 ||
-                  t[j].e < t[next].e ||
-                  (t[j].e === t[next].e && t[j].d < t[next].d) ||
-                  (t[j].e === t[next].e && t[j].d === t[next].d && j < next))
-              )
-                next = j;
-            time = t[next].e;
-            n--;
-            continue;
-          }
-          done[best] = true;
-          order.push(best);
-          time += t[best].d;
-        }
-        return order;
-      })(),
-      failureNote:
-        "일 5,000개예요. 쉴 때마다 기다리는 일을 모두 훑으면 약 2천5백만 번이라 느려요. 들어온 일을 힙에 넣으세요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

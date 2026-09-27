@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["/home/nodi/../docs/./photos/"],
+    expected: "/home/docs/photos",
+    explanation: "nodi로 들어갔다가 ..로 나와요. .은 그대로, 끝의 /는 빈 조각이라 무시해요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: ["/../.."],
+    expected: "/",
+    explanation: "맨 위에서 ..을 해도 맨 위 그대로예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["/"],
+    expected: "/",
+    failureNote: "맨 위 폴더 그대로예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["/a//b///c"],
+    expected: "/a/b/c",
+    failureNote: "/가 여러 개 이어져도 하나로 정리해요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["/a/b/c/../../../../x"],
+    expected: "/x",
+    failureNote: "맨 위보다 더 올라가려는 ..은 무시하고, 그다음 x로 들어가요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["/game/./save/../save2/."],
+    expected: "/game/save2",
+    failureNote: "save에 들어갔다 나와서 save2로 들어가요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: ["/" + "a/".repeat(20000) + "../".repeat(19999)],
+    expected: "/a",
+    failureNote: "a 폴더로 2만 번 들어갔다가 19,999번 올라와요.",
+  },
+]);
 
 export const stackFolderPath: Problem = {
   id: "c:stack-folder-path",
@@ -43,64 +103,9 @@ export const stackFolderPath: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["/home/nodi/../docs/./photos/"],
-      expected: "/home/docs/photos",
-      explanation: "nodi로 들어갔다가 ..로 나와요. .은 그대로, 끝의 /는 빈 조각이라 무시해요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: ["/../.."],
-      expected: "/",
-      explanation: "맨 위에서 ..을 해도 맨 위 그대로예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["/"],
-      expected: "/",
-      failureNote: "맨 위 폴더 그대로예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["/a//b///c"],
-      expected: "/a/b/c",
-      failureNote: "/가 여러 개 이어져도 하나로 정리해요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["/a/b/c/../../../../x"],
-      expected: "/x",
-      failureNote: "맨 위보다 더 올라가려는 ..은 무시하고, 그다음 x로 들어가요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["/game/./save/../save2/."],
-      expected: "/game/save2",
-      failureNote: "save에 들어갔다 나와서 save2로 들어가요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: ["/" + "a/".repeat(20000) + "../".repeat(19999)],
-      expected: "/a",
-      failureNote: "a 폴더로 2만 번 들어갔다가 19,999번 올라와요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

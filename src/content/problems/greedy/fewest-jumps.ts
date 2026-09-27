@@ -1,4 +1,57 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[2, 3, 1, 1, 4]],
+    expected: 2,
+    explanation: "0 → 1 → 4로 2번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[7]],
+    expected: 0,
+    explanation: "이미 마지막 돌이라 0번이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 1, 1, 1]],
+    expected: 3,
+    failureNote: "한 칸씩 3번이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[2, 1, 5, 1, 1, 1, 1]],
+    expected: 2,
+    failureNote:
+      "처음에 멀리(2번 돌) 뛰는 게 좋아요. 0 → 2 → 6으로 2번이에요. 매번 가장 멀리 뛰는 게 아니라, 다음에 가장 멀리 갈 수 있는 돌을 골라야 해요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[5, 1, 1, 1, 1, 1]],
+    expected: 1,
+    failureNote: "한 번에 5칸 뛰어 1번이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => 1 + ((i * 7919) % 5))],
+    expected: 20001,
+    failureNote: "돌 10만 개예요. 돌마다 모든 이전 돌을 확인하는 DP는 느려요.",
+  },
+]);
 
 export const greedyFewestJumps: Problem = {
   id: "c:greedy-fewest-jumps",
@@ -40,57 +93,9 @@ export const greedyFewestJumps: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[2, 3, 1, 1, 4]],
-      expected: 2,
-      explanation: "0 → 1 → 4로 2번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[7]],
-      expected: 0,
-      explanation: "이미 마지막 돌이라 0번이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 1, 1, 1]],
-      expected: 3,
-      failureNote: "한 칸씩 3번이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[2, 1, 5, 1, 1, 1, 1]],
-      expected: 2,
-      failureNote:
-        "처음에 멀리(2번 돌) 뛰는 게 좋아요. 0 → 2 → 6으로 2번이에요. 매번 가장 멀리 뛰는 게 아니라, 다음에 가장 멀리 갈 수 있는 돌을 골라야 해요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[5, 1, 1, 1, 1, 1]],
-      expected: 1,
-      failureNote: "한 번에 5칸 뛰어 1번이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => 1 + ((i * 7919) % 5))],
-      expected: 20001,
-      failureNote: "돌 10만 개예요. 돌마다 모든 이전 돌을 확인하는 DP는 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

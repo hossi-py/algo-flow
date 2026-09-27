@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[7, 10], 6],
+    expected: 28,
+    explanation: "28분이면 7분 요정 4개 + 10분 요정 2개 = 6개예요. 27분이면 3 + 2 = 5개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[5], 3],
+    expected: 15,
+    explanation: "혼자면 15분이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 1, 1], 10],
+    expected: 4,
+    failureNote: "셋이 1분씩이면 4분에 12개라 4예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[2, 3], 1],
+    expected: 2,
+    failureNote: "하나만 만들면 가장 빠른 요정의 2분이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[3, 5, 7], 10],
+    expected: 15,
+    failureNote: "15분이면 5 + 3 + 2 = 10개예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [[1000000], 1000000000],
+    expected: 1000000000000000,
+    failureNote: "답이 10¹⁵이에요. 1분씩 늘려 보면 끝나지 않아요. (Java는 long, 개수를 셀 때 m을 넘으면 멈추세요)",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 10000 }, (_, i) => ((i * 7919) % 1000000) + 1), 1000000000],
+    expected: 903218011,
+    failureNote: "요정 1만 명, 10억 개예요.",
+  },
+]);
 
 export const binarySearchToyWorkshop: Problem = {
   id: "c:binary-search-toy-workshop",
@@ -41,64 +101,9 @@ export const binarySearchToyWorkshop: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[7, 10], 6],
-      expected: 28,
-      explanation: "28분이면 7분 요정 4개 + 10분 요정 2개 = 6개예요. 27분이면 3 + 2 = 5개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[5], 3],
-      expected: 15,
-      explanation: "혼자면 15분이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 1, 1], 10],
-      expected: 4,
-      failureNote: "셋이 1분씩이면 4분에 12개라 4예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[2, 3], 1],
-      expected: 2,
-      failureNote: "하나만 만들면 가장 빠른 요정의 2분이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[3, 5, 7], 10],
-      expected: 15,
-      failureNote: "15분이면 5 + 3 + 2 = 10개예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [[1000000], 1000000000],
-      expected: 1000000000000000,
-      failureNote: "답이 10¹⁵이에요. 1분씩 늘려 보면 끝나지 않아요. (Java는 long, 개수를 셀 때 m을 넘으면 멈추세요)",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 10000 }, (_, i) => ((i * 7919) % 1000000) + 1), 1000000000],
-      expected: 903218011,
-      failureNote: "요정 1만 명, 10억 개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

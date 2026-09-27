@@ -1,4 +1,99 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [1, 1, 0, 0],
+        [1, 1, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 1],
+      ],
+    ],
+    expected: [3, 2],
+    explanation: "{0, 1}, {2}, {3}이라 무리 3개, 가장 큰 무리는 2명이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 1, 0],
+        [1, 1, 1],
+        [0, 1, 1],
+      ],
+    ],
+    expected: [1, 3],
+    explanation: "0과 2는 직접 안 통하지만 1을 거쳐 전달돼요. 무리 1개, 3명이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[1]]],
+    expected: [1, 1],
+    failureNote: "대원 한 명이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      [
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1],
+      ],
+    ],
+    expected: [3, 1],
+    failureNote: "아무도 연결되지 않았어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [1, 0, 0, 1, 0],
+        [0, 1, 1, 0, 0],
+        [0, 1, 1, 0, 0],
+        [1, 0, 0, 1, 1],
+        [0, 0, 0, 1, 1],
+      ],
+    ],
+    expected: [2, 3],
+    failureNote: "{0, 3, 4}와 {1, 2}예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 0, 0, 0, 1],
+        [0, 1, 0, 1, 0],
+        [0, 0, 1, 0, 0],
+        [0, 1, 0, 1, 0],
+        [1, 0, 0, 0, 1],
+      ],
+    ],
+    expected: [3, 2],
+    failureNote: "번호가 떨어져 있어도 같은 무리일 수 있어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 200 }, (_, i) => Array.from({ length: 200 }, (_, j) => (i % 7 === j % 7 ? 1 : 0)))],
+    expected: [7, 29],
+    failureNote: "대원 200명이 번호를 7로 나눈 나머지끼리 무리를 이뤄요.",
+  },
+]);
 
 export const dfsRadioNetwork: Problem = {
   id: "c:dfs-radio-network",
@@ -43,99 +138,9 @@ export const dfsRadioNetwork: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [1, 1, 0, 0],
-          [1, 1, 0, 0],
-          [0, 0, 1, 0],
-          [0, 0, 0, 1],
-        ],
-      ],
-      expected: [3, 2],
-      explanation: "{0, 1}, {2}, {3}이라 무리 3개, 가장 큰 무리는 2명이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 1, 0],
-          [1, 1, 1],
-          [0, 1, 1],
-        ],
-      ],
-      expected: [1, 3],
-      explanation: "0과 2는 직접 안 통하지만 1을 거쳐 전달돼요. 무리 1개, 3명이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[1]]],
-      expected: [1, 1],
-      failureNote: "대원 한 명이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        [
-          [1, 0, 0],
-          [0, 1, 0],
-          [0, 0, 1],
-        ],
-      ],
-      expected: [3, 1],
-      failureNote: "아무도 연결되지 않았어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [1, 0, 0, 1, 0],
-          [0, 1, 1, 0, 0],
-          [0, 1, 1, 0, 0],
-          [1, 0, 0, 1, 1],
-          [0, 0, 0, 1, 1],
-        ],
-      ],
-      expected: [2, 3],
-      failureNote: "{0, 3, 4}와 {1, 2}예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 0, 0, 0, 1],
-          [0, 1, 0, 1, 0],
-          [0, 0, 1, 0, 0],
-          [0, 1, 0, 1, 0],
-          [1, 0, 0, 0, 1],
-        ],
-      ],
-      expected: [3, 2],
-      failureNote: "번호가 떨어져 있어도 같은 무리일 수 있어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 200 }, (_, i) => Array.from({ length: 200 }, (_, j) => (i % 7 === j % 7 ? 1 : 0)))],
-      expected: [7, 29],
-      failureNote: "대원 200명이 번호를 7로 나눈 나머지끼리 무리를 이뤄요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,97 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [3, -1, 4, 1, 5],
+      [
+        [0, 2],
+        [1, 3],
+        [4, 4],
+      ],
+    ],
+    expected: [6, 4, 5],
+    explanation: "3 − 1 + 4 = 6, −1 + 4 + 1 = 4, 5예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[7], [[0, 0]]],
+    expected: [7],
+    explanation: "칸 하나면 그 값이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [1, 2, 3, 4],
+      [
+        [0, 3],
+        [0, 0],
+        [3, 3],
+      ],
+    ],
+    expected: [10, 1, 4],
+    failureNote: "[10, 1, 4]예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [5, -5, 5, -5],
+      [
+        [0, 1],
+        [1, 2],
+        [0, 3],
+      ],
+    ],
+    expected: [0, 0, 0],
+    failureNote: "음수가 있어도 똑같아요: [0, 0, 0].",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [2, 2, 2],
+      [
+        [1, 2],
+        [0, 1],
+      ],
+    ],
+    expected: [4, 4],
+    failureNote: "[4, 4]예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 20001) - 10000),
+      Array.from({ length: 100000 }, (_, i) => {
+        const l = (i * 104729) % 100000;
+        return [l, l + ((i * 31) % (100000 - l))];
+      }),
+    ],
+    expected: (() => {
+      const p = [0];
+      for (const x of Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 20001) - 10000))
+        p.push(p[p.length - 1] + x);
+      return Array.from({ length: 100000 }, (_, i) => {
+        const l = (i * 104729) % 100000;
+        return [l, l + ((i * 31) % (100000 - l))];
+      }).map(([l, r]) => p[r + 1] - p[l]);
+    })(),
+    failureNote: "질문 10만 개, 구간 길이 최대 10만이에요. 질문마다 더하면 최대 100억 번이에요.",
+  },
+]);
 
 export const cxPrefixQueries: Problem = {
   id: "c:cx-prefix-queries",
@@ -46,97 +139,9 @@ export const cxPrefixQueries: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [3, -1, 4, 1, 5],
-        [
-          [0, 2],
-          [1, 3],
-          [4, 4],
-        ],
-      ],
-      expected: [6, 4, 5],
-      explanation: "3 − 1 + 4 = 6, −1 + 4 + 1 = 4, 5예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[7], [[0, 0]]],
-      expected: [7],
-      explanation: "칸 하나면 그 값이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [1, 2, 3, 4],
-        [
-          [0, 3],
-          [0, 0],
-          [3, 3],
-        ],
-      ],
-      expected: [10, 1, 4],
-      failureNote: "[10, 1, 4]예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [5, -5, 5, -5],
-        [
-          [0, 1],
-          [1, 2],
-          [0, 3],
-        ],
-      ],
-      expected: [0, 0, 0],
-      failureNote: "음수가 있어도 똑같아요: [0, 0, 0].",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [2, 2, 2],
-        [
-          [1, 2],
-          [0, 1],
-        ],
-      ],
-      expected: [4, 4],
-      failureNote: "[4, 4]예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 20001) - 10000),
-        Array.from({ length: 100000 }, (_, i) => {
-          const l = (i * 104729) % 100000;
-          return [l, l + ((i * 31) % (100000 - l))];
-        }),
-      ],
-      expected: (() => {
-        const p = [0];
-        for (const x of Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 20001) - 10000))
-          p.push(p[p.length - 1] + x);
-        return Array.from({ length: 100000 }, (_, i) => {
-          const l = (i * 104729) % 100000;
-          return [l, l + ((i * 31) % (100000 - l))];
-        }).map(([l, r]) => p[r + 1] - p[l]);
-      })(),
-      failureNote: "질문 10만 개, 구간 길이 최대 10만이에요. 질문마다 더하면 최대 100억 번이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

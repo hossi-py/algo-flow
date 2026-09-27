@@ -1,4 +1,74 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 0, 1, 1, 0, 0, 1]],
+    expected: 6,
+    explanation: "처음 6일(맑음 3, 비 3)이나 마지막 6일이 가장 길어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[1, 1, 1]],
+    expected: 0,
+    explanation: "비 온 날이 없어서 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[0, 1]],
+    expected: 2,
+    failureNote: "이틀이 딱 맞아요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[0]],
+    expected: 0,
+    failureNote: "하루로는 같을 수 없어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[0, 0, 1, 0, 1, 1, 1, 0]],
+    expected: 8,
+    failureNote:
+      "전체 8일이 답이에요. 첫날부터 시작하는 기간을 세려면 '누적 합 0은 −1번 위치에서 처음 나왔다'고 적어 두고 시작해야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 0, 0, 1, 1, 1, 1, 0, 0]],
+    expected: 8,
+    failureNote: "같은 누적 합이 다시 나오면 처음 나온 위치를 그대로 둬야 가장 긴 기간이 돼요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [[...Array.from({ length: 50000 }, () => 1), ...Array.from({ length: 50000 }, () => 0)]],
+    expected: 100000,
+    failureNote:
+      "맑은 날 5만 일 뒤에 비 온 날 5만 일이에요. 전체 10만 일이 답이에요. 기간을 하나씩 확인하면 시간 초과예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * i * 7 + 3 * i) % 5 < 2 ? 1 : 0))],
+    expected: 12,
+    failureNote: "10만 일, 맑음과 비가 섞여 있어요.",
+  },
+]);
 
 export const hashBalancedDays: Problem = {
   id: "c:hash-balanced-days",
@@ -36,74 +106,9 @@ export const hashBalancedDays: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 0, 1, 1, 0, 0, 1]],
-      expected: 6,
-      explanation: "처음 6일(맑음 3, 비 3)이나 마지막 6일이 가장 길어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[1, 1, 1]],
-      expected: 0,
-      explanation: "비 온 날이 없어서 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[0, 1]],
-      expected: 2,
-      failureNote: "이틀이 딱 맞아요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[0]],
-      expected: 0,
-      failureNote: "하루로는 같을 수 없어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[0, 0, 1, 0, 1, 1, 1, 0]],
-      expected: 8,
-      failureNote:
-        "전체 8일이 답이에요. 첫날부터 시작하는 기간을 세려면 '누적 합 0은 −1번 위치에서 처음 나왔다'고 적어 두고 시작해야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 0, 0, 1, 1, 1, 1, 0, 0]],
-      expected: 8,
-      failureNote: "같은 누적 합이 다시 나오면 처음 나온 위치를 그대로 둬야 가장 긴 기간이 돼요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [[...Array.from({ length: 50000 }, () => 1), ...Array.from({ length: 50000 }, () => 0)]],
-      expected: 100000,
-      failureNote:
-        "맑은 날 5만 일 뒤에 비 온 날 5만 일이에요. 전체 10만 일이 답이에요. 기간을 하나씩 확인하면 시간 초과예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * i * 7 + 3 * i) % 5 < 2 ? 1 : 0))],
-      expected: 12,
-      failureNote: "10만 일, 맑음과 비가 섞여 있어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

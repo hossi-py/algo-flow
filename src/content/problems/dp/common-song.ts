@@ -1,5 +1,68 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["acbde", "abcfe"],
+    expected: 3,
+    explanation: "abe(또는 ace)로 3이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: ["abc", "xyz"],
+    expected: 0,
+    explanation: "공통 음표가 없어 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["a", "a"],
+    expected: 1,
+    failureNote: "한 음표가 같아요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["abcd", "abcd"],
+    expected: 4,
+    failureNote: "완전히 같으면 전체 길이 4예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["aab", "aaab"],
+    expected: 3,
+    failureNote: "같은 글자가 여러 번 있어도 순서를 지켜 한 번씩만 써요. aab로 3이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["ab", "ba"],
+    expected: 1,
+    failureNote: "순서를 지켜야 해서 a나 b 하나, 1이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 700 }, (_, i) => "abcde"[(i * i + 3 * i) % 5]).join(""),
+      Array.from({ length: 700 }, (_, i) => "abcde"[(i * 7 + (i >> 3)) % 5]).join(""),
+    ],
+    expected: 384,
+    failureNote: "두 노래 모두 700음이에요. 부분 수열을 모두 만들어 보면 끝나지 않아요.",
+  },
+]);
 
 export const dpCommonSong: Problem = {
   id: "c:dp-common-song",
@@ -38,67 +101,9 @@ export const dpCommonSong: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["acbde", "abcfe"],
-      expected: 3,
-      explanation: "abe(또는 ace)로 3이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: ["abc", "xyz"],
-      expected: 0,
-      explanation: "공통 음표가 없어 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["a", "a"],
-      expected: 1,
-      failureNote: "한 음표가 같아요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["abcd", "abcd"],
-      expected: 4,
-      failureNote: "완전히 같으면 전체 길이 4예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["aab", "aaab"],
-      expected: 3,
-      failureNote: "같은 글자가 여러 번 있어도 순서를 지켜 한 번씩만 써요. aab로 3이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["ab", "ba"],
-      expected: 1,
-      failureNote: "순서를 지켜야 해서 a나 b 하나, 1이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 700 }, (_, i) => "abcde"[(i * i + 3 * i) % 5]).join(""),
-        Array.from({ length: 700 }, (_, i) => "abcde"[(i * 7 + (i >> 3)) % 5]).join(""),
-      ],
-      expected: 384,
-      failureNote: "두 노래 모두 700음이에요. 부분 수열을 모두 만들어 보면 끝나지 않아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 3000,
     compare: { type: "exact" },

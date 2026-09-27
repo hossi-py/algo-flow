@@ -1,4 +1,70 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["A man, a plan, a canal: Panama"],
+    expected: true,
+    explanation: "글자만 모으면 amanaplanacanalpanama로 회문이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: ["race a car"],
+    expected: false,
+    explanation: "raceacar는 뒤집으면 racaecar라 아니에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [" .,"],
+    expected: true,
+    failureNote: "글자가 하나도 없으면 빈 글이라 회문이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["0P"],
+    expected: false,
+    failureNote: "숫자 0과 글자 P는 달라요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["No 'x' in Nixon"],
+    expected: true,
+    failureNote: "대소문자를 무시하면 회문이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["a"],
+    expected: true,
+    failureNote: "한 글자는 회문이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      (() => {
+        const h = Array.from({ length: 50000 }, (_, i) => "Ab1, "[(i * 7) % 5]).join("");
+        return h + [...h].reverse().join("");
+      })(),
+    ],
+    expected: true,
+    failureNote:
+      "10만 글자예요. 글자만 걸러 새 문자열을 만들고 뒤집어도 되지만, 양 끝에서 비교하면 추가 공간이 없어요.",
+  },
+]);
 
 export const twoPointersPalindromeNote: Problem = {
   id: "c:two-pointers-palindrome-note",
@@ -36,70 +102,9 @@ export const twoPointersPalindromeNote: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["A man, a plan, a canal: Panama"],
-      expected: true,
-      explanation: "글자만 모으면 amanaplanacanalpanama로 회문이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: ["race a car"],
-      expected: false,
-      explanation: "raceacar는 뒤집으면 racaecar라 아니에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [" .,"],
-      expected: true,
-      failureNote: "글자가 하나도 없으면 빈 글이라 회문이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["0P"],
-      expected: false,
-      failureNote: "숫자 0과 글자 P는 달라요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["No 'x' in Nixon"],
-      expected: true,
-      failureNote: "대소문자를 무시하면 회문이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["a"],
-      expected: true,
-      failureNote: "한 글자는 회문이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        (() => {
-          const h = Array.from({ length: 50000 }, (_, i) => "Ab1, "[(i * 7) % 5]).join("");
-          return h + [...h].reverse().join("");
-        })(),
-      ],
-      expected: true,
-      failureNote:
-        "10만 글자예요. 글자만 걸러 새 문자열을 만들고 뒤집어도 되지만, 양 끝에서 비교하면 추가 공간이 없어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

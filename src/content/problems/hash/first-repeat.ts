@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["mimi", "nodi", "toto", "nodi", "mimi"]],
+    expected: "nodi",
+    explanation: "4번째에 nodi가 다시 나와요. mimi도 다시 나오지만 그보다 늦어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["mimi", "nodi"]],
+    expected: "",
+    explanation: "다시 나온 이름이 없어서 빈 문자열이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["solo"]],
+    expected: "",
+    failureNote: "한 명뿐이면 다시 나올 수 없어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["a", "b", "b", "a"]],
+    expected: "b",
+    failureNote: "먼저 적힌 a가 아니라, 다시 나온 순간이 더 빠른 b가 답이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["zz", "z", "zzz", "z"]],
+    expected: "z",
+    failureNote: "z와 zz는 다른 이름이에요. 4번째의 z가 처음 재방문이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [[...Array.from({ length: 99999 }, (_, i) => "n" + i.toString(36)), "n" + (777).toString(36)]],
+    expected: "nll",
+    failureNote: "10만 명 중 맨 마지막에서야 다시 나온 이름이 있어요. 이름마다 앞부분을 다시 훑으면 시간 초과예요.",
+  },
+]);
 
 export const hashFirstRepeat: Problem = {
   id: "c:hash-first-repeat",
@@ -40,56 +92,9 @@ export const hashFirstRepeat: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["mimi", "nodi", "toto", "nodi", "mimi"]],
-      expected: "nodi",
-      explanation: "4번째에 nodi가 다시 나와요. mimi도 다시 나오지만 그보다 늦어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["mimi", "nodi"]],
-      expected: "",
-      explanation: "다시 나온 이름이 없어서 빈 문자열이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["solo"]],
-      expected: "",
-      failureNote: "한 명뿐이면 다시 나올 수 없어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["a", "b", "b", "a"]],
-      expected: "b",
-      failureNote: "먼저 적힌 a가 아니라, 다시 나온 순간이 더 빠른 b가 답이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["zz", "z", "zzz", "z"]],
-      expected: "z",
-      failureNote: "z와 zz는 다른 이름이에요. 4번째의 z가 처음 재방문이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [[...Array.from({ length: 99999 }, (_, i) => "n" + i.toString(36)), "n" + (777).toString(36)]],
-      expected: "nll",
-      failureNote: "10만 명 중 맨 마지막에서야 다시 나온 이름이 있어요. 이름마다 앞부분을 다시 훑으면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

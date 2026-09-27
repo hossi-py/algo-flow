@@ -1,4 +1,76 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [2],
+    expected: ["HH", "HT", "TH", "TT"],
+    explanation: "HH, HT, TH, TT 네 가지예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [3],
+    expected: ["HHH", "HHT", "HTH", "HTT", "THH", "THT", "TTH", "TTT"],
+    explanation: "매번 H 또는 T를 고르니 2 × 2 × 2 = 8가지예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1],
+    expected: ["H", "T"],
+    failureNote: "한 번 던지면 H, T 두 가지예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [4],
+    expected: [
+      "HHHH",
+      "HHHT",
+      "HHTH",
+      "HHTT",
+      "HTHH",
+      "HTHT",
+      "HTTH",
+      "HTTT",
+      "THHH",
+      "THHT",
+      "THTH",
+      "THTT",
+      "TTHH",
+      "TTHT",
+      "TTTH",
+      "TTTT",
+    ],
+    failureNote: "16가지예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [5],
+    // prettier-ignore
+    expected: ["HHHHH","HHHHT","HHHTH","HHHTT","HHTHH","HHTHT","HHTTH","HHTTT","HTHHH","HTHHT","HTHTH","HTHTT","HTTHH","HTTHT","HTTTH","HTTTT","THHHH","THHHT","THHTH","THHTT","THTHH","THTHT","THTTH","THTTT","TTHHH","TTHHT","TTHTH","TTHTT","TTTHH","TTTHT","TTTTH","TTTTT"],
+    failureNote: "32가지예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [10],
+    expected: Array.from({ length: 1024 }, (_, i) =>
+      i.toString(2).padStart(10, "0").replace(/0/g, "H").replace(/1/g, "T"),
+    ),
+    failureNote: "10번 던지면 1,024가지예요.",
+  },
+]);
 
 export const backtrackingCoinFlips: Problem = {
   id: "c:backtracking-coin-flips",
@@ -39,76 +111,9 @@ export const backtrackingCoinFlips: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [2],
-      expected: ["HH", "HT", "TH", "TT"],
-      explanation: "HH, HT, TH, TT 네 가지예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [3],
-      expected: ["HHH", "HHT", "HTH", "HTT", "THH", "THT", "TTH", "TTT"],
-      explanation: "매번 H 또는 T를 고르니 2 × 2 × 2 = 8가지예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1],
-      expected: ["H", "T"],
-      failureNote: "한 번 던지면 H, T 두 가지예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [4],
-      expected: [
-        "HHHH",
-        "HHHT",
-        "HHTH",
-        "HHTT",
-        "HTHH",
-        "HTHT",
-        "HTTH",
-        "HTTT",
-        "THHH",
-        "THHT",
-        "THTH",
-        "THTT",
-        "TTHH",
-        "TTHT",
-        "TTTH",
-        "TTTT",
-      ],
-      failureNote: "16가지예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [5],
-      // prettier-ignore
-      expected: ["HHHHH","HHHHT","HHHTH","HHHTT","HHTHH","HHTHT","HHTTH","HHTTT","HTHHH","HTHHT","HTHTH","HTHTT","HTTHH","HTTHT","HTTTH","HTTTT","THHHH","THHHT","THHTH","THHTT","THTHH","THTHT","THTTH","THTTT","TTHHH","TTHHT","TTHTH","TTHTT","TTTHH","TTTHT","TTTTH","TTTTT"],
-      failureNote: "32가지예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [10],
-      expected: Array.from({ length: 1024 }, (_, i) =>
-        i.toString(2).padStart(10, "0").replace(/0/g, "H").replace(/1/g, "T"),
-      ),
-      failureNote: "10번 던지면 1,024가지예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

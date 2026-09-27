@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[2, 3, 1, 1, 4]],
+    expected: true,
+    explanation: "0 → 1 → 4로 갈 수 있어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [[3, 2, 1, 0, 4]],
+    expected: false,
+    explanation: "어디서 뛰어도 3번 돌(0)에 막혀요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[0]],
+    expected: true,
+    failureNote: "이미 마지막 돌이에요. true예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[0, 1]],
+    expected: false,
+    failureNote: "첫 돌에서 못 움직여요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 0, 1, 0]],
+    expected: false,
+    failureNote: "1번 돌에서 막혀요. 가장 먼 거리가 지금 위치보다 뒤처지면 멈춰야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[5, 0, 0, 0, 0, 0]],
+    expected: true,
+    failureNote: "한 번에 5칸 뛰어 끝이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => 1 + ((i * 7) % 3))],
+    expected: true,
+    failureNote: "돌 10만 개예요. 가능한 모든 점프를 따라가면 느려요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i === 50000 ? 0 : i >= 49999 && i <= 50000 ? 1 : 1))],
+    expected: false,
+    failureNote: "중간의 0 하나에 막혀요.",
+  },
+]);
 
 export const greedyStoneJump: Problem = {
   id: "c:greedy-stone-jump",
@@ -40,72 +108,9 @@ export const greedyStoneJump: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[2, 3, 1, 1, 4]],
-      expected: true,
-      explanation: "0 → 1 → 4로 갈 수 있어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [[3, 2, 1, 0, 4]],
-      expected: false,
-      explanation: "어디서 뛰어도 3번 돌(0)에 막혀요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[0]],
-      expected: true,
-      failureNote: "이미 마지막 돌이에요. true예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[0, 1]],
-      expected: false,
-      failureNote: "첫 돌에서 못 움직여요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 0, 1, 0]],
-      expected: false,
-      failureNote: "1번 돌에서 막혀요. 가장 먼 거리가 지금 위치보다 뒤처지면 멈춰야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[5, 0, 0, 0, 0, 0]],
-      expected: true,
-      failureNote: "한 번에 5칸 뛰어 끝이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => 1 + ((i * 7) % 3))],
-      expected: true,
-      failureNote: "돌 10만 개예요. 가능한 모든 점프를 따라가면 느려요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i === 50000 ? 0 : i >= 49999 && i <= 50000 ? 1 : 1))],
-      expected: false,
-      failureNote: "중간의 0 하나에 막혀요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

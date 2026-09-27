@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["abcabcbb"],
+    expected: 3,
+    explanation: "abc처럼 세 개가 가장 길어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: ["aaaa"],
+    expected: 1,
+    explanation: "모두 같은 간식이면 1개씩만 살 수 있어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["abba"],
+    expected: 2,
+    failureNote: "마지막 a를 볼 때 a의 예전 위치(0)는 이미 구간 밖이에요. 왼쪽 끝을 뒤로 되돌리면 안 돼요. 답은 2예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["z"],
+    expected: 1,
+    failureNote: "한 개뿐이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["dvdf"],
+    expected: 3,
+    failureNote: "두 번째 d를 만나면 첫 d 바로 뒤(v)부터 다시 시작해요. vdf로 3이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["abcdefghijklmnopqrstuvwxyz"],
+    expected: 26,
+    failureNote: "모두 다른 26종류라 전부 살 수 있어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: ["abcdefghijklmnopqrstuvwxyz".repeat(3846)],
+    expected: 26,
+    failureNote: "약 10만 개예요. 시작점마다 끝까지 다시 훑으면 느려요. 한 번 훑으며 왼쪽 끝을 옮기세요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => String.fromCharCode(97 + ((i * i + i) % 26))).join("")],
+    expected: 7,
+    failureNote: "10만 개, 같은 간식이 불규칙하게 다시 나와요.",
+  },
+]);
 
 export const hashSnackLine: Problem = {
   id: "c:hash-snack-line",
@@ -34,73 +102,9 @@ export const hashSnackLine: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["abcabcbb"],
-      expected: 3,
-      explanation: "abc처럼 세 개가 가장 길어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: ["aaaa"],
-      expected: 1,
-      explanation: "모두 같은 간식이면 1개씩만 살 수 있어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["abba"],
-      expected: 2,
-      failureNote:
-        "마지막 a를 볼 때 a의 예전 위치(0)는 이미 구간 밖이에요. 왼쪽 끝을 뒤로 되돌리면 안 돼요. 답은 2예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["z"],
-      expected: 1,
-      failureNote: "한 개뿐이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["dvdf"],
-      expected: 3,
-      failureNote: "두 번째 d를 만나면 첫 d 바로 뒤(v)부터 다시 시작해요. vdf로 3이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["abcdefghijklmnopqrstuvwxyz"],
-      expected: 26,
-      failureNote: "모두 다른 26종류라 전부 살 수 있어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: ["abcdefghijklmnopqrstuvwxyz".repeat(3846)],
-      expected: 26,
-      failureNote: "약 10만 개예요. 시작점마다 끝까지 다시 훑으면 느려요. 한 번 훑으며 왼쪽 끝을 옮기세요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => String.fromCharCode(97 + ((i * i + i) % 26))).join("")],
-      expected: 7,
-      failureNote: "10만 개, 같은 간식이 불규칙하게 다시 나와요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

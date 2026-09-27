@@ -1,4 +1,112 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 0],
+        [2, 3],
+      ],
+    ],
+    expected: true,
+    explanation: "0 → 1 → 2 → 0으로 한 바퀴 돌 수 있어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [1, 3],
+      ],
+    ],
+    expected: false,
+    explanation: "나뭇가지 모양이라 어디서 출발해도 왔던 길로만 돌아올 수 있어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, []],
+    expected: false,
+    failureNote: "쉼터 하나, 길이 없어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [2, [[0, 1]]],
+    expected: false,
+    failureNote:
+      "0 → 1 → 0은 같은 길을 두 번 걷는 거라 한 바퀴가 아니에요. 방금 온 쉼터를 '이미 방문했다'고 착각하면 틀려요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      6,
+      [
+        [0, 1],
+        [2, 3],
+        [3, 4],
+        [4, 2],
+      ],
+    ],
+    expected: true,
+    failureNote: "한 바퀴 코스가 0번과 떨어진 곳에 있어요. 모든 쉼터에서 탐색을 시작해야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [0, 1],
+        [2, 3],
+        [3, 4],
+        [4, 5],
+      ],
+    ],
+    expected: false,
+    failureNote: "떨어진 나뭇가지 두 개예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000, Array.from({ length: 999 }, (_, i) => [i, i + 1])],
+    expected: false,
+    failureNote: "쉼터 1,000개가 한 줄로 이어져 있어요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000, [...Array.from({ length: 999 }, (_, i) => [i, i + 1]), [999, 0]]],
+    expected: true,
+    failureNote: "한 줄 끝을 처음과 이어 커다란 한 바퀴가 됐어요.",
+  },
+  {
+    id: "hid-7",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000, Array.from({ length: 999 }, (_, i) => [((i * 38) % 999) + 1, 0])],
+    expected: false,
+    failureNote: "쉼터 0에 나머지가 모두 이어진 별 모양이에요.",
+  },
+]);
 
 export const dfsLoopTrail: Problem = {
   id: "c:dfs-loop-trail",
@@ -43,112 +151,9 @@ export const dfsLoopTrail: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 0],
-          [2, 3],
-        ],
-      ],
-      expected: true,
-      explanation: "0 → 1 → 2 → 0으로 한 바퀴 돌 수 있어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [1, 3],
-        ],
-      ],
-      expected: false,
-      explanation: "나뭇가지 모양이라 어디서 출발해도 왔던 길로만 돌아올 수 있어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, []],
-      expected: false,
-      failureNote: "쉼터 하나, 길이 없어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [2, [[0, 1]]],
-      expected: false,
-      failureNote:
-        "0 → 1 → 0은 같은 길을 두 번 걷는 거라 한 바퀴가 아니에요. 방금 온 쉼터를 '이미 방문했다'고 착각하면 틀려요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        6,
-        [
-          [0, 1],
-          [2, 3],
-          [3, 4],
-          [4, 2],
-        ],
-      ],
-      expected: true,
-      failureNote: "한 바퀴 코스가 0번과 떨어진 곳에 있어요. 모든 쉼터에서 탐색을 시작해야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [0, 1],
-          [2, 3],
-          [3, 4],
-          [4, 5],
-        ],
-      ],
-      expected: false,
-      failureNote: "떨어진 나뭇가지 두 개예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000, Array.from({ length: 999 }, (_, i) => [i, i + 1])],
-      expected: false,
-      failureNote: "쉼터 1,000개가 한 줄로 이어져 있어요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000, [...Array.from({ length: 999 }, (_, i) => [i, i + 1]), [999, 0]]],
-      expected: true,
-      failureNote: "한 줄 끝을 처음과 이어 커다란 한 바퀴가 됐어요.",
-    },
-    {
-      id: "hid-7",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000, Array.from({ length: 999 }, (_, i) => [((i * 38) % 999) + 1, 0])],
-      expected: false,
-      failureNote: "쉼터 0에 나머지가 모두 이어진 별 모양이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

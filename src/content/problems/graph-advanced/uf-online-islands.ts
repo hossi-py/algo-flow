@@ -1,4 +1,111 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      3,
+      3,
+      [
+        [0, 0],
+        [0, 1],
+        [1, 2],
+        [2, 1],
+      ],
+    ],
+    expected: [1, 1, 2, 3],
+    explanation: "(0, 1)은 (0, 0)과 붙어 여전히 1개, 그다음은 떨어진 땅이라 2, 3개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      1,
+      3,
+      [
+        [0, 0],
+        [0, 2],
+        [0, 1],
+      ],
+    ],
+    expected: [1, 2, 1],
+    explanation: "가운데 땅이 솟으면 두 섬이 합쳐져 [1, 2, 1]이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      2,
+      2,
+      [
+        [0, 0],
+        [0, 0],
+        [1, 1],
+        [0, 1],
+      ],
+    ],
+    expected: [1, 1, 2, 1],
+    failureNote: "같은 칸이 또 솟으면 그대로예요: [1, 1, 2, 1].",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      2,
+      2,
+      [
+        [0, 0],
+        [1, 1],
+      ],
+    ],
+    expected: [1, 2],
+    failureNote: "대각선은 이어진 게 아니라 [1, 2]예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      3,
+      3,
+      [
+        [0, 1],
+        [1, 0],
+        [1, 2],
+        [2, 1],
+        [1, 1],
+      ],
+    ],
+    expected: [1, 2, 3, 4, 1],
+    failureNote: "가운데가 솟으면 네 섬이 한 번에 합쳐져 [1, 2, 3, 4, 1]이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      200,
+      200,
+      Array.from({ length: 40000 }, (_, i) => [Math.floor(i / 200), i % 200]).filter(([r, c]) => (r + c) % 2 === 0),
+    ],
+    expected: Array.from({ length: 20000 }, (_, i) => i + 1),
+    failureNote: "체스판처럼 떨어진 땅 2만 개예요. 솟을 때마다 섬을 처음부터 세면 느려요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [200, 200, Array.from({ length: 40000 }, (_, i) => [Math.floor(i / 200), i % 200])],
+    expected: new Array(40000).fill(1),
+    failureNote: "4만 칸을 차례로 채워요. 합치기가 아주 많아요.",
+  },
+]);
 
 export const ufOnlineIslands: Problem = {
   id: "c:uf-online-islands",
@@ -46,111 +153,9 @@ export const ufOnlineIslands: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        3,
-        3,
-        [
-          [0, 0],
-          [0, 1],
-          [1, 2],
-          [2, 1],
-        ],
-      ],
-      expected: [1, 1, 2, 3],
-      explanation: "(0, 1)은 (0, 0)과 붙어 여전히 1개, 그다음은 떨어진 땅이라 2, 3개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        1,
-        3,
-        [
-          [0, 0],
-          [0, 2],
-          [0, 1],
-        ],
-      ],
-      expected: [1, 2, 1],
-      explanation: "가운데 땅이 솟으면 두 섬이 합쳐져 [1, 2, 1]이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        2,
-        2,
-        [
-          [0, 0],
-          [0, 0],
-          [1, 1],
-          [0, 1],
-        ],
-      ],
-      expected: [1, 1, 2, 1],
-      failureNote: "같은 칸이 또 솟으면 그대로예요: [1, 1, 2, 1].",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        2,
-        2,
-        [
-          [0, 0],
-          [1, 1],
-        ],
-      ],
-      expected: [1, 2],
-      failureNote: "대각선은 이어진 게 아니라 [1, 2]예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        3,
-        3,
-        [
-          [0, 1],
-          [1, 0],
-          [1, 2],
-          [2, 1],
-          [1, 1],
-        ],
-      ],
-      expected: [1, 2, 3, 4, 1],
-      failureNote: "가운데가 솟으면 네 섬이 한 번에 합쳐져 [1, 2, 3, 4, 1]이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        200,
-        200,
-        Array.from({ length: 40000 }, (_, i) => [Math.floor(i / 200), i % 200]).filter(([r, c]) => (r + c) % 2 === 0),
-      ],
-      expected: Array.from({ length: 20000 }, (_, i) => i + 1),
-      failureNote: "체스판처럼 떨어진 땅 2만 개예요. 솟을 때마다 섬을 처음부터 세면 느려요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [200, 200, Array.from({ length: 40000 }, (_, i) => [Math.floor(i / 200), i % 200])],
-      expected: new Array(40000).fill(1),
-      failureNote: "4만 칸을 차례로 채워요. 합치기가 아주 많아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

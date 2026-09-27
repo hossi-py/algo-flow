@@ -1,5 +1,84 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[2, 3, 5], 8],
+    expected: [
+      [2, 2, 2, 2],
+      [2, 3, 3],
+      [3, 5],
+    ],
+    explanation: "2를 네 번, 2 하나와 3 두 개, 3과 5. 모두 세 가지예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[4], 3],
+    expected: [],
+    explanation: "4점 스티커로는 3점을 만들 수 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[7, 3, 2], 7],
+    expected: [[2, 2, 3], [7]],
+    failureNote: "values가 정렬되어 있지 않아요. 조합 안도, 조합끼리도 정해진 순서로 담아야 해요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[2, 3], 5],
+    expected: [[2, 3]],
+    failureNote: "[2, 3]과 [3, 2]는 같은 조합이라 한 번만 넣어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[6, 4], 12],
+    expected: [
+      [4, 4, 4],
+      [6, 6],
+    ],
+    failureNote: "같은 스티커만 써도 되고 섞어도 돼요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5, 10], 1],
+    expected: [],
+    failureNote: "목표가 가장 작은 스티커보다 작아요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [[29, 2, 23, 3, 19, 5, 17, 7, 13, 11], 30],
+    expected: (() => {
+      const v = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
+      const out: number[][] = [];
+      const go = (s: number, r: number, p: number[]) => {
+        if (r === 0) {
+          out.push([...p]);
+          return;
+        }
+        for (let i = s; i < v.length && v[i] <= r; i++) go(i, r - v[i], [...p, v[i]]);
+      };
+      go(0, 30, []);
+      return out;
+    })(),
+    failureNote: "스티커 10종류로 30점을 만드는 조합 98가지예요.",
+  },
+]);
 
 export const backtrackingStickerScore: Problem = {
   id: "c:backtracking-sticker-score",
@@ -54,83 +133,9 @@ export const backtrackingStickerScore: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[2, 3, 5], 8],
-      expected: [
-        [2, 2, 2, 2],
-        [2, 3, 3],
-        [3, 5],
-      ],
-      explanation: "2를 네 번, 2 하나와 3 두 개, 3과 5. 모두 세 가지예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[4], 3],
-      expected: [],
-      explanation: "4점 스티커로는 3점을 만들 수 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[7, 3, 2], 7],
-      expected: [[2, 2, 3], [7]],
-      failureNote: "values가 정렬되어 있지 않아요. 조합 안도, 조합끼리도 정해진 순서로 담아야 해요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[2, 3], 5],
-      expected: [[2, 3]],
-      failureNote: "[2, 3]과 [3, 2]는 같은 조합이라 한 번만 넣어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[6, 4], 12],
-      expected: [
-        [4, 4, 4],
-        [6, 6],
-      ],
-      failureNote: "같은 스티커만 써도 되고 섞어도 돼요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5, 10], 1],
-      expected: [],
-      failureNote: "목표가 가장 작은 스티커보다 작아요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [[29, 2, 23, 3, 19, 5, 17, 7, 13, 11], 30],
-      expected: (() => {
-        const v = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
-        const out: number[][] = [];
-        const go = (s: number, r: number, p: number[]) => {
-          if (r === 0) {
-            out.push([...p]);
-            return;
-          }
-          for (let i = s; i < v.length && v[i] <= r; i++) go(i, r - v[i], [...p, v[i]]);
-        };
-        go(0, 30, []);
-        return out;
-      })(),
-      failureNote: "스티커 10종류로 30점을 만드는 조합 98가지예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

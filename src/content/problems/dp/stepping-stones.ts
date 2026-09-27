@@ -1,4 +1,57 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[10, 15, 20]],
+    expected: 15,
+    explanation: "1번 돌(15)에서 시작해 두 칸 뛰면 건너편이라 15예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 100, 1, 1, 1, 100, 1, 1, 100, 1]],
+    expected: 6,
+    explanation: "100인 돌을 모두 피해서 6이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5, 3]],
+    expected: 3,
+    failureNote: "1번 돌에서 시작해 한 칸 뛰면 건너편이라 3이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[0, 0, 0, 0]],
+    expected: 0,
+    failureNote: "모두 0이면 0이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 2, 100, 1]],
+    expected: 3,
+    failureNote:
+      "0번(1)이 더 싸 보여도, 1번(2)에서 시작해 3번(1)으로 두 칸 뛰면 3이라 더 적어요. 시작 돌도 두 가지를 모두 비교해야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i * 7919) % 1000)],
+    expected: 23025600,
+    failureNote: "돌 10만 개예요. 모든 뛰는 방법을 다 해 보면 시간 초과예요.",
+  },
+]);
 
 export const dpSteppingStones: Problem = {
   id: "c:dp-stepping-stones",
@@ -40,57 +93,9 @@ export const dpSteppingStones: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[10, 15, 20]],
-      expected: 15,
-      explanation: "1번 돌(15)에서 시작해 두 칸 뛰면 건너편이라 15예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 100, 1, 1, 1, 100, 1, 1, 100, 1]],
-      expected: 6,
-      explanation: "100인 돌을 모두 피해서 6이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5, 3]],
-      expected: 3,
-      failureNote: "1번 돌에서 시작해 한 칸 뛰면 건너편이라 3이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[0, 0, 0, 0]],
-      expected: 0,
-      failureNote: "모두 0이면 0이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 2, 100, 1]],
-      expected: 3,
-      failureNote:
-        "0번(1)이 더 싸 보여도, 1번(2)에서 시작해 3번(1)으로 두 칸 뛰면 3이라 더 적어요. 시작 돌도 두 가지를 모두 비교해야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i * 7919) % 1000)],
-      expected: 23025600,
-      failureNote: "돌 10만 개예요. 모든 뛰는 방법을 다 해 보면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

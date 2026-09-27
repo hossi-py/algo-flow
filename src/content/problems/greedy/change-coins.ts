@@ -1,5 +1,57 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[500, 100, 50, 10], 1260],
+    expected: 6,
+    explanation: "500×2, 100×2, 50×1, 10×1로 6개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[10, 50, 100, 500], 10],
+    expected: 1,
+    explanation: "10원 한 개예요. 동전이 작은 순으로 와도 큰 것부터 써요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 5, 25], 99],
+    expected: 11,
+    failureNote: "25×3, 5×4, 1×4로 11개예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[7], 49],
+    expected: 7,
+    failureNote: "동전이 한 종류면 49 ÷ 7 = 7개예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 2, 4, 8], 15],
+    expected: 4,
+    failureNote: "8 + 4 + 2 + 1로 4개예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [[10, 50, 100, 500, 1000, 5000, 10000, 50000], 999999990],
+    expected: 20018,
+    failureNote: "10억 가까운 금액이에요. 가장 작은 동전을 하나씩 빼 나가면 시간 초과예요. 나눗셈으로 한 번에 세요.",
+  },
+]);
 
 export const greedyChangeCoins: Problem = {
   id: "c:greedy-change-coins",
@@ -44,56 +96,9 @@ export const greedyChangeCoins: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[500, 100, 50, 10], 1260],
-      expected: 6,
-      explanation: "500×2, 100×2, 50×1, 10×1로 6개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[10, 50, 100, 500], 10],
-      expected: 1,
-      explanation: "10원 한 개예요. 동전이 작은 순으로 와도 큰 것부터 써요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 5, 25], 99],
-      expected: 11,
-      failureNote: "25×3, 5×4, 1×4로 11개예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[7], 49],
-      expected: 7,
-      failureNote: "동전이 한 종류면 49 ÷ 7 = 7개예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 2, 4, 8], 15],
-      expected: 4,
-      failureNote: "8 + 4 + 2 + 1로 4개예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [[10, 50, 100, 500, 1000, 5000, 10000, 50000], 999999990],
-      expected: 20018,
-      failureNote: "10억 가까운 금액이에요. 가장 작은 동전을 하나씩 빼 나가면 시간 초과예요. 나눗셈으로 한 번에 세요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

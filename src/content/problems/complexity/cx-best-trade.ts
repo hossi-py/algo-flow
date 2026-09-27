@@ -1,5 +1,58 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[7, 1, 5, 3, 6, 4]],
+    expected: 5,
+    explanation: "1에 사서 6에 팔면 5예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[7, 6, 4, 3, 1]],
+    expected: 0,
+    explanation: "계속 내려서 사지 않아요: 0.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5]],
+    expected: 0,
+    failureNote: "하루뿐이면 팔 날이 없어서 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[3, 8, 1, 4]],
+    expected: 5,
+    failureNote:
+      "가장 싼 1은 뒤에 있어서 1 → 4는 3뿐이에요. 3 → 8의 5가 더 커요. 가장 싼 날과 가장 비싼 날을 따로 고르면 틀려요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[2, 4, 1, 7]],
+    expected: 6,
+    failureNote: "1에 사서 7에 팔아 6이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 10000) + 1)],
+    expected: 9999,
+    failureNote: "10만 일이에요. 모든 두 날을 비교하면 약 50억 번이에요.",
+  },
+]);
 
 export const cxBestTrade: Problem = {
   id: "c:cx-best-trade",
@@ -41,57 +94,9 @@ export const cxBestTrade: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[7, 1, 5, 3, 6, 4]],
-      expected: 5,
-      explanation: "1에 사서 6에 팔면 5예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[7, 6, 4, 3, 1]],
-      expected: 0,
-      explanation: "계속 내려서 사지 않아요: 0.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5]],
-      expected: 0,
-      failureNote: "하루뿐이면 팔 날이 없어서 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[3, 8, 1, 4]],
-      expected: 5,
-      failureNote:
-        "가장 싼 1은 뒤에 있어서 1 → 4는 3뿐이에요. 3 → 8의 5가 더 커요. 가장 싼 날과 가장 비싼 날을 따로 고르면 틀려요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[2, 4, 1, 7]],
-      expected: 6,
-      failureNote: "1에 사서 7에 팔아 6이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 10000) + 1)],
-      expected: 9999,
-      failureNote: "10만 일이에요. 모든 두 날을 비교하면 약 50억 번이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,65 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [100, 37],
+    expected: 3,
+    explanation: "50(다운) → 25(업) → 37로 3번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [100, 50],
+    expected: 1,
+    explanation: "처음 부른 50이 정답이라 1번이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, 1],
+    expected: 1,
+    failureNote: "후보가 하나면 1번이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [100, 100],
+    expected: 7,
+    failureNote: "끝 숫자는 7번 만에 맞혀요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [100, 1],
+    expected: 6,
+    failureNote: "첫 숫자는 6번 만에 맞혀요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000000000, 1000000000],
+    expected: 30,
+    failureNote:
+      "10억 개 중에서도 30번이면 맞혀요. 하나씩 부르면 너무 오래 걸려요. (Java는 lo + hi가 int를 넘지 않게 조심하세요)",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [1000000000, 123456789],
+    expected: 29,
+    failureNote: "10억 범위의 아무 숫자예요.",
+  },
+]);
 
 export const binarySearchUpdown: Problem = {
   id: "c:binary-search-updown",
@@ -41,65 +102,9 @@ export const binarySearchUpdown: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [100, 37],
-      expected: 3,
-      explanation: "50(다운) → 25(업) → 37로 3번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [100, 50],
-      expected: 1,
-      explanation: "처음 부른 50이 정답이라 1번이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, 1],
-      expected: 1,
-      failureNote: "후보가 하나면 1번이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [100, 100],
-      expected: 7,
-      failureNote: "끝 숫자는 7번 만에 맞혀요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [100, 1],
-      expected: 6,
-      failureNote: "첫 숫자는 6번 만에 맞혀요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000000000, 1000000000],
-      expected: 30,
-      failureNote:
-        "10억 개 중에서도 30번이면 맞혀요. 하나씩 부르면 너무 오래 걸려요. (Java는 lo + hi가 int를 넘지 않게 조심하세요)",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [1000000000, 123456789],
-      expected: 29,
-      failureNote: "10억 범위의 아무 숫자예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

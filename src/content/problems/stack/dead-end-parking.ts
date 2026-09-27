@@ -1,5 +1,57 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["in 3", "in 7", "out", "in 5"]],
+    expected: [7, 5, 3],
+    explanation: "7이 먼저 나가요. 문을 닫을 때는 입구 쪽인 5, 그다음 3이 나가서 [7, 5, 3]이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["out", "in 1", "out", "out"]],
+    expected: [1],
+    explanation: "빈 골목의 out은 아무 일도 없어요. 1만 한 번 나가요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["in 1", "in 2", "in 3"]],
+    expected: [3, 2, 1],
+    failureNote: "out이 없어도 문을 닫을 때 모두 나가요. 입구 쪽(늦게 온 차)부터예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["in 4", "out", "in 8", "out", "in 6", "out"]],
+    expected: [4, 8, 6],
+    failureNote: "들어오자마자 나가면 들어온 순서 그대로예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["in 10", "in 20", "out", "out", "out", "in 30"]],
+    expected: [20, 10, 30],
+    failureNote: "세 번째 out은 빈 골목이라 무시해요. 30은 문 닫을 때 나가요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 1000 }, (_, i) => (i < 600 ? "in " + (i + 1) : "out"))],
+    expected: Array.from({ length: 600 }, (_, i) => 600 - i),
+    failureNote: "차 600대가 들어오고 400대가 나간 뒤, 나머지는 문 닫을 때 나가요.",
+  },
+]);
 
 export const stackDeadEndParking: Problem = {
   id: "c:stack-dead-end-parking",
@@ -51,56 +103,9 @@ export const stackDeadEndParking: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["in 3", "in 7", "out", "in 5"]],
-      expected: [7, 5, 3],
-      explanation: "7이 먼저 나가요. 문을 닫을 때는 입구 쪽인 5, 그다음 3이 나가서 [7, 5, 3]이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["out", "in 1", "out", "out"]],
-      expected: [1],
-      explanation: "빈 골목의 out은 아무 일도 없어요. 1만 한 번 나가요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["in 1", "in 2", "in 3"]],
-      expected: [3, 2, 1],
-      failureNote: "out이 없어도 문을 닫을 때 모두 나가요. 입구 쪽(늦게 온 차)부터예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["in 4", "out", "in 8", "out", "in 6", "out"]],
-      expected: [4, 8, 6],
-      failureNote: "들어오자마자 나가면 들어온 순서 그대로예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["in 10", "in 20", "out", "out", "out", "in 30"]],
-      expected: [20, 10, 30],
-      failureNote: "세 번째 out은 빈 골목이라 무시해요. 30은 문 닫을 때 나가요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 1000 }, (_, i) => (i < 600 ? "in " + (i + 1) : "out"))],
-      expected: Array.from({ length: 600 }, (_, i) => 600 - i),
-      failureNote: "차 600대가 들어오고 400대가 나간 뒤, 나머지는 문 닫을 때 나가요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

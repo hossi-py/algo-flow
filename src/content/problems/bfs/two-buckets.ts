@@ -1,4 +1,81 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [3, 5, 4],
+    expected: 6,
+    explanation:
+      "B 채우기(0,5) → B를 A에 붓기(3,2) → A 비우기(0,2) → B를 A에 붓기(2,0) → B 채우기(2,5) → B를 A에 붓기(3,4). 6번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [2, 4, 3],
+    expected: -1,
+    explanation: "2리터와 4리터로는 짝수 양만 만들 수 있어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [5, 7, 0],
+    expected: 0,
+    failureNote: "처음부터 0리터가 담겨 있어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [4, 9, 9],
+    expected: 1,
+    failureNote: "B를 채우기만 하면 돼요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [4, 9, 10],
+    expected: -1,
+    failureNote: "어느 물통에도 10리터는 담을 수 없어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [7, 11, 2],
+    expected: 14,
+    failureNote: "여러 번 붓고 비워야 해요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [6, 4, 2],
+    expected: 2,
+    failureNote: "A가 B보다 클 수도 있어요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [299, 300, 150],
+    expected: 596,
+    failureNote: "큰 물통 두 개로 596번이나 붓고 비워야 해요.",
+  },
+  {
+    id: "hid-7",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [300, 150, 100],
+    expected: -1,
+    failureNote: "만들 수 없는 양이라 갈 수 있는 상태를 모두 살펴본 뒤에야 -1인 걸 알아요.",
+  },
+]);
 
 export const bfsTwoBuckets: Problem = {
   id: "c:bfs-two-buckets",
@@ -44,81 +121,9 @@ export const bfsTwoBuckets: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [3, 5, 4],
-      expected: 6,
-      explanation:
-        "B 채우기(0,5) → B를 A에 붓기(3,2) → A 비우기(0,2) → B를 A에 붓기(2,0) → B 채우기(2,5) → B를 A에 붓기(3,4). 6번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [2, 4, 3],
-      expected: -1,
-      explanation: "2리터와 4리터로는 짝수 양만 만들 수 있어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [5, 7, 0],
-      expected: 0,
-      failureNote: "처음부터 0리터가 담겨 있어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [4, 9, 9],
-      expected: 1,
-      failureNote: "B를 채우기만 하면 돼요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [4, 9, 10],
-      expected: -1,
-      failureNote: "어느 물통에도 10리터는 담을 수 없어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [7, 11, 2],
-      expected: 14,
-      failureNote: "여러 번 붓고 비워야 해요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [6, 4, 2],
-      expected: 2,
-      failureNote: "A가 B보다 클 수도 있어요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [299, 300, 150],
-      expected: 596,
-      failureNote: "큰 물통 두 개로 596번이나 붓고 비워야 해요.",
-    },
-    {
-      id: "hid-7",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [300, 150, 100],
-      expected: -1,
-      failureNote: "만들 수 없는 양이라 갈 수 있는 상태를 모두 살펴본 뒤에야 -1인 걸 알아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

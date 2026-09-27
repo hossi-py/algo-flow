@@ -1,4 +1,74 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 2, 2, 7, 8], 3, 3, 2],
+    expected: [1, 1, 2, 3, 3],
+    explanation:
+      "시각 3의 1번 버스에는 먼저 온 두 명이 타고, 세 번째 사람은 시각 6의 2번 버스를 타요. 7, 8에 온 두 명은 시각 9의 3번 버스를 타요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[5, 5, 5], 1, 5, 2],
+    expected: [1, 1, -1],
+    explanation: "버스가 한 대뿐이라 세 번째 사람은 못 타요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[10], 2, 3, 1],
+    expected: [-1],
+    failureNote: "마지막 버스(시각 6)가 떠난 뒤에 도착했어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[3, 4], 2, 3, 5],
+    expected: [1, 2],
+    failureNote: "출발 시각에 딱 맞춰 도착하면 탈 수 있어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[0, 0, 0, 0, 0], 3, 1, 2],
+    expected: [1, 1, 2, 2, 3],
+    failureNote: "한꺼번에 온 사람들이 정원만큼 나눠 타요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 20, 21], 10, 2, 1],
+    expected: [1, 10, -1],
+    failureNote: "빈 버스가 여러 대 지나가요. 21에 온 사람은 마지막 버스(시각 20)를 놓쳐요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, () => 0), 100000, 1, 1],
+    expected: Array.from({ length: 100000 }, (_, i) => i + 1),
+    failureNote:
+      "10만 명이 한꺼번에 와서 한 명씩 버스를 타요. 줄 맨 앞을 지우는 데 O(N)이 들거나, 버스마다 모든 사람을 훑으면 시간 초과예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => i), 50000, 2, 2],
+    expected: Array.from({ length: 100000 }, (_, i) => Math.floor(i / 2) + 1),
+    failureNote: "1초마다 한 명씩 오고, 2초마다 버스가 두 명씩 태워 가요. 줄 앞의 한 명은 늘 다음 버스를 기다려요.",
+  },
+]);
 
 export const queueShuttleBus: Problem = {
   id: "c:queue-shuttle-bus",
@@ -69,74 +139,9 @@ export const queueShuttleBus: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 2, 2, 7, 8], 3, 3, 2],
-      expected: [1, 1, 2, 3, 3],
-      explanation:
-        "시각 3의 1번 버스에는 먼저 온 두 명이 타고, 세 번째 사람은 시각 6의 2번 버스를 타요. 7, 8에 온 두 명은 시각 9의 3번 버스를 타요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[5, 5, 5], 1, 5, 2],
-      expected: [1, 1, -1],
-      explanation: "버스가 한 대뿐이라 세 번째 사람은 못 타요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[10], 2, 3, 1],
-      expected: [-1],
-      failureNote: "마지막 버스(시각 6)가 떠난 뒤에 도착했어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[3, 4], 2, 3, 5],
-      expected: [1, 2],
-      failureNote: "출발 시각에 딱 맞춰 도착하면 탈 수 있어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[0, 0, 0, 0, 0], 3, 1, 2],
-      expected: [1, 1, 2, 2, 3],
-      failureNote: "한꺼번에 온 사람들이 정원만큼 나눠 타요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 20, 21], 10, 2, 1],
-      expected: [1, 10, -1],
-      failureNote: "빈 버스가 여러 대 지나가요. 21에 온 사람은 마지막 버스(시각 20)를 놓쳐요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, () => 0), 100000, 1, 1],
-      expected: Array.from({ length: 100000 }, (_, i) => i + 1),
-      failureNote:
-        "10만 명이 한꺼번에 와서 한 명씩 버스를 타요. 줄 맨 앞을 지우는 데 O(N)이 들거나, 버스마다 모든 사람을 훑으면 시간 초과예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => i), 50000, 2, 2],
-      expected: Array.from({ length: 100000 }, (_, i) => Math.floor(i / 2) + 1),
-      failureNote: "1초마다 한 명씩 오고, 2초마다 버스가 두 명씩 태워 가요. 줄 앞의 한 명은 늘 다음 버스를 기다려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

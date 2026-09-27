@@ -1,4 +1,69 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[6, 4, 3, 5], [13, 8, 6, 12], 7],
+    expected: 14,
+    explanation: "무게 4 + 3을 담으면 8 + 6 = 14가 가장 커요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[5], [10], 4],
+    expected: 0,
+    explanation: "하나도 못 담아서 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[1, 2], [5, 6], 0],
+    expected: 0,
+    failureNote: "한도가 0이면 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1], [10], 5],
+    expected: 10,
+    failureNote:
+      "같은 간식은 한 번만 담아요. 무게를 작은 쪽부터 돌면 같은 간식을 여러 번 담아 50이 나와요. 큰 쪽부터 돌아야 10이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[5, 4, 3], [10, 7, 7], 7],
+    expected: 14,
+    failureNote: "점수 대비 무게가 좋아 보이는 순서대로 고르면 손해일 수 있어요. 4 + 3으로 14예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[2, 3, 4], [3, 4, 5], 9],
+    expected: 12,
+    failureNote: "모두 담으면 무게 9, 점수 12예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 50 }, (_, i) => ((i * 37) % 97) + 20),
+      Array.from({ length: 50 }, (_, i) => ((i * 53) % 89) + 10),
+      10000,
+    ],
+    expected: 2680,
+    failureNote: "간식 50개예요. 담을지 말지 모든 경우는 2^50가지라 불가능해요.",
+  },
+]);
 
 export const dpPicnicBag: Problem = {
   id: "c:dp-picnic-bag",
@@ -48,69 +113,9 @@ export const dpPicnicBag: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[6, 4, 3, 5], [13, 8, 6, 12], 7],
-      expected: 14,
-      explanation: "무게 4 + 3을 담으면 8 + 6 = 14가 가장 커요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[5], [10], 4],
-      expected: 0,
-      explanation: "하나도 못 담아서 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[1, 2], [5, 6], 0],
-      expected: 0,
-      failureNote: "한도가 0이면 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1], [10], 5],
-      expected: 10,
-      failureNote:
-        "같은 간식은 한 번만 담아요. 무게를 작은 쪽부터 돌면 같은 간식을 여러 번 담아 50이 나와요. 큰 쪽부터 돌아야 10이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[5, 4, 3], [10, 7, 7], 7],
-      expected: 14,
-      failureNote: "점수 대비 무게가 좋아 보이는 순서대로 고르면 손해일 수 있어요. 4 + 3으로 14예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[2, 3, 4], [3, 4, 5], 9],
-      expected: 12,
-      failureNote: "모두 담으면 무게 9, 점수 12예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 50 }, (_, i) => ((i * 37) % 97) + 20),
-        Array.from({ length: 50 }, (_, i) => ((i * 53) % 89) + 10),
-        10000,
-      ],
-      expected: 2680,
-      failureNote: "간식 50개예요. 담을지 말지 모든 경우는 2^50가지라 불가능해요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 3000,
     compare: { type: "exact" },

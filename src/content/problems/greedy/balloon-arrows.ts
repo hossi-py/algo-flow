@@ -1,4 +1,85 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [10, 16],
+        [2, 8],
+        [1, 6],
+        [7, 12],
+      ],
+    ],
+    expected: 2,
+    explanation: "x = 6에서 [2, 8]과 [1, 6], x = 12에서 나머지 둘을 터뜨려 2개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      [
+        [1, 2],
+        [3, 4],
+        [5, 6],
+      ],
+    ],
+    expected: 3,
+    explanation: "하나도 안 겹쳐서 3개예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 2],
+        [2, 3],
+      ],
+    ],
+    expected: 1,
+    failureNote: "끝이 딱 닿으면(x = 2) 한 번에 둘 다 터져요. 1개예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[5, 5]]],
+    expected: 1,
+    failureNote: "점 하나짜리 풍선도 화살 1개예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 10],
+        [2, 3],
+        [4, 5],
+      ],
+    ],
+    expected: 2,
+    failureNote: "[1, 10]과 [2, 3]을 x = 3에서, [4, 5]를 x = 5에서 터뜨려 2개예요. 시작 순으로 보면 헷갈려요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100000 }, (_, i) => {
+        const l = (i * 104729) % 1000000;
+        return [l, l + ((i * 13) % 300)];
+      }),
+    ],
+    expected: 6891,
+    failureNote: "풍선 10만 개예요.",
+  },
+]);
 
 export const greedyBalloonArrows: Problem = {
   id: "c:greedy-balloon-arrows",
@@ -40,85 +121,9 @@ export const greedyBalloonArrows: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [10, 16],
-          [2, 8],
-          [1, 6],
-          [7, 12],
-        ],
-      ],
-      expected: 2,
-      explanation: "x = 6에서 [2, 8]과 [1, 6], x = 12에서 나머지 둘을 터뜨려 2개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        [
-          [1, 2],
-          [3, 4],
-          [5, 6],
-        ],
-      ],
-      expected: 3,
-      explanation: "하나도 안 겹쳐서 3개예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 2],
-          [2, 3],
-        ],
-      ],
-      expected: 1,
-      failureNote: "끝이 딱 닿으면(x = 2) 한 번에 둘 다 터져요. 1개예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[5, 5]]],
-      expected: 1,
-      failureNote: "점 하나짜리 풍선도 화살 1개예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 10],
-          [2, 3],
-          [4, 5],
-        ],
-      ],
-      expected: 2,
-      failureNote: "[1, 10]과 [2, 3]을 x = 3에서, [4, 5]를 x = 5에서 터뜨려 2개예요. 시작 순으로 보면 헷갈려요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100000 }, (_, i) => {
-          const l = (i * 104729) % 1000000;
-          return [l, l + ((i * 13) % 300)];
-        }),
-      ],
-      expected: 6891,
-      failureNote: "풍선 10만 개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

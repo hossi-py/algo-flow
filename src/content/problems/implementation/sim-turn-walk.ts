@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["FRFF"],
+    expected: [2, 1],
+    explanation: "북쪽으로 한 칸, 오른쪽으로 돌아 동쪽으로 두 칸: [2, 1].",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: ["LLFF"],
+    expected: [0, -2],
+    explanation: "두 번 왼쪽으로 돌면 남쪽이라 [0, −2]예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["RRRRF"],
+    expected: [0, 1],
+    failureNote: "네 번 돌면 다시 북쪽이라 [0, 1]이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["F"],
+    expected: [0, 1],
+    failureNote: "[0, 1]이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["FLFLFLF"],
+    expected: [0, 0],
+    failureNote: "정사각형을 돌아 제자리 [0, 0]이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["LF"],
+    expected: [-1, 0],
+    failureNote: "북쪽에서 왼쪽으로 돌면 서쪽이라 [−1, 0]이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => "FFRFLF"[(i * 31 + (i >> 5)) % 6]).join("")],
+    expected: [-38, -4],
+    failureNote: "명령 10만 개예요.",
+  },
+]);
 
 export const simTurnWalk: Problem = {
   id: "c:sim-turn-walk",
@@ -38,64 +98,9 @@ export const simTurnWalk: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["FRFF"],
-      expected: [2, 1],
-      explanation: "북쪽으로 한 칸, 오른쪽으로 돌아 동쪽으로 두 칸: [2, 1].",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: ["LLFF"],
-      expected: [0, -2],
-      explanation: "두 번 왼쪽으로 돌면 남쪽이라 [0, −2]예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["RRRRF"],
-      expected: [0, 1],
-      failureNote: "네 번 돌면 다시 북쪽이라 [0, 1]이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["F"],
-      expected: [0, 1],
-      failureNote: "[0, 1]이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["FLFLFLF"],
-      expected: [0, 0],
-      failureNote: "정사각형을 돌아 제자리 [0, 0]이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["LF"],
-      expected: [-1, 0],
-      failureNote: "북쪽에서 왼쪽으로 돌면 서쪽이라 [−1, 0]이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => "FFRFLF"[(i * 31 + (i >> 5)) % 6]).join("")],
-      expected: [-38, -4],
-      failureNote: "명령 10만 개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

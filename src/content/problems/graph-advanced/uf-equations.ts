@@ -1,4 +1,80 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["a==b", "b!=a"]],
+    expected: "NO",
+    explanation: "a와 b가 같으면서 다를 수는 없어서 NO예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [["b==a", "a==b"]],
+    expected: "YES",
+    explanation: "둘 다 같은 말이라 YES예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["a==b", "b==c", "a==c"]],
+    expected: "YES",
+    failureNote: "모두 같게 하면 돼요: YES.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["a==b", "b!=c", "c==a"]],
+    expected: "NO",
+    failureNote: "a = b = c가 되는데 b ≠ c라서 NO예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["a!=b", "b==c", "c==a"]],
+    expected: "NO",
+    failureNote: "'다르다'가 먼저 나와도 뒤의 '같다'로 a = b가 돼서 NO예요. 식을 순서대로 한 번만 보면 틀려요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["a!=b", "b!=c", "c!=a"]],
+    expected: "YES",
+    failureNote: "'다르다'는 이어지지 않아요. 셋을 모두 다르게 하면 돼서 YES예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["a!=a"]],
+    expected: "NO",
+    failureNote: "자기 자신과 다를 수는 없어서 NO예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      [
+        ...Array.from(
+          { length: 99999 },
+          (_, i) => String.fromCharCode(97 + (i % 26)) + "==" + String.fromCharCode(97 + ((i + 1) % 26)),
+        ),
+        "a!=z",
+      ],
+    ],
+    expected: "NO",
+    failureNote: "식 10만 개예요.",
+  },
+]);
 
 export const ufEquations: Problem = {
   id: "c:uf-equations",
@@ -40,80 +116,9 @@ export const ufEquations: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["a==b", "b!=a"]],
-      expected: "NO",
-      explanation: "a와 b가 같으면서 다를 수는 없어서 NO예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [["b==a", "a==b"]],
-      expected: "YES",
-      explanation: "둘 다 같은 말이라 YES예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["a==b", "b==c", "a==c"]],
-      expected: "YES",
-      failureNote: "모두 같게 하면 돼요: YES.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["a==b", "b!=c", "c==a"]],
-      expected: "NO",
-      failureNote: "a = b = c가 되는데 b ≠ c라서 NO예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["a!=b", "b==c", "c==a"]],
-      expected: "NO",
-      failureNote: "'다르다'가 먼저 나와도 뒤의 '같다'로 a = b가 돼서 NO예요. 식을 순서대로 한 번만 보면 틀려요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["a!=b", "b!=c", "c!=a"]],
-      expected: "YES",
-      failureNote: "'다르다'는 이어지지 않아요. 셋을 모두 다르게 하면 돼서 YES예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["a!=a"]],
-      expected: "NO",
-      failureNote: "자기 자신과 다를 수는 없어서 NO예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        [
-          ...Array.from(
-            { length: 99999 },
-            (_, i) => String.fromCharCode(97 + (i % 26)) + "==" + String.fromCharCode(97 + ((i + 1) % 26)),
-          ),
-          "a!=z",
-        ],
-      ],
-      expected: "NO",
-      failureNote: "식 10만 개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

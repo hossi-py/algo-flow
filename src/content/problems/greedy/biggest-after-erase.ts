@@ -1,5 +1,78 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["1924", 2],
+    expected: "94",
+    explanation: "1과 2를 지워 94예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: ["4177252841", 4],
+    expected: "775841",
+    explanation: "775841이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["1231234", 3],
+    expected: "3234",
+    failureNote: "3234예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["4321", 2],
+    expected: "43",
+    failureNote: "이미 내려가는 순서라 앞에서 지울 게 없어요. 남은 k만큼 뒤에서 지워 43이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["9999", 2],
+    expected: "99",
+    failureNote: "같은 숫자는 지울 이유가 없어요. 뒤에서 지워 99예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["10", 1],
+    expected: "1",
+    failureNote: "1을 남겨요. 답은 1이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => String((i * 7919) % 10)).join(""), 50000],
+    expected: (() => {
+      const s = Array.from({ length: 100000 }, (_, i) => String((i * 7919) % 10)).join("");
+      let k = 50000;
+      const st = [];
+      for (const d of s) {
+        while (k > 0 && st.length && st[st.length - 1] < d) {
+          st.pop();
+          k--;
+        }
+        st.push(d);
+      }
+      st.length -= k;
+      return st.join("");
+    })(),
+    failureNote: "10만 자리에서 5만 개를 지워요. 지울 숫자를 하나씩 모두 시도하면 시간 초과예요.",
+  },
+]);
 
 export const greedyBiggestAfterErase: Problem = {
   id: "c:greedy-biggest-after-erase",
@@ -38,77 +111,9 @@ export const greedyBiggestAfterErase: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["1924", 2],
-      expected: "94",
-      explanation: "1과 2를 지워 94예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: ["4177252841", 4],
-      expected: "775841",
-      explanation: "775841이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["1231234", 3],
-      expected: "3234",
-      failureNote: "3234예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["4321", 2],
-      expected: "43",
-      failureNote: "이미 내려가는 순서라 앞에서 지울 게 없어요. 남은 k만큼 뒤에서 지워 43이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["9999", 2],
-      expected: "99",
-      failureNote: "같은 숫자는 지울 이유가 없어요. 뒤에서 지워 99예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["10", 1],
-      expected: "1",
-      failureNote: "1을 남겨요. 답은 1이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => String((i * 7919) % 10)).join(""), 50000],
-      expected: (() => {
-        const s = Array.from({ length: 100000 }, (_, i) => String((i * 7919) % 10)).join("");
-        let k = 50000;
-        const st = [];
-        for (const d of s) {
-          while (k > 0 && st.length && st[st.length - 1] < d) {
-            st.pop();
-            k--;
-          }
-          st.push(d);
-        }
-        st.length -= k;
-        return st.join("");
-      })(),
-      failureNote: "10만 자리에서 5만 개를 지워요. 지울 숫자를 하나씩 모두 시도하면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

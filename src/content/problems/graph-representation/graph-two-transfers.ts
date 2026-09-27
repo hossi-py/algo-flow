@@ -1,4 +1,124 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [0, 1, 0],
+        [0, 0, 1],
+        [0, 0, 0],
+      ],
+    ],
+    expected: [
+      [0, 0, 1],
+      [0, 0, 0],
+      [0, 0, 0],
+    ],
+    explanation: "0 → 1 → 2로 두 번 타면 0에서 2에 가요. 0에서 1은 한 번에 가지만 두 번 타서는 못 가요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      [
+        [0, 1],
+        [1, 0],
+      ],
+    ],
+    expected: [
+      [1, 0],
+      [0, 1],
+    ],
+    explanation: "0 → 1 → 0으로 두 번 타면 제자리로 돌아와요. 그래서 대각선이 1이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[0]]],
+    expected: [[0]],
+    failureNote: "정류장이 하나뿐이고 버스가 없어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [0, 1, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 1],
+        [1, 0, 0, 0],
+      ],
+    ],
+    expected: [
+      [0, 0, 1, 0],
+      [0, 0, 0, 1],
+      [1, 0, 0, 0],
+      [0, 1, 0, 0],
+    ],
+    failureNote: "한 방향으로 도는 순환 노선이에요. 두 번 타면 두 칸 앞이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [0, 1, 1],
+        [0, 0, 0],
+        [0, 1, 0],
+      ],
+    ],
+    expected: [
+      [0, 1, 0],
+      [0, 0, 0],
+      [0, 0, 0],
+    ],
+    failureNote: "0에서 1은 직행도 있고 0 → 2 → 1도 있어요. 두 번 타서 갈 수 있는지만 봐요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [0, 1, 1],
+        [1, 0, 1],
+        [1, 1, 0],
+      ],
+    ],
+    expected: [
+      [1, 1, 1],
+      [1, 1, 1],
+      [1, 1, 1],
+    ],
+    failureNote: "모든 정류장이 서로 이어져 있으면 어디든 두 번 만에 가요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100 }, (_, i) => Array.from({ length: 100 }, (_, j) => (j === (i + 1) % 100 ? 1 : 0)))],
+    expected: Array.from({ length: 100 }, (_, i) =>
+      Array.from({ length: 100 }, (_, j) => (j === (i + 2) % 100 ? 1 : 0)),
+    ),
+    failureNote: "정류장 100개를 한 방향으로 도는 순환 노선이에요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100 }, (_, i) => Array.from({ length: 100 }, (_, j) => (i === j ? 0 : 1)))],
+    expected: Array.from({ length: 100 }, () => new Array(100).fill(1)),
+    failureNote: "정류장 100개가 모두 서로 이어져 있어요.",
+  },
+]);
 
 export const graphTwoTransfers: Problem = {
   id: "c:graph-two-transfers",
@@ -56,126 +176,9 @@ export const graphTwoTransfers: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [0, 1, 0],
-          [0, 0, 1],
-          [0, 0, 0],
-        ],
-      ],
-      expected: [
-        [0, 0, 1],
-        [0, 0, 0],
-        [0, 0, 0],
-      ],
-      explanation: "0 → 1 → 2로 두 번 타면 0에서 2에 가요. 0에서 1은 한 번에 가지만 두 번 타서는 못 가요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        [
-          [0, 1],
-          [1, 0],
-        ],
-      ],
-      expected: [
-        [1, 0],
-        [0, 1],
-      ],
-      explanation: "0 → 1 → 0으로 두 번 타면 제자리로 돌아와요. 그래서 대각선이 1이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[0]]],
-      expected: [[0]],
-      failureNote: "정류장이 하나뿐이고 버스가 없어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [0, 1, 0, 0],
-          [0, 0, 1, 0],
-          [0, 0, 0, 1],
-          [1, 0, 0, 0],
-        ],
-      ],
-      expected: [
-        [0, 0, 1, 0],
-        [0, 0, 0, 1],
-        [1, 0, 0, 0],
-        [0, 1, 0, 0],
-      ],
-      failureNote: "한 방향으로 도는 순환 노선이에요. 두 번 타면 두 칸 앞이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [0, 1, 1],
-          [0, 0, 0],
-          [0, 1, 0],
-        ],
-      ],
-      expected: [
-        [0, 1, 0],
-        [0, 0, 0],
-        [0, 0, 0],
-      ],
-      failureNote: "0에서 1은 직행도 있고 0 → 2 → 1도 있어요. 두 번 타서 갈 수 있는지만 봐요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [0, 1, 1],
-          [1, 0, 1],
-          [1, 1, 0],
-        ],
-      ],
-      expected: [
-        [1, 1, 1],
-        [1, 1, 1],
-        [1, 1, 1],
-      ],
-      failureNote: "모든 정류장이 서로 이어져 있으면 어디든 두 번 만에 가요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100 }, (_, i) => Array.from({ length: 100 }, (_, j) => (j === (i + 1) % 100 ? 1 : 0))),
-      ],
-      expected: Array.from({ length: 100 }, (_, i) =>
-        Array.from({ length: 100 }, (_, j) => (j === (i + 2) % 100 ? 1 : 0)),
-      ),
-      failureNote: "정류장 100개를 한 방향으로 도는 순환 노선이에요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100 }, (_, i) => Array.from({ length: 100 }, (_, j) => (i === j ? 0 : 1)))],
-      expected: Array.from({ length: 100 }, () => new Array(100).fill(1)),
-      failureNote: "정류장 100개가 모두 서로 이어져 있어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

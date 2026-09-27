@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[40, 3, 25, 11, 29]],
+    expected: 4,
+    explanation: "정렬하면 3, 11, 25, 29, 40. 이웃 사이 거리 중 25와 29 사이 4가 가장 작아요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[8, 8, 20]],
+    expected: 0,
+    explanation: "같은 자리에 두 그루면 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[0, 1000000000]],
+    expected: 1000000000,
+    failureNote: "두 그루뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[100, 1, 50, 99]],
+    expected: 1,
+    failureNote: "입력에서 옆에 있다고 가깝지 않아요. 정렬해야 99와 100이 이웃이 돼요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[10, 20, 30, 40]],
+    expected: 10,
+    failureNote: "모든 간격이 10이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[5, 1000, 3, 998, 7]],
+    expected: 2,
+    failureNote: "가장 작은 간격 2가 여러 군데(3과 5, 5와 7, 998과 1000) 있어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 100000) * 10000 + (i % 7))],
+    expected: 9997,
+    failureNote: "나무 10만 그루예요. 모든 쌍을 비교하면 약 50억 번이라 시간 초과예요.",
+  },
+]);
 
 export const sortingClosestGap: Problem = {
   id: "c:sorting-closest-gap",
@@ -40,64 +100,9 @@ export const sortingClosestGap: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[40, 3, 25, 11, 29]],
-      expected: 4,
-      explanation: "정렬하면 3, 11, 25, 29, 40. 이웃 사이 거리 중 25와 29 사이 4가 가장 작아요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[8, 8, 20]],
-      expected: 0,
-      explanation: "같은 자리에 두 그루면 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[0, 1000000000]],
-      expected: 1000000000,
-      failureNote: "두 그루뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[100, 1, 50, 99]],
-      expected: 1,
-      failureNote: "입력에서 옆에 있다고 가깝지 않아요. 정렬해야 99와 100이 이웃이 돼요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[10, 20, 30, 40]],
-      expected: 10,
-      failureNote: "모든 간격이 10이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[5, 1000, 3, 998, 7]],
-      expected: 2,
-      failureNote: "가장 작은 간격 2가 여러 군데(3과 5, 5와 7, 998과 1000) 있어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 100000) * 10000 + (i % 7))],
-      expected: 9997,
-      failureNote: "나무 10만 그루예요. 모든 쌍을 비교하면 약 50억 번이라 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

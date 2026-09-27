@@ -1,5 +1,65 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[3, 1, 2]],
+    expected: 2,
+    explanation: "3이 1, 2와 한 번씩 바꿔서 뒤로 가요. 2번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[1, 2, 3]],
+    expected: 0,
+    explanation: "이미 순서대로라 0번이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[4, 3, 2, 1]],
+    expected: 6,
+    failureNote: "완전히 거꾸로면 모든 쌍을 바꿔야 해서 6번이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[2, 1, 2, 1]],
+    expected: 3,
+    failureNote: "키가 같은 친구끼리는 바꾸지 않아요. 3번이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5]],
+    expected: 0,
+    failureNote: "혼자면 0번이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[2, 3, 8, 6, 1]],
+    expected: 5,
+    failureNote: "5번이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 1000 }, (_, i) => 1000 - i)],
+    expected: 499500,
+    failureNote: "1,000명이 거꾸로 서 있으면 499,500번이에요.",
+  },
+]);
 
 export const sortingAdjacentSwaps: Problem = {
   id: "c:sorting-adjacent-swaps",
@@ -41,64 +101,9 @@ export const sortingAdjacentSwaps: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[3, 1, 2]],
-      expected: 2,
-      explanation: "3이 1, 2와 한 번씩 바꿔서 뒤로 가요. 2번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[1, 2, 3]],
-      expected: 0,
-      explanation: "이미 순서대로라 0번이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[4, 3, 2, 1]],
-      expected: 6,
-      failureNote: "완전히 거꾸로면 모든 쌍을 바꿔야 해서 6번이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[2, 1, 2, 1]],
-      expected: 3,
-      failureNote: "키가 같은 친구끼리는 바꾸지 않아요. 3번이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5]],
-      expected: 0,
-      failureNote: "혼자면 0번이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[2, 3, 8, 6, 1]],
-      expected: 5,
-      failureNote: "5번이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 1000 }, (_, i) => 1000 - i)],
-      expected: 499500,
-      failureNote: "1,000명이 거꾸로 서 있으면 499,500번이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

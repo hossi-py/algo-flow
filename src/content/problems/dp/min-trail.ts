@@ -1,4 +1,68 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [1, 3, 1],
+        [1, 5, 1],
+        [4, 2, 1],
+      ],
+    ],
+    expected: 7,
+    explanation: "1 → 3 → 1 → 1 → 1 순서로 7이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[[5]]],
+    expected: 5,
+    explanation: "칸이 하나면 그 칸의 피로도예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[1, 2, 3]]],
+    expected: 6,
+    failureNote: "한 줄이면 모든 칸을 지나서 6이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[1], [2], [3]]],
+    expected: 6,
+    failureNote: "한 열이어도 6이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 1, 9],
+        [9, 1, 9],
+        [9, 1, 1],
+      ],
+    ],
+    expected: 5,
+    failureNote: "처음에 싼 쪽만 따라가면 막힐 수 있어요. 표를 채워서 비교하면 5예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 300 }, (_, r) => Array.from({ length: 300 }, (_, c) => (r * 31 + c * 17) % 100))],
+    expected: 21783,
+    failureNote: "300 × 300 지도예요. 모든 길을 비교하면 끝나지 않아요.",
+  },
+]);
 
 export const dpMinTrail: Problem = {
   id: "c:dp-min-trail",
@@ -40,68 +104,9 @@ export const dpMinTrail: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [1, 3, 1],
-          [1, 5, 1],
-          [4, 2, 1],
-        ],
-      ],
-      expected: 7,
-      explanation: "1 → 3 → 1 → 1 → 1 순서로 7이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[[5]]],
-      expected: 5,
-      explanation: "칸이 하나면 그 칸의 피로도예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[1, 2, 3]]],
-      expected: 6,
-      failureNote: "한 줄이면 모든 칸을 지나서 6이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[1], [2], [3]]],
-      expected: 6,
-      failureNote: "한 열이어도 6이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 1, 9],
-          [9, 1, 9],
-          [9, 1, 1],
-        ],
-      ],
-      expected: 5,
-      failureNote: "처음에 싼 쪽만 따라가면 막힐 수 있어요. 표를 채워서 비교하면 5예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 300 }, (_, r) => Array.from({ length: 300 }, (_, c) => (r * 31 + c * 17) % 100))],
-      expected: 21783,
-      failureNote: "300 × 300 지도예요. 모든 길을 비교하면 끝나지 않아요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

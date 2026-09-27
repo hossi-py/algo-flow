@@ -1,4 +1,67 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[152, 140, 165, 148]],
+    expected: [1, 3, 0, 2],
+    explanation: "140(1번), 148(3번), 152(0번), 165(2번) 순서예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [[150, 145, 150, 145]],
+    expected: [1, 3, 0, 2],
+    explanation: "145가 두 명(1번, 3번), 150이 두 명(0번, 2번)이에요. 키가 같으면 번호가 작은 학생이 앞이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[170]],
+    expected: [0],
+    failureNote: "한 명이면 [0]이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[120, 130, 140]],
+    expected: [0, 1, 2],
+    failureNote: "이미 키 순서로 서 있어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[200, 190, 180, 170]],
+    expected: [3, 2, 1, 0],
+    failureNote: "거꾸로 서 있으면 번호도 거꾸로예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[160, 160, 160]],
+    expected: [0, 1, 2],
+    failureNote: "모두 키가 같으면 번호 순서 그대로예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => 100 + ((i * 7919) % 100))],
+    expected: (() => {
+      const h = Array.from({ length: 100000 }, (_, i) => 100 + ((i * 7919) % 100));
+      return h.map((_, i) => i).sort((a, b) => h[a] - h[b] || a - b);
+    })(),
+    failureNote: "학생 10만 명이에요. 가장 작은 학생을 매번 처음부터 찾으면(O(N²)) 시간 초과예요. 내장 정렬을 쓰세요.",
+  },
+]);
 
 export const sortingHeightOrder: Problem = {
   id: "c:sorting-height-order",
@@ -40,68 +103,9 @@ export const sortingHeightOrder: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[152, 140, 165, 148]],
-      expected: [1, 3, 0, 2],
-      explanation: "140(1번), 148(3번), 152(0번), 165(2번) 순서예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [[150, 145, 150, 145]],
-      expected: [1, 3, 0, 2],
-      explanation: "145가 두 명(1번, 3번), 150이 두 명(0번, 2번)이에요. 키가 같으면 번호가 작은 학생이 앞이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[170]],
-      expected: [0],
-      failureNote: "한 명이면 [0]이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[120, 130, 140]],
-      expected: [0, 1, 2],
-      failureNote: "이미 키 순서로 서 있어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[200, 190, 180, 170]],
-      expected: [3, 2, 1, 0],
-      failureNote: "거꾸로 서 있으면 번호도 거꾸로예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[160, 160, 160]],
-      expected: [0, 1, 2],
-      failureNote: "모두 키가 같으면 번호 순서 그대로예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => 100 + ((i * 7919) % 100))],
-      expected: (() => {
-        const h = Array.from({ length: 100000 }, (_, i) => 100 + ((i * 7919) % 100));
-        return h.map((_, i) => i).sort((a, b) => h[a] - h[b] || a - b);
-      })(),
-      failureNote:
-        "학생 10만 명이에요. 가장 작은 학생을 매번 처음부터 찾으면(O(N²)) 시간 초과예요. 내장 정렬을 쓰세요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

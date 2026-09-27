@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 2, 3], 2],
+    expected: 6,
+    explanation: "12, 13, 21, 23, 31, 32로 6개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [[1, 1, 2], 2],
+    expected: 3,
+    explanation: "11, 12, 21 세 개예요. 1 카드 두 장을 바꿔 놓아도 같은 수라 한 번만 세요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[0, 1, 2], 3],
+    expected: 4,
+    failureNote: "0으로 시작하는 012, 021은 빼요. 102, 120, 201, 210으로 4개예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[0], 1],
+    expected: 0,
+    failureNote: "0 한 장뿐이라 만들 수 있는 수가 없어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[7, 7, 7, 7], 4],
+    expected: 1,
+    failureNote: "모두 같은 카드면 7777 하나예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[5, 0, 5, 0], 2],
+    expected: 2,
+    failureNote: "50, 55 두 개예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [[1, 2, 3, 4, 5, 6, 7, 8], 8],
+    expected: 40320,
+    failureNote: "8장을 모두 늘어놓는 40,320가지예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [[0, 0, 1, 1, 2, 2, 3, 3], 6],
+    expected: 1080,
+    failureNote: "같은 카드가 많고 0도 섞여 있어요.",
+  },
+]);
 
 export const backtrackingNumberCards: Problem = {
   id: "c:backtracking-number-cards",
@@ -39,72 +107,9 @@ export const backtrackingNumberCards: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 2, 3], 2],
-      expected: 6,
-      explanation: "12, 13, 21, 23, 31, 32로 6개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [[1, 1, 2], 2],
-      expected: 3,
-      explanation: "11, 12, 21 세 개예요. 1 카드 두 장을 바꿔 놓아도 같은 수라 한 번만 세요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[0, 1, 2], 3],
-      expected: 4,
-      failureNote: "0으로 시작하는 012, 021은 빼요. 102, 120, 201, 210으로 4개예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[0], 1],
-      expected: 0,
-      failureNote: "0 한 장뿐이라 만들 수 있는 수가 없어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[7, 7, 7, 7], 4],
-      expected: 1,
-      failureNote: "모두 같은 카드면 7777 하나예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[5, 0, 5, 0], 2],
-      expected: 2,
-      failureNote: "50, 55 두 개예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [[1, 2, 3, 4, 5, 6, 7, 8], 8],
-      expected: 40320,
-      failureNote: "8장을 모두 늘어놓는 40,320가지예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [[0, 0, 1, 1, 2, 2, 3, 3], 6],
-      expected: 1080,
-      failureNote: "같은 카드가 많고 0도 섞여 있어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

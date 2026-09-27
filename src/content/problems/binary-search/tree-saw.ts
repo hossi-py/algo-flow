@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[20, 15, 10, 17], 7],
+    expected: 15,
+    explanation: "H = 15면 5 + 0 + 0 + 2 = 7이에요. 16이면 4 + 1 = 5라 모자라요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[10], 10],
+    expected: 0,
+    explanation: "나무를 통째로 가져가야 해서 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[10], 1],
+    expected: 9,
+    failureNote: "1만 가져가면 되니까 9예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[4, 42, 40, 26, 46], 20],
+    expected: 36,
+    failureNote: "H = 36이면 6 + 4 + 10 = 20으로 딱 맞아요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[5, 5, 5, 5], 8],
+    expected: 3,
+    failureNote: "H = 3이면 2씩 4그루로 8이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 10000 }, (_, i) => ((i * 7919) % 1000000000) + 1), 2000000000],
+    expected: 73557897,
+    failureNote: "나무 1만 그루, 높이 최대 10억이에요. 높이를 하나씩 내려 보면 시간 초과예요. (Java는 합을 long으로)",
+  },
+]);
 
 export const binarySearchTreeSaw: Problem = {
   id: "c:binary-search-tree-saw",
@@ -41,56 +93,9 @@ export const binarySearchTreeSaw: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[20, 15, 10, 17], 7],
-      expected: 15,
-      explanation: "H = 15면 5 + 0 + 0 + 2 = 7이에요. 16이면 4 + 1 = 5라 모자라요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[10], 10],
-      expected: 0,
-      explanation: "나무를 통째로 가져가야 해서 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[10], 1],
-      expected: 9,
-      failureNote: "1만 가져가면 되니까 9예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[4, 42, 40, 26, 46], 20],
-      expected: 36,
-      failureNote: "H = 36이면 6 + 4 + 10 = 20으로 딱 맞아요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[5, 5, 5, 5], 8],
-      expected: 3,
-      failureNote: "H = 3이면 2씩 4그루로 8이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 10000 }, (_, i) => ((i * 7919) % 1000000000) + 1), 2000000000],
-      expected: 73557897,
-      failureNote: "나무 1만 그루, 높이 최대 10억이에요. 높이를 하나씩 내려 보면 시간 초과예요. (Java는 합을 long으로)",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

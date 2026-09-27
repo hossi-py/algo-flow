@@ -1,4 +1,80 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [0, 30],
+        [5, 10],
+        [15, 20],
+      ],
+    ],
+    expected: 2,
+    explanation: "[0, 30] 동안 [5, 10]과 [15, 20]이 차례로 열려요. 동시에 최대 2개라 2개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      [
+        [1, 5],
+        [5, 9],
+      ],
+    ],
+    expected: 1,
+    explanation: "5시에 끝나고 5시에 시작하면 같은 방을 써요. 1개예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[2, 3]]],
+    expected: 1,
+    failureNote: "회의 하나면 1개예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [1, 10],
+        [2, 9],
+        [3, 8],
+      ],
+    ],
+    expected: 3,
+    failureNote: "셋이 모두 겹쳐요. 3개예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [4, 6],
+        [1, 4],
+        [6, 8],
+        [2, 5],
+      ],
+    ],
+    expected: 2,
+    failureNote: "같은 시각에 끝과 시작이 겹치면 끝을 먼저 처리해야 해요. 2개예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => [(i * 7919) % 100000, ((i * 7919) % 100000) + 1000])],
+    expected: 1000,
+    failureNote: "회의 10만 개예요. 시각마다 열린 회의를 모두 세면 시간 초과예요.",
+  },
+]);
 
 export const sortingMeetingRooms: Problem = {
   id: "c:sorting-meeting-rooms",
@@ -40,80 +116,9 @@ export const sortingMeetingRooms: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [0, 30],
-          [5, 10],
-          [15, 20],
-        ],
-      ],
-      expected: 2,
-      explanation: "[0, 30] 동안 [5, 10]과 [15, 20]이 차례로 열려요. 동시에 최대 2개라 2개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        [
-          [1, 5],
-          [5, 9],
-        ],
-      ],
-      expected: 1,
-      explanation: "5시에 끝나고 5시에 시작하면 같은 방을 써요. 1개예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[2, 3]]],
-      expected: 1,
-      failureNote: "회의 하나면 1개예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [1, 10],
-          [2, 9],
-          [3, 8],
-        ],
-      ],
-      expected: 3,
-      failureNote: "셋이 모두 겹쳐요. 3개예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [4, 6],
-          [1, 4],
-          [6, 8],
-          [2, 5],
-        ],
-      ],
-      expected: 2,
-      failureNote: "같은 시각에 끝과 시작이 겹치면 끝을 먼저 처리해야 해요. 2개예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => [(i * 7919) % 100000, ((i * 7919) % 100000) + 1000])],
-      expected: 1000,
-      failureNote: "회의 10만 개예요. 시각마다 열린 회의를 모두 세면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 3000,
     compare: { type: "exact" },

@@ -1,5 +1,66 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["arrive mina", "arrive jun", "serve", "arrive hana", "serve", "serve"]],
+    expected: ["mina", "jun", "hana"],
+    explanation: "먼저 선 mina, jun이 먼저 받고, 나중에 온 hana가 마지막이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["serve", "arrive toto", "serve", "serve"]],
+    expected: ["toto"],
+    explanation: "줄이 비어 있을 때의 serve는 무시돼요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["arrive a", "arrive b"]],
+    expected: [],
+    failureNote: "아무도 받지 못했어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["arrive a", "serve", "arrive a", "arrive b", "serve"]],
+    expected: ["a", "a"],
+    failureNote: "같은 이름의 손님이 다시 줄을 설 수 있어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["arrive x", "arrive y", "arrive z", "serve", "serve", "serve"]],
+    expected: ["x", "y", "z"],
+    failureNote: "세 명이 온 순서 그대로 받아요. 스택처럼 거꾸로 나가면 안 돼요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["arrive p", "serve", "arrive q", "serve", "arrive r", "serve"]],
+    expected: ["p", "q", "r"],
+    failureNote: "오자마자 바로 받아요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 999 }, (_, i) => (i % 3 === 2 ? "serve" : `arrive c${i % 10}`))],
+    // prettier-ignore
+    expected: ["c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8"],
+    failureNote: "기록이 999개예요.",
+  },
+]);
 
 export const queueBakeryLine: Problem = {
   id: "c:queue-bakery-line",
@@ -49,65 +110,9 @@ export const queueBakeryLine: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["arrive mina", "arrive jun", "serve", "arrive hana", "serve", "serve"]],
-      expected: ["mina", "jun", "hana"],
-      explanation: "먼저 선 mina, jun이 먼저 받고, 나중에 온 hana가 마지막이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["serve", "arrive toto", "serve", "serve"]],
-      expected: ["toto"],
-      explanation: "줄이 비어 있을 때의 serve는 무시돼요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["arrive a", "arrive b"]],
-      expected: [],
-      failureNote: "아무도 받지 못했어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["arrive a", "serve", "arrive a", "arrive b", "serve"]],
-      expected: ["a", "a"],
-      failureNote: "같은 이름의 손님이 다시 줄을 설 수 있어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["arrive x", "arrive y", "arrive z", "serve", "serve", "serve"]],
-      expected: ["x", "y", "z"],
-      failureNote: "세 명이 온 순서 그대로 받아요. 스택처럼 거꾸로 나가면 안 돼요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["arrive p", "serve", "arrive q", "serve", "arrive r", "serve"]],
-      expected: ["p", "q", "r"],
-      failureNote: "오자마자 바로 받아요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 999 }, (_, i) => (i % 3 === 2 ? "serve" : `arrive c${i % 10}`))],
-      // prettier-ignore
-      expected: ["c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8","c9","c1","c2","c4","c5","c7","c8","c0","c1","c3","c4","c6","c7","c9","c0","c2","c3","c5","c6","c8"],
-      failureNote: "기록이 999개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

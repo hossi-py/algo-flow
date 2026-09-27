@@ -1,4 +1,88 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["RPP", "PP.", ".PP"]],
+    expected: 4,
+    explanation: "1일째 (0,1)(1,0), 2일째 (0,2)(1,1), 3일째 (2,1), 4일째 (2,2)가 알게 돼요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [["RPPPR"]],
+    expected: 2,
+    explanation: "양 끝에서 동시에 퍼져서 2일이면 가운데까지 닿아요. 한쪽씩 따로 계산하면 안 돼요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["R.R"]],
+    expected: 0,
+    failureNote: "모르는 주민이 없으면 0일이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["RP.P"]],
+    expected: -1,
+    failureNote: "빈 땅 너머의 주민은 끝까지 몰라요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["PPP"]],
+    expected: -1,
+    failureNote: "소문을 아는 사람이 아무도 없어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["R..", ".P.", "..R"]],
+    expected: -1,
+    failureNote: "가운데 주민은 누구와도 붙어 있지 않아요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["PPPP", "PRPP", "PPPP", "PPPR"]],
+    expected: 3,
+    failureNote: "두 곳에서 동시에 퍼져요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100 }, (_, r) =>
+        Array.from({ length: 100 }, (_, c) => (r === 0 && c === 0 ? "R" : "P")).join(""),
+      ),
+    ],
+    expected: 198,
+    failureNote: "100×100 마을의 한 구석에서 퍼져요.",
+  },
+  {
+    id: "hid-7",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100 }, (_, r) =>
+        Array.from({ length: 100 }, (_, c) => ((r * 100 + c) % 3 === 0 ? "R" : "P")).join(""),
+      ),
+    ],
+    expected: 1,
+    failureNote: "소문을 아는 주민이 3,000명 넘게 흩어져 있어요. 한 명씩 따로 BFS를 돌리면 너무 느려요.",
+  },
+]);
 
 export const bfsRumorDays: Problem = {
   id: "c:bfs-rumor-days",
@@ -42,88 +126,9 @@ export const bfsRumorDays: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["RPP", "PP.", ".PP"]],
-      expected: 4,
-      explanation: "1일째 (0,1)(1,0), 2일째 (0,2)(1,1), 3일째 (2,1), 4일째 (2,2)가 알게 돼요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [["RPPPR"]],
-      expected: 2,
-      explanation: "양 끝에서 동시에 퍼져서 2일이면 가운데까지 닿아요. 한쪽씩 따로 계산하면 안 돼요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["R.R"]],
-      expected: 0,
-      failureNote: "모르는 주민이 없으면 0일이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["RP.P"]],
-      expected: -1,
-      failureNote: "빈 땅 너머의 주민은 끝까지 몰라요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["PPP"]],
-      expected: -1,
-      failureNote: "소문을 아는 사람이 아무도 없어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["R..", ".P.", "..R"]],
-      expected: -1,
-      failureNote: "가운데 주민은 누구와도 붙어 있지 않아요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["PPPP", "PRPP", "PPPP", "PPPR"]],
-      expected: 3,
-      failureNote: "두 곳에서 동시에 퍼져요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100 }, (_, r) =>
-          Array.from({ length: 100 }, (_, c) => (r === 0 && c === 0 ? "R" : "P")).join(""),
-        ),
-      ],
-      expected: 198,
-      failureNote: "100×100 마을의 한 구석에서 퍼져요.",
-    },
-    {
-      id: "hid-7",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100 }, (_, r) =>
-          Array.from({ length: 100 }, (_, c) => ((r * 100 + c) % 3 === 0 ? "R" : "P")).join(""),
-        ),
-      ],
-      expected: 1,
-      failureNote: "소문을 아는 주민이 3,000명 넘게 흩어져 있어요. 한 명씩 따로 BFS를 돌리면 너무 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,5 +1,66 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [1, 4, 7],
+      [2, 3, 9],
+    ],
+    expected: [1, 2, 3, 4, 7, 9],
+    explanation: "맨 앞끼리 비교하며 1, 2, 3, 4, 7, 9 순서로 합쳐요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[], [5, 6]],
+    expected: [5, 6],
+    explanation: "한쪽이 비어 있으면 다른 쪽 그대로예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[], []],
+    expected: [],
+    failureNote: "둘 다 비어 있으면 빈 리스트예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [2, 2, 5],
+      [2, 5, 5],
+    ],
+    expected: [2, 2, 2, 5, 5, 5],
+    failureNote: "같은 번호도 모두 남겨요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [1, 2, 3],
+      [10, 20],
+    ],
+    expected: [1, 2, 3, 10, 20],
+    failureNote: "한쪽이 먼저 끝나면, 남은 쪽을 그대로 뒤에 붙여요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => 2 * i), Array.from({ length: 100000 }, (_, i) => 2 * i + 1)],
+    expected: Array.from({ length: 200000 }, (_, i) => i),
+    failureNote: "책이 20만 권이에요. 합칠 때마다 맞는 자리를 처음부터 찾아 끼우면(O(N²)) 시간 초과예요.",
+  },
+]);
 
 export const sortingMergeShelves: Problem = {
   id: "c:sorting-merge-shelves",
@@ -38,65 +99,9 @@ export const sortingMergeShelves: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [1, 4, 7],
-        [2, 3, 9],
-      ],
-      expected: [1, 2, 3, 4, 7, 9],
-      explanation: "맨 앞끼리 비교하며 1, 2, 3, 4, 7, 9 순서로 합쳐요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[], [5, 6]],
-      expected: [5, 6],
-      explanation: "한쪽이 비어 있으면 다른 쪽 그대로예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[], []],
-      expected: [],
-      failureNote: "둘 다 비어 있으면 빈 리스트예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [2, 2, 5],
-        [2, 5, 5],
-      ],
-      expected: [2, 2, 2, 5, 5, 5],
-      failureNote: "같은 번호도 모두 남겨요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [1, 2, 3],
-        [10, 20],
-      ],
-      expected: [1, 2, 3, 10, 20],
-      failureNote: "한쪽이 먼저 끝나면, 남은 쪽을 그대로 뒤에 붙여요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => 2 * i), Array.from({ length: 100000 }, (_, i) => 2 * i + 1)],
-      expected: Array.from({ length: 200000 }, (_, i) => i),
-      failureNote: "책이 20만 권이에요. 합칠 때마다 맞는 자리를 처음부터 찾아 끼우면(O(N²)) 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

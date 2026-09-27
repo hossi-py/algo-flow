@@ -1,4 +1,100 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      3,
+      [
+        [1, 0],
+        [2, 1],
+      ],
+    ],
+    expected: [2, 0, 1],
+    explanation: "0번은 1번으로 건너갔다가 2번으로 가요: [2, 0, 1].",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [2, []],
+    expected: [0, 1],
+    explanation: "가로줄이 없으면 그대로 [0, 1]이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      2,
+      [
+        [5, 0],
+        [1, 0],
+      ],
+    ],
+    expected: [0, 1],
+    failureNote: "가로줄은 높이 순서로 만나요. 두 번 건너면 제자리라 [0, 1]이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [1, 0],
+        [1, 2],
+      ],
+    ],
+    expected: [1, 0, 3, 2],
+    failureNote: "같은 높이의 두 가로줄을 동시에 건너 [1, 0, 3, 2]예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      3,
+      [
+        [10, 1],
+        [3, 0],
+        [1000000000, 0],
+      ],
+    ],
+    expected: [2, 1, 0],
+    failureNote: "높이 3, 10, 10억 순서로 만나요. 0번은 1 → 2, 1번은 0 → 1, 2번은 1 → 0으로 가서 [2, 1, 0]이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      1000,
+      Array.from({ length: 50000 }, (_, i) => {
+        const row = ((i * 7919) % 50000) + 1;
+        return [row, (row * 31) % 999];
+      }),
+    ],
+    expected: (() => {
+      const at = Array.from({ length: 1000 }, (_, i) => i);
+      for (let row = 1; row <= 50000; row++) {
+        const c = (row * 31) % 999;
+        const t = at[c];
+        at[c] = at[c + 1];
+        at[c + 1] = t;
+      }
+      const res = new Array(1000).fill(0);
+      at.forEach((s, c) => {
+        res[s] = c;
+      });
+      return res;
+    })(),
+    failureNote: "세로줄 1,000개, 가로줄 5만 개예요. 출발점마다 가로줄을 모두 훑으면 5천만 번이에요.",
+  },
+]);
 
 export const simLadder: Problem = {
   id: "c:sim-ladder",
@@ -43,100 +139,9 @@ export const simLadder: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        3,
-        [
-          [1, 0],
-          [2, 1],
-        ],
-      ],
-      expected: [2, 0, 1],
-      explanation: "0번은 1번으로 건너갔다가 2번으로 가요: [2, 0, 1].",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [2, []],
-      expected: [0, 1],
-      explanation: "가로줄이 없으면 그대로 [0, 1]이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        2,
-        [
-          [5, 0],
-          [1, 0],
-        ],
-      ],
-      expected: [0, 1],
-      failureNote: "가로줄은 높이 순서로 만나요. 두 번 건너면 제자리라 [0, 1]이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [1, 0],
-          [1, 2],
-        ],
-      ],
-      expected: [1, 0, 3, 2],
-      failureNote: "같은 높이의 두 가로줄을 동시에 건너 [1, 0, 3, 2]예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        3,
-        [
-          [10, 1],
-          [3, 0],
-          [1000000000, 0],
-        ],
-      ],
-      expected: [2, 1, 0],
-      failureNote: "높이 3, 10, 10억 순서로 만나요. 0번은 1 → 2, 1번은 0 → 1, 2번은 1 → 0으로 가서 [2, 1, 0]이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        1000,
-        Array.from({ length: 50000 }, (_, i) => {
-          const row = ((i * 7919) % 50000) + 1;
-          return [row, (row * 31) % 999];
-        }),
-      ],
-      expected: (() => {
-        const at = Array.from({ length: 1000 }, (_, i) => i);
-        for (let row = 1; row <= 50000; row++) {
-          const c = (row * 31) % 999;
-          const t = at[c];
-          at[c] = at[c + 1];
-          at[c + 1] = t;
-        }
-        const res = new Array(1000).fill(0);
-        at.forEach((s, c) => {
-          res[s] = c;
-        });
-        return res;
-      })(),
-      failureNote: "세로줄 1,000개, 가로줄 5만 개예요. 출발점마다 가로줄을 모두 훑으면 5천만 번이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

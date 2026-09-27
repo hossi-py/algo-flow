@@ -1,4 +1,106 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [0, 1, 1],
+        [0, 0, 1],
+        [1, 0, 0],
+      ],
+    ],
+    expected: [[1, 2], [2], [0]],
+    explanation: "0번 → 1, 2번 / 1번 → 2번 / 2번 → 0번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      [
+        [0, 0],
+        [0, 0],
+      ],
+    ],
+    expected: [[], []],
+    explanation: "버스가 하나도 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[0]]],
+    expected: [[]],
+    failureNote: "정류장이 하나뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [
+        [0, 1],
+        [0, 0],
+      ],
+    ],
+    expected: [[1], []],
+    failureNote: "0 → 1은 있지만 1 → 0은 없어요. 행이 '출발'이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [0, 1, 1, 1],
+        [1, 0, 1, 1],
+        [1, 1, 0, 1],
+        [1, 1, 1, 0],
+      ],
+    ],
+    expected: [
+      [1, 2, 3],
+      [0, 2, 3],
+      [0, 1, 3],
+      [0, 1, 2],
+    ],
+    failureNote: "모든 정류장끼리 오갈 수 있어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0],
+        [0, 0, 1, 0, 0],
+      ],
+    ],
+    expected: [[3], [4], [0], [1], [2]],
+    failureNote: "정류장을 한 바퀴 도는 노선이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 200 }, (_, i) =>
+        Array.from({ length: 200 }, (_, j) => (i !== j && (i + j) % 3 === 0 ? 1 : 0)),
+      ),
+    ],
+    expected: Array.from({ length: 200 }, (_, i) =>
+      Array.from({ length: 200 }, (_, j) => j).filter((j) => i !== j && (i + j) % 3 === 0),
+    ),
+    failureNote: "정류장 200개의 표예요.",
+  },
+]);
 
 export const graphMatrixToList: Problem = {
   id: "c:graph-matrix-to-list",
@@ -45,106 +147,9 @@ export const graphMatrixToList: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [0, 1, 1],
-          [0, 0, 1],
-          [1, 0, 0],
-        ],
-      ],
-      expected: [[1, 2], [2], [0]],
-      explanation: "0번 → 1, 2번 / 1번 → 2번 / 2번 → 0번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        [
-          [0, 0],
-          [0, 0],
-        ],
-      ],
-      expected: [[], []],
-      explanation: "버스가 하나도 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[0]]],
-      expected: [[]],
-      failureNote: "정류장이 하나뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [
-          [0, 1],
-          [0, 0],
-        ],
-      ],
-      expected: [[1], []],
-      failureNote: "0 → 1은 있지만 1 → 0은 없어요. 행이 '출발'이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [0, 1, 1, 1],
-          [1, 0, 1, 1],
-          [1, 1, 0, 1],
-          [1, 1, 1, 0],
-        ],
-      ],
-      expected: [
-        [1, 2, 3],
-        [0, 2, 3],
-        [0, 1, 3],
-        [0, 1, 2],
-      ],
-      failureNote: "모든 정류장끼리 오갈 수 있어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [0, 0, 0, 1, 0],
-          [0, 0, 0, 0, 1],
-          [1, 0, 0, 0, 0],
-          [0, 1, 0, 0, 0],
-          [0, 0, 1, 0, 0],
-        ],
-      ],
-      expected: [[3], [4], [0], [1], [2]],
-      failureNote: "정류장을 한 바퀴 도는 노선이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 200 }, (_, i) =>
-          Array.from({ length: 200 }, (_, j) => (i !== j && (i + j) % 3 === 0 ? 1 : 0)),
-        ),
-      ],
-      expected: Array.from({ length: 200 }, (_, i) =>
-        Array.from({ length: 200 }, (_, j) => j).filter((j) => i !== j && (i + j) % 3 === 0),
-      ),
-      failureNote: "정류장 200개의 표예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

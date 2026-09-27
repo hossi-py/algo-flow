@@ -1,5 +1,74 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [5, [3, 1]],
+    expected: 4,
+    explanation:
+      "3번을 꺼내려면 왼쪽으로 2칸(오른쪽이면 3칸). 꺼낸 뒤 레일은 4, 5, 1, 2이고, 1번은 어느 쪽으로든 2칸이에요. 모두 4번이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [5, [5]],
+    expected: 1,
+    explanation: "5번은 레일 맨 끝이라 오른쪽으로 1칸이면 돼요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, [1]],
+    expected: 0,
+    failureNote: "접시가 하나뿐이면 돌릴 필요가 없어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [10, [1, 2, 3]],
+    expected: 0,
+    failureNote: "꺼낼 때마다 다음 접시가 바로 노디 앞에 와요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [10, [2, 9, 5]],
+    expected: 8,
+    failureNote: "주문마다 더 가까운 방향을 골라요. 이미 꺼낸 접시는 레일에 없다는 걸 잊지 마세요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [6, [6, 5, 4, 3, 2, 1]],
+    expected: 5,
+    failureNote: "뒤에서부터 꺼내면 오른쪽으로 돌리는 게 가까워요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000, Array.from({ length: 1000 }, (_, i) => (i % 2 === 0 ? i / 2 + 1 : 1000 - (i - 1) / 2))],
+    expected: 499,
+    failureNote: "접시 1,000개를 앞과 뒤에서 번갈아 꺼내요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000, Array.from({ length: 500 }, (_, i) => ((i * 7) % 1000) + 1)],
+    expected: 2352,
+    failureNote: "접시 1,000개 중 500개를 띄엄띄엄 꺼내요.",
+  },
+]);
 
 export const dequeSushiRail: Problem = {
   id: "c:deque-sushi-rail",
@@ -49,73 +118,9 @@ export const dequeSushiRail: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [5, [3, 1]],
-      expected: 4,
-      explanation:
-        "3번을 꺼내려면 왼쪽으로 2칸(오른쪽이면 3칸). 꺼낸 뒤 레일은 4, 5, 1, 2이고, 1번은 어느 쪽으로든 2칸이에요. 모두 4번이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [5, [5]],
-      expected: 1,
-      explanation: "5번은 레일 맨 끝이라 오른쪽으로 1칸이면 돼요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, [1]],
-      expected: 0,
-      failureNote: "접시가 하나뿐이면 돌릴 필요가 없어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [10, [1, 2, 3]],
-      expected: 0,
-      failureNote: "꺼낼 때마다 다음 접시가 바로 노디 앞에 와요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [10, [2, 9, 5]],
-      expected: 8,
-      failureNote: "주문마다 더 가까운 방향을 골라요. 이미 꺼낸 접시는 레일에 없다는 걸 잊지 마세요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [6, [6, 5, 4, 3, 2, 1]],
-      expected: 5,
-      failureNote: "뒤에서부터 꺼내면 오른쪽으로 돌리는 게 가까워요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000, Array.from({ length: 1000 }, (_, i) => (i % 2 === 0 ? i / 2 + 1 : 1000 - (i - 1) / 2))],
-      expected: 499,
-      failureNote: "접시 1,000개를 앞과 뒤에서 번갈아 꺼내요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000, Array.from({ length: 500 }, (_, i) => ((i * 7) % 1000) + 1)],
-      expected: 2352,
-      failureNote: "접시 1,000개 중 500개를 띄엄띄엄 꺼내요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

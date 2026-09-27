@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [12],
+    expected: [2, 2, 3],
+    explanation: "2 × 2 × 3이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [13],
+    expected: [13],
+    explanation: "소수는 자기 자신 하나예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2],
+    expected: [2],
+    failureNote: "[2]예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [1024],
+    expected: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+    failureNote: "2를 10번 곱한 수예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [9999999999],
+    expected: [3, 3, 11, 41, 271, 9091],
+    failureNote: "[3, 3, 11, 41, 271, 9091]이에요. 같은 소수로 나눌 수 있을 만큼 계속 나눠요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [19999999934],
+    expected: [2, 9999999967],
+    failureNote: "2 × 9999999967이에요. √n까지 나누고 남은 큰 소수를 빠뜨리면 틀려요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [9999999967],
+    expected: [9999999967],
+    failureNote: "큰 소수예요. √n까지 나눠 봐도 안 나누어떨어지면 남은 n이 곧 소인수예요.",
+  },
+]);
 
 export const cxPrimeFactors: Problem = {
   id: "c:cx-prime-factors",
@@ -36,64 +96,9 @@ export const cxPrimeFactors: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [12],
-      expected: [2, 2, 3],
-      explanation: "2 × 2 × 3이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [13],
-      expected: [13],
-      explanation: "소수는 자기 자신 하나예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2],
-      expected: [2],
-      failureNote: "[2]예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [1024],
-      expected: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      failureNote: "2를 10번 곱한 수예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [9999999999],
-      expected: [3, 3, 11, 41, 271, 9091],
-      failureNote: "[3, 3, 11, 41, 271, 9091]이에요. 같은 소수로 나눌 수 있을 만큼 계속 나눠요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [19999999934],
-      expected: [2, 9999999967],
-      failureNote: "2 × 9999999967이에요. √n까지 나누고 남은 큰 소수를 빠뜨리면 틀려요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [9999999967],
-      expected: [9999999967],
-      failureNote: "큰 소수예요. √n까지 나눠 봐도 안 나누어떨어지면 남은 n이 곧 소인수예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

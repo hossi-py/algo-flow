@@ -1,5 +1,65 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[12, 35, 7, 21, 30], 2],
+    expected: 30,
+    explanation: "무거운 순으로 35, 30, 21, 12, 7이라 2번째는 30이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [[5, 5, 3], 2],
+    expected: 5,
+    explanation: "무게가 같아도 따로 세요. 2번째도 5예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[9], 1],
+    expected: 9,
+    failureNote: "하나뿐이면 그 무게예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[4, 8, 6], 3],
+    expected: 4,
+    failureNote: "k가 개수와 같으면 가장 가벼운 도토리예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[20, 3, 100, 9], 1],
+    expected: 100,
+    failureNote: "숫자를 글자로 정렬하면 '9'가 '100'보다 뒤에 와요. JavaScript는 비교 함수를 꼭 주세요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[7, 7, 7, 7], 3],
+    expected: 7,
+    failureNote: "모두 같으면 답도 같아요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i * 7919) % 1000003), 50000],
+    expected: 499969,
+    failureNote: "도토리 10만 개예요. 가장 무거운 것을 k번 찾아 지우면(O(N·k)) 시간 초과예요.",
+  },
+]);
 
 export const sortingKthHeaviest: Problem = {
   id: "c:sorting-kth-heaviest",
@@ -42,64 +102,9 @@ export const sortingKthHeaviest: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[12, 35, 7, 21, 30], 2],
-      expected: 30,
-      explanation: "무거운 순으로 35, 30, 21, 12, 7이라 2번째는 30이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [[5, 5, 3], 2],
-      expected: 5,
-      explanation: "무게가 같아도 따로 세요. 2번째도 5예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[9], 1],
-      expected: 9,
-      failureNote: "하나뿐이면 그 무게예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[4, 8, 6], 3],
-      expected: 4,
-      failureNote: "k가 개수와 같으면 가장 가벼운 도토리예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[20, 3, 100, 9], 1],
-      expected: 100,
-      failureNote: "숫자를 글자로 정렬하면 '9'가 '100'보다 뒤에 와요. JavaScript는 비교 함수를 꼭 주세요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[7, 7, 7, 7], 3],
-      expected: 7,
-      failureNote: "모두 같으면 답도 같아요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i * 7919) % 1000003), 50000],
-      expected: 499969,
-      failureNote: "도토리 10만 개예요. 가장 무거운 것을 k번 찾아 지우면(O(N·k)) 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

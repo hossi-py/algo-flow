@@ -1,5 +1,90 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [0, 1],
+        [0, 2],
+        [1, 3],
+        [2, 4],
+        [3, 5],
+      ],
+    ],
+    expected: [1, 2, 2, 3, 3, 4],
+    explanation: "0번은 1학기, 1·2번은 2학기, 3·4번은 3학기, 5번은 4학기예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3, []],
+    expected: [1, 1, 1],
+    explanation: "조건이 없으면 모두 1학기예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      3,
+      [
+        [0, 2],
+        [1, 2],
+      ],
+    ],
+    expected: [1, 1, 2],
+    failureNote: "2번은 두 과목 다음이라 2학기예요: [1, 1, 2].",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [0, 3],
+        [2, 3],
+      ],
+    ],
+    expected: [1, 2, 3, 4],
+    failureNote: "3번은 0번 바로 다음이 아니라, 가장 늦은 선수 과목 2번(3학기) 다음인 4학기예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, []],
+    expected: [1],
+    failureNote: "과목 하나면 [1]이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      50000,
+      [
+        ...Array.from({ length: 50000 }, (_, i) => i)
+          .filter((i) => i % 100 !== 99)
+          .map((i) => [i, i + 1]),
+        ...Array.from({ length: 50000 }, (_, i) => i)
+          .filter((i) => i % 100 < 98)
+          .map((i) => [i, i + 2]),
+      ],
+    ],
+    expected: Array.from({ length: 50000 }, (_, i) => (i % 100) + 1),
+    failureNote: "과목 5만 개예요. 과목마다 선수 과목을 거슬러 올라가면 같은 계산을 계속 반복해요.",
+  },
+]);
 
 export const topoSemester: Problem = {
   id: "c:topo-semester",
@@ -44,89 +129,9 @@ export const topoSemester: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [0, 1],
-          [0, 2],
-          [1, 3],
-          [2, 4],
-          [3, 5],
-        ],
-      ],
-      expected: [1, 2, 2, 3, 3, 4],
-      explanation: "0번은 1학기, 1·2번은 2학기, 3·4번은 3학기, 5번은 4학기예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3, []],
-      expected: [1, 1, 1],
-      explanation: "조건이 없으면 모두 1학기예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        3,
-        [
-          [0, 2],
-          [1, 2],
-        ],
-      ],
-      expected: [1, 1, 2],
-      failureNote: "2번은 두 과목 다음이라 2학기예요: [1, 1, 2].",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [0, 3],
-          [2, 3],
-        ],
-      ],
-      expected: [1, 2, 3, 4],
-      failureNote: "3번은 0번 바로 다음이 아니라, 가장 늦은 선수 과목 2번(3학기) 다음인 4학기예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, []],
-      expected: [1],
-      failureNote: "과목 하나면 [1]이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        50000,
-        [
-          ...Array.from({ length: 50000 }, (_, i) => i)
-            .filter((i) => i % 100 !== 99)
-            .map((i) => [i, i + 1]),
-          ...Array.from({ length: 50000 }, (_, i) => i)
-            .filter((i) => i % 100 < 98)
-            .map((i) => [i, i + 2]),
-        ],
-      ],
-      expected: Array.from({ length: 50000 }, (_, i) => (i % 100) + 1),
-      failureNote: "과목 5만 개예요. 과목마다 선수 과목을 거슬러 올라가면 같은 계산을 계속 반복해요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,67 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["push 5", "push 3", "min", "push 7", "min", "pop", "pop", "min"]],
+    expected: [3, 3, 5],
+    explanation: "7과 3을 치우고 나면 가장 가벼운 상자는 다시 5예요. 기록은 [3, 3, 5].",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["min", "push 2", "pop", "min", "pop"]],
+    expected: [-1, -1],
+    explanation: "상자가 없을 때 min은 -1, pop은 아무 일도 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["push 9", "push 1", "pop", "min"]],
+    expected: [9],
+    failureNote:
+      "1을 치우면 가장 가벼운 무게가 9로 되돌아가야 해요. '지금까지의 최솟값' 변수 하나로는 되돌릴 수 없어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["push 4", "push 4", "pop", "min"]],
+    expected: [4],
+    failureNote: "같은 무게 상자가 두 개일 때 하나를 치워도 4가 남아 있어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["push 1", "push 2", "push 3", "min", "pop", "min", "pop", "min"]],
+    expected: [1, 1, 1],
+    failureNote: "가장 가벼운 1이 맨 아래에 있으면 위를 치워도 계속 1이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["push 6", "min", "push 2", "min", "push 8", "min", "pop", "min", "pop", "min"]],
+    expected: [6, 2, 2, 2, 6],
+    failureNote: "올리고 치울 때마다 가장 가벼운 무게가 바뀌어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100000 }, (_, i) => (i < 50000 ? "push " + (100000 - i) : i % 2 === 0 ? "min" : "pop")),
+    ],
+    expected: Array.from({ length: 25000 }, (_, k) => 50001 + k),
+    failureNote: "상자 5만 개를 쌓고 min과 pop을 번갈아 해요. min마다 상자를 모두 훑으면 시간 초과예요.",
+  },
+]);
 
 export const stackLightestBox: Problem = {
   id: "c:stack-lightest-box",
@@ -46,67 +109,9 @@ export const stackLightestBox: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["push 5", "push 3", "min", "push 7", "min", "pop", "pop", "min"]],
-      expected: [3, 3, 5],
-      explanation: "7과 3을 치우고 나면 가장 가벼운 상자는 다시 5예요. 기록은 [3, 3, 5].",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["min", "push 2", "pop", "min", "pop"]],
-      expected: [-1, -1],
-      explanation: "상자가 없을 때 min은 -1, pop은 아무 일도 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["push 9", "push 1", "pop", "min"]],
-      expected: [9],
-      failureNote:
-        "1을 치우면 가장 가벼운 무게가 9로 되돌아가야 해요. '지금까지의 최솟값' 변수 하나로는 되돌릴 수 없어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["push 4", "push 4", "pop", "min"]],
-      expected: [4],
-      failureNote: "같은 무게 상자가 두 개일 때 하나를 치워도 4가 남아 있어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["push 1", "push 2", "push 3", "min", "pop", "min", "pop", "min"]],
-      expected: [1, 1, 1],
-      failureNote: "가장 가벼운 1이 맨 아래에 있으면 위를 치워도 계속 1이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["push 6", "min", "push 2", "min", "push 8", "min", "pop", "min", "pop", "min"]],
-      expected: [6, 2, 2, 2, 6],
-      failureNote: "올리고 치울 때마다 가장 가벼운 무게가 바뀌어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100000 }, (_, i) => (i < 50000 ? "push " + (100000 - i) : i % 2 === 0 ? "min" : "pop")),
-      ],
-      expected: Array.from({ length: 25000 }, (_, k) => 50001 + k),
-      failureNote: "상자 5만 개를 쌓고 min과 pop을 번갈아 해요. min마다 상자를 모두 훑으면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

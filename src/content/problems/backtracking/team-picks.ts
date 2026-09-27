@@ -1,5 +1,105 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [4, 2],
+    expected: [
+      [1, 2],
+      [1, 3],
+      [1, 4],
+      [2, 3],
+      [2, 4],
+      [3, 4],
+    ],
+    explanation: "[1,2] [1,3] [1,4] [2,3] [2,4] [3,4]로 6가지예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [3, 3],
+    expected: [[1, 2, 3]],
+    explanation: "모두 뽑으면 한 가지예요. 순서만 바꾼 [2,1,3] 같은 건 따로 세지 않아요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, 1],
+    expected: [[1]],
+    failureNote: "한 명 중 한 명이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [5, 1],
+    expected: [[1], [2], [3], [4], [5]],
+    failureNote: "한 명씩 뽑는 5가지예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [5, 3],
+    expected: [
+      [1, 2, 3],
+      [1, 2, 4],
+      [1, 2, 5],
+      [1, 3, 4],
+      [1, 3, 5],
+      [1, 4, 5],
+      [2, 3, 4],
+      [2, 3, 5],
+      [2, 4, 5],
+      [3, 4, 5],
+    ],
+    failureNote: "10가지예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [6, 4],
+    expected: [
+      [1, 2, 3, 4],
+      [1, 2, 3, 5],
+      [1, 2, 3, 6],
+      [1, 2, 4, 5],
+      [1, 2, 4, 6],
+      [1, 2, 5, 6],
+      [1, 3, 4, 5],
+      [1, 3, 4, 6],
+      [1, 3, 5, 6],
+      [1, 4, 5, 6],
+      [2, 3, 4, 5],
+      [2, 3, 4, 6],
+      [2, 3, 5, 6],
+      [2, 4, 5, 6],
+      [3, 4, 5, 6],
+    ],
+    failureNote: "15가지예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [10, 5],
+    expected: Array.from({ length: 1024 }, (_, m) => m)
+      .filter((m) => m.toString(2).split("1").length - 1 === 5)
+      .map((m) => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter((_, j) => ((m >> j) & 1) === 1))
+      .sort((a, b) => {
+        for (let j = 0; j < 5; j += 1) if (a[j] !== b[j]) return a[j] - b[j];
+        return 0;
+      }),
+    failureNote: "10명 중 5명은 252가지예요.",
+  },
+]);
 
 export const backtrackingTeamPicks: Problem = {
   id: "c:backtracking-team-picks",
@@ -43,104 +143,9 @@ export const backtrackingTeamPicks: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [4, 2],
-      expected: [
-        [1, 2],
-        [1, 3],
-        [1, 4],
-        [2, 3],
-        [2, 4],
-        [3, 4],
-      ],
-      explanation: "[1,2] [1,3] [1,4] [2,3] [2,4] [3,4]로 6가지예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [3, 3],
-      expected: [[1, 2, 3]],
-      explanation: "모두 뽑으면 한 가지예요. 순서만 바꾼 [2,1,3] 같은 건 따로 세지 않아요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, 1],
-      expected: [[1]],
-      failureNote: "한 명 중 한 명이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [5, 1],
-      expected: [[1], [2], [3], [4], [5]],
-      failureNote: "한 명씩 뽑는 5가지예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [5, 3],
-      expected: [
-        [1, 2, 3],
-        [1, 2, 4],
-        [1, 2, 5],
-        [1, 3, 4],
-        [1, 3, 5],
-        [1, 4, 5],
-        [2, 3, 4],
-        [2, 3, 5],
-        [2, 4, 5],
-        [3, 4, 5],
-      ],
-      failureNote: "10가지예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [6, 4],
-      expected: [
-        [1, 2, 3, 4],
-        [1, 2, 3, 5],
-        [1, 2, 3, 6],
-        [1, 2, 4, 5],
-        [1, 2, 4, 6],
-        [1, 2, 5, 6],
-        [1, 3, 4, 5],
-        [1, 3, 4, 6],
-        [1, 3, 5, 6],
-        [1, 4, 5, 6],
-        [2, 3, 4, 5],
-        [2, 3, 4, 6],
-        [2, 3, 5, 6],
-        [2, 4, 5, 6],
-        [3, 4, 5, 6],
-      ],
-      failureNote: "15가지예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [10, 5],
-      expected: Array.from({ length: 1024 }, (_, m) => m)
-        .filter((m) => m.toString(2).split("1").length - 1 === 5)
-        .map((m) => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter((_, j) => ((m >> j) & 1) === 1))
-        .sort((a, b) => {
-          for (let j = 0; j < 5; j += 1) if (a[j] !== b[j]) return a[j] - b[j];
-          return 0;
-        }),
-      failureNote: "10명 중 5명은 252가지예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

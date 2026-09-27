@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [7],
+    expected: "YES",
+    explanation: "1과 7로만 나누어떨어져요: YES.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [1],
+    expected: "NO",
+    explanation: "1은 소수가 아니에요: NO.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2],
+    expected: "YES",
+    failureNote: "2는 가장 작은 소수예요: YES.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [9],
+    expected: "NO",
+    failureNote: "3 × 3이라 NO예요. √9 = 3까지 꼭 확인해야 해요 (i < √n으로 멈추면 틀려요).",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [10000000000],
+    expected: "NO",
+    failureNote: "짝수라 NO예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [9999999967],
+    expected: "YES",
+    failureNote: "10¹⁰보다 작은 가장 큰 소수예요. √n인 약 10만까지 다 봐야 하지만, n까지 보면 100억 번이에요.",
+  },
+]);
 
 export const cxIsPrime: Problem = {
   id: "c:cx-is-prime",
@@ -32,56 +84,9 @@ export const cxIsPrime: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [7],
-      expected: "YES",
-      explanation: "1과 7로만 나누어떨어져요: YES.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [1],
-      expected: "NO",
-      explanation: "1은 소수가 아니에요: NO.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2],
-      expected: "YES",
-      failureNote: "2는 가장 작은 소수예요: YES.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [9],
-      expected: "NO",
-      failureNote: "3 × 3이라 NO예요. √9 = 3까지 꼭 확인해야 해요 (i < √n으로 멈추면 틀려요).",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [10000000000],
-      expected: "NO",
-      failureNote: "짝수라 NO예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [9999999967],
-      expected: "YES",
-      failureNote: "10¹⁰보다 작은 가장 큰 소수예요. √n인 약 10만까지 다 봐야 하지만, n까지 보면 100억 번이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[2, 1, 4, 3, 6, 5], 1],
+    expected: [1, 2, 3, 4, 5, 6],
+    explanation: "이웃끼리만 바뀌었어요: [1, 2, 3, 4, 5, 6].",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[1, 2, 3], 0],
+    expected: [1, 2, 3],
+    explanation: "k = 0이면 이미 정렬돼 있어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[3, 1, 2], 2],
+    expected: [1, 2, 3],
+    failureNote: "[1, 2, 3]이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[9], 0],
+    expected: [9],
+    failureNote: "하나뿐이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[2, 2, 1, 1], 2],
+    expected: [1, 1, 2, 2],
+    failureNote: "같은 번호도 있어요: [1, 1, 2, 2].",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => i + ((i * 7) % 5) * 2 - ((i * 3) % 4)), 12],
+    expected: Array.from({ length: 100000 }, (_, i) => i + ((i * 7) % 5) * 2 - ((i * 3) % 4)).sort((a, b) => a - b),
+    failureNote: "10만 개, k = 12예요. 크기 13인 힙으로 O(N log k)예요.",
+  },
+]);
 
 export const heapNearlySorted: Problem = {
   id: "c:heap-nearly-sorted",
@@ -41,56 +93,9 @@ export const heapNearlySorted: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[2, 1, 4, 3, 6, 5], 1],
-      expected: [1, 2, 3, 4, 5, 6],
-      explanation: "이웃끼리만 바뀌었어요: [1, 2, 3, 4, 5, 6].",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[1, 2, 3], 0],
-      expected: [1, 2, 3],
-      explanation: "k = 0이면 이미 정렬돼 있어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[3, 1, 2], 2],
-      expected: [1, 2, 3],
-      failureNote: "[1, 2, 3]이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[9], 0],
-      expected: [9],
-      failureNote: "하나뿐이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[2, 2, 1, 1], 2],
-      expected: [1, 1, 2, 2],
-      failureNote: "같은 번호도 있어요: [1, 1, 2, 2].",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => i + ((i * 7) % 5) * 2 - ((i * 3) % 4)), 12],
-      expected: Array.from({ length: 100000 }, (_, i) => i + ((i * 7) % 5) * 2 - ((i * 3) % 4)).sort((a, b) => a - b),
-      failureNote: "10만 개, k = 12예요. 크기 13인 힙으로 O(N log k)예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

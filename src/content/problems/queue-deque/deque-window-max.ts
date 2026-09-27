@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[1, 3, -1, -3, 5, 3, 6, 7], 3],
+    expected: [3, 3, 5, 5, 6, 7],
+    explanation: "[1,3,-1]→3, [3,-1,-3]→3, [-1,-3,5]→5, [-3,5,3]→5, [5,3,6]→6, [3,6,7]→7이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[4, 2, 12], 1],
+    expected: [4, 2, 12],
+    explanation: "k가 1이면 날마다 자기 기온이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[9, 8, 7], 3],
+    expected: [9],
+    failureNote: "k가 전체 길이면 묶음이 하나뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[5, 5, 5, 5], 2],
+    expected: [5, 5, 5],
+    failureNote: "같은 기온이 이어져요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[9, 1, 1, 1, 1, 1], 3],
+    expected: [9, 1, 1, 1],
+    failureNote: "최고 기온이 묶음 밖으로 빠져나가는 순간을 챙겨야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[-5, -1, -8, -2, -9], 2],
+    expected: [-1, -1, -2, -2],
+    failureNote: "모두 영하예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => i - 50000), 1000],
+    expected: Array.from({ length: 99001 }, (_, i) => i - 50000 + 999),
+    failureNote: "10만 일, 1,000일 묶음이에요. 묶음마다 max를 새로 계산하면 1억 번 비교해서 시간 초과예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => 50000 - i), 1000],
+    expected: Array.from({ length: 99001 }, (_, i) => 50000 - i),
+    failureNote: "기온이 계속 내려가는 10만 일이에요.",
+  },
+]);
 
 export const dequeWindowMax: Problem = {
   id: "c:deque-window-max",
@@ -46,72 +114,9 @@ export const dequeWindowMax: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[1, 3, -1, -3, 5, 3, 6, 7], 3],
-      expected: [3, 3, 5, 5, 6, 7],
-      explanation: "[1,3,-1]→3, [3,-1,-3]→3, [-1,-3,5]→5, [-3,5,3]→5, [5,3,6]→6, [3,6,7]→7이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[4, 2, 12], 1],
-      expected: [4, 2, 12],
-      explanation: "k가 1이면 날마다 자기 기온이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[9, 8, 7], 3],
-      expected: [9],
-      failureNote: "k가 전체 길이면 묶음이 하나뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[5, 5, 5, 5], 2],
-      expected: [5, 5, 5],
-      failureNote: "같은 기온이 이어져요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[9, 1, 1, 1, 1, 1], 3],
-      expected: [9, 1, 1, 1],
-      failureNote: "최고 기온이 묶음 밖으로 빠져나가는 순간을 챙겨야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[-5, -1, -8, -2, -9], 2],
-      expected: [-1, -1, -2, -2],
-      failureNote: "모두 영하예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => i - 50000), 1000],
-      expected: Array.from({ length: 99001 }, (_, i) => i - 50000 + 999),
-      failureNote: "10만 일, 1,000일 묶음이에요. 묶음마다 max를 새로 계산하면 1억 번 비교해서 시간 초과예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => 50000 - i), 1000],
-      expected: Array.from({ length: 99001 }, (_, i) => 50000 - i),
-      failureNote: "기온이 계속 내려가는 10만 일이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

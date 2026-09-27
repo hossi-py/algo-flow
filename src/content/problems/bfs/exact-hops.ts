@@ -1,4 +1,118 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [0, 1],
+        [0, 2],
+        [1, 3],
+        [2, 4],
+        [4, 5],
+      ],
+      0,
+      2,
+    ],
+    expected: [3, 4],
+    explanation: "3과 4가 2다리예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [0, 2],
+        [2, 3],
+      ],
+      0,
+      2,
+    ],
+    expected: [3],
+    explanation:
+      "DFS로 0 → 1 → 2로 가면 2를 '2다리'로 잘못 셀 수 있어요. 2는 0과 바로 친구라 1다리이고, 답은 [3]이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [3, [[0, 1]], 2, 0],
+    expected: [2],
+    failureNote: "0다리는 자기 자신뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      3,
+      [
+        [0, 1],
+        [1, 2],
+      ],
+      0,
+      5,
+    ],
+    expected: [],
+    failureNote: "그렇게 먼 학생이 없어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      7,
+      [
+        [3, 0],
+        [3, 1],
+        [3, 2],
+        [0, 4],
+        [1, 5],
+        [2, 6],
+      ],
+      3,
+      2,
+    ],
+    expected: [4, 5, 6],
+    failureNote: "3을 가운데로 한 별 모양이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      6,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [4, 5],
+        [5, 0],
+      ],
+      0,
+      3,
+    ],
+    expected: [3],
+    failureNote: "고리 모양이라 3은 양쪽 모두 3다리예요. 한 번만 세요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000, Array.from({ length: 99999 }, (_, i) => [Math.floor(i / 2), i + 1]), 0, 16],
+    expected: Array.from({ length: 100000 - 65535 }, (_, i) => 65535 + i),
+    failureNote: "10만 명의 친구 관계가 나무 모양으로 뻗어 있어요.",
+  },
+]);
 
 export const bfsExactHops: Problem = {
   id: "c:bfs-exact-hops",
@@ -48,118 +162,9 @@ export const bfsExactHops: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [0, 1],
-          [0, 2],
-          [1, 3],
-          [2, 4],
-          [4, 5],
-        ],
-        0,
-        2,
-      ],
-      expected: [3, 4],
-      explanation: "3과 4가 2다리예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [0, 2],
-          [2, 3],
-        ],
-        0,
-        2,
-      ],
-      expected: [3],
-      explanation:
-        "DFS로 0 → 1 → 2로 가면 2를 '2다리'로 잘못 셀 수 있어요. 2는 0과 바로 친구라 1다리이고, 답은 [3]이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [3, [[0, 1]], 2, 0],
-      expected: [2],
-      failureNote: "0다리는 자기 자신뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        3,
-        [
-          [0, 1],
-          [1, 2],
-        ],
-        0,
-        5,
-      ],
-      expected: [],
-      failureNote: "그렇게 먼 학생이 없어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        7,
-        [
-          [3, 0],
-          [3, 1],
-          [3, 2],
-          [0, 4],
-          [1, 5],
-          [2, 6],
-        ],
-        3,
-        2,
-      ],
-      expected: [4, 5, 6],
-      failureNote: "3을 가운데로 한 별 모양이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        6,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [3, 4],
-          [4, 5],
-          [5, 0],
-        ],
-        0,
-        3,
-      ],
-      expected: [3],
-      failureNote: "고리 모양이라 3은 양쪽 모두 3다리예요. 한 번만 세요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [100000, Array.from({ length: 99999 }, (_, i) => [Math.floor(i / 2), i + 1]), 0, 16],
-      expected: Array.from({ length: 100000 - 65535 }, (_, i) => 65535 + i),
-      failureNote: "10만 명의 친구 관계가 나무 모양으로 뻗어 있어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

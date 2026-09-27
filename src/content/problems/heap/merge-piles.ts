@@ -1,5 +1,57 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[10, 20, 40]],
+    expected: 100,
+    explanation: "10 + 20 = 30, 30 + 40 = 70으로 100이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[5]],
+    expected: 0,
+    explanation: "하나뿐이면 합칠 필요가 없어 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 2, 3, 4]],
+    expected: 19,
+    failureNote: "1 + 2 = 3, 3 + 3 = 6, 4 + 6 = 10으로 19예요. 합친 더미도 다시 가장 작은 둘 중 하나가 될 수 있어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[7, 7]],
+    expected: 14,
+    failureNote: "14예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[5, 1, 1, 1]],
+    expected: 13,
+    failureNote: "1+1=2, 1+2=3, 3+5=8로 13이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 1000) + 1)],
+    expected: 818668155,
+    failureNote: "더미 10만 개예요. 매번 정렬하면 시간 초과예요. (답이 수십억이라 Java는 long)",
+  },
+]);
 
 export const heapMergePiles: Problem = {
   id: "c:heap-merge-piles",
@@ -41,56 +93,9 @@ export const heapMergePiles: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[10, 20, 40]],
-      expected: 100,
-      explanation: "10 + 20 = 30, 30 + 40 = 70으로 100이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[5]],
-      expected: 0,
-      explanation: "하나뿐이면 합칠 필요가 없어 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 2, 3, 4]],
-      expected: 19,
-      failureNote: "1 + 2 = 3, 3 + 3 = 6, 4 + 6 = 10으로 19예요. 합친 더미도 다시 가장 작은 둘 중 하나가 될 수 있어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[7, 7]],
-      expected: 14,
-      failureNote: "14예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[5, 1, 1, 1]],
-      expected: 13,
-      failureNote: "1+1=2, 1+2=3, 3+5=8로 13이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => ((i * 7919) % 1000) + 1)],
-      expected: 818668155,
-      failureNote: "더미 10만 개예요. 매번 정렬하면 시간 초과예요. (답이 수십억이라 Java는 long)",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

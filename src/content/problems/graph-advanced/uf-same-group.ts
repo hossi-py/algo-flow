@@ -1,4 +1,94 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 0, 1],
+        [1, 0, 1],
+        [1, 0, 2],
+        [0, 1, 2],
+        [1, 0, 2],
+      ],
+    ],
+    expected: ["YES", "NO", "YES"],
+    explanation: "0·1을 합친 뒤 0과 1은 같고, 0과 2는 달라요. 1·2를 합치면 0과 2도 같아져요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3, [[1, 2, 2]]],
+    expected: ["YES"],
+    explanation: "자기 자신과는 늘 같은 동아리예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      5,
+      [
+        [0, 0, 1],
+        [0, 2, 3],
+        [1, 1, 3],
+        [0, 1, 2],
+        [1, 0, 3],
+        [1, 4, 0],
+      ],
+    ],
+    expected: ["NO", "YES", "NO"],
+    failureNote: "1과 3은 처음엔 달라요. 1·2를 합치면 {0, 1, 2, 3}이 한 동아리라 0과 3은 같아요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [
+      3,
+      [
+        [1, 0, 1],
+        [1, 1, 2],
+      ],
+    ],
+    expected: ["NO", "NO"],
+    failureNote: "합친 적이 없으면 모두 달라요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      2,
+      [
+        [0, 0, 1],
+        [0, 1, 0],
+        [1, 1, 0],
+      ],
+    ],
+    expected: ["YES"],
+    failureNote: "이미 합친 두 명을 또 합쳐도 괜찮아요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      50000,
+      [
+        ...Array.from({ length: 25000 }, (_, k) => [0, 2 * k, 2 * k + 1]),
+        ...Array.from({ length: 49999 }, (_, i) => [1, i, i + 1]),
+      ],
+    ],
+    expected: Array.from({ length: 49999 }, (_, i) => (i % 2 === 0 ? "YES" : "NO")),
+    failureNote: "일이 7만 5천 개예요. 질문마다 그룹을 새로 찾으면 느려요.",
+  },
+]);
 
 export const ufSameGroup: Problem = {
   id: "c:uf-same-group",
@@ -49,94 +139,9 @@ export const ufSameGroup: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 0, 1],
-          [1, 0, 1],
-          [1, 0, 2],
-          [0, 1, 2],
-          [1, 0, 2],
-        ],
-      ],
-      expected: ["YES", "NO", "YES"],
-      explanation: "0·1을 합친 뒤 0과 1은 같고, 0과 2는 달라요. 1·2를 합치면 0과 2도 같아져요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3, [[1, 2, 2]]],
-      expected: ["YES"],
-      explanation: "자기 자신과는 늘 같은 동아리예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        5,
-        [
-          [0, 0, 1],
-          [0, 2, 3],
-          [1, 1, 3],
-          [0, 1, 2],
-          [1, 0, 3],
-          [1, 4, 0],
-        ],
-      ],
-      expected: ["NO", "YES", "NO"],
-      failureNote: "1과 3은 처음엔 달라요. 1·2를 합치면 {0, 1, 2, 3}이 한 동아리라 0과 3은 같아요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [
-        3,
-        [
-          [1, 0, 1],
-          [1, 1, 2],
-        ],
-      ],
-      expected: ["NO", "NO"],
-      failureNote: "합친 적이 없으면 모두 달라요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        2,
-        [
-          [0, 0, 1],
-          [0, 1, 0],
-          [1, 1, 0],
-        ],
-      ],
-      expected: ["YES"],
-      failureNote: "이미 합친 두 명을 또 합쳐도 괜찮아요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        50000,
-        [
-          ...Array.from({ length: 25000 }, (_, k) => [0, 2 * k, 2 * k + 1]),
-          ...Array.from({ length: 49999 }, (_, i) => [1, i, i + 1]),
-        ],
-      ],
-      expected: Array.from({ length: 49999 }, (_, i) => (i % 2 === 0 ? "YES" : "NO")),
-      failureNote: "일이 7만 5천 개예요. 질문마다 그룹을 새로 찾으면 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,5 +1,90 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1, 1],
+        [1, 2, 2],
+        [2, 3, 1],
+        [0, 3, 4],
+        [0, 2, 3],
+      ],
+    ],
+    expected: 4,
+    explanation: "0-1(1), 2-3(1), 1-2(2)를 골라 4예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3, [[0, 1, 5]]],
+    expected: -1,
+    explanation: "2번 집에 닿는 케이블이 없어서 -1이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, []],
+    expected: 0,
+    failureNote: "집이 하나면 깔 게 없어서 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      2,
+      [
+        [0, 1, 7],
+        [0, 1, 3],
+      ],
+    ],
+    expected: 3,
+    failureNote: "같은 두 집 사이 후보가 둘이면 싼 3만 골라요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1, 10],
+        [1, 2, 1],
+        [2, 3, 1],
+        [3, 0, 1],
+      ],
+    ],
+    expected: 3,
+    failureNote: "1 + 1 + 1 = 3이에요. 10짜리는 고리만 만들어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      10000,
+      [
+        ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 10000]),
+        ...Array.from({ length: 40000 }, (_, i) => {
+          const a = (i * 104729) % 10000;
+          const b = (a + 1 + ((i * 7907) % 9999)) % 10000;
+          return [a, b, ((i * 7919) % 10000) + 1];
+        }),
+      ],
+    ],
+    expected: 25120451,
+    failureNote: "집 1만 채, 후보 5만 개예요.",
+  },
+]);
 
 export const mstMinCable: Problem = {
   id: "c:mst-min-cable",
@@ -42,89 +127,9 @@ export const mstMinCable: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1, 1],
-          [1, 2, 2],
-          [2, 3, 1],
-          [0, 3, 4],
-          [0, 2, 3],
-        ],
-      ],
-      expected: 4,
-      explanation: "0-1(1), 2-3(1), 1-2(2)를 골라 4예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3, [[0, 1, 5]]],
-      expected: -1,
-      explanation: "2번 집에 닿는 케이블이 없어서 -1이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, []],
-      expected: 0,
-      failureNote: "집이 하나면 깔 게 없어서 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        2,
-        [
-          [0, 1, 7],
-          [0, 1, 3],
-        ],
-      ],
-      expected: 3,
-      failureNote: "같은 두 집 사이 후보가 둘이면 싼 3만 골라요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1, 10],
-          [1, 2, 1],
-          [2, 3, 1],
-          [3, 0, 1],
-        ],
-      ],
-      expected: 3,
-      failureNote: "1 + 1 + 1 = 3이에요. 10짜리는 고리만 만들어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        10000,
-        [
-          ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 10000]),
-          ...Array.from({ length: 40000 }, (_, i) => {
-            const a = (i * 104729) % 10000;
-            const b = (a + 1 + ((i * 7907) % 9999)) % 10000;
-            return [a, b, ((i * 7919) % 10000) + 1];
-          }),
-        ],
-      ],
-      expected: 25120451,
-      failureNote: "집 1만 채, 후보 5만 개예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

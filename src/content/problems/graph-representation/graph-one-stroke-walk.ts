@@ -1,4 +1,129 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 0],
+        [2, 3],
+      ],
+    ],
+    expected: true,
+    explanation: "산책로 수가 홀수인 쉼터가 2번(3개)과 3번(1개) 두 곳뿐이에요. 2번에서 출발해 3번에서 끝나면 돼요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1],
+        [0, 2],
+        [0, 3],
+      ],
+    ],
+    expected: false,
+    explanation: "홀수 쉼터가 0, 1, 2, 3번 네 곳이라 불가능해요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2, [[0, 1]]],
+    expected: true,
+    failureNote: "산책로 하나는 그냥 걸으면 돼요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      3,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 0],
+      ],
+    ],
+    expected: true,
+    failureNote: "삼각형 한 바퀴는 제자리로 돌아와요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      2,
+      [
+        [0, 1],
+        [0, 1],
+        [0, 1],
+      ],
+    ],
+    expected: true,
+    failureNote: "같은 두 쉼터 사이 산책로가 셋이에요. 두 쉼터 모두 홀수(3)라 가능해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      5,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [4, 0],
+        [0, 2],
+        [1, 3],
+      ],
+    ],
+    expected: false,
+    failureNote: "홀수 쉼터가 넷이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [4, 5],
+      ],
+    ],
+    expected: true,
+    failureNote: "한 줄로 이어진 산책로예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000, Array.from({ length: 100000 }, (_, i) => [i, (i + 1) % 100000])],
+    expected: true,
+    failureNote: "쉼터 10만 개가 큰 원을 이뤄요. 경로를 직접 찾으려 하면 너무 오래 걸려요.",
+  },
+  {
+    id: "hid-7",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000, [...Array.from({ length: 99999 }, (_, i) => [i, i + 1]), [0, 50000]]],
+    expected: true,
+    failureNote: "긴 길 가운데에 지름길이 하나 있어요.",
+  },
+]);
 
 export const graphOneStrokeWalk: Problem = {
   id: "c:graph-one-stroke-walk",
@@ -53,129 +178,9 @@ export const graphOneStrokeWalk: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 0],
-          [2, 3],
-        ],
-      ],
-      expected: true,
-      explanation: "산책로 수가 홀수인 쉼터가 2번(3개)과 3번(1개) 두 곳뿐이에요. 2번에서 출발해 3번에서 끝나면 돼요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1],
-          [0, 2],
-          [0, 3],
-        ],
-      ],
-      expected: false,
-      explanation: "홀수 쉼터가 0, 1, 2, 3번 네 곳이라 불가능해요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2, [[0, 1]]],
-      expected: true,
-      failureNote: "산책로 하나는 그냥 걸으면 돼요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        3,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 0],
-        ],
-      ],
-      expected: true,
-      failureNote: "삼각형 한 바퀴는 제자리로 돌아와요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        2,
-        [
-          [0, 1],
-          [0, 1],
-          [0, 1],
-        ],
-      ],
-      expected: true,
-      failureNote: "같은 두 쉼터 사이 산책로가 셋이에요. 두 쉼터 모두 홀수(3)라 가능해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        5,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [3, 4],
-          [4, 0],
-          [0, 2],
-          [1, 3],
-        ],
-      ],
-      expected: false,
-      failureNote: "홀수 쉼터가 넷이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [3, 4],
-          [4, 5],
-        ],
-      ],
-      expected: true,
-      failureNote: "한 줄로 이어진 산책로예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [100000, Array.from({ length: 100000 }, (_, i) => [i, (i + 1) % 100000])],
-      expected: true,
-      failureNote: "쉼터 10만 개가 큰 원을 이뤄요. 경로를 직접 찾으려 하면 너무 오래 걸려요.",
-    },
-    {
-      id: "hid-7",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [100000, [...Array.from({ length: 99999 }, (_, i) => [i, i + 1]), [0, 50000]]],
-      expected: true,
-      failureNote: "긴 길 가운데에 지름길이 하나 있어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[-1, 0, 0, 1, 1, 2]],
+    expected: [6, 3, 2, 1, 1, 1],
+    explanation: "0번 팀은 전체 6명, 1번 팀은 1, 3, 4번으로 3명, 2번 팀은 2, 5번으로 2명이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[-1]],
+    expected: [1],
+    explanation: "대표 혼자예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[1, 2, -1, 2]],
+    expected: [1, 2, 4, 1],
+    failureNote: "대표가 0번이 아닐 수 있어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[-1, 0, 1, 2, 3]],
+    expected: [5, 4, 3, 2, 1],
+    failureNote: "한 줄로 이어진 조직이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[-1, 0, 0, 0, 0, 0]],
+    expected: [6, 1, 1, 1, 1, 1],
+    failureNote: "대표 아래 모두 한 단계예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[4, 4, 0, 0, -1, 1, 1, 6]],
+    expected: [3, 4, 1, 1, 8, 1, 2, 1],
+    failureNote: "번호가 섞인 조직도예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i === 0 ? -1 : i < 1000 ? i - 1 : i % 1000))],
+    expected: Array.from({ length: 100000 }, (_, i) => (i < 1000 ? 100 * (1000 - i) : 1)),
+    failureNote: "10만 명, 1,000단계 조직이에요. 직원마다 위로 거슬러 올라가며 세면 수천만 번이라 느려요.",
+  },
+]);
 
 export const dfsTeamSize: Problem = {
   id: "c:dfs-team-size",
@@ -42,64 +102,9 @@ export const dfsTeamSize: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[-1, 0, 0, 1, 1, 2]],
-      expected: [6, 3, 2, 1, 1, 1],
-      explanation: "0번 팀은 전체 6명, 1번 팀은 1, 3, 4번으로 3명, 2번 팀은 2, 5번으로 2명이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[-1]],
-      expected: [1],
-      explanation: "대표 혼자예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[1, 2, -1, 2]],
-      expected: [1, 2, 4, 1],
-      failureNote: "대표가 0번이 아닐 수 있어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[-1, 0, 1, 2, 3]],
-      expected: [5, 4, 3, 2, 1],
-      failureNote: "한 줄로 이어진 조직이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[-1, 0, 0, 0, 0, 0]],
-      expected: [6, 1, 1, 1, 1, 1],
-      failureNote: "대표 아래 모두 한 단계예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[4, 4, 0, 0, -1, 1, 1, 6]],
-      expected: [3, 4, 1, 1, 8, 1, 2, 1],
-      failureNote: "번호가 섞인 조직도예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i === 0 ? -1 : i < 1000 ? i - 1 : i % 1000))],
-      expected: Array.from({ length: 100000 }, (_, i) => (i < 1000 ? 100 * (1000 - i) : 1)),
-      failureNote: "10만 명, 1,000단계 조직이에요. 직원마다 위로 거슬러 올라가며 세면 수천만 번이라 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

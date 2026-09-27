@@ -1,4 +1,96 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      ["nodi", "mimi", "toto"],
+      [80, 95, 80],
+      [30, 40, 25],
+    ],
+    expected: ["mimi", "toto", "nodi"],
+    explanation: "mimi가 95점으로 1등. nodi와 toto는 80점으로 같아서 시간이 짧은 toto(25초)가 앞이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      ["zed", "amy", "kim"],
+      [70, 70, 70],
+      [10, 10, 5],
+    ],
+    expected: ["kim", "amy", "zed"],
+    explanation: "모두 70점이에요. kim이 시간이 가장 짧고, amy와 zed는 시간까지 같아서 이름 순이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["solo"], [0], [1]],
+    expected: ["solo"],
+    failureNote: "혼자면 그대로예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      ["b", "a", "c"],
+      [10, 20, 30],
+      [1, 1, 1],
+    ],
+    expected: ["c", "a", "b"],
+    failureNote: "점수가 높은 순이에요. 오름차순으로 정렬하면 거꾸로 나와요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      ["ab", "a", "b"],
+      [50, 50, 50],
+      [9, 9, 9],
+    ],
+    expected: ["a", "ab", "b"],
+    failureNote: "이름만 다르면 사전 순: a, ab, b예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      ["p1", "p2", "p3", "p4"],
+      [100, 90, 100, 90],
+      [50, 10, 40, 20],
+    ],
+    expected: ["p3", "p1", "p2", "p4"],
+    failureNote: "100점 중 40초인 p3이 1등, p1이 2등, 90점 중 10초인 p2가 3등이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 50000 }, (_, i) => "p" + ((i * 7919) % 50000).toString(36)),
+      Array.from({ length: 50000 }, (_, i) => (i * 37) % 101),
+      Array.from({ length: 50000 }, (_, i) => (i * 13) % 997),
+    ],
+    expected: (() => {
+      const n = Array.from({ length: 50000 }, (_, i) => "p" + ((i * 7919) % 50000).toString(36));
+      const s = Array.from({ length: 50000 }, (_, i) => (i * 37) % 101);
+      const t = Array.from({ length: 50000 }, (_, i) => (i * 13) % 997);
+      return n
+        .map((_, i) => i)
+        .sort((a, b) => s[b] - s[a] || t[a] - t[b] || (n[a] < n[b] ? -1 : n[a] > n[b] ? 1 : 0))
+        .map((i) => n[i]);
+    })(),
+    failureNote: "선수 5만 명이에요. 1등을 매번 처음부터 찾으면(O(N²)) 시간 초과예요.",
+  },
+]);
 
 export const sortingLeaderboard: Problem = {
   id: "c:sorting-leaderboard",
@@ -56,96 +148,9 @@ export const sortingLeaderboard: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        ["nodi", "mimi", "toto"],
-        [80, 95, 80],
-        [30, 40, 25],
-      ],
-      expected: ["mimi", "toto", "nodi"],
-      explanation: "mimi가 95점으로 1등. nodi와 toto는 80점으로 같아서 시간이 짧은 toto(25초)가 앞이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        ["zed", "amy", "kim"],
-        [70, 70, 70],
-        [10, 10, 5],
-      ],
-      expected: ["kim", "amy", "zed"],
-      explanation: "모두 70점이에요. kim이 시간이 가장 짧고, amy와 zed는 시간까지 같아서 이름 순이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["solo"], [0], [1]],
-      expected: ["solo"],
-      failureNote: "혼자면 그대로예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        ["b", "a", "c"],
-        [10, 20, 30],
-        [1, 1, 1],
-      ],
-      expected: ["c", "a", "b"],
-      failureNote: "점수가 높은 순이에요. 오름차순으로 정렬하면 거꾸로 나와요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        ["ab", "a", "b"],
-        [50, 50, 50],
-        [9, 9, 9],
-      ],
-      expected: ["a", "ab", "b"],
-      failureNote: "이름만 다르면 사전 순: a, ab, b예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        ["p1", "p2", "p3", "p4"],
-        [100, 90, 100, 90],
-        [50, 10, 40, 20],
-      ],
-      expected: ["p3", "p1", "p2", "p4"],
-      failureNote: "100점 중 40초인 p3이 1등, p1이 2등, 90점 중 10초인 p2가 3등이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 50000 }, (_, i) => "p" + ((i * 7919) % 50000).toString(36)),
-        Array.from({ length: 50000 }, (_, i) => (i * 37) % 101),
-        Array.from({ length: 50000 }, (_, i) => (i * 13) % 997),
-      ],
-      expected: (() => {
-        const n = Array.from({ length: 50000 }, (_, i) => "p" + ((i * 7919) % 50000).toString(36));
-        const s = Array.from({ length: 50000 }, (_, i) => (i * 37) % 101);
-        const t = Array.from({ length: 50000 }, (_, i) => (i * 13) % 997);
-        return n
-          .map((_, i) => i)
-          .sort((a, b) => s[b] - s[a] || t[a] - t[b] || (n[a] < n[b] ? -1 : n[a] > n[b] ? 1 : 0))
-          .map((i) => n[i]);
-      })(),
-      failureNote: "선수 5만 명이에요. 1등을 매번 처음부터 찾으면(O(N²)) 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

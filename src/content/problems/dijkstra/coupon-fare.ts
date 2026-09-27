@@ -1,4 +1,99 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1, 10],
+        [1, 3, 10],
+        [0, 2, 3],
+        [2, 3, 15],
+      ],
+    ],
+    expected: 10,
+    explanation: "0 → 2 → 3에서 15원 노선에 쿠폰을 쓰면 3 + 7 = 10원이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [2, [[0, 1, 9]]],
+    expected: 4,
+    explanation: "노선 하나에 쿠폰을 써서 9 // 2 = 4원이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, []],
+    expected: 0,
+    failureNote: "이미 도착해 있어서 0원이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [3, [[0, 1, 2]]],
+    expected: -1,
+    failureNote: "2번 도시로 가는 노선이 없어 -1이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1, 2],
+        [1, 2, 2],
+        [2, 3, 2],
+        [0, 3, 9],
+      ],
+    ],
+    expected: 4,
+    failureNote:
+      "쿠폰 없이는 2 + 2 + 2 = 6원 길이 싸지만, 곧장 가는 9원에 쿠폰을 쓰면 4원이에요. 쿠폰 없는 최단 경로에 쿠폰을 쓰면(5원) 틀려요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      3,
+      [
+        [0, 1, 1],
+        [1, 2, 20],
+        [0, 2, 30],
+      ],
+    ],
+    expected: 11,
+    failureNote: "0 → 1 → 2에서 20원에 쿠폰을 써 1 + 10 = 11원이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      10000,
+      [
+        ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 1000]),
+        ...Array.from({ length: 20000 }, (_, i) => {
+          const a = (i * 104729) % 10000;
+          const b = (a + 1 + ((i * 7907) % 9999)) % 10000;
+          return [a, b, ((i * 7919) % 1000) + 1];
+        }),
+      ],
+    ],
+    expected: 1803,
+    failureNote:
+      "도시 1만 개, 노선 3만 개예요. 노선마다 쿠폰을 써 보고 다익스트라를 다시 돌리면 3만 번이라 너무 느려요.",
+  },
+]);
 
 export const dijkstraCouponFare: Problem = {
   id: "c:dijkstra-coupon-fare",
@@ -43,99 +138,9 @@ export const dijkstraCouponFare: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1, 10],
-          [1, 3, 10],
-          [0, 2, 3],
-          [2, 3, 15],
-        ],
-      ],
-      expected: 10,
-      explanation: "0 → 2 → 3에서 15원 노선에 쿠폰을 쓰면 3 + 7 = 10원이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [2, [[0, 1, 9]]],
-      expected: 4,
-      explanation: "노선 하나에 쿠폰을 써서 9 // 2 = 4원이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, []],
-      expected: 0,
-      failureNote: "이미 도착해 있어서 0원이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [3, [[0, 1, 2]]],
-      expected: -1,
-      failureNote: "2번 도시로 가는 노선이 없어 -1이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1, 2],
-          [1, 2, 2],
-          [2, 3, 2],
-          [0, 3, 9],
-        ],
-      ],
-      expected: 4,
-      failureNote:
-        "쿠폰 없이는 2 + 2 + 2 = 6원 길이 싸지만, 곧장 가는 9원에 쿠폰을 쓰면 4원이에요. 쿠폰 없는 최단 경로에 쿠폰을 쓰면(5원) 틀려요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        3,
-        [
-          [0, 1, 1],
-          [1, 2, 20],
-          [0, 2, 30],
-        ],
-      ],
-      expected: 11,
-      failureNote: "0 → 1 → 2에서 20원에 쿠폰을 써 1 + 10 = 11원이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        10000,
-        [
-          ...Array.from({ length: 9999 }, (_, i) => [i, i + 1, 1000]),
-          ...Array.from({ length: 20000 }, (_, i) => {
-            const a = (i * 104729) % 10000;
-            const b = (a + 1 + ((i * 7907) % 9999)) % 10000;
-            return [a, b, ((i * 7919) % 1000) + 1];
-          }),
-        ],
-      ],
-      expected: 1803,
-      failureNote:
-        "도시 1만 개, 노선 3만 개예요. 노선마다 쿠폰을 써 보고 다익스트라를 다시 돌리면 3만 번이라 너무 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

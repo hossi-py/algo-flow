@@ -1,4 +1,65 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[10, 9, 2, 5, 3, 7, 101, 18]],
+    expected: 4,
+    explanation: "2, 3, 7, 18(또는 101)을 밟으면 4개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[7, 7, 7]],
+    expected: 1,
+    explanation: "같은 높이는 이어서 밟을 수 없어서 1개예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5]],
+    expected: 1,
+    failureNote: "돌 하나면 1개예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[1, 2, 3, 4]],
+    expected: 4,
+    failureNote: "모두 밟을 수 있어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[4, 3, 2, 1]],
+    expected: 1,
+    failureNote: "점점 낮아지면 1개뿐이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[0, 8, 4, 12, 2, 10, 6, 14, 1, 9]],
+    expected: 4,
+    failureNote:
+      "0, 4, 6, 9(또는 0, 4, 10, 14 …)로 4개예요. 'x 이상인 첫 자리'를 바꿔야 같은 높이가 두 번 들어가지 않아요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i * 7919) % 100003)],
+    expected: 306,
+    failureNote: "돌 10만 개예요. 돌마다 앞의 모든 돌을 보면(O(N²)) 시간 초과예요.",
+  },
+]);
 
 export const binarySearchRisingPath: Problem = {
   id: "c:binary-search-rising-path",
@@ -36,65 +97,9 @@ export const binarySearchRisingPath: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[10, 9, 2, 5, 3, 7, 101, 18]],
-      expected: 4,
-      explanation: "2, 3, 7, 18(또는 101)을 밟으면 4개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[7, 7, 7]],
-      expected: 1,
-      explanation: "같은 높이는 이어서 밟을 수 없어서 1개예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5]],
-      expected: 1,
-      failureNote: "돌 하나면 1개예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[1, 2, 3, 4]],
-      expected: 4,
-      failureNote: "모두 밟을 수 있어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[4, 3, 2, 1]],
-      expected: 1,
-      failureNote: "점점 낮아지면 1개뿐이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[0, 8, 4, 12, 2, 10, 6, 14, 1, 9]],
-      expected: 4,
-      failureNote:
-        "0, 4, 6, 9(또는 0, 4, 10, 14 …)로 4개예요. 'x 이상인 첫 자리'를 바꿔야 같은 높이가 두 번 들어가지 않아요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i * 7919) % 100003)],
-      expected: 306,
-      failureNote: "돌 10만 개예요. 돌마다 앞의 모든 돌을 보면(O(N²)) 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

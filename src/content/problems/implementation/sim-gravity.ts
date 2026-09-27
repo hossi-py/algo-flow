@@ -1,4 +1,93 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["a.b", ".c.", "..."]],
+    expected: ["...", "...", "acb"],
+    explanation: '모두 바닥까지 떨어져 ["...", "...", "acb"]예요.',
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [["x", ".", "y"]],
+    expected: [".", "x", "y"],
+    explanation: 'x는 y 위에서 멈춰요: [".", "x", "y"].',
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["a", "#", ".", "b", "."]],
+    expected: ["a", "#", ".", ".", "b"],
+    failureNote: 'a는 칸막이 위에 그대로 있고, b만 바닥으로 떨어져요: ["a", "#", ".", ".", "b"].',
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["..", ".."]],
+    expected: ["..", ".."],
+    failureNote: "빈 상자는 그대로예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["p", "q", ".", "r", "."]],
+    expected: [".", ".", "p", "q", "r"],
+    failureNote: '순서를 지켜 [".", ".", "p", "q", "r"]이에요.',
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["a.", "#.", "b#", "..", "c."]],
+    expected: ["a.", "#.", ".#", "b.", "c."],
+    failureNote: "칸막이 아래 칸에서 다시 바닥을 세요. 첫 줄은 a, #, 빈칸, b, c 순서가 돼요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 300 }, (_, r) =>
+        Array.from({ length: 300 }, (_, c) => {
+          const v = (r * 7919 + c * 104729) % 23;
+          return v < 2 ? "#" : v < 12 ? String.fromCharCode(97 + (v % 26)) : ".";
+        }).join(""),
+      ),
+    ],
+    expected: (() => {
+      const g = Array.from({ length: 300 }, (_, r) =>
+        Array.from({ length: 300 }, (_, c) => {
+          const v = (r * 7919 + c * 104729) % 23;
+          return v < 2 ? "#" : v < 12 ? String.fromCharCode(97 + (v % 26)) : ".";
+        }).join(""),
+      ).map((row) => row.split(""));
+      const n = g.length,
+        m = g[0].length;
+      for (let c = 0; c < m; c++) {
+        let land = n - 1;
+        for (let r = n - 1; r >= 0; r--) {
+          const ch = g[r][c];
+          if (ch === "#") land = r - 1;
+          else if (ch !== ".") {
+            g[r][c] = ".";
+            g[land][c] = ch;
+            land--;
+          }
+        }
+      }
+      return g.map((row) => row.join(""));
+    })(),
+    failureNote: "300 × 300 상자예요. 도토리를 한 칸씩 떨어뜨리면 느려요.",
+  },
+]);
 
 export const simGravity: Problem = {
   id: "c:sim-gravity",
@@ -42,93 +131,9 @@ export const simGravity: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["a.b", ".c.", "..."]],
-      expected: ["...", "...", "acb"],
-      explanation: '모두 바닥까지 떨어져 ["...", "...", "acb"]예요.',
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [["x", ".", "y"]],
-      expected: [".", "x", "y"],
-      explanation: 'x는 y 위에서 멈춰요: [".", "x", "y"].',
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["a", "#", ".", "b", "."]],
-      expected: ["a", "#", ".", ".", "b"],
-      failureNote: 'a는 칸막이 위에 그대로 있고, b만 바닥으로 떨어져요: ["a", "#", ".", ".", "b"].',
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["..", ".."]],
-      expected: ["..", ".."],
-      failureNote: "빈 상자는 그대로예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["p", "q", ".", "r", "."]],
-      expected: [".", ".", "p", "q", "r"],
-      failureNote: '순서를 지켜 [".", ".", "p", "q", "r"]이에요.',
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["a.", "#.", "b#", "..", "c."]],
-      expected: ["a.", "#.", ".#", "b.", "c."],
-      failureNote: "칸막이 아래 칸에서 다시 바닥을 세요. 첫 줄은 a, #, 빈칸, b, c 순서가 돼요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 300 }, (_, r) =>
-          Array.from({ length: 300 }, (_, c) => {
-            const v = (r * 7919 + c * 104729) % 23;
-            return v < 2 ? "#" : v < 12 ? String.fromCharCode(97 + (v % 26)) : ".";
-          }).join(""),
-        ),
-      ],
-      expected: (() => {
-        const g = Array.from({ length: 300 }, (_, r) =>
-          Array.from({ length: 300 }, (_, c) => {
-            const v = (r * 7919 + c * 104729) % 23;
-            return v < 2 ? "#" : v < 12 ? String.fromCharCode(97 + (v % 26)) : ".";
-          }).join(""),
-        ).map((row) => row.split(""));
-        const n = g.length,
-          m = g[0].length;
-        for (let c = 0; c < m; c++) {
-          let land = n - 1;
-          for (let r = n - 1; r >= 0; r--) {
-            const ch = g[r][c];
-            if (ch === "#") land = r - 1;
-            else if (ch !== ".") {
-              g[r][c] = ".";
-              g[land][c] = ch;
-              land--;
-            }
-          }
-        }
-        return g.map((row) => row.join(""));
-      })(),
-      failureNote: "300 × 300 상자예요. 도토리를 한 칸씩 떨어뜨리면 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

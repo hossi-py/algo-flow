@@ -1,4 +1,114 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [0, 2],
+        [1, 2],
+        [0, 3],
+        [1, 3],
+        [0, 4],
+      ],
+      0,
+      1,
+    ],
+    expected: [2, 3],
+    explanation: "2번과 3번은 0번, 1번 모두와 친구예요. 4번은 0번하고만 친구예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3, [[0, 1]], 0, 1],
+    expected: [],
+    explanation: "0과 1은 서로 친구지만, 공통 친구는 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      3,
+      [
+        [0, 1],
+        [1, 2],
+        [0, 2],
+      ],
+      0,
+      1,
+    ],
+    expected: [2],
+    failureNote: "u, v 자신은 공통 친구가 아니에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [5, 0],
+        [5, 1],
+        [4, 0],
+        [4, 1],
+        [3, 0],
+      ],
+      1,
+      0,
+    ],
+    expected: [4, 5],
+    failureNote: "u와 v의 순서가 바뀌어도 같아요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [4, [], 2, 3],
+    expected: [],
+    failureNote: "관계가 하나도 없어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 2],
+        [2, 1],
+        [3, 0],
+        [3, 1],
+        [2, 3],
+      ],
+      0,
+      1,
+    ],
+    expected: [2, 3],
+    failureNote: "공통 친구가 둘이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      100000,
+      [
+        ...Array.from({ length: 99998 }, (_, i) => [0, i + 2]),
+        ...Array.from({ length: 99998 }, (_, i) => [1, i + 2]).filter((_, i) => i % 1000 === 0),
+      ],
+      0,
+      1,
+    ],
+    expected: Array.from({ length: 100 }, (_, i) => i * 1000 + 2),
+    failureNote: "학생 10만 명, 관계가 10만 개 넘게 있어요.",
+  },
+]);
 
 export const graphCommonFriends: Problem = {
   id: "c:graph-common-friends",
@@ -48,114 +158,9 @@ export const graphCommonFriends: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [0, 2],
-          [1, 2],
-          [0, 3],
-          [1, 3],
-          [0, 4],
-        ],
-        0,
-        1,
-      ],
-      expected: [2, 3],
-      explanation: "2번과 3번은 0번, 1번 모두와 친구예요. 4번은 0번하고만 친구예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3, [[0, 1]], 0, 1],
-      expected: [],
-      explanation: "0과 1은 서로 친구지만, 공통 친구는 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        3,
-        [
-          [0, 1],
-          [1, 2],
-          [0, 2],
-        ],
-        0,
-        1,
-      ],
-      expected: [2],
-      failureNote: "u, v 자신은 공통 친구가 아니에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [5, 0],
-          [5, 1],
-          [4, 0],
-          [4, 1],
-          [3, 0],
-        ],
-        1,
-        0,
-      ],
-      expected: [4, 5],
-      failureNote: "u와 v의 순서가 바뀌어도 같아요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [4, [], 2, 3],
-      expected: [],
-      failureNote: "관계가 하나도 없어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 2],
-          [2, 1],
-          [3, 0],
-          [3, 1],
-          [2, 3],
-        ],
-        0,
-        1,
-      ],
-      expected: [2, 3],
-      failureNote: "공통 친구가 둘이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        100000,
-        [
-          ...Array.from({ length: 99998 }, (_, i) => [0, i + 2]),
-          ...Array.from({ length: 99998 }, (_, i) => [1, i + 2]).filter((_, i) => i % 1000 === 0),
-        ],
-        0,
-        1,
-      ],
-      expected: Array.from({ length: 100 }, (_, i) => i * 1000 + 2),
-      failureNote: "학생 10만 명, 관계가 10만 개 넘게 있어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

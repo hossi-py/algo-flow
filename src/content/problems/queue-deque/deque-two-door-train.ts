@@ -1,5 +1,76 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["push_back 1", "push_back 2", "push_front 3", "pop_back"]],
+    expected: [3, 1],
+    explanation: "[1] → [1,2] → [3,1,2] → 뒤의 2가 내려서 [3, 1]이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [["pop_front", "push_front 5", "pop_back", "pop_back"]],
+    expected: [],
+    explanation: "빈 기차에서 내리는 명령은 무시돼요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["push_front 1", "push_front 2", "push_front 3"]],
+    expected: [3, 2, 1],
+    failureNote: "앞문으로만 타면 역순으로 서요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["push_back 1", "push_back 2", "pop_front", "push_back 3", "pop_front"]],
+    expected: [3],
+    failureNote: "뒤로 타고 앞으로 내리면 큐와 같아요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["push_back 7", "pop_front", "push_front 8", "pop_back", "push_back 9"]],
+    expected: [9],
+    failureNote: "한 명일 때는 앞과 뒤가 같은 승객이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["push_back 4", "push_front 5", "push_back 6", "pop_front", "push_front 7", "pop_back"]],
+    expected: [7, 4],
+    failureNote: "양쪽 문을 번갈아 써요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i < 50000 ? `push_front ${i}` : "pop_back"))],
+    expected: [],
+    failureNote: "앞문으로 5만 명이 타고 뒷문으로 모두 내려요. 배열 앞에 끼워 넣기(insert(0)·unshift)는 느려요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i % 2 === 0 ? `push_front ${i}` : `push_back ${i}`))],
+    expected: [
+      ...Array.from({ length: 50000 }, (_, i) => 99998 - 2 * i),
+      ...Array.from({ length: 50000 }, (_, i) => 2 * i + 1),
+    ],
+    failureNote: "10만 명이 앞뒤로 번갈아 타요.",
+  },
+]);
 
 export const dequeTwoDoorTrain: Problem = {
   id: "c:deque-two-door-train",
@@ -51,75 +122,9 @@ export const dequeTwoDoorTrain: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["push_back 1", "push_back 2", "push_front 3", "pop_back"]],
-      expected: [3, 1],
-      explanation: "[1] → [1,2] → [3,1,2] → 뒤의 2가 내려서 [3, 1]이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [["pop_front", "push_front 5", "pop_back", "pop_back"]],
-      expected: [],
-      explanation: "빈 기차에서 내리는 명령은 무시돼요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["push_front 1", "push_front 2", "push_front 3"]],
-      expected: [3, 2, 1],
-      failureNote: "앞문으로만 타면 역순으로 서요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["push_back 1", "push_back 2", "pop_front", "push_back 3", "pop_front"]],
-      expected: [3],
-      failureNote: "뒤로 타고 앞으로 내리면 큐와 같아요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["push_back 7", "pop_front", "push_front 8", "pop_back", "push_back 9"]],
-      expected: [9],
-      failureNote: "한 명일 때는 앞과 뒤가 같은 승객이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["push_back 4", "push_front 5", "push_back 6", "pop_front", "push_front 7", "pop_back"]],
-      expected: [7, 4],
-      failureNote: "양쪽 문을 번갈아 써요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i < 50000 ? `push_front ${i}` : "pop_back"))],
-      expected: [],
-      failureNote: "앞문으로 5만 명이 타고 뒷문으로 모두 내려요. 배열 앞에 끼워 넣기(insert(0)·unshift)는 느려요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i % 2 === 0 ? `push_front ${i}` : `push_back ${i}`))],
-      expected: [
-        ...Array.from({ length: 50000 }, (_, i) => 99998 - 2 * i),
-        ...Array.from({ length: 50000 }, (_, i) => 2 * i + 1),
-      ],
-      failureNote: "10만 명이 앞뒤로 번갈아 타요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

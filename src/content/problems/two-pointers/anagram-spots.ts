@@ -1,4 +1,56 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["cbaebabacd", "abc"],
+    expected: [0, 6],
+    explanation: "0번(cba)과 6번(bac)이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: ["abab", "ab"],
+    expected: [0, 1, 2],
+    explanation: "ab, ba, ab가 모두 맞아서 [0, 1, 2]예요. 겹쳐도 셉니다.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["abc", "abcd"],
+    expected: [],
+    failureNote: "단어가 글보다 길면 빈 목록이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["aaa", "a"],
+    expected: [0, 1, 2],
+    failureNote: "[0, 1, 2]예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["aab", "abb"],
+    expected: [],
+    failureNote: "글자 종류는 같아도 개수가 달라서 없어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => "abcab"[(i * i + i) % 5]).join(""), "abcab"],
+    expected: [],
+    failureNote: "10만 글자예요. 창마다 글자를 새로 세거나 정렬하면 느려요. 한 글자씩 넣고 빼며 개수를 고치세요.",
+  },
+]);
 
 export const twoPointersAnagramSpots: Problem = {
   id: "c:two-pointers-anagram-spots",
@@ -42,56 +94,9 @@ export const twoPointersAnagramSpots: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["cbaebabacd", "abc"],
-      expected: [0, 6],
-      explanation: "0번(cba)과 6번(bac)이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: ["abab", "ab"],
-      expected: [0, 1, 2],
-      explanation: "ab, ba, ab가 모두 맞아서 [0, 1, 2]예요. 겹쳐도 셉니다.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["abc", "abcd"],
-      expected: [],
-      failureNote: "단어가 글보다 길면 빈 목록이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["aaa", "a"],
-      expected: [0, 1, 2],
-      failureNote: "[0, 1, 2]예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["aab", "abb"],
-      expected: [],
-      failureNote: "글자 종류는 같아도 개수가 달라서 없어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => "abcab"[(i * i + i) % 5]).join(""), "abcab"],
-      expected: [],
-      failureNote: "10만 글자예요. 창마다 글자를 새로 세거나 정렬하면 느려요. 한 글자씩 넣고 빼며 개수를 고치세요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 3000,
     compare: { type: "exact" },

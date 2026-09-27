@@ -1,4 +1,92 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [0, 1],
+        [2, 1],
+        [1, 3],
+        [3, 0],
+      ],
+    ],
+    expected: [[3], [0, 2], [], [1]],
+    explanation: "1번은 0번과 2번이 팔로우해요. 2번을 팔로우하는 사람은 없어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [3, []],
+    expected: [[], [], []],
+    explanation: "팔로우 기록이 없으면 모두 빈 목록이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      3,
+      [
+        [0, 1],
+        [0, 2],
+      ],
+    ],
+    expected: [[], [0], [0]],
+    failureNote: "0번이 1번과 2번을 팔로우해요. 0번의 팔로워 목록은 비어 있어요. 방향을 거꾸로 적지 않게 조심해요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      2,
+      [
+        [0, 1],
+        [1, 0],
+      ],
+    ],
+    expected: [[1], [0]],
+    failureNote: "서로 팔로우하는 사이예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      5,
+      [
+        [4, 0],
+        [2, 0],
+        [3, 0],
+        [1, 0],
+      ],
+    ],
+    expected: [[1, 2, 3, 4], [], [], [], []],
+    failureNote: "기록 순서와 상관없이 오름차순으로 정렬해야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000, Array.from({ length: 99999 }, (_, i) => [i + 1, 0])],
+    expected: [Array.from({ length: 99999 }, (_, i) => i + 1), ...Array.from({ length: 99999 }, () => [])],
+    failureNote: "모두가 0번을 팔로우해요. 사용자마다 기록 전체를 훑으면 시간 초과예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000, Array.from({ length: 99999 }, (_, i) => [i, i + 1])],
+    expected: [[], ...Array.from({ length: 99999 }, (_, i) => [i])],
+    failureNote: "한 줄로 이어진 팔로우예요.",
+  },
+]);
 
 export const graphFollowers: Problem = {
   id: "c:graph-followers",
@@ -59,92 +147,9 @@ export const graphFollowers: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [0, 1],
-          [2, 1],
-          [1, 3],
-          [3, 0],
-        ],
-      ],
-      expected: [[3], [0, 2], [], [1]],
-      explanation: "1번은 0번과 2번이 팔로우해요. 2번을 팔로우하는 사람은 없어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [3, []],
-      expected: [[], [], []],
-      explanation: "팔로우 기록이 없으면 모두 빈 목록이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        3,
-        [
-          [0, 1],
-          [0, 2],
-        ],
-      ],
-      expected: [[], [0], [0]],
-      failureNote: "0번이 1번과 2번을 팔로우해요. 0번의 팔로워 목록은 비어 있어요. 방향을 거꾸로 적지 않게 조심해요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        2,
-        [
-          [0, 1],
-          [1, 0],
-        ],
-      ],
-      expected: [[1], [0]],
-      failureNote: "서로 팔로우하는 사이예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        5,
-        [
-          [4, 0],
-          [2, 0],
-          [3, 0],
-          [1, 0],
-        ],
-      ],
-      expected: [[1, 2, 3, 4], [], [], [], []],
-      failureNote: "기록 순서와 상관없이 오름차순으로 정렬해야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [100000, Array.from({ length: 99999 }, (_, i) => [i + 1, 0])],
-      expected: [Array.from({ length: 99999 }, (_, i) => i + 1), ...Array.from({ length: 99999 }, () => [])],
-      failureNote: "모두가 0번을 팔로우해요. 사용자마다 기록 전체를 훑으면 시간 초과예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [100000, Array.from({ length: 99999 }, (_, i) => [i, i + 1])],
-      expected: [[], ...Array.from({ length: 99999 }, (_, i) => [i])],
-      failureNote: "한 줄로 이어진 팔로우예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

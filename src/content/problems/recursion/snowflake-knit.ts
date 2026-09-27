@@ -1,4 +1,79 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [1],
+    expected: ["***", "* *", "***"],
+    explanation: "3×3에서 가운데 한 칸만 비어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [0],
+    expected: ["*"],
+    explanation: '코 하나 ["*"]예요.',
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [2],
+    expected: [
+      "*********",
+      "* ** ** *",
+      "*********",
+      "***   ***",
+      "* *   * *",
+      "***   ***",
+      "*********",
+      "* ** ** *",
+      "*********",
+    ],
+    failureNote: "9×9 무늬예요. 가운데 3×3이 통째로 비고, 8칸 각각의 가운데도 비어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [3],
+    // prettier-ignore
+    expected: ["***************************","* ** ** ** ** ** ** ** ** *","***************************","***   ******   ******   ***","* *   * ** *   * ** *   * *","***   ******   ******   ***","***************************","* ** ** ** ** ** ** ** ** *","***************************","*********         *********","* ** ** *         * ** ** *","*********         *********","***   ***         ***   ***","* *   * *         * *   * *","***   ***         ***   ***","*********         *********","* ** ** *         * ** ** *","*********         *********","***************************","* ** ** ** ** ** ** ** ** *","***************************","***   ******   ******   ***","* *   * ** *   * ** *   * *","***   ******   ******   ***","***************************","* ** ** ** ** ** ** ** ** *","***************************"],
+    failureNote: "27×27 무늬예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [5],
+    expected: Array.from({ length: 243 }, (_, r) =>
+      Array.from({ length: 243 }, (_, c) => {
+        for (let a = r, b = c; a > 0 || b > 0; a = Math.floor(a / 3), b = Math.floor(b / 3))
+          if (a % 3 === 1 && b % 3 === 1) return " ";
+        return "*";
+      }).join(""),
+    ),
+    failureNote: "243×243 무늬예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [4],
+    expected: Array.from({ length: 81 }, (_, r) =>
+      Array.from({ length: 81 }, (_, c) => {
+        for (let a = r, b = c; a > 0 || b > 0; a = Math.floor(a / 3), b = Math.floor(b / 3))
+          if (a % 3 === 1 && b % 3 === 1) return " ";
+        return "*";
+      }).join(""),
+    ),
+    failureNote: "81×81 무늬예요.",
+  },
+]);
 
 export const recursionSnowflakeKnit: Problem = {
   id: "c:recursion-snowflake-knit",
@@ -42,79 +117,9 @@ export const recursionSnowflakeKnit: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [1],
-      expected: ["***", "* *", "***"],
-      explanation: "3×3에서 가운데 한 칸만 비어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [0],
-      expected: ["*"],
-      explanation: '코 하나 ["*"]예요.',
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [2],
-      expected: [
-        "*********",
-        "* ** ** *",
-        "*********",
-        "***   ***",
-        "* *   * *",
-        "***   ***",
-        "*********",
-        "* ** ** *",
-        "*********",
-      ],
-      failureNote: "9×9 무늬예요. 가운데 3×3이 통째로 비고, 8칸 각각의 가운데도 비어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [3],
-      // prettier-ignore
-      expected: ["***************************","* ** ** ** ** ** ** ** ** *","***************************","***   ******   ******   ***","* *   * ** *   * ** *   * *","***   ******   ******   ***","***************************","* ** ** ** ** ** ** ** ** *","***************************","*********         *********","* ** ** *         * ** ** *","*********         *********","***   ***         ***   ***","* *   * *         * *   * *","***   ***         ***   ***","*********         *********","* ** ** *         * ** ** *","*********         *********","***************************","* ** ** ** ** ** ** ** ** *","***************************","***   ******   ******   ***","* *   * ** *   * ** *   * *","***   ******   ******   ***","***************************","* ** ** ** ** ** ** ** ** *","***************************"],
-      failureNote: "27×27 무늬예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [5],
-      expected: Array.from({ length: 243 }, (_, r) =>
-        Array.from({ length: 243 }, (_, c) => {
-          for (let a = r, b = c; a > 0 || b > 0; a = Math.floor(a / 3), b = Math.floor(b / 3))
-            if (a % 3 === 1 && b % 3 === 1) return " ";
-          return "*";
-        }).join(""),
-      ),
-      failureNote: "243×243 무늬예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [4],
-      expected: Array.from({ length: 81 }, (_, r) =>
-        Array.from({ length: 81 }, (_, c) => {
-          for (let a = r, b = c; a > 0 || b > 0; a = Math.floor(a / 3), b = Math.floor(b / 3))
-            if (a % 3 === 1 && b % 3 === 1) return " ";
-          return "*";
-        }).join(""),
-      ),
-      failureNote: "81×81 무늬예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

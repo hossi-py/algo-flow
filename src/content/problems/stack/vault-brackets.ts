@@ -1,5 +1,81 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["([]){}"],
+    expected: true,
+    explanation: "모든 괄호가 순서대로 짝을 이뤄요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: ["([)]"],
+    expected: false,
+    explanation: "개수는 맞지만 ] 앞에서 가장 최근에 연 괄호가 ( 라서 틀려요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["("],
+    expected: false,
+    failureNote: "닫히지 않은 괄호가 남으면 틀려요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [")("],
+    expected: false,
+    failureNote: "닫는 괄호가 먼저 나오면 짝이 없어요. 빈 스택을 꺼내지 않게 조심해요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["{[()()]}"],
+    expected: true,
+    failureNote: "여러 겹으로 잘 감싸져 있어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["((]]"],
+    expected: false,
+    failureNote: "종류가 다른 괄호로 닫았어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["]"],
+    expected: false,
+    failureNote: "닫는 괄호 하나뿐이에요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: ["([{".repeat(20000) + "}])".repeat(20000)],
+    expected: true,
+    failureNote: "6만 겹으로 감싼 긴 암호예요.",
+  },
+  {
+    id: "hid-7",
+    visibility: "hidden",
+    purpose: "stress",
+    args: ["([{".repeat(20000) + "}])".repeat(19999) + "})]"],
+    expected: false,
+    failureNote: "긴 암호의 맨 끝만 순서가 엇갈렸어요.",
+  },
+]);
 
 export const stackVaultBrackets: Problem = {
   id: "c:stack-vault-brackets",
@@ -39,80 +115,9 @@ export const stackVaultBrackets: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["([]){}"],
-      expected: true,
-      explanation: "모든 괄호가 순서대로 짝을 이뤄요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: ["([)]"],
-      expected: false,
-      explanation: "개수는 맞지만 ] 앞에서 가장 최근에 연 괄호가 ( 라서 틀려요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["("],
-      expected: false,
-      failureNote: "닫히지 않은 괄호가 남으면 틀려요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [")("],
-      expected: false,
-      failureNote: "닫는 괄호가 먼저 나오면 짝이 없어요. 빈 스택을 꺼내지 않게 조심해요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["{[()()]}"],
-      expected: true,
-      failureNote: "여러 겹으로 잘 감싸져 있어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["((]]"],
-      expected: false,
-      failureNote: "종류가 다른 괄호로 닫았어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["]"],
-      expected: false,
-      failureNote: "닫는 괄호 하나뿐이에요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: ["([{".repeat(20000) + "}])".repeat(20000)],
-      expected: true,
-      failureNote: "6만 겹으로 감싼 긴 암호예요.",
-    },
-    {
-      id: "hid-7",
-      visibility: "hidden",
-      purpose: "stress",
-      args: ["([{".repeat(20000) + "}])".repeat(19999) + "})]"],
-      expected: false,
-      failureNote: "긴 암호의 맨 끝만 순서가 엇갈렸어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

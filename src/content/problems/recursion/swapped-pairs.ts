@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[3, 1, 2]],
+    expected: 2,
+    explanation: "(3, 1), (3, 2) 두 쌍이 뒤바뀌었어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[1, 2, 3, 4]],
+    expected: 0,
+    explanation: "이미 키 순서대로면 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[5]],
+    expected: 0,
+    failureNote: "한 명뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[4, 3, 2, 1]],
+    expected: 6,
+    failureNote: "완전히 거꾸로면 모든 쌍(6쌍)이 뒤바뀌었어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[2, 2, 1, 1]],
+    expected: 4,
+    failureNote: "키가 같은 쌍은 세지 않아요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[8, 4, 2, 1, 7, 3, 6, 5]],
+    expected: 15,
+    failureNote: "여러 쌍이 섞여 있어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 50000 }, (_, i) => 50000 - i)],
+    expected: 1249975000,
+    failureNote: "5만 명이 완전히 거꾸로 섰어요. 모든 쌍을 비교하면 12억 번이라 시간 초과예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 50000 }, (_, i) => ((i * 7919) % 50021) + 1)],
+    expected: 624860001,
+    failureNote: "5만 명이 뒤섞여 있어요.",
+  },
+]);
 
 export const recursionSwappedPairs: Problem = {
   id: "c:recursion-swapped-pairs",
@@ -36,72 +104,9 @@ export const recursionSwappedPairs: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[3, 1, 2]],
-      expected: 2,
-      explanation: "(3, 1), (3, 2) 두 쌍이 뒤바뀌었어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[1, 2, 3, 4]],
-      expected: 0,
-      explanation: "이미 키 순서대로면 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[5]],
-      expected: 0,
-      failureNote: "한 명뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[4, 3, 2, 1]],
-      expected: 6,
-      failureNote: "완전히 거꾸로면 모든 쌍(6쌍)이 뒤바뀌었어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[2, 2, 1, 1]],
-      expected: 4,
-      failureNote: "키가 같은 쌍은 세지 않아요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[8, 4, 2, 1, 7, 3, 6, 5]],
-      expected: 15,
-      failureNote: "여러 쌍이 섞여 있어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 50000 }, (_, i) => 50000 - i)],
-      expected: 1249975000,
-      failureNote: "5만 명이 완전히 거꾸로 섰어요. 모든 쌍을 비교하면 12억 번이라 시간 초과예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 50000 }, (_, i) => ((i * 7919) % 50021) + 1)],
-      expected: 624860001,
-      failureNote: "5만 명이 뒤섞여 있어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

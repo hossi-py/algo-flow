@@ -1,4 +1,59 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["adobecodebanc", "abc"],
+    expected: 4,
+    explanation: "banc로 4예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: ["a", "aa"],
+    expected: 0,
+    explanation: "a가 두 개 필요한데 하나뿐이라 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["a", "a"],
+    expected: 1,
+    failureNote: "한 가게로 충분해요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["aaflslflsldkalskaaa", "aaa"],
+    expected: 3,
+    failureNote: "끝의 aaa로 3이에요. 개수까지 맞춰야 해요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["abc", "cba"],
+    expected: 3,
+    failureNote: "전체 3이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100000 }, (_, i) => "abcdefghijklmnopqrstuvwxyz"[(i * 7919) % 26]).join(""),
+      "thequickbrownfoxjumps",
+    ],
+    expected: 37,
+    failureNote: "10만 가게예요. 시작점마다 끝까지 보면 시간 초과예요.",
+  },
+]);
 
 export const twoPointersCoverWindow: Problem = {
   id: "c:two-pointers-cover-window",
@@ -37,59 +92,9 @@ export const twoPointersCoverWindow: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["adobecodebanc", "abc"],
-      expected: 4,
-      explanation: "banc로 4예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: ["a", "aa"],
-      expected: 0,
-      explanation: "a가 두 개 필요한데 하나뿐이라 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["a", "a"],
-      expected: 1,
-      failureNote: "한 가게로 충분해요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["aaflslflsldkalskaaa", "aaa"],
-      expected: 3,
-      failureNote: "끝의 aaa로 3이에요. 개수까지 맞춰야 해요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["abc", "cba"],
-      expected: 3,
-      failureNote: "전체 3이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100000 }, (_, i) => "abcdefghijklmnopqrstuvwxyz"[(i * 7919) % 26]).join(""),
-        "thequickbrownfoxjumps",
-      ],
-      expected: 37,
-      failureNote: "10만 가게예요. 시작점마다 끝까지 보면 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

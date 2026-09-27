@@ -1,5 +1,71 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
 import { problemPreset } from "@/content/visualizations";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["...", "...", "..."]],
+    expected: 6,
+    explanation: "3 × 3 빈 숲에는 6가지 길이 있어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: [["....", ".#..", "...."]],
+    expected: 4,
+    explanation: "덤불을 피하는 길은 4가지예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["."]],
+    expected: 1,
+    failureNote: "출발 칸이 곧 도착 칸이라 1가지예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["#.", ".."]],
+    expected: 0,
+    failureNote: "출발 칸이 덤불이면 0이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[".#", "#."]],
+    expected: 0,
+    failureNote: "오른쪽도 아래도 막혀 도착할 수 없어요. 0이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["....#", "....."]],
+    expected: 4,
+    failureNote: "도착 칸 바로 위가 덤불이에요. 덤불에서 오는 길은 0으로 세야 해요. 답은 4예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 500 }, (_, r) =>
+        Array.from({ length: 500 }, (_, c) =>
+          (r * 7 + c * 13) % 29 === 0 && r + c > 0 && r + c < 998 ? "#" : ".",
+        ).join(""),
+      ),
+    ],
+    expected: 88588104,
+    failureNote: "500 × 500 숲이에요. 길을 하나씩 따라가면 끝나지 않아요. 칸마다 한 번 더하기만 하세요.",
+  },
+]);
 
 export const dpForestPaths: Problem = {
   id: "c:dp-forest-paths",
@@ -41,70 +107,9 @@ export const dpForestPaths: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["...", "...", "..."]],
-      expected: 6,
-      explanation: "3 × 3 빈 숲에는 6가지 길이 있어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: [["....", ".#..", "...."]],
-      expected: 4,
-      explanation: "덤불을 피하는 길은 4가지예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["."]],
-      expected: 1,
-      failureNote: "출발 칸이 곧 도착 칸이라 1가지예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["#.", ".."]],
-      expected: 0,
-      failureNote: "출발 칸이 덤불이면 0이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[".#", "#."]],
-      expected: 0,
-      failureNote: "오른쪽도 아래도 막혀 도착할 수 없어요. 0이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["....#", "....."]],
-      expected: 4,
-      failureNote: "도착 칸 바로 위가 덤불이에요. 덤불에서 오는 길은 0으로 세야 해요. 답은 4예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 500 }, (_, r) =>
-          Array.from({ length: 500 }, (_, c) =>
-            (r * 7 + c * 13) % 29 === 0 && r + c > 0 && r + c < 998 ? "#" : ".",
-          ).join(""),
-        ),
-      ],
-      expected: 88588104,
-      failureNote: "500 × 500 숲이에요. 길을 하나씩 따라가면 끝나지 않아요. 칸마다 한 번 더하기만 하세요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

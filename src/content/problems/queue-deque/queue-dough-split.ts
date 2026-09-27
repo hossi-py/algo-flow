@@ -1,4 +1,64 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[10, 3], 4],
+    expected: [3, 2, 3, 2, 3],
+    explanation: "10은 5, 5로 잘려 줄 뒤로 가고, 3이 먼저 완성돼요. 5는 다시 2, 3으로 잘려요. 결과 [3, 2, 3, 2, 3].",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[1, 2, 3], 5],
+    expected: [1, 2, 3],
+    explanation: "모두 limit 이하라서 놓인 순서 그대로 완성돼요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[6], 6],
+    expected: [6],
+    failureNote: "limit과 무게가 같으면 자르지 않고 완성이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[9], 2],
+    expected: [2, 2, 2, 1, 2],
+    failureNote: "잘린 조각은 줄 맨 뒤로 가서, 먼저 잘린 조각의 자식들이 먼저 완성돼요. 순서에 주의해요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[5, 20, 1], 5],
+    expected: [5, 1, 5, 5, 5, 5],
+    failureNote: "5와 1은 바로 완성, 20은 두 번 잘려요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[7, 8], 3],
+    expected: [3, 2, 2, 2, 2, 2, 2],
+    failureNote: "홀수 무게는 가벼운 조각이 먼저 줄에 서요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [[131072], 1],
+    expected: Array.from({ length: 131072 }, () => 1),
+    failureNote: "반죽 하나가 13만 조각으로 나뉘어요. 리스트 맨 앞을 지우는 pop(0)이나 shift()로는 시간 초과예요.",
+  },
+]);
 
 export const queueDoughSplit: Problem = {
   id: "c:queue-dough-split",
@@ -61,64 +121,9 @@ export const queueDoughSplit: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[10, 3], 4],
-      expected: [3, 2, 3, 2, 3],
-      explanation: "10은 5, 5로 잘려 줄 뒤로 가고, 3이 먼저 완성돼요. 5는 다시 2, 3으로 잘려요. 결과 [3, 2, 3, 2, 3].",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[1, 2, 3], 5],
-      expected: [1, 2, 3],
-      explanation: "모두 limit 이하라서 놓인 순서 그대로 완성돼요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[6], 6],
-      expected: [6],
-      failureNote: "limit과 무게가 같으면 자르지 않고 완성이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[9], 2],
-      expected: [2, 2, 2, 1, 2],
-      failureNote: "잘린 조각은 줄 맨 뒤로 가서, 먼저 잘린 조각의 자식들이 먼저 완성돼요. 순서에 주의해요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[5, 20, 1], 5],
-      expected: [5, 1, 5, 5, 5, 5],
-      failureNote: "5와 1은 바로 완성, 20은 두 번 잘려요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[7, 8], 3],
-      expected: [3, 2, 2, 2, 2, 2, 2],
-      failureNote: "홀수 무게는 가벼운 조각이 먼저 줄에 서요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [[131072], 1],
-      expected: Array.from({ length: 131072 }, () => 1),
-      failureNote: "반죽 하나가 13만 조각으로 나뉘어요. 리스트 맨 앞을 지우는 pop(0)이나 shift()로는 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

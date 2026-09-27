@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["abba", ["nodi", "mimi", "mimi", "nodi"]],
+    expected: true,
+    explanation: "a ↔ nodi, b ↔ mimi로 딱 맞아요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: ["abba", ["nodi", "mimi", "mimi", "mimi"]],
+    expected: false,
+    explanation: "a가 처음엔 nodi였는데 마지막엔 mimi예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["ab", ["moss", "moss"]],
+    expected: false,
+    failureNote: "다른 글자 a와 b가 같은 단어 moss를 뜻해요. 글자 → 단어만 확인하면 놓쳐요. 단어 → 글자도 확인하세요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["abc", ["x", "y"]],
+    expected: false,
+    failureNote: "글자 수와 단어 수가 달라요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["aaaa", ["leaf", "leaf", "leaf", "leaf"]],
+    expected: true,
+    failureNote: "모두 같은 글자, 같은 단어예요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["a", ["hello"]],
+    expected: true,
+    failureNote: "한 글자, 한 단어예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["abab", ["sun", "moon", "sun", "moon"]],
+    expected: true,
+    failureNote: "번갈아 나와도 짝이 맞아요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["abcb", ["x", "y", "z", "x"]],
+    expected: false,
+    failureNote: "b는 y였는데 마지막 b가 x예요. 게다가 x는 이미 a의 단어예요.",
+  },
+]);
 
 export const hashSecretPattern: Problem = {
   id: "c:hash-secret-pattern",
@@ -49,73 +117,9 @@ export const hashSecretPattern: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["abba", ["nodi", "mimi", "mimi", "nodi"]],
-      expected: true,
-      explanation: "a ↔ nodi, b ↔ mimi로 딱 맞아요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: ["abba", ["nodi", "mimi", "mimi", "mimi"]],
-      expected: false,
-      explanation: "a가 처음엔 nodi였는데 마지막엔 mimi예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["ab", ["moss", "moss"]],
-      expected: false,
-      failureNote:
-        "다른 글자 a와 b가 같은 단어 moss를 뜻해요. 글자 → 단어만 확인하면 놓쳐요. 단어 → 글자도 확인하세요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["abc", ["x", "y"]],
-      expected: false,
-      failureNote: "글자 수와 단어 수가 달라요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["aaaa", ["leaf", "leaf", "leaf", "leaf"]],
-      expected: true,
-      failureNote: "모두 같은 글자, 같은 단어예요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["a", ["hello"]],
-      expected: true,
-      failureNote: "한 글자, 한 단어예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["abab", ["sun", "moon", "sun", "moon"]],
-      expected: true,
-      failureNote: "번갈아 나와도 짝이 맞아요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["abcb", ["x", "y", "z", "x"]],
-      expected: false,
-      failureNote: "b는 y였는데 마지막 b가 x예요. 게다가 x는 이미 a의 단어예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

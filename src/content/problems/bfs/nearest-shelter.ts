@@ -1,4 +1,100 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["H..", ".#.", "..H"]],
+    expected: [
+      [0, 1, 2],
+      [1, -1, 1],
+      [2, 1, 0],
+    ],
+    explanation: "왼쪽 위와 오른쪽 아래에 대피소가 있어요. 각 칸은 더 가까운 쪽까지의 거리예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [["H#.", ".#.", "..."]],
+    expected: [
+      [0, -1, 6],
+      [1, -1, 5],
+      [2, 3, 4],
+    ],
+    explanation: "오른쪽 위 칸은 건물을 돌아가야 해서 6이에요. 직선거리가 아니라 걷는 거리예요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["H"]],
+    expected: [[0]],
+    failureNote: "대피소 한 칸이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["..#H"]],
+    expected: [[-1, -1, -1, 0]],
+    failureNote: "건물에 막혀 왼쪽 두 칸은 갈 곳이 없어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["....H....", "#########", "H........"]],
+    expected: [
+      [4, 3, 2, 1, 0, 1, 2, 3, 4],
+      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+      [0, 1, 2, 3, 4, 5, 6, 7, 8],
+    ],
+    failureNote: "위아래 줄은 건물로 나뉘어 각자 자기 줄의 대피소를 써요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["...", "...", "..."]],
+    expected: [
+      [-1, -1, -1],
+      [-1, -1, -1],
+      [-1, -1, -1],
+    ],
+    failureNote: "대피소가 없으면 모든 길 칸이 -1이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100 }, (_, r) =>
+        Array.from({ length: 100 }, (_, c) => ((r === 0 && c === 0) || (r === 99 && c === 99) ? "H" : ".")).join(""),
+      ),
+    ],
+    expected: Array.from({ length: 100 }, (_, r) =>
+      Array.from({ length: 100 }, (_, c) => Math.min(r + c, 198 - r - c)),
+    ),
+    failureNote: "100×100 도시의 양 구석에 대피소가 있어요. 칸마다 BFS를 따로 돌리면 1억 번이 넘어요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100 }, () =>
+        Array.from({ length: 100 }, (_, c) => (c === 50 ? "H" : c === 49 ? "#" : ".")).join(""),
+      ),
+    ],
+    expected: Array.from({ length: 100 }, () =>
+      Array.from({ length: 100 }, (_, c) => (c === 49 ? -1 : c > 49 ? c - 50 : -1)),
+    ),
+    failureNote: "가운데 세로줄이 모두 대피소인데, 바로 왼쪽이 건물 벽이라 왼쪽 동네는 대피소에 갈 수 없어요.",
+  },
+]);
 
 export const bfsNearestShelter: Problem = {
   id: "c:bfs-nearest-shelter",
@@ -49,100 +145,9 @@ export const bfsNearestShelter: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["H..", ".#.", "..H"]],
-      expected: [
-        [0, 1, 2],
-        [1, -1, 1],
-        [2, 1, 0],
-      ],
-      explanation: "왼쪽 위와 오른쪽 아래에 대피소가 있어요. 각 칸은 더 가까운 쪽까지의 거리예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [["H#.", ".#.", "..."]],
-      expected: [
-        [0, -1, 6],
-        [1, -1, 5],
-        [2, 3, 4],
-      ],
-      explanation: "오른쪽 위 칸은 건물을 돌아가야 해서 6이에요. 직선거리가 아니라 걷는 거리예요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["H"]],
-      expected: [[0]],
-      failureNote: "대피소 한 칸이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["..#H"]],
-      expected: [[-1, -1, -1, 0]],
-      failureNote: "건물에 막혀 왼쪽 두 칸은 갈 곳이 없어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["....H....", "#########", "H........"]],
-      expected: [
-        [4, 3, 2, 1, 0, 1, 2, 3, 4],
-        [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-        [0, 1, 2, 3, 4, 5, 6, 7, 8],
-      ],
-      failureNote: "위아래 줄은 건물로 나뉘어 각자 자기 줄의 대피소를 써요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["...", "...", "..."]],
-      expected: [
-        [-1, -1, -1],
-        [-1, -1, -1],
-        [-1, -1, -1],
-      ],
-      failureNote: "대피소가 없으면 모든 길 칸이 -1이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100 }, (_, r) =>
-          Array.from({ length: 100 }, (_, c) => ((r === 0 && c === 0) || (r === 99 && c === 99) ? "H" : ".")).join(""),
-        ),
-      ],
-      expected: Array.from({ length: 100 }, (_, r) =>
-        Array.from({ length: 100 }, (_, c) => Math.min(r + c, 198 - r - c)),
-      ),
-      failureNote: "100×100 도시의 양 구석에 대피소가 있어요. 칸마다 BFS를 따로 돌리면 1억 번이 넘어요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100 }, () =>
-          Array.from({ length: 100 }, (_, c) => (c === 50 ? "H" : c === 49 ? "#" : ".")).join(""),
-        ),
-      ],
-      expected: Array.from({ length: 100 }, () =>
-        Array.from({ length: 100 }, (_, c) => (c === 49 ? -1 : c > 49 ? c - 50 : -1)),
-      ),
-      failureNote: "가운데 세로줄이 모두 대피소인데, 바로 왼쪽이 건물 벽이라 왼쪽 동네는 대피소에 갈 수 없어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

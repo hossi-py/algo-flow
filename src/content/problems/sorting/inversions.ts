@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [[3, 1, 2]],
+    expected: 2,
+    explanation: "(3, 1), (3, 2) 두 쌍이에요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[1, 2, 3, 4]],
+    expected: 0,
+    explanation: "이미 정렬돼 있으면 0이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[5, 4, 3, 2, 1]],
+    expected: 10,
+    failureNote: "완전히 거꾸로면 모든 쌍, 10이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[2, 2, 1, 1]],
+    expected: 4,
+    failureNote: "같은 수끼리는 뒤바뀐 게 아니에요. 2와 1 사이 4쌍뿐이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[7]],
+    expected: 0,
+    failureNote: "카드 하나면 0이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [[2, 4, 1, 3, 5]],
+    expected: 3,
+    failureNote: "(2, 1), (4, 1), (4, 3) 세 쌍이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => 100000 - i)],
+    expected: 4999950000,
+    failureNote: "10만 장이 거꾸로면 약 50억 쌍이에요. 모든 쌍을 비교하면 시간 초과이고, Java는 int로 세면 넘쳐요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [Array.from({ length: 100000 }, (_, i) => (i * 7919) % 100003)],
+    expected: 2500038684,
+    failureNote: "10만 장이 뒤섞여 있어요.",
+  },
+]);
 
 export const sortingInversions: Problem = {
   id: "c:sorting-inversions",
@@ -36,72 +104,9 @@ export const sortingInversions: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [[3, 1, 2]],
-      expected: 2,
-      explanation: "(3, 1), (3, 2) 두 쌍이에요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[1, 2, 3, 4]],
-      expected: 0,
-      explanation: "이미 정렬돼 있으면 0이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[5, 4, 3, 2, 1]],
-      expected: 10,
-      failureNote: "완전히 거꾸로면 모든 쌍, 10이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[2, 2, 1, 1]],
-      expected: 4,
-      failureNote: "같은 수끼리는 뒤바뀐 게 아니에요. 2와 1 사이 4쌍뿐이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[7]],
-      expected: 0,
-      failureNote: "카드 하나면 0이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [[2, 4, 1, 3, 5]],
-      expected: 3,
-      failureNote: "(2, 1), (4, 1), (4, 3) 세 쌍이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => 100000 - i)],
-      expected: 4999950000,
-      failureNote: "10만 장이 거꾸로면 약 50억 쌍이에요. 모든 쌍을 비교하면 시간 초과이고, Java는 int로 세면 넘쳐요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [Array.from({ length: 100000 }, (_, i) => (i * 7919) % 100003)],
-      expected: 2500038684,
-      failureNote: "10만 장이 뒤섞여 있어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 3000,
     compare: { type: "exact" },

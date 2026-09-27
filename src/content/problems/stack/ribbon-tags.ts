@@ -1,4 +1,77 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["<red>", "<blue>", "</blue>", "</red>"]],
+    expected: true,
+    explanation: "blue를 먼저 매듭짓고 red를 매듭지어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [["<red>", "<blue>", "</red>", "</blue>"]],
+    expected: false,
+    explanation: "blue가 감긴 채로 red를 매듭지을 수 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["</gold>"]],
+    expected: false,
+    failureNote: "감지도 않은 리본은 매듭지을 수 없어요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["<gold>"]],
+    expected: false,
+    failureNote: "매듭짓지 않은 리본이 남았어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["<a>", "<a>", "</a>", "</a>"]],
+    expected: true,
+    failureNote: "같은 이름 리본을 겹쳐 감아도 괜찮아요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["<a>", "</a>", "<b>", "<c>", "</c>", "</b>"]],
+    expected: true,
+    failureNote: "나란히, 그리고 겹쳐서 감았어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["<ab>", "</a>"]],
+    expected: false,
+    failureNote: "이름이 정확히 같아야 해요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      [
+        ...Array.from({ length: 20000 }, (_, i) => `<t${i % 7}>`),
+        ...Array.from({ length: 20000 }, (_, i) => `</t${(19999 - i) % 7}>`),
+      ],
+    ],
+    expected: true,
+    failureNote: "리본을 2만 겹으로 감았어요.",
+  },
+]);
 
 export const stackRibbonTags: Problem = {
   id: "c:stack-ribbon-tags",
@@ -42,77 +115,9 @@ export const stackRibbonTags: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["<red>", "<blue>", "</blue>", "</red>"]],
-      expected: true,
-      explanation: "blue를 먼저 매듭짓고 red를 매듭지어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [["<red>", "<blue>", "</red>", "</blue>"]],
-      expected: false,
-      explanation: "blue가 감긴 채로 red를 매듭지을 수 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["</gold>"]],
-      expected: false,
-      failureNote: "감지도 않은 리본은 매듭지을 수 없어요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["<gold>"]],
-      expected: false,
-      failureNote: "매듭짓지 않은 리본이 남았어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["<a>", "<a>", "</a>", "</a>"]],
-      expected: true,
-      failureNote: "같은 이름 리본을 겹쳐 감아도 괜찮아요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["<a>", "</a>", "<b>", "<c>", "</c>", "</b>"]],
-      expected: true,
-      failureNote: "나란히, 그리고 겹쳐서 감았어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["<ab>", "</a>"]],
-      expected: false,
-      failureNote: "이름이 정확히 같아야 해요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        [
-          ...Array.from({ length: 20000 }, (_, i) => `<t${i % 7}>`),
-          ...Array.from({ length: 20000 }, (_, i) => `</t${(19999 - i) % 7}>`),
-        ],
-      ],
-      expected: true,
-      failureNote: "리본을 2만 겹으로 감았어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [12, 18],
+    expected: 6,
+    explanation: "6개씩 담으면 초코 2상자, 버터 3상자로 남김없이 담겨요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [7, 13],
+    expected: 1,
+    explanation: "공통으로 나눠떨어지는 수가 1뿐이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [5, 5],
+    expected: 5,
+    failureNote: "두 수가 같아요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [4, 100],
+    expected: 4,
+    failureNote: "작은 수가 먼저 주어질 수도 있어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [270, 192],
+    expected: 6,
+    failureNote: "나머지를 여러 번 구해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, 1000000000],
+    expected: 1,
+    failureNote: "한쪽이 1이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [1000000000, 999999999],
+    expected: 1,
+    failureNote: "10억 근처의 큰 수예요. 1부터 하나씩 나눠 보면 시간 초과예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [701408733, 433494437],
+    expected: 1,
+    failureNote: "연속한 피보나치 수라서 나머지 계산이 가장 오래 이어져요.",
+  },
+]);
 
 export const recursionCookieBoxes: Problem = {
   id: "c:recursion-cookie-boxes",
@@ -43,72 +111,9 @@ export const recursionCookieBoxes: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [12, 18],
-      expected: 6,
-      explanation: "6개씩 담으면 초코 2상자, 버터 3상자로 남김없이 담겨요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [7, 13],
-      expected: 1,
-      explanation: "공통으로 나눠떨어지는 수가 1뿐이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [5, 5],
-      expected: 5,
-      failureNote: "두 수가 같아요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [4, 100],
-      expected: 4,
-      failureNote: "작은 수가 먼저 주어질 수도 있어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [270, 192],
-      expected: 6,
-      failureNote: "나머지를 여러 번 구해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, 1000000000],
-      expected: 1,
-      failureNote: "한쪽이 1이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [1000000000, 999999999],
-      expected: 1,
-      failureNote: "10억 근처의 큰 수예요. 1부터 하나씩 나눠 보면 시간 초과예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [701408733, 433494437],
-      expected: 1,
-      failureNote: "연속한 피보나치 수라서 나머지 계산이 가장 오래 이어져요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

@@ -1,4 +1,112 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      5,
+      [
+        [0, 1],
+        [1, 2],
+        [1, 3],
+        [3, 4],
+      ],
+    ],
+    expected: 3,
+    explanation: "2번과 4번 사이가 2 → 1 → 3 → 4로 도로 3개예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [0, 1],
+        [0, 2],
+        [0, 3],
+      ],
+    ],
+    expected: 2,
+    explanation: "0번에서는 모든 마을이 거리 1이지만, 1번과 2번 사이는 2예요. 0번에서의 거리만 보면 안 돼요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, []],
+    expected: 0,
+    failureNote: "마을이 하나면 거리는 0이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2, [[1, 0]]],
+    expected: 1,
+    failureNote: "마을 두 개예요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      6,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [4, 5],
+      ],
+    ],
+    expected: 5,
+    failureNote: "한 줄로 이어진 섬이에요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      7,
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [0, 4],
+        [4, 5],
+        [0, 6],
+      ],
+    ],
+    expected: 5,
+    failureNote: "가장 긴 길이 0번을 지나 3번과 5번을 이어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      100000,
+      Array.from({ length: 99999 }, (_, k) => {
+        const i = k + 1;
+        return i < 990 ? [i - 1, i] : [i % 990, i];
+      }),
+    ],
+    expected: 991,
+    failureNote: "990개 마을로 된 긴 길에 나머지 마을이 가지처럼 붙어 있어요. 마을마다 따로 거리를 재면 너무 느려요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [100000, Array.from({ length: 99999 }, (_, k) => [Math.floor(k / 3), k + 1])],
+    expected: 21,
+    failureNote: "마을마다 가지가 세 개씩 뻗은 섬이에요.",
+  },
+]);
 
 export const dfsFarthestVillages: Problem = {
   id: "c:dfs-farthest-villages",
@@ -41,112 +149,9 @@ export const dfsFarthestVillages: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        5,
-        [
-          [0, 1],
-          [1, 2],
-          [1, 3],
-          [3, 4],
-        ],
-      ],
-      expected: 3,
-      explanation: "2번과 4번 사이가 2 → 1 → 3 → 4로 도로 3개예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [0, 1],
-          [0, 2],
-          [0, 3],
-        ],
-      ],
-      expected: 2,
-      explanation: "0번에서는 모든 마을이 거리 1이지만, 1번과 2번 사이는 2예요. 0번에서의 거리만 보면 안 돼요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, []],
-      expected: 0,
-      failureNote: "마을이 하나면 거리는 0이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2, [[1, 0]]],
-      expected: 1,
-      failureNote: "마을 두 개예요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        6,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [3, 4],
-          [4, 5],
-        ],
-      ],
-      expected: 5,
-      failureNote: "한 줄로 이어진 섬이에요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        7,
-        [
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [0, 4],
-          [4, 5],
-          [0, 6],
-        ],
-      ],
-      expected: 5,
-      failureNote: "가장 긴 길이 0번을 지나 3번과 5번을 이어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        100000,
-        Array.from({ length: 99999 }, (_, k) => {
-          const i = k + 1;
-          return i < 990 ? [i - 1, i] : [i % 990, i];
-        }),
-      ],
-      expected: 991,
-      failureNote: "990개 마을로 된 긴 길에 나머지 마을이 가지처럼 붙어 있어요. 마을마다 따로 거리를 재면 너무 느려요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [100000, Array.from({ length: 99999 }, (_, k) => [Math.floor(k / 3), k + 1])],
-      expected: 21,
-      failureNote: "마을마다 가지가 세 개씩 뻗은 섬이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

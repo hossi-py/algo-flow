@@ -1,4 +1,97 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [["S.#", "#..", "#.E"]],
+    expected: true,
+    explanation: "S → 오른쪽 → 아래 → 아래 → 오른쪽으로 E에 닿아요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [["S#E", ".#.", "..#"]],
+    expected: false,
+    explanation: "S에서 갈 수 있는 칸은 왼쪽 아래 네 칸뿐이라 E에 닿을 수 없어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [["SE"]],
+    expected: true,
+    failureNote: "출구가 바로 옆이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [["S#", "#E"]],
+    expected: false,
+    failureNote: "대각선으로는 갈 수 없어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["S....", "####.", "E...."]],
+    expected: true,
+    failureNote: "빙 돌아가는 길이 있어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [["S", ".", "#", "E"]],
+    expected: false,
+    failureNote: "한 열짜리 미로가 벽에 막혀 있어요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: (() => {
+      const g = [];
+      for (let r = 0; r < 40; r += 1) {
+        if (r % 2 === 0) g.push(".".repeat(40));
+        else {
+          const gap = ((r - 1) / 2) % 2 === 0 ? 39 : 0;
+          g.push(Array.from({ length: 40 }, (_, c) => (c === gap ? "." : "#")).join(""));
+        }
+      }
+      g[0] = "S" + g[0].slice(1);
+      g[38] = g[38].slice(0, 20) + "E" + g[38].slice(21);
+      return [g];
+    })(),
+    expected: true,
+    failureNote: "40×40 뱀 모양 미로예요. 방문 표시가 없으면 같은 칸을 끝없이 오가요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: (() => {
+      const g = [];
+      for (let r = 0; r < 40; r += 1) {
+        if (r % 2 === 0) g.push(".".repeat(40));
+        else {
+          const gap = ((r - 1) / 2) % 2 === 0 ? 39 : 0;
+          g.push(Array.from({ length: 40 }, (_, c) => (c === gap ? "." : "#")).join(""));
+        }
+      }
+      g[0] = "S" + g[0].slice(1);
+      g[38] = g[38].slice(0, 20) + "E" + g[38].slice(21);
+      g[37] = "#".repeat(40);
+      return [g];
+    })(),
+    expected: false,
+    failureNote: "같은 뱀 모양 미로인데 마지막 통로가 막혔어요.",
+  },
+]);
 
 export const dfsMazeEscape: Problem = {
   id: "c:dfs-maze-escape",
@@ -42,97 +135,9 @@ export const dfsMazeEscape: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [["S.#", "#..", "#.E"]],
-      expected: true,
-      explanation: "S → 오른쪽 → 아래 → 아래 → 오른쪽으로 E에 닿아요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [["S#E", ".#.", "..#"]],
-      expected: false,
-      explanation: "S에서 갈 수 있는 칸은 왼쪽 아래 네 칸뿐이라 E에 닿을 수 없어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [["SE"]],
-      expected: true,
-      failureNote: "출구가 바로 옆이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [["S#", "#E"]],
-      expected: false,
-      failureNote: "대각선으로는 갈 수 없어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["S....", "####.", "E...."]],
-      expected: true,
-      failureNote: "빙 돌아가는 길이 있어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [["S", ".", "#", "E"]],
-      expected: false,
-      failureNote: "한 열짜리 미로가 벽에 막혀 있어요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: (() => {
-        const g = [];
-        for (let r = 0; r < 40; r += 1) {
-          if (r % 2 === 0) g.push(".".repeat(40));
-          else {
-            const gap = ((r - 1) / 2) % 2 === 0 ? 39 : 0;
-            g.push(Array.from({ length: 40 }, (_, c) => (c === gap ? "." : "#")).join(""));
-          }
-        }
-        g[0] = "S" + g[0].slice(1);
-        g[38] = g[38].slice(0, 20) + "E" + g[38].slice(21);
-        return [g];
-      })(),
-      expected: true,
-      failureNote: "40×40 뱀 모양 미로예요. 방문 표시가 없으면 같은 칸을 끝없이 오가요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: (() => {
-        const g = [];
-        for (let r = 0; r < 40; r += 1) {
-          if (r % 2 === 0) g.push(".".repeat(40));
-          else {
-            const gap = ((r - 1) / 2) % 2 === 0 ? 39 : 0;
-            g.push(Array.from({ length: 40 }, (_, c) => (c === gap ? "." : "#")).join(""));
-          }
-        }
-        g[0] = "S" + g[0].slice(1);
-        g[38] = g[38].slice(0, 20) + "E" + g[38].slice(21);
-        g[37] = "#".repeat(40);
-        return [g];
-      })(),
-      expected: false,
-      failureNote: "같은 뱀 모양 미로인데 마지막 통로가 막혔어요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

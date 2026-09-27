@@ -1,4 +1,113 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      3,
+      [
+        [1, 3],
+        [2, 3],
+      ],
+    ],
+    expected: 3,
+    explanation: "3번은 1, 2번 모두에게 추천받고 아무도 추천하지 않아서 명가예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "tricky",
+    args: [
+      3,
+      [
+        [1, 3],
+        [2, 3],
+        [3, 1],
+      ],
+    ],
+    expected: -1,
+    explanation: "3번이 1번을 추천해서 명가가 아니에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [1, []],
+    expected: 1,
+    failureNote: "가게가 하나뿐이면 조건을 모두 만족해서 그 가게가 명가예요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [2, []],
+    expected: -1,
+    failureNote: "추천이 하나도 없으면 명가가 없어요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      4,
+      [
+        [1, 4],
+        [2, 4],
+        [3, 2],
+      ],
+    ],
+    expected: -1,
+    failureNote: "4번은 3번에게 추천받지 못했어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      4,
+      [
+        [1, 2],
+        [3, 2],
+        [4, 2],
+        [1, 3],
+        [4, 3],
+      ],
+    ],
+    expected: 2,
+    failureNote: "2번이 명가예요. 3번은 추천받은 수가 모자라요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      100000,
+      [
+        ...Array.from({ length: 99999 }, (_, i) => [i + 1, 100000]),
+        ...Array.from({ length: 99999 }, (_, i) => [i + 2, 1]).slice(0, 50000),
+      ],
+    ],
+    expected: 100000,
+    failureNote: "가게 10만 곳의 추천이에요. 가게마다 추천 목록 전체를 훑으면 시간 초과예요.",
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      100000,
+      [
+        ...Array.from({ length: 99999 }, (_, i) => [i + 2, 1]),
+        ...Array.from({ length: 50000 }, (_, i) => [i + 2, (i % 99998) + 3]),
+      ],
+    ],
+    expected: 1,
+    failureNote: "1번이 모두에게 추천받는 10만 곳의 시장이에요.",
+  },
+]);
 
 export const graphTrustedShop: Problem = {
   id: "c:graph-trusted-shop",
@@ -46,113 +155,9 @@ export const graphTrustedShop: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        3,
-        [
-          [1, 3],
-          [2, 3],
-        ],
-      ],
-      expected: 3,
-      explanation: "3번은 1, 2번 모두에게 추천받고 아무도 추천하지 않아서 명가예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "tricky",
-      args: [
-        3,
-        [
-          [1, 3],
-          [2, 3],
-          [3, 1],
-        ],
-      ],
-      expected: -1,
-      explanation: "3번이 1번을 추천해서 명가가 아니에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [1, []],
-      expected: 1,
-      failureNote: "가게가 하나뿐이면 조건을 모두 만족해서 그 가게가 명가예요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [2, []],
-      expected: -1,
-      failureNote: "추천이 하나도 없으면 명가가 없어요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        4,
-        [
-          [1, 4],
-          [2, 4],
-          [3, 2],
-        ],
-      ],
-      expected: -1,
-      failureNote: "4번은 3번에게 추천받지 못했어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        4,
-        [
-          [1, 2],
-          [3, 2],
-          [4, 2],
-          [1, 3],
-          [4, 3],
-        ],
-      ],
-      expected: 2,
-      failureNote: "2번이 명가예요. 3번은 추천받은 수가 모자라요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        100000,
-        [
-          ...Array.from({ length: 99999 }, (_, i) => [i + 1, 100000]),
-          ...Array.from({ length: 99999 }, (_, i) => [i + 2, 1]).slice(0, 50000),
-        ],
-      ],
-      expected: 100000,
-      failureNote: "가게 10만 곳의 추천이에요. 가게마다 추천 목록 전체를 훑으면 시간 초과예요.",
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        100000,
-        [
-          ...Array.from({ length: 99999 }, (_, i) => [i + 2, 1]),
-          ...Array.from({ length: 50000 }, (_, i) => [i + 2, (i % 99998) + 3]),
-        ],
-      ],
-      expected: 1,
-      failureNote: "1번이 모두에게 추천받는 10만 곳의 시장이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

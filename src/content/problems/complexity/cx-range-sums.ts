@@ -1,4 +1,75 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [
+        [3, 5],
+        [1, 10],
+      ],
+    ],
+    expected: [12, 55],
+    explanation: "3 + 4 + 5 = 12, 1 + … + 10 = 55예요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [[[7, 7]]],
+    expected: [7],
+    explanation: "한 수뿐이면 그 수 7이에요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [
+        [1, 1],
+        [1, 2],
+        [1, 3],
+      ],
+    ],
+    expected: [1, 3, 6],
+    failureNote: "[1, 3, 6]이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [[[2, 5]]],
+    expected: [14],
+    failureNote: "개수가 짝수(4개)여도 공식이 맞아요: 14.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[[1, 10000000]]],
+    expected: [50000005000000],
+    failureNote: "합이 50,000,005,000,000이라 큰 수를 다룰 수 있어야 해요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      Array.from({ length: 100000 }, (_, i) => {
+        const a = ((i * 7919) % 5000000) + 1;
+        return [a, a + ((i * 104729) % 5000000)];
+      }),
+    ],
+    expected: Array.from({ length: 100000 }, (_, i) => {
+      const a = ((i * 7919) % 5000000) + 1;
+      return [a, a + ((i * 104729) % 5000000)];
+    }).map(([a, b]) => ((a + b) * (b - a + 1)) / 2),
+    failureNote: "질문 10만 개, 구간 길이는 최대 500만이에요. 질문마다 더하면 수천억 번이에요.",
+  },
+]);
 
 export const cxRangeSums: Problem = {
   id: "c:cx-range-sums",
@@ -40,75 +111,9 @@ export const cxRangeSums: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [
-          [3, 5],
-          [1, 10],
-        ],
-      ],
-      expected: [12, 55],
-      explanation: "3 + 4 + 5 = 12, 1 + … + 10 = 55예요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [[[7, 7]]],
-      expected: [7],
-      explanation: "한 수뿐이면 그 수 7이에요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [
-          [1, 1],
-          [1, 2],
-          [1, 3],
-        ],
-      ],
-      expected: [1, 3, 6],
-      failureNote: "[1, 3, 6]이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [[[2, 5]]],
-      expected: [14],
-      failureNote: "개수가 짝수(4개)여도 공식이 맞아요: 14.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[[1, 10000000]]],
-      expected: [50000005000000],
-      failureNote: "합이 50,000,005,000,000이라 큰 수를 다룰 수 있어야 해요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        Array.from({ length: 100000 }, (_, i) => {
-          const a = ((i * 7919) % 5000000) + 1;
-          return [a, a + ((i * 104729) % 5000000)];
-        }),
-      ],
-      expected: Array.from({ length: 100000 }, (_, i) => {
-        const a = ((i * 7919) % 5000000) + 1;
-        return [a, a + ((i * 104729) % 5000000)];
-      }).map(([a, b]) => ((a + b) * (b - a + 1)) / 2),
-      failureNote: "질문 10만 개, 구간 길이는 최대 500만이에요. 질문마다 더하면 수천억 번이에요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

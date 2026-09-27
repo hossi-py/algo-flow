@@ -1,4 +1,87 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: [
+      [7, 9, 1, 3, 5],
+      [3, 9, 4],
+    ],
+    expected: [3, 1, -1],
+    explanation: "3은 3번, 9는 1번, 4는 없어요.",
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "edge",
+    args: [
+      [1, 3, 5],
+      [5, 1],
+    ],
+    expected: [2, 0],
+    explanation: "회전하지 않은 책장도 있어요.",
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: [[42], [42, 7]],
+    expected: [0, -1],
+    failureNote: "한 권뿐이에요.",
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [5, 1, 3],
+      [5, 1, 3],
+    ],
+    expected: [0, 1, 2],
+    failureNote: "맨 앞 한 권만 뒤로 간 경우예요. 회전 지점이 1번이에요.",
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: [
+      [3, 5, 1],
+      [1, 3, 5],
+    ],
+    expected: [2, 0, 1],
+    failureNote: "맨 뒤에 가장 작은 번호가 있어요.",
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "basic",
+    args: [
+      [40, 50, 10, 20, 30],
+      [50, 10, 35],
+    ],
+    expected: [1, 2, -1],
+    failureNote: "1, 2, -1이에요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "stress",
+    args: [
+      (() => {
+        const b = Array.from({ length: 100000 }, (_, i) => i * 3);
+        return b.slice(37000).concat(b.slice(0, 37000));
+      })(),
+      Array.from({ length: 20000 }, (_, i) => i * 15),
+    ],
+    expected: Array.from({ length: 20000 }, (_, i) =>
+      (i * 15) % 3 === 0 ? ((i * 15) / 3 - 37000 + 100000) % 100000 : -1,
+    ),
+    failureNote: "책 10만 권, 질문 2만 개예요. 질문마다 처음부터 훑으면 20억 번이라 시간 초과예요.",
+  },
+]);
 
 export const binarySearchRotatedShelf: Problem = {
   id: "c:binary-search-rotated-shelf",
@@ -49,87 +132,9 @@ export const binarySearchRotatedShelf: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: [
-        [7, 9, 1, 3, 5],
-        [3, 9, 4],
-      ],
-      expected: [3, 1, -1],
-      explanation: "3은 3번, 9는 1번, 4는 없어요.",
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "edge",
-      args: [
-        [1, 3, 5],
-        [5, 1],
-      ],
-      expected: [2, 0],
-      explanation: "회전하지 않은 책장도 있어요.",
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: [[42], [42, 7]],
-      expected: [0, -1],
-      failureNote: "한 권뿐이에요.",
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [5, 1, 3],
-        [5, 1, 3],
-      ],
-      expected: [0, 1, 2],
-      failureNote: "맨 앞 한 권만 뒤로 간 경우예요. 회전 지점이 1번이에요.",
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: [
-        [3, 5, 1],
-        [1, 3, 5],
-      ],
-      expected: [2, 0, 1],
-      failureNote: "맨 뒤에 가장 작은 번호가 있어요.",
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "basic",
-      args: [
-        [40, 50, 10, 20, 30],
-        [50, 10, 35],
-      ],
-      expected: [1, 2, -1],
-      failureNote: "1, 2, -1이에요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "stress",
-      args: [
-        (() => {
-          const b = Array.from({ length: 100000 }, (_, i) => i * 3);
-          return b.slice(37000).concat(b.slice(0, 37000));
-        })(),
-        Array.from({ length: 20000 }, (_, i) => i * 15),
-      ],
-      expected: Array.from({ length: 20000 }, (_, i) =>
-        (i * 15) % 3 === 0 ? ((i * 15) / 3 - 37000 + 100000) % 100000 : -1,
-      ),
-      failureNote: "책 10만 권, 질문 2만 개예요. 질문마다 처음부터 훑으면 20억 번이라 시간 초과예요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },

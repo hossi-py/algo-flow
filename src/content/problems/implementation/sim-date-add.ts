@@ -1,4 +1,72 @@
-import type { Problem } from "@/types/content";
+import { lazy } from "@/content/problems/lazy";
+import type { Problem, TestCase } from "@/types/content";
+
+const testCases = lazy((): TestCase[] => [
+  {
+    id: "ex-1",
+    visibility: "example",
+    purpose: "basic",
+    args: ["2024-02-28", 1],
+    expected: "2024-02-29",
+    explanation: '2024년은 윤년이라 "2024-02-29"예요.',
+  },
+  {
+    id: "ex-2",
+    visibility: "example",
+    purpose: "basic",
+    args: ["2023-02-28", 1],
+    expected: "2023-03-01",
+    explanation: '윤년이 아니라 "2023-03-01"이에요.',
+  },
+  {
+    id: "hid-1",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["1999-12-31", 1],
+    expected: "2000-01-01",
+    failureNote: '해가 바뀌어 "2000-01-01"이에요.',
+  },
+  {
+    id: "hid-2",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["2100-02-28", 1],
+    expected: "2100-03-01",
+    failureNote: '2100년은 100의 배수라 윤년이 아니에요: "2100-03-01".',
+  },
+  {
+    id: "hid-3",
+    visibility: "hidden",
+    purpose: "tricky",
+    args: ["2000-02-28", 1],
+    expected: "2000-02-29",
+    failureNote: '2000년은 400의 배수라 윤년이에요: "2000-02-29".',
+  },
+  {
+    id: "hid-4",
+    visibility: "hidden",
+    purpose: "edge",
+    args: ["2024-05-05", 0],
+    expected: "2024-05-05",
+    failureNote: "0일 뒤는 그대로예요.",
+  },
+  {
+    id: "hid-5",
+    visibility: "hidden",
+    purpose: "basic",
+    args: ["2024-01-31", 30],
+    expected: "2024-03-01",
+    failureNote: '"2024-03-01"이에요. 달마다 날 수가 달라요.',
+  },
+  {
+    id: "hid-6",
+    visibility: "hidden",
+    purpose: "stress",
+    args: ["1900-01-01", 1000000],
+    expected: "4637-11-28",
+    failureNote: "100만 일(약 2,738년) 뒤예요. 하루씩 넘기면 느려요.",
+  },
+]);
 
 export const simDateAdd: Problem = {
   id: "c:sim-date-add",
@@ -37,72 +105,9 @@ export const simDateAdd: Problem = {
       "",
     ].join("\n"),
   },
-  testCases: [
-    {
-      id: "ex-1",
-      visibility: "example",
-      purpose: "basic",
-      args: ["2024-02-28", 1],
-      expected: "2024-02-29",
-      explanation: '2024년은 윤년이라 "2024-02-29"예요.',
-    },
-    {
-      id: "ex-2",
-      visibility: "example",
-      purpose: "basic",
-      args: ["2023-02-28", 1],
-      expected: "2023-03-01",
-      explanation: '윤년이 아니라 "2023-03-01"이에요.',
-    },
-    {
-      id: "hid-1",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["1999-12-31", 1],
-      expected: "2000-01-01",
-      failureNote: '해가 바뀌어 "2000-01-01"이에요.',
-    },
-    {
-      id: "hid-2",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["2100-02-28", 1],
-      expected: "2100-03-01",
-      failureNote: '2100년은 100의 배수라 윤년이 아니에요: "2100-03-01".',
-    },
-    {
-      id: "hid-3",
-      visibility: "hidden",
-      purpose: "tricky",
-      args: ["2000-02-28", 1],
-      expected: "2000-02-29",
-      failureNote: '2000년은 400의 배수라 윤년이에요: "2000-02-29".',
-    },
-    {
-      id: "hid-4",
-      visibility: "hidden",
-      purpose: "edge",
-      args: ["2024-05-05", 0],
-      expected: "2024-05-05",
-      failureNote: "0일 뒤는 그대로예요.",
-    },
-    {
-      id: "hid-5",
-      visibility: "hidden",
-      purpose: "basic",
-      args: ["2024-01-31", 30],
-      expected: "2024-03-01",
-      failureNote: '"2024-03-01"이에요. 달마다 날 수가 달라요.',
-    },
-    {
-      id: "hid-6",
-      visibility: "hidden",
-      purpose: "stress",
-      args: ["1900-01-01", 1000000],
-      expected: "4637-11-28",
-      failureNote: "100만 일(약 2,738년) 뒤예요. 하루씩 넘기면 느려요.",
-    },
-  ],
+  get testCases() {
+    return testCases();
+  },
   judge: {
     timeLimitMs: 2000,
     compare: { type: "exact" },
