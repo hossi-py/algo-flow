@@ -65,6 +65,7 @@ export function computeLevelView(facts: ProgressFacts, topic: Topic, level: Leve
     solved,
     required: requiredCount(level),
     total: level.problemSlugs.length,
+    conceptPending: level.clearRule.requiresConcept && !isConceptComplete(facts, topic),
   };
 
   if (isLevelCleared(facts, topic.slug, level.level)) {

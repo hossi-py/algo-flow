@@ -931,6 +931,8 @@ export interface LevelView {
   solved: number;
   required: number;
   total: number;
+  /** 클리어에 개념 학습(카드 + 퀴즈)이 필요한데 아직 끝내지 않았는지 */
+  conceptPending: boolean;
   /** 잠금 사유. 예: "Lv2를 클리어하면 열려요" */
   lockedReason: string | null;
 }

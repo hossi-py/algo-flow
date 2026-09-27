@@ -13,6 +13,12 @@ export function levelStatusText(view: LevelView): string {
   if (view.status === "locked") return view.lockedReason ?? "잠겨 있어요";
   if (view.status === "cleared") return "클리어했어요";
   if (view.total === 0) return "문제 준비 중이에요";
+  const problemsDone = view.solved >= view.required;
+  if (view.conceptPending) {
+    return problemsDone
+      ? "개념 학습(카드 + 퀴즈)만 끝내면 클리어"
+      : `${view.solved}/${view.required}문제 해결 + 개념 학습(카드 + 퀴즈)을 끝내면 클리어`;
+  }
   return `${view.solved}/${view.required}문제 해결하면 클리어`;
 }
 
